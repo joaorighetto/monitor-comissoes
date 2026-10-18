@@ -2,7 +2,9 @@
 
 O relator atual é o designado na comissão em que a referência está, na passagem mais recente
 dela por essa comissão, que não deixou de sê-lo depois disso. Deixam de ser relator a devolução
-sem manifestação, a substituição por nova designação e a saída do relator da comissão.
+sem manifestação, a substituição por nova designação e a saída do relator da comissão. Só
+órgãos que recebem a matéria (recebimento 500 ou designação 320) iniciam passagem: órgãos de
+serviço que apenas notificam, como a SGM, são ignorados.
 """
 
 from collections.abc import Iterable
@@ -11,7 +13,8 @@ from typing import NamedTuple
 from .tramitacoes import Tramitacao
 
 # Órgãos que apenas movimentam a matéria (Mesa, Coordenação de Comissões Permanentes, Plenário):
-# não são comissões e nunca iniciam uma passagem.
+# não são comissões e nunca iniciam uma passagem. Outros órgãos de serviço (como a SGM) são
+# descartados por `_comissoes`, que só reconhece quem registra recebimento ou designação.
 ORGAOS_DE_APOIO = frozenset({"MESA", "CCP", "PLEN"})
 
 RECEBIMENTO = "500"

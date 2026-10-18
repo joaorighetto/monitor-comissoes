@@ -12,7 +12,7 @@ from .erros import FORMATO_ALTERADO, FalhaDeColeta
 from .transporte import Transporte
 
 CODIGO_DESIGNACAO = "320"
-PADRAO_DATA_HORA = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?")
+PADRAO_DATA_HORA = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2})?")
 PADRAO_URI_DEPUTADO = re.compile(r".*/deputados/([0-9]+)/?")
 
 

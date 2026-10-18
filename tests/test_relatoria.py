@@ -295,6 +295,8 @@ def test_notificacao_de_orgao_de_servico_nao_apaga_o_relator():
 
 
 def test_historia_real_com_sgm_entre_tramitacoes_da_ce():
+    # Guarda de regressão com dado real. NÃO prova o C1 sozinho: nesta história há uma nova
+    # designação na CE depois da SGM. A prova do C1 são os testes derivados acima.
     orgaos = {t.orgao for t in real(PL_2459367)}
     assert "SGM" in orgaos  # o caso real que o revisor apontou
 

@@ -244,7 +244,10 @@ def test_uri_do_relator_precisa_ser_de_deputado_com_id_inteiro_ascii(transporte,
     assert erro.value.categoria == FORMATO_ALTERADO
 
 
-@pytest.mark.parametrize("data_hora", ["ontem", "2026-10-18", "18/10/2026 10:00", ""])
+@pytest.mark.parametrize(
+    "data_hora",
+    ["ontem", "2026-10-18", "18/10/2026 10:00", "", "٢٠٢٦-١٠-١٨T١٠:٠٠"],  # dígitos árabes
+)
 def test_data_hora_fora_do_formato_e_formato_alterado(transporte, data_hora):
     alterar(transporte, PL_937_2022, lambda d: d["dados"][0].update(dataHora=data_hora))
 
