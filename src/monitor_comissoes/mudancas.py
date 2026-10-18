@@ -1,0 +1,383 @@
+"""Mudanças desde o retrato anterior (MUD): eventos, motivos e o arquivo do dia.
+
+Formato em specs/004-mudancas-desde-ontem/contracts/mudancas-json.md; regras de comparação em
+data-model.md. O arquivo não tem horário de execução: só datas e o `dados_camara_em` do lote,
+para duas execuções sobre os mesmos dados darem o mesmo arquivo (constituição, V).
+"""
+
+import re
+from collections.abc import Iterable
+from datetime import date
+from typing import Any
+
+from .erros import INTERNA, FalhaDeColeta
+from .tramitacoes import Tramitacao
+
+VERSAO_FORMATO = 1
+LINK_OFICIAL = "https://www.camara.leg.br/propostas-legislativas/"
+
+# Ordem de saída dos tipos de evento (PRODUCT.md, §5.6).
+TIPOS = ("entrou", "saiu", "situacao", "relator", "parecer", "etiquetas")
+# Campos próprios de cada tipo, depois de `link` e antes de `tramitacoes`.
+CAMPOS_PROPRIOS = {
+    "entrou": ("motivo", "etiquetas"),
+    "saiu": ("motivo", "destino", "outros_fatos"),
+    "situacao": ("de", "para"),
+    "relator": ("mudanca", "de", "para"),
+    "parecer": (),
+    "etiquetas": ("ganhou", "perdeu"),
+}
+CAMPOS_COMUNS = ("tipo", "id", "identificacao", "comissao", "link")
+CAMPOS_DA_TRAMITACAO = ("sequencia", "data_hora", "orgao", "codigo", "descricao")
+ETIQUETAS = ("autoria NOVO", "autor hoje no NOVO", "relatoria NOVO")
+MUDANCAS_DE_RELATOR = ("designado", "devolveu", "substituido")
+
+# Códigos de motivo (contrato). As situações finais são o motivo "da situação" (research R2).
+MOTIVOS_DE_ENTRADA = ("chegou_a_comissao", "ganhou_etiqueta", "nao_determinado")
+SITUACAO_FINAL_ARQUIVADO = "arquivado"
+SITUACAO_FINAL_ARQUIVADO_ART_105 = "arquivado_art_105"
+MOTIVOS_DE_SAIDA_POR_SITUACAO = (
+    SITUACAO_FINAL_ARQUIVADO_ART_105,
+    SITUACAO_FINAL_ARQUIVADO,
+    "transformado_em_norma",
+    "aprovado_segue_ao_senado",
+    "encerrado",
+)
+MOTIVOS_DE_SAIDA = (
+    *MOTIVOS_DE_SAIDA_POR_SITUACAO,
+    "apensado_fora_da_lista",
+    "outro_orgao",
+    "perdeu_etiquetas",
+    "nao_determinado",
+)
+MOTIVOS_DE_LINHA_DE_BASE = ("primeiro retrato", "formato anterior incompatível")
+MOTIVOS_DE_RESSALVA = (
+    "relator indeterminado ontem",
+    "relator indeterminado hoje",
+    "relator indeterminado nos dois retratos",
+)
+
+# Situação (texto exato de `ultimoStatus_descricaoSituacao`) -> código do motivo de saída.
+# Tabela decidida pelo mantenedor em 18/10/2026 (plan.md, D1): só rotula o motivo da saída e nunca
+# inclui nem exclui item. Situação fora da tabela cai em "foi para outro órgão".
+SITUACOES_FINAIS = {
+    "Arquivada": SITUACAO_FINAL_ARQUIVADO,
+    "Transformado em Norma Jurídica": "transformado_em_norma",
+    "Aguardando Apreciação pelo Senado Federal": "aprovado_segue_ao_senado",
+    "Aguardando Envio ao Senado Federal": "aprovado_segue_ao_senado",
+    "Enviada ao Senado Federal": "aprovado_segue_ao_senado",
+    "Vetado totalmente": "encerrado",
+    "Recusado": "encerrado",
+    "Retirado pelo(a) Autor(a)": "encerrado",
+    "Devolvida ao(à) Autor(a)": "encerrado",
+    "Transformado em nova proposição": "encerrado",
+    "Perdeu a Eficácia": "encerrado",
+    "Tramitação Finalizada": "encerrado",
+}
+
+CODIGO_PARECER = "322"  # "Parecer do(a) Relator(a)" (plan.md, D4)
+CODIGO_ARQUIVAMENTO = "502"  # "Arquivamento" (research R3)
+# "Arquivado nos termos do Artigo 105 do Regimento Interno..." (tramitação 502).
+PADRAO_ART_105 = re.compile(r"art(?:igo|\.)?\s*105", re.IGNORECASE)
+
+
+# --- construção -------------------------------------------------------------------------------
+
+
+def nome_do_arquivo(data: date) -> str:
+    return f"{data.isoformat()}.json"
+
+
+def _tramitacao(t: Tramitacao) -> dict:
+    return {
+        "sequencia": t.sequencia,
+        "data_hora": t.data_hora,
+        "orgao": t.orgao,
+        "codigo": t.codigo,
+        "descricao": t.descricao,
+    }
+
+
+def evento(
+    tipo: str,
+    *,
+    id: int,
+    identificacao: str,
+    comissao: str,
+    link: str,
+    tramitacoes: Iterable[Tramitacao] = (),
+    **proprios: Any,
+) -> dict:
+    """Um evento com os campos na ordem do contrato. Exige exatamente os campos do `tipo`."""
+    if tipo not in CAMPOS_PROPRIOS:
+        raise ValueError(f"tipo desconhecido: {tipo!r}")
+    esperados = CAMPOS_PROPRIOS[tipo]
+    faltam = [c for c in esperados if c not in proprios]
+    sobram = [c for c in proprios if c not in esperados]
+    if faltam:
+        raise ValueError(f"evento {tipo}: faltam campos {faltam}")
+    if sobram:
+        raise ValueError(f"evento {tipo}: campos a mais {sobram}")
+    return {
+        "tipo": tipo,
+        "id": id,
+        "identificacao": identificacao,
+        "comissao": comissao,
+        "link": link,
+        **{campo: proprios[campo] for campo in esperados},
+        "tramitacoes": [_tramitacao(t) for t in tramitacoes],
+    }
+
+
+def ordenar_eventos(eventos: Iterable[dict], comissoes: tuple[str, ...]) -> list[dict]:
+    """Por comissão (a da configuração; as de fora depois, por sigla), tipo e `id`."""
+
+    def chave(e: dict):
+        comissao = e["comissao"]
+        posicao = comissoes.index(comissao) if comissao in comissoes else len(comissoes)
+        fora = "" if comissao in comissoes else comissao
+        return (posicao, fora, TIPOS.index(e["tipo"]), e["id"])
+
+    return sorted(eventos, key=chave)
+
+
+def montar_arquivo(
+    *,
+    data: date,
+    retrato: dict,
+    retrato_anterior: dict | None,
+    linha_de_base: dict | None,
+    eventos: list[dict],
+    ressalvas: list[dict],
+) -> dict:
+    """O arquivo do dia na ordem fixa do contrato. Não valida: `validar_arquivo` é à parte."""
+    return {
+        "meta": {
+            "versao_formato": VERSAO_FORMATO,
+            "data": data.isoformat(),
+            "retrato": retrato,
+            "retrato_anterior": retrato_anterior,
+            "linha_de_base": linha_de_base,
+            "total_eventos": len(eventos),
+            "total_por_tipo": {t: sum(1 for e in eventos if e.get("tipo") == t) for t in TIPOS},
+        },
+        "eventos": eventos,
+        "ressalvas": ressalvas,
+    }
+
+
+# --- validação --------------------------------------------------------------------------------
+
+
+def _invalido(detalhe: str) -> FalhaDeColeta:
+    return FalhaDeColeta(INTERNA, f"arquivo de mudanças inválido: {detalhe}")
+
+
+def _inteiro(valor) -> bool:
+    return isinstance(valor, int) and not isinstance(valor, bool)
+
+
+def _texto_cheio(valor) -> bool:
+    return isinstance(valor, str) and valor != ""
+
+
+def _lista_de_textos(valor) -> bool:
+    return isinstance(valor, list) and all(isinstance(v, str) for v in valor)
+
+
+def _data_do_retrato(valor, nome: str) -> None:
+    if not (
+        isinstance(valor, dict)
+        and list(valor) == ["dia", "dados_camara_em"]
+        and all(_texto_cheio(v) for v in valor.values())
+    ):
+        raise _invalido(f"meta.{nome} deve ser {{dia, dados_camara_em}}")
+
+
+def _validar_meta(meta, documento: dict) -> None:
+    campos = [
+        "versao_formato",
+        "data",
+        "retrato",
+        "retrato_anterior",
+        "linha_de_base",
+        "total_eventos",
+        "total_por_tipo",
+    ]
+    if not isinstance(meta, dict) or list(meta) != campos:
+        raise _invalido(f"campos do meta devem ser {campos}")
+    if meta["versao_formato"] != VERSAO_FORMATO:
+        raise _invalido(f"versao_formato {meta['versao_formato']!r} não suportada")
+    if not _texto_cheio(meta["data"]):
+        raise _invalido("meta.data deve ser texto")
+    _data_do_retrato(meta["retrato"], "retrato")
+    if meta["retrato_anterior"] is not None:
+        _data_do_retrato(meta["retrato_anterior"], "retrato_anterior")
+    base = meta["linha_de_base"]
+    if base is None:
+        if meta["retrato_anterior"] is None:
+            raise _invalido("sem linha de base, meta.retrato_anterior é obrigatório")
+    else:
+        if not (
+            isinstance(base, dict)
+            and list(base) == ["motivo", "total_itens"]
+            and base["motivo"] in MOTIVOS_DE_LINHA_DE_BASE
+            and _inteiro(base["total_itens"])
+            and base["total_itens"] >= 0
+        ):
+            raise _invalido(
+                f"linha de base deve ser {{motivo em {MOTIVOS_DE_LINHA_DE_BASE}, total}}"
+            )
+        if documento["eventos"] or documento["ressalvas"]:
+            raise _invalido("linha de base não pode ter eventos nem ressalvas")
+    eventos = documento["eventos"]
+    if meta["total_eventos"] != len(eventos):
+        raise _invalido("meta.total_eventos não bate com os eventos")
+    por_tipo = meta["total_por_tipo"]
+    if not isinstance(por_tipo, dict) or list(por_tipo) != list(TIPOS):
+        raise _invalido(f"meta.total_por_tipo deve ter as chaves {list(TIPOS)} nesta ordem")
+    for tipo in TIPOS:
+        if por_tipo[tipo] != sum(1 for e in eventos if e["tipo"] == tipo):
+            raise _invalido(f"meta.total_por_tipo[{tipo!r}] não bate com os eventos")
+
+
+def _validar_tramitacoes(lista, onde: str) -> None:
+    if not isinstance(lista, list):
+        raise _invalido(f"{onde}: tramitacoes deve ser uma lista")
+    anterior = None
+    for t in lista:
+        if not (
+            isinstance(t, dict)
+            and list(t) == list(CAMPOS_DA_TRAMITACAO)
+            and _inteiro(t["sequencia"])
+            and all(isinstance(t[c], str) for c in CAMPOS_DA_TRAMITACAO[1:])
+        ):
+            raise _invalido(f"{onde}: tramitacoes deve ter {list(CAMPOS_DA_TRAMITACAO)}")
+        if anterior is not None and t["sequencia"] <= anterior:
+            raise _invalido(f"{onde}: tramitacoes fora de ordem ou repetidas ({t['sequencia']})")
+        anterior = t["sequencia"]
+
+
+def _validar_motivo(motivo, codigos: tuple[str, ...], onde: str) -> None:
+    if not (
+        isinstance(motivo, dict)
+        and list(motivo) == ["codigo", "texto"]
+        and motivo["codigo"] in codigos
+        and _texto_cheio(motivo["texto"])
+    ):
+        raise _invalido(f"{onde}: motivo deve ser {{codigo em {list(codigos)}, texto}}")
+
+
+def _validar_relator(valor, onde: str) -> None:
+    if not (
+        isinstance(valor, dict)
+        and list(valor) == ["id", "nome", "partido_hoje"]
+        and _inteiro(valor["id"])
+        and isinstance(valor["nome"], str)
+        and isinstance(valor["partido_hoje"], str)
+    ):
+        raise _invalido(f"{onde}: relator deve ser {{id, nome, partido_hoje}}")
+
+
+def _validar_proprios(e: dict, onde: str) -> None:
+    tipo = e["tipo"]
+    if tipo == "entrou":
+        _validar_motivo(e["motivo"], MOTIVOS_DE_ENTRADA, onde)
+        if not _lista_de_textos(e["etiquetas"]):
+            raise _invalido(f"{onde}: etiquetas deve ser lista de textos")
+    elif tipo == "saiu":
+        _validar_motivo(e["motivo"], MOTIVOS_DE_SAIDA, onde)
+        destino = e["destino"]
+        if not (
+            isinstance(destino, dict)
+            and list(destino) == ["orgao", "situacao", "apensado_a"]
+            and all(
+                destino[c] is None or isinstance(destino[c], str) for c in ("orgao", "situacao")
+            )
+            and (destino["apensado_a"] is None or isinstance(destino["apensado_a"], dict))
+        ):
+            raise _invalido(f"{onde}: destino deve ser {{orgao, situacao, apensado_a}}")
+        if not _lista_de_textos(e["outros_fatos"]):
+            raise _invalido(f"{onde}: outros_fatos deve ser lista de textos")
+    elif tipo == "situacao":
+        if not (_texto_cheio(e["de"]) and _texto_cheio(e["para"]) and e["de"] != e["para"]):
+            raise _invalido(f"{onde}: situacao deve ter 'de' e 'para' diferentes")
+    elif tipo == "relator":
+        mudanca, de, para = e["mudanca"], e["de"], e["para"]
+        if mudanca not in MUDANCAS_DE_RELATOR:
+            raise _invalido(f"{onde}: relator com mudanca {mudanca!r} desconhecida")
+        esperado = {
+            "designado": (False, True),
+            "devolveu": (True, False),
+            "substituido": (True, True),
+        }[mudanca]
+        if (de is not None, para is not None) != esperado:
+            raise _invalido(f"{onde}: relator {mudanca} com 'de' e 'para' incoerentes")
+        for lado in (de, para):
+            if lado is not None:
+                _validar_relator(lado, onde)
+        if mudanca == "substituido" and de["id"] == para["id"]:
+            raise _invalido(f"{onde}: relator substituído pelo mesmo relator")
+    elif tipo == "etiquetas":
+        ganhou, perdeu = e["ganhou"], e["perdeu"]
+        if not (_lista_de_textos(ganhou) and _lista_de_textos(perdeu)):
+            raise _invalido(f"{onde}: etiquetas deve ter listas de textos")
+        if not ganhou and not perdeu:
+            raise _invalido(f"{onde}: etiquetas sem ganho nem perda")
+        if not all(x in ETIQUETAS for x in (*ganhou, *perdeu)):
+            raise _invalido(f"{onde}: etiqueta desconhecida")
+
+
+def _validar_evento(e, posicao: int) -> tuple[int, str]:
+    onde = f"eventos[{posicao}]"
+    if not isinstance(e, dict) or e.get("tipo") not in CAMPOS_PROPRIOS:
+        tipo = e.get("tipo") if isinstance(e, dict) else e
+        raise _invalido(f"{onde}: tipo desconhecido ({tipo!r})")
+    campos = [*CAMPOS_COMUNS, *CAMPOS_PROPRIOS[e["tipo"]], "tramitacoes"]
+    if list(e) != campos:
+        raise _invalido(f"{onde}: campos do evento devem ser {campos}")
+    if not _inteiro(e["id"]):
+        raise _invalido(f"{onde}: id deve ser inteiro")
+    if not (_texto_cheio(e["identificacao"]) and _texto_cheio(e["comissao"])):
+        raise _invalido(f"{onde}: identificacao e comissao devem ser texto")
+    if not (isinstance(e["link"], str) and e["link"].startswith(LINK_OFICIAL)):
+        raise _invalido(f"{onde}: link deve ser a ficha oficial ({LINK_OFICIAL}...)")
+    _validar_proprios(e, onde)
+    _validar_tramitacoes(e["tramitacoes"], onde)
+    return e["id"], e["tipo"]
+
+
+def _validar_ressalva(r, posicao: int) -> None:
+    onde = f"ressalvas[{posicao}]"
+    if not (
+        isinstance(r, dict)
+        and list(r) == ["id", "identificacao", "comissao", "link", "motivo"]
+        and _inteiro(r["id"])
+        and _texto_cheio(r["identificacao"])
+        and _texto_cheio(r["comissao"])
+        and isinstance(r["link"], str)
+        and r["link"].startswith(LINK_OFICIAL)
+        and r["motivo"] in MOTIVOS_DE_RESSALVA
+    ):
+        raise _invalido(f"{onde}: ressalva fora do contrato")
+
+
+def validar_arquivo(documento: dict) -> None:
+    """Confere as regras de consistência do contrato; levanta `FalhaDeColeta(INTERNA)`.
+
+    Uma violação aqui é erro nosso (a comparação montou algo incoerente): melhor falhar a
+    execução do que gravar um arquivo que o gabinete leria como verdade.
+    """
+    if not isinstance(documento, dict) or list(documento) != ["meta", "eventos", "ressalvas"]:
+        raise _invalido("campos esperados ['meta', 'eventos', 'ressalvas']")
+    if not isinstance(documento["eventos"], list) or not isinstance(documento["ressalvas"], list):
+        raise _invalido("eventos e ressalvas devem ser listas")
+    vistos: set[tuple[int, str]] = set()
+    for posicao, e in enumerate(documento["eventos"]):
+        chave = _validar_evento(e, posicao)
+        if chave in vistos:
+            raise _invalido(f"evento {chave[1]} repetido para o item {chave[0]}")
+        vistos.add(chave)
+    _validar_meta(documento["meta"], documento)
+    for posicao, r in enumerate(documento["ressalvas"]):
+        _validar_ressalva(r, posicao)
