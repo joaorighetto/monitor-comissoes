@@ -64,6 +64,8 @@ Outra situação ainda não coberta pelos dados reais: designação (`320`) sem 
 
 **Volume:** referências lidas = referências de todos os itens com etiqueta de autoria (spec, clarify 1) ∪ referências dos candidatos. Hoje, algo como 25 + 10 a 30. Mais as consultas de partido (R4). Tudo sequencial, com as novas tentativas do transporte.
 
+**Medição real (18/10/2026, `uv run python -m monitor_comissoes`):** 105 itens (CE 96, CREDN 9), 54 consultas de tramitações e 14 de `/deputados/{id}`, execução inteira em 3 min 55 s (inclui o download do lote). Os 105 itens: 46 não apensados (a sondagem contou 48 sem apensados) e 59 apensados, 44 deles à raiz PL 3961/2004, cuja relatora é Adriana Ventura. A sondagem de 17/10 (56 itens) contava o relator do último status de cada apensado, que fica congelado; a herança da relatoria da principal (D4) é o que faz o total subir. Nenhum item ficou com relator indeterminado.
+
 **Alternativa rejeitada:** ler tramitações de todas as referências do estoque bruto (≈1.500 chamadas por dia, sem ganho porque o candidato já vem do lote).
 
 ## R4. Partido de hoje do relator
