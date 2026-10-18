@@ -84,7 +84,7 @@ Os valores acima são **ilustrativos do formato**, não resultado real.
 | `tentativas` | inteiro ≥ 0 | Coletas efetivamente tentadas. 0 quando falhou antes de coletar (configuração inválida) |
 | `falha` | `null` ou objeto | `{"categoria": texto, "motivo": texto}`. `null` se e somente se `resultado = "ok"`. Categorias em [../data-model.md](../data-model.md) |
 | `variacao_aceita` | `null` ou objeto | `{"estoque_anterior": inteiro, "estoque_novo": inteiro, "variacao_percentual": número com 1 casa decimal}`. Só em sucesso com confirmação manual e variação acima do limite |
-| `ultimo_retrato_bom` | `null` ou objeto | `gerado_em` e `dados_camara_em` (como no `meta` do `atual.json`), `total_itens` e `estoque_bruto`. Em sucesso descreve o retrato gravado; em falha, o retrato mantido. `null` se não existe `atual.json` |
+| `ultimo_retrato_bom` | `null` ou objeto | `gerado_em` e `dados_camara_em` (como no `meta` do `atual.json`), `total_itens` e `estoque_bruto`. Em sucesso descreve o retrato gravado; em falha, o retrato mantido. `null` se não existe `atual.json` (ou se ele não tem `meta` válido). `estoque_bruto` é `null` só no retrato mantido em falha quando não há base válida para ele (por exemplo, `atual.json` gerado pela COL antes da AGE) |
 
 ## Invariantes (cobertos por testes)
 

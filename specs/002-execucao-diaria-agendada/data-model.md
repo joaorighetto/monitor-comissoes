@@ -32,7 +32,7 @@ O `data/atual.json` mais recente que passou em todas as checagens. Para a AGE, o
 | `gerado_em` | `meta.gerado_em` do `atual.json` |
 | `dados_camara_em` | `meta.dados_camara_em` do `atual.json` |
 | `total_itens` | `meta.total_itens` do `atual.json` |
-| `estoque_bruto` | contagem da coleta que gerou esse `atual.json` |
+| `estoque_bruto` | contagem da coleta que gerou esse `atual.json`. `null` apenas quando o retrato é recomposto em falha e não há base válida (regra de coerência abaixo) |
 
 Se o `atual.json` não existir, ou existir sem um `meta` válido (campos acima ausentes ou com tipo errado), não há retrato bom: `ultimo_retrato_bom` é `null`. O arquivo **não é alterado** por isso.
 
