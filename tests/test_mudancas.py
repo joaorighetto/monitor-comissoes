@@ -1199,6 +1199,16 @@ def test_item_com_varias_mudancas_tem_um_evento_por_tipo_na_ordem_dos_tipos():
     assert fonte.consultas == [1]  # uma consulta só
 
 
+def test_etiqueta_fora_da_lista_conhecida_nao_e_ignorada_em_silencio():
+    a = s.item(1, sequencia=41, etiquetas=("autoria NOVO",))
+    h = s.item(1, sequencia=41, etiquetas=("autoria NOVO", "gabinete"))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        mantidos(a, h)
+
+    assert erro.value.categoria == INTERNA and "etiqueta desconhecida" in erro.value.motivo
+
+
 def test_etiquetas_sem_mudanca_de_sequencia_nao_consultam_tramitacoes():
     a = s.item(1, sequencia=41, etiquetas=("autoria NOVO",))
     h = s.item(1, sequencia=41, etiquetas=("autoria NOVO", "autor hoje no NOVO"))

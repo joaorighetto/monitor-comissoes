@@ -1041,6 +1041,30 @@ def test_a_data_de_referencia_muda_na_virada_do_dia_de_brasilia(caminhos):
         assert ler(caminhos["status"])["data_referencia"] == esperado
 
 
+def test_execucao_que_vira_a_meia_noite_grava_o_arquivo_e_o_status_no_mesmo_dia(caminhos):
+    inicio = datetime(2026, 10, 18, 23, 58, tzinfo=FUSO)
+    depois_da_meia_noite = datetime(2026, 10, 19, 0, 3, tzinfo=FUSO)
+    transporte = TransporteFalso()
+    frescos(transporte, inicio)
+
+    class RelogioQueVira:
+        """Lê 23:58 até a coleta começar e 00:03 quando o status é montado, no fim."""
+
+        def __init__(self):
+            self.leituras = 0
+
+        def __call__(self):
+            self.leituras += 1
+            return inicio if self.leituras <= 2 else depois_da_meia_noite
+
+    assert executar_main(caminhos, transporte, RelogioQueVira()) == 0
+
+    assert [a.name for a in caminhos["mudancas"].glob("*.json")] == ["2026-10-18.json"]
+    status_gravado = ler(caminhos["status"])
+    assert status_gravado["verificado_em"].startswith("2026-10-19T00:03")
+    assert status_gravado["data_referencia"] == "2026-10-18"
+
+
 # --- Revisão: SIGTERM, anotação do Actions, retorno do par ---------------------------------------
 
 

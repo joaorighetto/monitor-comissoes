@@ -3,7 +3,7 @@
 import json
 import os
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from typing import TypedDict
 
@@ -110,14 +110,20 @@ def montar_status(
     falha: dict | None,
     variacao_aceita: dict | None,
     retrato: dict | None,
+    data_referencia: date | None = None,
 ) -> dict:
-    """Monta o documento na ordem fixa do contrato. `verificado_em` entra pronto (sem relógio)."""
+    """Monta o documento na ordem fixa do contrato. `verificado_em` entra pronto (sem relógio).
+
+    `data_referencia` é, por padrão, o dia de `verificado_em`. A execução que grava o arquivo de
+    mudanças passa o dia da tentativa que o gravou, para os dois nunca divergirem se a execução
+    atravessar a meia-noite.
+    """
     momento = verificado_em.astimezone(BRASILIA)
     documento = {
         "versao_formato": VERSAO_FORMATO,
         "resultado": resultado,
         "verificado_em": momento.isoformat(timespec="seconds"),
-        "data_referencia": momento.date().isoformat(),
+        "data_referencia": (data_referencia or momento.date()).isoformat(),
         "tentativas": tentativas,
         "falha": None
         if falha is None

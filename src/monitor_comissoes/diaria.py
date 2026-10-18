@@ -144,6 +144,7 @@ def executar_diaria(
         documento_status = montar_status(
             resultado="ok",
             verificado_em=relogio(),
+            data_referencia=agora.astimezone(BRASILIA).date(),
             tentativas=tentativas,
             falha=None,
             variacao_aceita=variacao_aceita,

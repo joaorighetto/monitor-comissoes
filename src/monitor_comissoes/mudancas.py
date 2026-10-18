@@ -373,6 +373,13 @@ def _ressalva(item: dict, ontem: bool, hoje: bool) -> dict:
     }
 
 
+def _ordenar_etiquetas(nomes: set[str]) -> list[str]:
+    """Ordem fixa das etiquetas conhecidas; uma desconhecida vai ao fim e a validação a recusa."""
+    return sorted(
+        nomes, key=lambda e: (ETIQUETAS.index(e) if e in ETIQUETAS else len(ETIQUETAS), e)
+    )
+
+
 def _mantido(ctx: _Contexto, a: dict, h: dict) -> tuple[list[dict], list[dict]]:
     """Os eventos e as ressalvas de um item que está nos dois retratos."""
     referencia_h, referencia_a = _referencia_id(h), _referencia_id(a)
@@ -421,8 +428,8 @@ def _mantido(ctx: _Contexto, a: dict, h: dict) -> tuple[list[dict], list[dict]]:
     if any(x.codigo == CODIGO_PARECER and x.orgao == h["comissao"] for x in tramitacoes):
         eventos.append(_base("parecer", h, tramitacoes=tramitacoes))
 
-    ganhou = [e for e in ETIQUETAS if e in h["etiquetas"] and e not in a["etiquetas"]]
-    perdeu = [e for e in ETIQUETAS if e in a["etiquetas"] and e not in h["etiquetas"]]
+    ganhou = _ordenar_etiquetas(set(h["etiquetas"]) - set(a["etiquetas"]))
+    perdeu = _ordenar_etiquetas(set(a["etiquetas"]) - set(h["etiquetas"]))
     if ganhou or perdeu:
         eventos.append(_base("etiquetas", h, ganhou=ganhou, perdeu=perdeu, tramitacoes=tramitacoes))
     return eventos, ressalvas
