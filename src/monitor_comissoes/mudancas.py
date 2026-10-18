@@ -10,8 +10,9 @@ from collections.abc import Callable, Iterable, Mapping
 from datetime import date, datetime
 from typing import Any
 
-from .erros import INTERNA, FalhaDeColeta
-from .estoque import BRASILIA
+from .erros import FORMATO_ALTERADO, INTERNA, FalhaDeColeta
+from .estoque import BRASILIA, EstadoDeSaida
+from .relatoria import inicio_da_passagem
 from .retratos import Comparacao
 from .tramitacoes import Tramitacao
 
@@ -168,18 +169,202 @@ def montar_arquivo(
     }
 
 
+TEXTO_DO_MOTIVO = {
+    "chegou_a_comissao": "chegou à comissão",
+    SITUACAO_FINAL_ARQUIVADO_ART_105: "arquivado, art. 105",
+    SITUACAO_FINAL_ARQUIVADO: "arquivado",
+    "transformado_em_norma": "transformado em norma jurídica",
+    "aprovado_segue_ao_senado": "aprovado, segue ao Senado",
+    "encerrado": "encerrado",
+    "apensado_fora_da_lista": "apensado a uma proposição fora da lista",
+    "outro_orgao": "foi para outro órgão",
+    "nao_determinado": "não determinado",
+}
+
+
+class _Contexto:
+    """O que a comparação precisa saber de fora: tramitações (uma consulta por referência), o corte
+    de data do retrato anterior e os itens de hoje."""
+
+    def __init__(self, obter, corte: date, ids_hoje: set[int]):
+        self._obter = obter
+        self._cache: dict[int, list[Tramitacao]] = {}
+        self.corte = corte
+        self.ids_hoje = ids_hoje
+
+    def tramitacoes(self, id_referencia: int) -> list[Tramitacao]:
+        if id_referencia not in self._cache:
+            self._cache[id_referencia] = sorted(
+                self._obter(id_referencia), key=lambda x: x.sequencia
+            )
+        return self._cache[id_referencia]
+
+
+def _referencia_id(item: dict) -> int:
+    """A referência do item: a raiz da cadeia de apensação, ou ele mesmo (PRODUCT.md, §5.2)."""
+    return item["apensado_a"]["id"] if item["apensado_a"] else item["id"]
+
+
+def _dia(t: Tramitacao) -> date:
+    return date.fromisoformat(t.data_hora[:10])
+
+
+def _ate_hoje(ctx: _Contexto, id_referencia: int, sequencia_de_hoje: int) -> list[Tramitacao]:
+    """As tramitações da referência até a sequência do lote de hoje (research R6).
+
+    A resposta DEVE conter essa sequência; senão, a API e o lote não descrevem o mesmo momento e
+    o arquivo de hoje seria incerto. Lançamentos posteriores ao lote ficam para amanhã.
+    """
+    todas = ctx.tramitacoes(id_referencia)
+    if not any(x.sequencia == sequencia_de_hoje for x in todas):
+        raise FalhaDeColeta(
+            FORMATO_ALTERADO,
+            f"tramitações da proposição {id_referencia}: "
+            f"a sequência {sequencia_de_hoje} do lote não existe na resposta",
+        )
+    return [x for x in todas if x.sequencia <= sequencia_de_hoje]
+
+
+def _intervalo(
+    ctx: _Contexto,
+    referencia_de_hoje: int,
+    sequencia_de_hoje: int,
+    referencia_anterior: int,
+    sequencia_anterior: int,
+) -> list[Tramitacao]:
+    """Tramitações desde o retrato anterior, até a sequência de hoje.
+
+    Mesma referência: sequência maior que a anterior (sem consulta se nada mudou). Referência
+    diferente: as sequências de proposições distintas não se comparam, então vale a data do lote
+    anterior.
+    """
+    if referencia_de_hoje == referencia_anterior:
+        if sequencia_de_hoje < sequencia_anterior:
+            raise FalhaDeColeta(
+                FORMATO_ALTERADO,
+                f"proposição {referencia_de_hoje}: a sequência do último status regrediu "
+                f"de {sequencia_anterior} para {sequencia_de_hoje}",
+            )
+        if sequencia_de_hoje == sequencia_anterior:
+            return []
+        ate = _ate_hoje(ctx, referencia_de_hoje, sequencia_de_hoje)
+        return [x for x in ate if x.sequencia > sequencia_anterior]
+    ate = _ate_hoje(ctx, referencia_de_hoje, sequencia_de_hoje)
+    return [x for x in ate if _dia(x) >= ctx.corte]
+
+
+def _base(tipo: str, item: dict, **proprios: Any) -> dict:
+    return evento(
+        tipo,
+        id=item["id"],
+        identificacao=item["identificacao"],
+        comissao=item["comissao"],
+        link=item["link"],
+        **proprios,
+    )
+
+
+def _entrou(ctx: _Contexto, item: dict) -> list[dict]:
+    referencia = _referencia_id(item)
+    ate = _ate_hoje(ctx, referencia, item["ultimo_status_sequencia"])
+    chegada = inicio_da_passagem(ate, item["comissao"])
+    novas = [x for x in ate if _dia(x) >= ctx.corte]
+    etiquetas = list(item["etiquetas"])
+    if chegada is not None and _dia(chegada) >= ctx.corte:
+        motivo = {"codigo": "chegou_a_comissao", "texto": TEXTO_DO_MOTIVO["chegou_a_comissao"]}
+    elif etiquetas:
+        motivo = {
+            "codigo": "ganhou_etiqueta",
+            "texto": f"ganhou etiqueta: {', '.join(etiquetas)}",
+        }
+    else:
+        motivo = {"codigo": "nao_determinado", "texto": TEXTO_DO_MOTIVO["nao_determinado"]}
+    return [_base("entrou", item, motivo=motivo, etiquetas=etiquetas, tramitacoes=novas)]
+
+
+def _fatos_da_saida(
+    ctx: _Contexto, item: dict, estado: EstadoDeSaida, tramitacoes: list[Tramitacao]
+) -> list[str]:
+    """Os códigos de motivo que valem, do mais ao menos informativo (clarify, Q4)."""
+    fatos: list[str] = []
+    final = SITUACOES_FINAIS.get(estado.situacao)
+    if final is not None:
+        if final == SITUACAO_FINAL_ARQUIVADO and any(
+            x.codigo == CODIGO_ARQUIVAMENTO and PADRAO_ART_105.search(x.despacho)
+            for x in tramitacoes
+        ):
+            final = SITUACAO_FINAL_ARQUIVADO_ART_105
+        fatos.append(final)
+    raiz = estado.apensado_a
+    if raiz is not None and raiz["id"] != _referencia_id(item) and raiz["id"] not in ctx.ids_hoje:
+        fatos.append("apensado_fora_da_lista")
+    fatos.append("outro_orgao" if not estado.na_comissao else "perdeu_etiquetas")
+    return fatos
+
+
+def _saiu(ctx: _Contexto, item: dict, estado: EstadoDeSaida) -> list[dict]:
+    if not estado.existe:
+        return [
+            _base(
+                "saiu",
+                item,
+                motivo={
+                    "codigo": "nao_determinado",
+                    "texto": TEXTO_DO_MOTIVO["nao_determinado"],
+                },
+                destino={"orgao": None, "situacao": None, "apensado_a": None},
+                outros_fatos=[],
+            )
+        ]
+    tramitacoes = _intervalo(
+        ctx,
+        estado.referencia_id,
+        estado.sequencia,
+        _referencia_id(item),
+        item["ultimo_status_sequencia"],
+    )
+    fatos = _fatos_da_saida(ctx, item, estado, tramitacoes)
+    principal, outros = fatos[0], fatos[1:]
+    if principal == "perdeu_etiquetas" and not item["etiquetas"]:
+        # Estava na lista só como candidato à relatoria com relator indeterminado: não há etiqueta
+        # a "perder", e o motivo honesto é não saber.
+        motivo = {"codigo": "nao_determinado", "texto": TEXTO_DO_MOTIVO["nao_determinado"]}
+    elif principal == "perdeu_etiquetas":
+        motivo = {
+            "codigo": principal,
+            "texto": f"perdeu as etiquetas: {', '.join(item['etiquetas'])}",
+        }
+    else:
+        motivo = {"codigo": principal, "texto": TEXTO_DO_MOTIVO[principal]}
+    return [
+        _base(
+            "saiu",
+            item,
+            motivo=motivo,
+            destino={
+                "orgao": estado.orgao,
+                "situacao": estado.situacao,
+                "apensado_a": estado.apensado_a,
+            },
+            outros_fatos=outros,
+            tramitacoes=tramitacoes,
+        )
+    ]
+
+
 def comparar(
     comparacao: Comparacao,
     documento_hoje: dict,
-    estados_de_saida: Mapping[int, Any],
+    estados_de_saida: Mapping[int, EstadoDeSaida],
     obter_tramitacoes: Callable[[int], list[Tramitacao]],
     comissoes: tuple[str, ...],
     hoje: date,
 ) -> dict:
     """O arquivo do dia: linha de base, ou os eventos entre o retrato anterior e o de hoje.
 
-    `estados_de_saida` (id -> estado do lote) e `obter_tramitacoes` (id da referência -> lista
-    ordenada por sequência) são injetados: a comparação não faz I/O.
+    `estados_de_saida` (id -> estado do lote de quem saiu da lista) e `obter_tramitacoes` (id da
+    referência -> tramitações) são injetados: a comparação não faz I/O. As tramitações são
+    consultadas uma vez por referência.
     """
     meta_hoje = documento_hoje["meta"]
     gerado_em = datetime.fromisoformat(meta_hoje["gerado_em"]).astimezone(BRASILIA)
@@ -196,7 +381,26 @@ def comparar(
             eventos=[],
             ressalvas=[],
         )
-    raise NotImplementedError("comparação com retrato anterior: Fase 4")
+
+    anteriores = {i["id"]: i for i in comparacao.anterior.documento["itens"]}
+    de_hoje = {i["id"]: i for i in documento_hoje["itens"]}
+    corte = comparacao.anterior.dados_camara_em.astimezone(BRASILIA).date()
+    ctx = _Contexto(obter_tramitacoes, corte, set(de_hoje))
+    sem_estado = EstadoDeSaida(False, None, None, None, None, None, False)
+
+    eventos: list[dict] = []
+    for id_ in sorted(de_hoje.keys() - anteriores.keys()):
+        eventos += _entrou(ctx, de_hoje[id_])
+    for id_ in sorted(anteriores.keys() - de_hoje.keys()):
+        eventos += _saiu(ctx, anteriores[id_], estados_de_saida.get(id_, sem_estado))
+    return montar_arquivo(
+        data=hoje,
+        retrato=retrato,
+        retrato_anterior=comparacao.retrato_anterior,
+        linha_de_base=None,
+        eventos=ordenar_eventos(eventos, comissoes),
+        ressalvas=[],
+    )
 
 
 ROTULOS_DOS_TIPOS = {

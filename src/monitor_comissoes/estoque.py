@@ -251,3 +251,42 @@ def construir_itens(
             )
         )
     return [item for _, item in sorted(selecionados, key=lambda par: par[0])]
+
+
+class EstadoDeSaida(NamedTuple):
+    """Onde está hoje, no lote, um item que estava no retrato anterior e saiu da lista (MUD)."""
+
+    existe: bool  # a proposição está nas linhas lidas do lote
+    referencia_id: int | None  # a raiz da cadeia, ou a própria
+    orgao: str | None  # órgão do último status da referência
+    situacao: str | None  # situação do último status da referência
+    sequencia: int | None  # `ultimoStatus_sequencia` da referência
+    apensado_a: dict | None  # {id, identificacao, link} da raiz; None sem raiz localizada
+    na_comissao: bool  # o órgão da referência está na lista de comissões
+
+
+def estado_de_saida(
+    id_proposicao: int,
+    linhas: dict[int, Proposicao],
+    mapa_principal: dict[int, int],
+    comissoes: tuple[str, ...],
+) -> EstadoDeSaida:
+    """Estado da referência de `id_proposicao` no lote de hoje, para motivar a saída da lista."""
+    linha = linhas.get(id_proposicao)
+    if linha is None:
+        return EstadoDeSaida(False, None, None, None, None, None, False)
+    referencia = resolver_referencia(linha, mapa_principal, linhas)
+    status, raiz = referencia.proposicao, referencia.raiz
+    return EstadoDeSaida(
+        existe=True,
+        referencia_id=status.id,
+        orgao=status.orgao,
+        situacao=status.situacao,
+        sequencia=status.ultimo_status_sequencia,
+        apensado_a=(
+            {"id": raiz.id, "identificacao": identificacao(raiz), "link": link_oficial(raiz.id)}
+            if raiz
+            else None
+        ),
+        na_comissao=status.orgao in comissoes,
+    )

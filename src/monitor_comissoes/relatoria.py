@@ -80,3 +80,24 @@ def relator_atual(tramitacoes: Iterable[Tramitacao], comissao: str) -> Resultado
             None, f"as tramitações terminam em {onde}, e o lote diz {comissao}"
         )
     return ResultadoRelatoria(relator, indeterminado)
+
+
+def inicio_da_passagem(tramitacoes: Iterable[Tramitacao], comissao: str) -> Tramitacao | None:
+    """A tramitação que inicia a passagem mais recente da matéria pela `comissao` (MUD, R7).
+
+    Usa a mesma definição de passagem de `relator_atual`: só quem recebe a matéria (recebimento
+    500 ou designação 320) e a própria comissão contam, e a Mesa, a CCP e o Plenário nunca
+    iniciam passagem. Por isso uma ida e volta pela Mesa ("Notificação de Apensação") não é
+    chegada nova. Devolve None se a matéria não está na `comissao` no fim das tramitações.
+    """
+    tramitacoes = sorted(tramitacoes, key=lambda t: t.sequencia)
+    comissoes = _comissoes(tramitacoes, comissao)
+    corrente: str | None = None
+    inicio: Tramitacao | None = None
+    for t in tramitacoes:
+        if t.orgao not in comissoes:
+            continue
+        if t.orgao != corrente:  # nova passagem
+            corrente = t.orgao
+            inicio = t if t.orgao == comissao else None
+    return inicio if corrente == comissao else None

@@ -15,6 +15,7 @@ from .estoque import (
     TIPOS,
     construir_itens,
     deve_ler_tramitacoes,
+    estado_de_saida,
     etiquetar,
     ids_na_comissao,
     resolver_referencia,
@@ -179,9 +180,14 @@ def coletar(
             lote, ids_deputados, config.comissoes, mapa_principal
         )
 
+        # Itens do retrato anterior (MUD): suas linhas do lote dizem para onde foram os que saíram.
+        ids_anteriores: set[int] = set()
+        if comparacao is not None and comparacao.anterior is not None:
+            ids_anteriores = {i["id"] for i in comparacao.anterior.documento["itens"]}
+
         # Linhas necessárias: as proposições a examinar e as raízes de suas cadeias.
-        necessarias = set(examinar)
-        for id_proposicao in examinar:
+        necessarias = set(examinar) | ids_anteriores
+        for id_proposicao in necessarias.copy():
             raiz = subir_ate_a_raiz(id_proposicao, mapa_principal)
             if raiz is not None:
                 necessarias.add(raiz)
@@ -233,10 +239,15 @@ def coletar(
     documento = montar_documento(itens, meta)
     mudancas = None
     if comparacao is not None:
+        ids_de_hoje = {i["id"] for i in itens}
+        estados_de_saida = {
+            id_proposicao: estado_de_saida(id_proposicao, linhas, mapa_principal, config.comissoes)
+            for id_proposicao in ids_anteriores - ids_de_hoje
+        }
         mudancas = comparar(
             comparacao,
             documento,
-            {},
+            estados_de_saida,
             lambda id_referencia: obter_tramitacoes(transporte, URL_BASE, id_referencia),
             config.comissoes,
             agora.astimezone(BRASILIA).date(),

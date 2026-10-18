@@ -1029,10 +1029,6 @@ def test_execucao_de_sucesso_depois_de_uma_falha_do_mesmo_dia_grava(caminhos, ag
     assert ler(caminhos["status"])["resultado"] == "ok"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="MUD, Fase 4 (T024): roda dois dias seguidos e precisa da comparação com o anterior",
-)
 def test_a_data_de_referencia_muda_na_virada_do_dia_de_brasilia(caminhos):
     antes = datetime(2026, 10, 18, 23, 50, tzinfo=FUSO)
     depois = datetime(2026, 10, 19, 0, 10, tzinfo=FUSO)
@@ -1199,3 +1195,43 @@ def test_sem_as_opcoes_o_anterior_e_as_mudancas_ficam_ao_lado_do_atual(
     assert codigo == 0
     assert (tmp_path / "data" / "mudancas" / "2026-10-18.json").exists()
     assert not (Path.cwd() / "data" / "mudancas" / "2026-10-18.json").exists()
+
+
+def test_um_item_que_entrou_e_um_que_saiu_viram_eventos_no_arquivo_do_dia(
+    caminhos, transporte, agora, capsys
+):
+    """Retrato de ontem sintético sobre o lote e as tramitações reais salvas (sem rede)."""
+    import sinteticos as s
+
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+    hoje_doc = ler(caminhos["atual"])
+    pl_1843_2022 = 2331032  # CE, está na lista de hoje com a sequência real 42
+    ontem = {**hoje_doc, "itens": [i for i in hoje_doc["itens"] if i["id"] != pl_1843_2022]}
+    assert len(ontem["itens"]) == len(hoje_doc["itens"]) - 1
+    # PL 7843/2017 (id 2141142) está no lote como "Transformado em Norma Jurídica", na MESA,
+    # sequência 134: ontem estava na lista, com a mesma sequência (sem tramitações a consultar).
+    saiu_ = s.item(2141142, numero=7843, ano=2017, sequencia=134, situacao="Pronta para Pauta")
+    ontem["itens"].append(saiu_)
+    ontem["meta"]["total_itens"] = len(ontem["itens"])
+    caminhos["atual"].write_text(json.dumps(ontem, ensure_ascii=False, indent=2), encoding="utf-8")
+    capsys.readouterr()
+
+    assert executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1))) == 0
+
+    arquivo = arquivo_do_dia(caminhos, "2026-10-19.json")
+    assert arquivo["meta"]["linha_de_base"] is None
+    assert arquivo["meta"]["retrato_anterior"]["dia"] == "2026-10-18"
+    resumo = [(e["tipo"], e["id"], e["motivo"]["codigo"]) for e in arquivo["eventos"]]
+    assert resumo == [
+        ("entrou", pl_1843_2022, "ganhou_etiqueta"),  # chegou à CE em 2022; ganhou etiqueta
+        ("saiu", 2141142, "transformado_em_norma"),
+    ]
+    saida = arquivo["eventos"][1]
+    assert saida["destino"] == {
+        "orgao": "MESA",
+        "situacao": "Transformado em Norma Jurídica",
+        "apensado_a": None,
+    }
+    assert saida["comissao"] == "CE" and saida["tramitacoes"] == []
+    assert capsys.readouterr().out.endswith(" · mudanças: 2 eventos (1 entrou, 1 saiu)\n")
+    assert caminhos["anterior"].exists()  # o atual de ontem rotacionou
