@@ -63,7 +63,8 @@ Fatos conferidos em 18/10/2026 nas fixtures salvas (`tests/fixtures/camara/`) e 
 | Dia anterior, versão 3, válido | ele mesmo | passa a ser ele | comparação |
 | Dia anterior, outra versão | ele mesmo | passa a ser ele | linha de base, "formato anterior incompatível" |
 | Dia anterior, ilegível ou fora do contrato | — | não muda | **falha** (`interna`) |
-| Dia de hoje | `anterior.json` (se existe e é válido) | não muda | comparação, ou linha de base se não existe |
+| `atual.json` sem `meta` legível (JSON inválido, `gerado_em` ausente ou inválido): o dia dele não se pode saber | — | não muda | **falha** (`interna`) |
+| Dia de hoje (basta o `meta` legível; os itens podem estar estragados, pois o arquivo será sobrescrito) | `anterior.json` (se existe e é válido) | não muda | comparação, ou linha de base se não existe |
 | Dia de hoje, `anterior.json` ilegível ou fora do contrato | — | não muda | **falha** (`interna`) |
 | Data futura | — | não muda | **falha** (`interna`) |
 
