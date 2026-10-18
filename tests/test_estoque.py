@@ -3,8 +3,10 @@ from datetime import datetime
 import pytest
 
 from conftest import BRASILIA
+from monitor_comissoes.deputados import DeputadoHoje
 from monitor_comissoes.estoque import construir_itens, etiquetar, resolver_referencia
 from monitor_comissoes.lote import Autor, Proposicao
+from monitor_comissoes.relatoria import RelatorAtual, ResultadoRelatoria
 
 AGORA = datetime(2026, 10, 18, 9, 0, tzinfo=BRASILIA)
 COMISSOES = ("CE", "CREDN")
@@ -12,7 +14,7 @@ DEPUTADOS_NOVO = {204455, 220633}
 
 
 def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026, 10, 8, 14, 30),
-         situacao="Aguardando Parecer", principal=None):  # fmt: skip
+         situacao="Aguardando Parecer", principal=None, relator=None):  # fmt: skip
     return Proposicao(
         id=id,
         tipo=tipo,
@@ -24,6 +26,7 @@ def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026,
         ultimo_status_em=status,
         orgao=orgao,
         situacao=situacao,
+        id_relator=relator,
     )
 
 
@@ -85,7 +88,7 @@ def test_item_completo_conforme_o_contrato():
     assert list(item) == [
         "id", "tipo", "numero", "ano", "identificacao", "ementa", "data_apresentacao", "link",
         "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em", "parado_ha_dias",
-        "apensado_a", "principal_nao_localizada",
+        "apensado_a", "principal_nao_localizada", "relator", "relator_indeterminado",
     ]  # fmt: skip
     assert item["identificacao"] == "PL 1843/2022"
     assert item["link"] == "https://www.camara.leg.br/propostas-legislativas/7"
@@ -100,6 +103,8 @@ def test_item_completo_conforme_o_contrato():
     ]
     assert item["apensado_a"] is None
     assert item["principal_nao_localizada"] is False
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
 
 
 def test_so_pl_e_plp_sao_candidatas():
@@ -294,3 +299,105 @@ def test_raiz_pode_ser_de_qualquer_tipo():
     [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
 
     assert item["apensado_a"]["identificacao"] == "PEC 10/2020"
+
+
+# --- REL: relatoria NOVO -------------------------------------------------------------------
+
+LUIZ_LIMA = DeputadoHoje(204455, "Luiz Lima", "NOVO")
+THIAGO = DeputadoHoje(220560, "Thiago de Joaldo", "REPUBLICANOS")
+COM_LUIZ_LIMA = ResultadoRelatoria(RelatorAtual(204455, "2025-04-09T00:00"))
+COM_THIAGO = ResultadoRelatoria(RelatorAtual(220560, "2026-04-27T17:13"))
+SEM_RELATOR = ResultadoRelatoria()
+
+
+def itens_rel(candidatas, autores, relatorias, deputados=(LUIZ_LIMA, THIAGO), **extra):
+    return construir_itens(
+        {p.id: p for p in candidatas},
+        autores,
+        DEPUTADOS_NOVO,
+        COMISSOES,
+        AGORA,
+        relatorias=relatorias,
+        deputados_relator={d.id: d for d in deputados},
+        **extra,
+    )
+
+
+def test_relatoria_novo_pelo_id_do_relator_atual():
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=204455) == ["relatoria NOVO"]
+
+
+def test_relator_de_outro_partido_nao_recebe_etiqueta_de_relatoria():
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=220560) == []
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=None) == []
+
+
+def test_as_tres_etiquetas_em_ordem_fixa():
+    autores = [autor(partido="NOVO", dep=204455)]
+
+    assert etiquetar(autores, DEPUTADOS_NOVO, id_relator=220633) == [
+        "autoria NOVO",
+        "autor hoje no NOVO",
+        "relatoria NOVO",
+    ]
+
+
+def test_item_so_de_relatoria_entra_com_o_relator_e_a_fonte():
+    # PL 4501/2023: autoria de outro partido, relator atual na CE é Luiz Lima.
+    p = prop(id=4501, relator=204455)
+    autores = {4501: [autor(pid=4501, dep=9, partido="PSB", nome="Duarte Jr.")]}
+
+    [item] = itens_rel([p], autores, {4501: COM_LUIZ_LIMA})
+
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"] == {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/4501",
+    }
+    assert item["relator_indeterminado"] is None
+
+
+def test_candidato_sem_relator_atual_confirmado_fica_de_fora():
+    # PL 937/2022: o lote ainda aponta o relator do NOVO, mas as tramitações dizem que devolveu.
+    p = prop(id=937, relator=204455)
+
+    assert itens_rel([p], {}, {937: SEM_RELATOR}) == []
+
+
+def test_item_com_autoria_e_relator_de_outro_partido_mantem_so_a_autoria():
+    p = prop(id=3871, relator=220560)
+    autores = {3871: [autor(pid=3871, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {3871: COM_THIAGO})
+
+    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["relator"]["nome"] == "Thiago de Joaldo"
+    assert item["relator"]["partido_hoje"] == "REPUBLICANOS"
+
+
+def test_item_so_de_autoria_sem_relator_traz_relator_nulo():
+    p = prop(id=5594)
+    autores = {5594: [autor(pid=5594, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {5594: SEM_RELATOR})
+
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
+
+
+def test_autoria_e_relatoria_no_mesmo_item():
+    p = prop(id=1843, relator=204455)
+    autores = {1843: [autor(pid=1843, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1843: COM_LUIZ_LIMA})
+
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
+
+
+def test_relatoria_nao_inclui_fora_da_comissao_da_lista():
+    p = prop(id=1, orgao="CFT", relator=204455)
+
+    assert itens_rel([p], {}, {1: COM_LUIZ_LIMA}) == []
