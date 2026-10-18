@@ -23,6 +23,9 @@ class Tramitacao(NamedTuple):
     codigo: str
     descricao: str
     id_relator: int | None  # só preenchido na designação (320); nas demais o campo é "pegajoso"
+    # Texto do despacho (MUD, R3: "Arquivado nos termos do Artigo 105"). Último campo e com padrão
+    # para os construtores posicionais da REL continuarem valendo.
+    despacho: str = ""
 
 
 def _falha(id_proposicao: int, detalhe: str) -> FalhaDeColeta:
@@ -106,6 +109,7 @@ def obter_tramitacoes(
                     if codigo == CODIGO_DESIGNACAO and uri is not None
                     else None
                 ),
+                despacho=_texto(elemento, "despacho", id_proposicao, anulavel=True) or "",
             )
         )
     return sorted(tramitacoes, key=lambda t: t.sequencia)

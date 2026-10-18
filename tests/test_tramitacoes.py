@@ -44,6 +44,41 @@ def test_so_a_designacao_traz_o_id_do_relator(transporte):
     assert all(t.id_relator is None for t in tramitacoes if t.codigo != "320")
 
 
+def test_le_o_despacho_real_de_cada_tramitacao(transporte):
+    tramitacoes = {t.sequencia: t for t in obter_tramitacoes(transporte, URL_BASE, PL_937_2022)}
+
+    assert tramitacoes[28].despacho == "Devolvida pelo Relator sem Manifestação."
+    assert tramitacoes[16].despacho == "Designada Relatora, Dep. Cristiane Lopes (UNIÃO-RO)"
+
+
+def test_despacho_nulo_ou_ausente_vira_texto_vazio(transporte):
+    def apagar(documento):
+        documento["dados"][0]["despacho"] = None
+        del documento["dados"][1]["despacho"]
+
+    alterar(transporte, PL_937_2022, apagar)
+
+    tramitacoes = obter_tramitacoes(transporte, URL_BASE, PL_937_2022)
+
+    por_sequencia = {t.sequencia: t for t in tramitacoes}
+    assert sum(1 for t in tramitacoes if t.despacho == "") == 2
+    assert all(isinstance(t.despacho, str) for t in por_sequencia.values())
+
+
+@pytest.mark.parametrize("valor", [5, True, ["x"], {"a": 1}])
+def test_despacho_que_nao_e_texto_e_formato_alterado(transporte, valor):
+    def estragar(documento):
+        documento["dados"][3]["despacho"] = valor
+
+    alterar(transporte, PL_937_2022, estragar)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_tramitacoes(transporte, URL_BASE, PL_937_2022)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "despacho" in erro.value.motivo
+
+
 def test_designacao_sem_relator_fica_com_id_nulo(transporte):
     def sem_relator(documento):
         for t in documento["dados"]:
