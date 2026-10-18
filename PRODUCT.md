@@ -34,7 +34,7 @@ Todo dia: **o que de interesse do NOVO está nas comissões acompanhadas, com qu
 | D5 | **Um resumo diário único no Telegram, enviado sempre**, mesmo sem mudanças. Cobre entrada, saída, situação, relator, parecer e etiquetas | Assim, o silêncio nunca quer dizer "parou de funcionar". Uma mensagem por dia não vira ruído |
 | D6 | **O arquivamento não é feature.** Vira regra de domínio e motivo de saída ("arquivado, art. 105") | Desde a Resolução 33/2022, só cerca de 2 dos 54 itens estariam em risco, e o prazo de 31/01/2027 vence antes da posse. A forma de contar as legislaturas não foi confirmada |
 | D7 | **A fonte do estoque é o lote completo da Câmara, baixado todo dia** desde o ano mínimo configurável (2003). A API entra só para detalhar | A API sem datas devolve só os últimos 30 dias, limita intervalos a 3 meses e não filtra por órgão. O lote tem o último status e o partido do autor. Uma fonte única é mais fácil de conferir do que duas reconciliadas |
-| D8 | **O histórico fica no Git:** commit diário de `data/atual.json`, mesmo sem mudanças, e `data/mudancas/AAAA-MM-DD.json` | Não precisa de banco nem de servidor. O diff de cada dia é conferível, e a falta de commit denuncia que a execução não rodou |
+| D8 | **O histórico fica no Git:** commit diário de `data/atual.json`, mesmo sem mudanças, de `data/mudancas/AAAA-MM-DD.json` e da cópia `data/anterior.json` (§5.6) | Não precisa de banco nem de servidor. O diff de cada dia é conferível, e a falta de commit denuncia que a execução não rodou |
 | D9 | **A página pública é HTML estático gerado em Python, com o Design System do portfólio** (tokens azuis, FilterChips). O portfólio a incorpora por EmbedFrame | A página funciona sem JS, como o DS exige. O EmbedFrame pede uma URL, a fonte com a data de coleta e um link de download |
 | D10 | **Nenhuma falha publica uma lista nova.** O último retrato bom é mantido e o erro é anunciado na página e no Telegram | Uma lista vazia ou parcial publicada como verdade é o pior erro possível para quem decide a partir dela |
 
@@ -109,6 +109,28 @@ O retrato de hoje é comparado com o anterior pela chave `id` da proposição.
 - No primeiro retrato não há eventos: o resumo diz "linha de base criada com N itens".
 - **Dias de muitas mudanças** são esperados na posse, em 1º/02/2027, e na recomposição anual das comissões. Nesses dias, o resumo detalha os eventos até um teto e termina com "e mais N, veja a página".
 
+**Como o arquivo do dia é montado** (feature MUD; regras decididas pelo mantenedor em 18/10/2026):
+
+- **Retrato anterior** é o último retrato bom de um dia anterior ao da execução. Como o `atual.json` é sobrescrito a cada execução, o produto guarda uma cópia rotativa, `data/anterior.json`. Reexecutar no mesmo dia compara com o mesmo retrato anterior e dá o mesmo arquivo. Se um dia ficou sem retrato (a coleta falhou), o arquivo do dia seguinte cobre o intervalo inteiro e diz as duas datas.
+- **Linha de base** é o arquivo do dia sem eventos, com o total de itens e o motivo: "primeiro retrato" ou "formato anterior incompatível" (o retrato anterior está numa versão de formato que a comparação não entende). Um retrato anterior ilegível ou fora do contrato **não** vira linha de base: a execução falha, com o nome do arquivo.
+- **Tramitações do evento:** vão da primeira depois da sequência do retrato anterior até a do último status de hoje. Quando a referência do item mudou, ou o item entrou, as sequências de proposições diferentes não se comparam, e valem as tramitações da referência de hoje desde o dia do lote anterior. Nunca passam da sequência do lote de hoje: o que a Câmara lançou depois aparece no dia seguinte.
+- **Motivo de saída, quando mais de um vale:** o principal segue esta ordem: situação final, apensado a uma proposição fora da lista, foi para outro órgão, perdeu as etiquetas. Os demais ficam no detalhe do evento.
+- **Situações finais** (só rotulam o motivo da saída, nunca incluem ou excluem item):
+
+  | Rótulo | Situação da Câmara |
+  |---|---|
+  | arquivado (com "art. 105" se a tramitação de arquivamento do período cita o artigo) | Arquivada |
+  | transformado em norma jurídica | Transformado em Norma Jurídica |
+  | aprovado, segue ao Senado | Aguardando Apreciação pelo Senado Federal; Aguardando Envio ao Senado Federal; Enviada ao Senado Federal |
+  | encerrado | Vetado totalmente; Recusado; Retirado pelo(a) Autor(a); Devolvida ao(à) Autor(a); Transformado em nova proposição; Perdeu a Eficácia; Tramitação Finalizada |
+
+  Uma situação fora da tabela não é erro: o motivo vira "foi para outro órgão", e o destino traz a situação.
+- **Entrou:** "chegou à comissão" se a passagem mais recente da referência pela comissão começou no dia do lote anterior ou depois; senão "ganhou etiqueta", dizendo qual; se o item não tem etiqueta (candidato com relator indeterminado), "não determinado". Passagem tem a definição da relatoria (§5.4): a Mesa, a CCP e o Plenário nunca iniciam passagem, então uma ida e volta pela Mesa não é chegada nova.
+- **Parecer** é a tramitação "Parecer do(a) Relator(a)" no órgão da comissão do item. A leitura e a aprovação do parecer não geram evento.
+- **Relator indeterminado** em um dos retratos não gera evento de relator. O arquivo registra que a comparação de relator não foi possível para o item.
+- **Sem teto:** o arquivo registra todos os eventos. O teto e o "e mais N" são do resumo e da página.
+- Uma mudança de sequência que não altera situação, relator, parecer nem etiquetas não gera evento (as tramitações só acompanham os eventos). Registrar, por exemplo, pedido de vista e retirada de pauta é a feature futura MOV.
+
 ### 5.7 Arquivamento (RICD, art. 105)
 
 Texto vigente e links oficiais em [docs/fontes.md](docs/fontes.md#4-arquivamento-ao-fim-da-legislatura-ricd-art-105).
@@ -173,6 +195,7 @@ A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens
 ## 8. Limites conhecidos
 
 - **Dados do dia anterior.** O lote é gerado por volta das 2h de Brasília, então o que acontece num dia aparece no resumo do dia seguinte.
+- **O motivo de entrada tem janela de um dia.** O produto não guarda o estado de ontem de quem estava fora da lista, então "chegou à comissão" compara datas, e muitas tramitações só trazem a data. Um item que chegou à comissão na madrugada do dia do lote anterior, antes da geração dele, pode sair como "chegou à comissão" em vez de "ganhou etiqueta".
 - **A última tramitação de cada retrato.** O lote só guarda o último status. As tramitações intermediárias são recuperadas pela API, mas apenas para os itens da lista.
 - **"Hoje no NOVO" quer dizer em exercício.** Um deputado licenciado ou afastado some da lista de deputados em exercício do NOVO, e os itens dele perdem as etiquetas `autor hoje no NOVO` e `relatoria NOVO` enquanto ele estiver fora. Essa perda aparece no resumo como evento.
 - **O partido na autoria é o que a Câmara registra.** Há sobreposições curtas entre partidos na troca, como Luiz Lima entre março e abril de 2025.

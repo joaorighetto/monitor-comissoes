@@ -177,7 +177,7 @@
 
 **Propósito**: registrar as regras, conferir os casos de aceitação do roadmap e rodar a verificação completa.
 
-- [ ] T039 Registrar no `PRODUCT.md` §5.6, em **commit próprio** (o mantenedor revisa o diff), as regras que hoje só existem na spec e no plano (D6): linha de base com motivo; retrato anterior por data e a cópia rotativa; precedência dos motivos de saída; tabela de situações finais (conforme a decisão D1); intervalo das tramitações e seu limite superior; janela de um dia da entrada; arquivo do dia sem teto de eventos. Nenhuma regra existente muda de sentido; se alguma coisa parecer mudar, parar e perguntar.
+- [X] T039 Registrar no `PRODUCT.md` §5.6, em **commit próprio** (o mantenedor revisa o diff), as regras que hoje só existem na spec e no plano (D6): linha de base com motivo; retrato anterior por data e a cópia rotativa; precedência dos motivos de saída; tabela de situações finais (conforme a decisão D1); intervalo das tramitações e seu limite superior; janela de um dia da entrada; arquivo do dia sem teto de eventos. Nenhuma regra existente muda de sentido; se alguma coisa parecer mudar, parar e perguntar.
 - [ ] T040 [P] Registrar em `docs/fontes.md` os fatos de API conferidos: tipos `322` e `502`, o campo `despacho` das tramitações e o texto "Arquivado nos termos do Artigo 105", a lista oficial de situações (`/referencias/proposicoes/codSituacao`, 99 entradas em 18/10/2026) e a coluna `ultimoStatus_sequencia` do lote.
 - [ ] T041 [P] Atualizar `tests/fixtures/camara/README.md` com o que é real e o que é derivado dentro do teste nos casos da MUD.
 - [ ] T042 Rodar a verificação completa e mostrar a saída: `uv run ruff check . && uv run ruff format --check . && uv run pytest`. Corrigir o que aparecer, com commits pequenos.
