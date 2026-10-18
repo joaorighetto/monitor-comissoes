@@ -25,9 +25,10 @@ Uma feature por vez, a da linha correspondente do `ROADMAP.md`:
 
 ## Status no ROADMAP.md
 
-Mantenha a coluna Status fiel ao estado real da feature: `proposta` → `em andamento` quando a spec
-começar → `concluída` só depois da verificação completa passar. Atualize na mesma mudança que altera
-o estado.
+Mantenha a coluna Status fiel ao estado real da feature, usando só os valores definidos no
+`ROADMAP.md`: `proposta` → `em andamento` quando a spec começar → `concluída` só depois que a
+verificação completa e os casos de aceitação passarem. Atualize na mesma mudança que altera o estado.
+Não invente valores novos; se o estado não couber nesses valores, pare e pergunte.
 
 ## Limites de ação
 

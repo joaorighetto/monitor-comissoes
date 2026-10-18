@@ -7,6 +7,8 @@ Cada feature cabe em uma spec do Spec Kit e pode ser entregue sozinha. As regras
 - AGE vem logo depois de COL para que o histórico diário no Git comece a se acumular antes de MUD, que precisa do retrato "de ontem".
 - PAG não depende de AVI. Pode vir antes, se a página do portfólio tiver pressa.
 
+**Status:** `proposta` (ainda não começou), `em andamento` (spec iniciada, verificação completa ainda não passou), `concluída` (verificação completa e casos de aceitação passaram), `futura` (fora do recorte atual) e `descartada` (não será feita).
+
 | ID | Feature | Resultado verificável | Inclui | Não inclui | Dependências | Status |
 |---|---|---|---|---|---|---|
 | COL | Coleta e estoque filtrado | `uv run` gera `data/atual.json` com os PL/PLP da CE e da CREDN que têm `autoria NOVO` ou `autor hoje no NOVO`. Os casos de aceitação de PRODUCT.md §5.4 sem relatoria passam. Uma fonte inválida faz o comando sair com erro, sem gravar | Download e validação do lote (HTTP, colunas, contagem, `Last-Modified`); lista de comissões e ano mínimo em configuração; cadeia de apensação até a raiz e "principal não localizada"; etiquetas de autoria; `/deputados?siglaPartido=NOVO`; link oficial; bloco `meta`; testes com fixtures reais | Relatoria; comparação com ontem; agendamento; `status.json`; avisos; página | — | proposta |
