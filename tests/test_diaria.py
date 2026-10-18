@@ -1276,3 +1276,165 @@ def test_item_que_continua_gera_um_evento_por_tipo_de_mudanca_com_o_parecer_real
     assert capsys.readouterr().out.endswith(
         " · mudanças: 4 eventos (1 situação, 1 relator, 1 parecer, 1 etiquetas)\n"
     )
+
+
+# --- MUD: repetibilidade e dias sem retrato (User Story 4) ----------------------------------------
+
+
+def novo_ambiente(tmp_path, nome):
+    """Uma pasta própria, para comparar duas execuções byte a byte."""
+    pasta = tmp_path / nome
+    pasta.mkdir()
+    (pasta / "config.toml").write_text(CONFIG_BASE, encoding="utf-8")
+    return {
+        "config": pasta / "config.toml",
+        "atual": pasta / "data" / "atual.json",
+        "status": pasta / "data" / "status.json",
+        "anterior": pasta / "data" / "anterior.json",
+        "mudancas": pasta / "data" / "mudancas",
+    }
+
+
+def ontem_com_os_seis_tipos(caminhos, transporte, agora, *, embaralhar=False, dias_antes=0):
+    """Dia 1 verdadeiro e, no disco, um `atual.json` de ontem que difere dele nos seis tipos.
+
+    entrou (PL 1843/2022 fora do retrato de ontem), saiu (PL 7843/2017, hoje norma jurídica) e,
+    no PL 4501/2023, situação, relator, parecer (tramitação 26 real) e etiquetas.
+    """
+    import random
+
+    import sinteticos as s
+
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+    hoje_doc = ler(caminhos["atual"])
+    ontem = json.loads(json.dumps(hoje_doc))
+    ontem["itens"] = [i for i in ontem["itens"] if i["id"] != 2331032]
+    ontem["itens"].append(
+        s.item(2141142, numero=7843, ano=2017, sequencia=134, situacao="Pronta para Pauta")
+    )
+    [pl_4501] = [i for i in ontem["itens"] if i["id"] == 2388105]
+    pl_4501.update(
+        situacao="Aguardando Designação de Relator(a)",
+        relator=None,
+        etiquetas=[],
+        ultimo_status_sequencia=25,
+    )
+    if embaralhar:
+        random.Random(11).shuffle(ontem["itens"])
+    ontem["meta"]["total_itens"] = len(ontem["itens"])
+    if dias_antes:
+        dia = (agora - timedelta(days=dias_antes)).date()
+        ontem["meta"]["gerado_em"] = f"{dia}T03:40:12-03:00"
+        ontem["meta"]["dados_camara_em"] = f"{dia}T04:31:36+00:00"
+    caminhos["atual"].write_text(json.dumps(ontem, ensure_ascii=False, indent=2), encoding="utf-8")
+    if dias_antes:
+        # O status descreve o último retrato bom (a AGE só compara o estoque com ele).
+        situacao = ler(caminhos["status"])
+        situacao["ultimo_retrato_bom"]["gerado_em"] = ontem["meta"]["gerado_em"]
+        situacao["ultimo_retrato_bom"]["dados_camara_em"] = ontem["meta"]["dados_camara_em"]
+        caminhos["status"].write_text(json.dumps(situacao, ensure_ascii=False, indent=2) + "\n")
+    return ontem
+
+
+def o_dia_2(caminhos):
+    [arquivo] = caminhos["mudancas"].glob("2026-10-19.json")
+    return arquivo
+
+
+def test_reexecucao_no_mesmo_dia_depois_do_atual_gravado_da_o_mesmo_arquivo_byte_a_byte(
+    caminhos, transporte, agora
+):
+    ontem_com_os_seis_tipos(caminhos, transporte, agora)
+    dia2 = agora + timedelta(days=1)
+    assert executar_main(caminhos, transporte, Relogio(dia2)) == 0
+    primeiro = o_dia_2(caminhos).read_bytes()
+    anterior = caminhos["anterior"].read_bytes()
+    assert len(json.loads(primeiro)["eventos"]) == 6  # os seis tipos de evento, um de cada
+
+    assert executar_main(caminhos, transporte, Relogio(dia2 + timedelta(hours=1))) == 0
+
+    # O atual.json do dia já existe e NÃO serve de retrato anterior: o arquivo é o mesmo.
+    assert o_dia_2(caminhos).read_bytes() == primeiro
+    assert caminhos["anterior"].read_bytes() == anterior  # não rotacionou de novo
+    assert sorted(p.name for p in caminhos["mudancas"].iterdir()) == [
+        "2026-10-18.json",  # a linha de base do dia 1
+        "2026-10-19.json",  # um só arquivo para o dia 2: nada duplicado nem acumulado
+    ]
+
+
+def test_lote_mais_novo_na_reexecucao_compara_contra_o_mesmo_retrato_anterior(
+    caminhos, transporte, agora
+):
+    ontem_com_os_seis_tipos(caminhos, transporte, agora)
+    dia2 = agora + timedelta(days=1)
+    assert executar_main(caminhos, transporte, Relogio(dia2)) == 0
+    antes = json.loads(o_dia_2(caminhos).read_text(encoding="utf-8"))
+    for nome, quando in transporte._last_modified.items():
+        transporte.last_modified[nome] = quando + timedelta(hours=2)  # a Câmara regenerou o lote
+
+    assert executar_main(caminhos, transporte, Relogio(dia2 + timedelta(hours=3))) == 0
+
+    depois = json.loads(o_dia_2(caminhos).read_text(encoding="utf-8"))
+    assert (
+        depois["meta"]["retrato"]["dados_camara_em"] != antes["meta"]["retrato"]["dados_camara_em"]
+    )
+    assert depois["meta"]["retrato_anterior"] == antes["meta"]["retrato_anterior"]
+    assert depois["eventos"] == antes["eventos"]  # os mesmos eventos, contra o mesmo "ontem"
+
+
+def test_dia_sem_retrato_cobre_o_intervalo_inteiro(caminhos, transporte, agora):
+    ontem = ontem_com_os_seis_tipos(caminhos, transporte, agora, dias_antes=3)
+    assert ontem["meta"]["gerado_em"].startswith("2026-10-15")
+
+    assert executar_main(caminhos, transporte, Relogio(agora + timedelta(hours=26))) == 0
+
+    [arquivo] = list(caminhos["mudancas"].glob("2026-10-19.json"))
+    dados = json.loads(arquivo.read_text(encoding="utf-8"))
+    assert dados["meta"]["retrato_anterior"]["dia"] == "2026-10-15"
+    assert dados["meta"]["retrato"]["dia"] == "2026-10-19"
+    assert len(dados["eventos"]) == 6
+    parecer = next(e for e in dados["eventos"] if e["tipo"] == "parecer")
+    assert [x["sequencia"] for x in parecer["tramitacoes"]] == [26]
+
+
+def test_tramitacoes_lancadas_depois_do_lote_nao_entram_nem_mudam_o_arquivo(tmp_path, agora):
+    resultados = []
+    for nome, extras in (("sem", 0), ("com", 3)):
+        transporte = TransporteFalso()
+        if extras:
+
+            def acrescentar(corpo: bytes, extras=extras) -> bytes:
+                documento = json.loads(corpo)
+                ultima = max(t["sequencia"] for t in documento["dados"])
+                for n in range(1, extras + 1):  # a API já tem o que o lote ainda não viu
+                    documento["dados"].append(
+                        {
+                            **documento["dados"][-1],
+                            "sequencia": ultima + n,
+                            "codTipoTramitacao": "322",
+                        }
+                    )
+                return json.dumps(documento).encode()
+
+            transporte.transformar_json["tramitacoes/2388105"] = acrescentar
+        caminhos = novo_ambiente(tmp_path, nome)
+        ontem_com_os_seis_tipos(caminhos, transporte, agora)
+        assert executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1))) == 0
+        resultados.append(o_dia_2(caminhos).read_bytes())
+
+    assert resultados[0] == resultados[1]
+    parecer = next(e for e in json.loads(resultados[0])["eventos"] if e["tipo"] == "parecer")
+    assert max(x["sequencia"] for x in parecer["tramitacoes"]) == 26
+
+
+def test_a_ordem_dos_itens_do_retrato_anterior_nao_muda_o_arquivo(tmp_path, agora):
+    resultados = []
+    for nome, embaralhar in (("ordenado", False), ("embaralhado", True)):
+        caminhos = novo_ambiente(tmp_path, nome)
+        ontem_com_os_seis_tipos(caminhos, TransporteFalso(), agora, embaralhar=embaralhar)
+        assert executar_main(caminhos, TransporteFalso(), Relogio(agora + timedelta(days=1))) == 0
+        resultados.append(o_dia_2(caminhos).read_bytes())
+
+    assert resultados[0] == resultados[1]
+    tipos = [e["tipo"] for e in json.loads(resultados[0])["eventos"]]
+    assert tipos == ["entrou", "saiu", "situacao", "relator", "parecer", "etiquetas"]

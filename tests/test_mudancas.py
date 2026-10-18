@@ -1332,3 +1332,81 @@ def test_sequencia_que_regride_na_mesma_referencia_e_formato_alterado():
         mantidos(a, h, {1: [t(n) for n in range(25, 45)]})
 
     assert erro.value.categoria == FORMATO_ALTERADO
+
+
+# --- repetibilidade da comparação (User Story 4) -------------------------------------------------
+
+
+def seis_tipos():
+    a = [
+        s.item(10, sequencia=41, situacao="Aguardando Parecer", etiquetas=()),
+        s.item(20, sequencia=41),
+    ]
+    h = [
+        s.item(
+            10,
+            sequencia=43,
+            situacao="Pronta para Pauta",
+            etiquetas=("relatoria NOVO",),
+            relator=com_relator(LUIZ, 10),
+        ),
+        s.item(30, comissao="CREDN", sequencia=29),
+    ]
+    listas = {10: [t(n, codigo="322" if n == 43 else "9999") for n in range(40, 46)]}
+    listas[30] = real(PL_3514_2023)
+    return a, h, listas, {20: estado(referencia_id=20, orgao="CFT", sequencia=41)}
+
+
+def test_comparar_e_funcao_pura_duas_chamadas_dao_o_mesmo_documento():
+    a, h, listas, estados = seis_tipos()
+
+    primeiro = comparar(
+        preparado_com(anterior_com(a, "2025-07-07T04:30:00+00:00")),
+        hoje_com(h),
+        estados,
+        Fonte(listas),
+        COMISSOES,
+        HOJE,
+    )
+    segundo = comparar(
+        preparado_com(anterior_com(a, "2025-07-07T04:30:00+00:00")),
+        hoje_com(h),
+        estados,
+        Fonte(listas),
+        COMISSOES,
+        HOJE,
+    )
+
+    assert serializar(primeiro) == serializar(segundo)
+    validar_arquivo(primeiro)
+    # entrou, saiu, situação, relator, parecer e etiquetas, ordenados por comissão e tipo.
+    assert [(e["comissao"], e["tipo"], e["id"]) for e in primeiro["eventos"]] == [
+        ("CE", "saiu", 20),
+        ("CE", "situacao", 10),
+        ("CE", "relator", 10),
+        ("CE", "parecer", 10),
+        ("CE", "etiquetas", 10),
+        ("CREDN", "entrou", 30),
+    ]
+
+
+def test_a_ordem_dos_itens_de_entrada_nao_muda_o_documento():
+    a, h, listas, estados = seis_tipos()
+    base = comparar(
+        preparado_com(anterior_com(a, "2025-07-07T04:30:00+00:00")),
+        hoje_com(h),
+        estados,
+        Fonte(listas),
+        COMISSOES,
+        HOJE,
+    )
+    invertido = comparar(
+        preparado_com(anterior_com(list(reversed(a)), "2025-07-07T04:30:00+00:00")),
+        hoje_com(list(reversed(h))),
+        estados,
+        Fonte(listas),
+        COMISSOES,
+        HOJE,
+    )
+
+    assert serializar(base) == serializar(invertido)
