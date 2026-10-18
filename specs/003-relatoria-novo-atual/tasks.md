@@ -131,3 +131,9 @@
 ## Totais
 
 31 tarefas: Fase 1 = 3, Fase 2 = 3, US1 = 9, US2 = 3, US3 = 2, US4 = 3, US5 = 4, Fase 8 = 4.
+
+## Phase 9: Convergence
+
+- [ ] T032 Ajustar o SC-007 em `specs/003-relatoria-novo-atual/spec.md` e registrar em `specs/003-relatoria-novo-atual/research.md` (R3) a conferência item a item, **com o OK do mantenedor** (a spec é dele): na execução real de 18/10/2026 há 84 itens com `relatoria NOVO`, dos quais 32 são de referências distintas e 52 são apensados que herdam o relator da principal; os 32 ficam abaixo dos 34 candidatos da sondagem, e os 2 que faltam são o PL 937/2022 (relator devolveu a matéria) e o PL 3514/2023 (relator era da CESPO). O critério deve medir por referência, não por item per SC-007 (partial)
+- [X] T033 Acrescentar a `docs/fontes.md` (seção sobre tramitações e o "último relator") os fatos da API de tramitações conferidos em 18/10/2026: sem `X-Total-Count` e sem paginação; resposta ordenada por data e não por `sequencia`; `uriUltimoRelator` repete o último relator em toda tramitação seguinte; o tipo `500` serve tanto a "Recebimento pela CE" quanto a "Mantido o parecer"; a `SGM` aparece só com notificações (`1005`) per Constitution II (partial)
+- [ ] T034 Levar ao mantenedor, no fechamento da feature, a decisão sobre o tamanho da lista (105 itens, 59 deles apensados e 44 à raiz PL 3961/2004) frente a "cerca de 50 itens" de `docs/fontes.md` §3; se mantiver a herança (D4), registrar a decisão em `PRODUCT.md` §5.4 ou em `docs/fontes.md`; se quiser outra apresentação para apensados, abrir feature própria (a REL não a inclui) per PRODUCT.md D4 (partial)
