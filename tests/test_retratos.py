@@ -218,3 +218,218 @@ def test_a_versao_comparavel_e_a_que_a_coleta_grava():
     from monitor_comissoes.retratos import VERSAO_COMPARAVEL
 
     assert VERSAO_COMPARAVEL == VERSAO_FORMATO
+
+
+# --- preparar: qual é o retrato anterior (research R5) -----------------------------------------
+
+from monitor_comissoes.retratos import preparar  # noqa: E402
+
+HOJE = date(2026, 10, 19)
+ONTEM = "2026-10-18T03:40:12-03:00"
+ONTEM_LOTE = "2026-10-18T04:31:36+00:00"
+HOJE_GERADO = "2026-10-19T03:40:12-03:00"
+
+
+def gravar(caminho, documento=None, *, texto=None):
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    caminho.write_bytes((texto if texto is not None else json.dumps(documento)).encode("utf-8"))
+    return caminho
+
+
+@pytest.fixture
+def arquivos(tmp_path):
+    return tmp_path / "data" / "atual.json", tmp_path / "data" / "anterior.json"
+
+
+def v3(gerado_em=ONTEM, dados_camara_em=ONTEM_LOTE, versao=3):
+    return s.retrato(
+        [s.item(1), s.item(2)], gerado_em=gerado_em, dados_camara_em=dados_camara_em, versao=versao
+    )
+
+
+def test_sem_atual_e_sem_anterior_e_primeiro_retrato(arquivos):
+    atual, anterior = arquivos
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is None
+    assert c.motivo_linha_de_base == "primeiro retrato"
+    assert c.retrato_anterior is None
+    assert c.copia_anterior is None
+
+
+def test_sem_atual_mas_com_anterior_valido_compara_com_o_anterior(arquivos):
+    atual, anterior = arquivos
+    gravar(anterior, v3())
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is not None and c.motivo_linha_de_base is None
+    assert c.copia_anterior is None
+
+
+def test_atual_de_dia_anterior_versao_3_e_o_retrato_anterior_e_vira_a_copia(arquivos):
+    atual, anterior = arquivos
+    texto_original = json.dumps(v3(), indent=2) + "  \r\n"  # espaços e CRLF no fim: nada se perde
+    gravar(atual, texto=texto_original)
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is not None and c.anterior.compativel
+    assert c.anterior.dia == date(2026, 10, 18)
+    assert c.motivo_linha_de_base is None
+    assert c.retrato_anterior == {"dia": "2026-10-18", "dados_camara_em": ONTEM_LOTE}
+    assert c.copia_anterior == texto_original  # texto original, byte a byte, sem reserializar
+
+
+@pytest.mark.parametrize("versao", [1, 2])
+def test_atual_de_dia_anterior_em_versao_antiga_e_linha_de_base_incompativel(arquivos, versao):
+    atual, anterior = arquivos
+    documento = v3(versao=versao)
+    documento["itens"] = [{"formato": "antigo"}]
+    texto_original = json.dumps(documento)
+    gravar(atual, texto=texto_original)
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is None
+    assert c.motivo_linha_de_base == "formato anterior incompatível"
+    assert c.retrato_anterior == {"dia": "2026-10-18", "dados_camara_em": ONTEM_LOTE}
+    assert c.copia_anterior == texto_original
+
+
+@pytest.mark.parametrize(
+    "texto",
+    ["", "{", "não é json", "[]", '{"meta": {}, "itens": []}'],
+    ids=["vazio", "json-truncado", "nao-json", "lista", "meta-vazio"],
+)
+def test_atual_sem_meta_legivel_falha_com_o_nome_do_arquivo(arquivos, texto):
+    atual, anterior = arquivos
+    gravar(atual, texto=texto)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert str(atual) in erro.value.motivo
+
+
+def test_atual_de_dia_anterior_com_itens_estragados_falha(arquivos):
+    atual, anterior = arquivos
+    documento = v3()
+    documento["itens"][0]["ultimo_status_sequencia"] = "x"
+    gravar(atual, documento)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert "ultimo_status_sequencia" in erro.value.motivo
+
+
+def test_atual_que_nao_e_utf8_falha(arquivos):
+    atual, anterior = arquivos
+    atual.parent.mkdir(parents=True)
+    atual.write_bytes(b"\xff\xfe\x00")
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert str(atual) in erro.value.motivo
+
+
+def test_atual_de_hoje_com_anterior_valido_usa_o_anterior_sem_rotacionar(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em=HOJE_GERADO, dados_camara_em="2026-10-19T04:31:36+00:00"))
+    gravar(anterior, v3())
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is not None and c.anterior.dia == date(2026, 10, 18)
+    assert c.retrato_anterior == {"dia": "2026-10-18", "dados_camara_em": ONTEM_LOTE}
+    assert c.copia_anterior is None
+
+
+def test_atual_de_hoje_sem_anterior_e_primeiro_retrato(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em=HOJE_GERADO))
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is None
+    assert c.motivo_linha_de_base == "primeiro retrato"
+    assert c.retrato_anterior is None
+    assert c.copia_anterior is None
+
+
+@pytest.mark.parametrize("texto", ["", "{", "não é json"])
+def test_atual_de_hoje_com_anterior_ilegivel_falha(arquivos, texto):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em=HOJE_GERADO))
+    gravar(anterior, texto=texto)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert str(anterior) in erro.value.motivo
+
+
+def test_atual_de_hoje_com_itens_estragados_nao_falha_porque_sera_sobrescrito(arquivos):
+    atual, anterior = arquivos
+    documento = v3(gerado_em=HOJE_GERADO)
+    documento["itens"] = "estragado"
+    gravar(atual, documento)
+    gravar(anterior, v3())
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is not None and c.copia_anterior is None
+
+
+def test_atual_de_hoje_com_anterior_em_versao_antiga_e_linha_de_base_sem_rotacao(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em=HOJE_GERADO))
+    gravar(anterior, v3(versao=2))
+
+    c = preparar(atual, anterior, HOJE)
+
+    assert c.anterior is None
+    assert c.motivo_linha_de_base == "formato anterior incompatível"
+    assert c.retrato_anterior == {"dia": "2026-10-18", "dados_camara_em": ONTEM_LOTE}
+    assert c.copia_anterior is None
+
+
+def test_atual_de_data_futura_falha(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em="2026-10-20T03:40:12-03:00"))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert "data futura" in erro.value.motivo and "2026-10-20" in erro.value.motivo
+
+
+def test_anterior_que_nao_e_de_um_dia_anterior_ao_de_hoje_falha(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3(gerado_em=HOJE_GERADO))
+    gravar(anterior, v3(gerado_em="2026-10-19T01:00:00-03:00"))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        preparar(atual, anterior, HOJE)
+
+    assert erro.value.categoria == INTERNA
+    assert str(anterior) in erro.value.motivo and "dia anterior" in erro.value.motivo
+
+
+def test_preparar_nao_altera_nenhum_arquivo(arquivos):
+    atual, anterior = arquivos
+    gravar(atual, v3())
+    antes = atual.read_bytes()
+
+    preparar(atual, anterior, HOJE)
+
+    assert atual.read_bytes() == antes
+    assert not anterior.exists()

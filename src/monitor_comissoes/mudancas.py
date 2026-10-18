@@ -6,11 +6,13 @@ para duas execuções sobre os mesmos dados darem o mesmo arquivo (constituiçã
 """
 
 import re
-from collections.abc import Iterable
-from datetime import date
+from collections.abc import Callable, Iterable, Mapping
+from datetime import date, datetime
 from typing import Any
 
 from .erros import INTERNA, FalhaDeColeta
+from .estoque import BRASILIA
+from .retratos import Comparacao
 from .tramitacoes import Tramitacao
 
 VERSAO_FORMATO = 1
@@ -164,6 +166,37 @@ def montar_arquivo(
         "eventos": eventos,
         "ressalvas": ressalvas,
     }
+
+
+def comparar(
+    comparacao: Comparacao,
+    documento_hoje: dict,
+    estados_de_saida: Mapping[int, Any],
+    obter_tramitacoes: Callable[[int], list[Tramitacao]],
+    comissoes: tuple[str, ...],
+    hoje: date,
+) -> dict:
+    """O arquivo do dia: linha de base, ou os eventos entre o retrato anterior e o de hoje.
+
+    `estados_de_saida` (id -> estado do lote) e `obter_tramitacoes` (id da referência -> lista
+    ordenada por sequência) são injetados: a comparação não faz I/O.
+    """
+    meta_hoje = documento_hoje["meta"]
+    gerado_em = datetime.fromisoformat(meta_hoje["gerado_em"]).astimezone(BRASILIA)
+    retrato = {"dia": gerado_em.date().isoformat(), "dados_camara_em": meta_hoje["dados_camara_em"]}
+    if comparacao.anterior is None:
+        return montar_arquivo(
+            data=hoje,
+            retrato=retrato,
+            retrato_anterior=comparacao.retrato_anterior,
+            linha_de_base={
+                "motivo": comparacao.motivo_linha_de_base,
+                "total_itens": len(documento_hoje["itens"]),
+            },
+            eventos=[],
+            ressalvas=[],
+        )
+    raise NotImplementedError("comparação com retrato anterior: Fase 4")
 
 
 # --- validação --------------------------------------------------------------------------------

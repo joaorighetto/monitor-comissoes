@@ -6,16 +6,19 @@ from datetime import date
 
 import pytest
 
+import sinteticos as s
 from monitor_comissoes.erros import INTERNA, FalhaDeColeta
 from monitor_comissoes.mudancas import (
     CAMPOS_PROPRIOS,
     TIPOS,
+    comparar,
     evento,
     montar_arquivo,
     nome_do_arquivo,
     ordenar_eventos,
     validar_arquivo,
 )
+from monitor_comissoes.retratos import Comparacao
 from monitor_comissoes.saida import serializar
 from monitor_comissoes.tramitacoes import Tramitacao
 
@@ -447,3 +450,92 @@ def test_ordenar_nao_altera_a_lista_de_entrada_e_independe_da_ordem_dela():
 
     assert eventos == copia
     assert a == b
+
+
+# --- comparar: linha de base (User Story 3) -----------------------------------------------------
+
+HOJE = date(2026, 10, 19)
+
+
+def sem_tramitacoes(id_referencia):
+    raise AssertionError("a linha de base não consulta tramitações")
+
+
+def hoje_sintetico():
+    return s.retrato(
+        [s.item(1), s.item(2), s.item(3, comissao="CREDN")],
+        gerado_em="2026-10-19T03:40:12-03:00",
+        dados_camara_em="2026-10-19T04:31:36+00:00",
+    )
+
+
+def preparado(motivo, retrato_anterior=None):
+    return Comparacao(
+        anterior=None,
+        motivo_linha_de_base=motivo,
+        retrato_anterior=retrato_anterior,
+        copia_anterior=None,
+    )
+
+
+def test_primeiro_retrato_vira_linha_de_base_sem_eventos_e_sem_consultar_tramitacoes():
+    documento = comparar(
+        preparado("primeiro retrato"),
+        hoje_sintetico(),
+        {},
+        sem_tramitacoes,
+        ("CE", "CREDN"),
+        HOJE,
+    )
+
+    validar_arquivo(documento)
+    meta = documento["meta"]
+    assert meta["data"] == "2026-10-19"
+    assert meta["retrato"] == {"dia": "2026-10-19", "dados_camara_em": "2026-10-19T04:31:36+00:00"}
+    assert meta["retrato_anterior"] is None
+    assert meta["linha_de_base"] == {"motivo": "primeiro retrato", "total_itens": 3}
+    assert meta["total_eventos"] == 0
+    assert documento["eventos"] == [] and documento["ressalvas"] == []
+
+
+def test_formato_incompativel_vira_linha_de_base_e_traz_o_retrato_anterior_informativo():
+    anterior = {"dia": "2026-10-18", "dados_camara_em": "2026-10-18T04:31:36+00:00"}
+
+    documento = comparar(
+        preparado("formato anterior incompatível", anterior),
+        hoje_sintetico(),
+        {},
+        sem_tramitacoes,
+        ("CE", "CREDN"),
+        HOJE,
+    )
+
+    validar_arquivo(documento)
+    assert documento["meta"]["retrato_anterior"] == anterior
+    assert documento["meta"]["linha_de_base"] == {
+        "motivo": "formato anterior incompatível",
+        "total_itens": 3,
+    }
+    assert documento["eventos"] == []
+
+
+def test_o_arquivo_nao_tem_horario_de_execucao():
+    a = comparar(
+        preparado("primeiro retrato"), hoje_sintetico(), {}, sem_tramitacoes, ("CE",), HOJE
+    )
+    outro = hoje_sintetico()
+    outro["meta"]["gerado_em"] = "2026-10-19T03:59:59-03:00"  # só a hora da execução muda
+
+    b = comparar(preparado("primeiro retrato"), outro, {}, sem_tramitacoes, ("CE",), HOJE)
+
+    assert serializar(a) == serializar(b)
+    assert "gerado_em" not in serializar(a)
+
+
+def test_retrato_do_dia_usa_a_data_de_gerado_em_em_brasilia():
+    hoje = hoje_sintetico()
+    hoje["meta"]["gerado_em"] = "2026-10-20T01:30:00+00:00"  # 22:30 de 19/10 em Brasília
+
+    documento = comparar(preparado("primeiro retrato"), hoje, {}, sem_tramitacoes, ("CE",), HOJE)
+
+    assert documento["meta"]["retrato"]["dia"] == "2026-10-19"

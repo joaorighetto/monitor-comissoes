@@ -7,6 +7,7 @@ contrato nunca vira linha de base em silêncio: levanta `FalhaDeColeta(INTERNA)`
 
 import json
 from datetime import date, datetime
+from pathlib import Path
 from typing import NamedTuple
 
 from .erros import INTERNA, FalhaDeColeta
@@ -152,3 +153,63 @@ def ler(texto: str, origem: str, *, validar_itens: bool = True) -> Retrato:
         dados_camara_em=dados_camara_em,
         compativel=compativel,
     )
+
+
+class Comparacao(NamedTuple):
+    """O que a execução decidiu sobre o retrato anterior (research R5)."""
+
+    anterior: Retrato | None  # o retrato comparável; None quando é linha de base
+    motivo_linha_de_base: str | None  # preenchido quando `anterior` é None
+    retrato_anterior: dict | None  # {dia, dados_camara_em}, mesmo se incompatível (informativo)
+    copia_anterior: str | None  # texto exato a gravar em `anterior.json`; None = não rotaciona
+
+
+def _ler_arquivo(caminho: Path) -> str | None:
+    """Texto exato do arquivo (sem tradução de quebras de linha), ou None se não existe."""
+    try:
+        return caminho.read_bytes().decode("utf-8")
+    except FileNotFoundError:
+        return None
+    except (OSError, UnicodeDecodeError) as erro:
+        raise _invalido(str(caminho), f"não foi possível ler o arquivo ({erro})") from erro
+
+
+def _comparacao(retrato: Retrato, copia: str | None) -> Comparacao:
+    informativo = {
+        "dia": retrato.dia.isoformat(),
+        "dados_camara_em": retrato.documento["meta"]["dados_camara_em"],
+    }
+    if retrato.compativel:
+        return Comparacao(retrato, None, informativo, copia)
+    return Comparacao(None, "formato anterior incompatível", informativo, copia)
+
+
+def preparar(atual: Path, anterior: Path, hoje: date) -> Comparacao:
+    """Decide qual é o retrato anterior, por data (research R5). Não altera nenhum arquivo.
+
+    O `atual.json` é o retrato anterior quando é de um dia anterior ao de `hoje`; então ele
+    também será a nova cópia. Quando é do próprio dia (uma reexecução), vale `anterior.json`, que
+    a primeira execução do dia já rotacionou, e nada rotaciona de novo.
+    """
+    texto_atual = _ler_arquivo(Path(atual))
+    if texto_atual is not None:
+        # Basta o meta para saber o dia; os itens só importam se este for o retrato anterior.
+        do_atual = ler(texto_atual, str(atual), validar_itens=False)
+        if do_atual.dia > hoje:
+            raise FalhaDeColeta(
+                INTERNA,
+                f"retrato anterior de data futura ({do_atual.dia.isoformat()}): {atual}",
+            )
+        if do_atual.dia < hoje:
+            return _comparacao(ler(texto_atual, str(atual)), texto_atual)
+
+    texto_anterior = _ler_arquivo(Path(anterior))
+    if texto_anterior is None:
+        return Comparacao(None, "primeiro retrato", None, None)
+    guardado = ler(texto_anterior, str(anterior))
+    if guardado.dia >= hoje:
+        raise _invalido(
+            str(anterior),
+            f"deveria ser de um dia anterior a {hoje.isoformat()}, é de {guardado.dia}",
+        )
+    return _comparacao(guardado, None)
