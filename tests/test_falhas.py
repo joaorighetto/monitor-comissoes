@@ -311,3 +311,98 @@ def test_diferenca_de_6_horas_entre_os_arquivos_ainda_e_aceita(tmp_path, transpo
     codigo, _ = rodar(tmp_path, transporte, agora)
 
     assert codigo == 0
+
+
+# --- REL: tramitações e partido do relator ------------------------------------------------
+
+PL_3871_2024 = 2461936  # sempre lido (autoria); relator Thiago de Joaldo, fora do NOVO
+THIAGO_DE_JOALDO = 220560
+
+
+@pytest.mark.parametrize("trecho", ["HTTP 503", "HTTP 404"])
+def test_erro_de_rede_ou_http_nas_tramitacoes(tmp_path, transporte, agora, capsys, trecho):
+    transporte.erro_json[f"tramitacoes/{PL_3871_2024}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, f"tramitacoes: {trecho}"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "fonte_indisponivel", str(PL_3871_2024), trecho)
+
+
+def _estragar(documento_json):
+    return {
+        "lista vazia": lambda d: {"dados": [], "links": d["links"]},
+        "sem dados": lambda d: {"links": d["links"]},
+        "sequencia repetida": lambda d: d["dados"].append(dict(d["dados"][0])),
+        "pagina seguinte": lambda d: d["links"].append({"rel": "next", "href": "x"}),
+    }[documento_json]
+
+
+@pytest.mark.parametrize(
+    "defeito", ["lista vazia", "sem dados", "sequencia repetida", "pagina seguinte"]
+)
+def test_formato_inesperado_nas_tramitacoes(tmp_path, transporte, agora, capsys, defeito):
+    estragar = _estragar(defeito)
+
+    def transformar(corpo):
+        documento = json.loads(corpo)
+        resultado = estragar(documento)
+        return json.dumps(documento if resultado is None else resultado).encode()
+
+    transporte.transformar_json[f"tramitacoes/{PL_3871_2024}"] = transformar
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "formato_alterado", str(PL_3871_2024))
+
+
+def test_tramitacoes_que_nao_sao_json(tmp_path, transporte, agora, capsys):
+    transporte.transformar_json[f"tramitacoes/{PL_3871_2024}"] = lambda _: b"<html>erro</html>"
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "formato_alterado", "não é JSON")
+
+
+def test_erro_ao_obter_o_partido_do_relator_falha_a_execucao_inteira(
+    tmp_path, transporte, agora, capsys
+):
+    transporte.erro_json[f"deputados/{THIAGO_DE_JOALDO}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, "deputados: HTTP 500"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "api_deputados", str(THIAGO_DE_JOALDO), "500")
+
+
+def test_resposta_invalida_do_partido_do_relator(tmp_path, transporte, agora, capsys):
+    transporte.transformar_json[f"deputados/{THIAGO_DE_JOALDO}"] = lambda _: b'{"dados": {}}'
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "api_deputados", str(THIAGO_DE_JOALDO))
+
+
+def test_coluna_do_relator_ausente_no_lote(tmp_path, transporte, agora, capsys):
+    transporte.transformar["proposicoes-2020.csv"] = sem_coluna("ultimoStatus_uriRelator")
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(
+        capsys, codigo, saida, "formato_alterado", "coluna ultimoStatus_uriRelator",
+        "proposicoes-2020.csv",
+    )  # fmt: skip
+
+
+def test_falha_de_tramitacoes_sem_atual_anterior_nao_grava_nada(
+    tmp_path, transporte, agora, capsys
+):
+    transporte.erro_json[f"tramitacoes/{PL_3871_2024}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, "tramitacoes: HTTP 503"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora, com_anterior=False)
+
+    verificar_falha(capsys, codigo, saida, "fonte_indisponivel", com_anterior=False)

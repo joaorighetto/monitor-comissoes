@@ -462,3 +462,42 @@ def test_relator_do_novo_dispensa_consulta_e_os_demais_sao_consultados_uma_vez(
     relatores = {i["relator"]["id"] for i in documento["itens"] if i["relator"]}
     assert consultados == relatores - NOVO_EM_EXERCICIO_IDS
     assert relatores & NOVO_EM_EXERCICIO_IDS  # há relatores do NOVO no resultado
+
+
+def test_nas_fixtures_reais_nenhum_item_fica_com_relator_indeterminado(documento):
+    assert [i["identificacao"] for i in documento["itens"] if i["relator_indeterminado"]] == []
+
+
+def test_tipo_de_relatoria_novo_numa_referencia_marca_so_o_item_e_a_coleta_termina(
+    config, transporte, agora, tmp_path
+):
+    # Derivada: a API passa a registrar um tipo de tramitação de relatoria desconhecido no PL
+    # 4501/2023, que só está na lista por relatoria (candidato sem etiqueta de autoria).
+    def com_tipo_novo(corpo: bytes) -> bytes:
+        documento = json.loads(corpo)
+        ultimo = max(t["sequencia"] for t in documento["dados"])
+        documento["dados"].append(
+            {
+                "sequencia": ultimo + 1,
+                "dataHora": "2026-10-17T10:00",
+                "siglaOrgao": "CE",
+                "codTipoTramitacao": "9999",
+                "descricaoTramitacao": "Relator(a) Substituído",
+                "uriUltimoRelator": None,
+            }
+        )
+        return json.dumps(documento).encode()
+
+    transporte.transformar_json["tramitacoes/2388105"] = com_tipo_novo
+    base = por_identificacao(gerar(config, TransporteFalso(), agora, tmp_path))
+
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    item = por_identificacao(documento)["PL 4501/2023"]
+    assert item["etiquetas"] == []
+    assert item["relator"] is None
+    assert "9999" in item["relator_indeterminado"]["motivo"]
+    # Os demais itens não mudam.
+    outros = {k: v for k, v in por_identificacao(documento).items() if k != "PL 4501/2023"}
+    assert outros == {k: v for k, v in base.items() if k != "PL 4501/2023"}
+    assert documento["meta"]["total_itens"] == len(base)

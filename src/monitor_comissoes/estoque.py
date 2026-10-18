@@ -199,7 +199,13 @@ def construir_itens(
         relatoria = relatorias.get(referencia.proposicao.id, ResultadoRelatoria())
         id_relator = relatoria.relator.id if relatoria.relator else None
         etiquetas = etiquetar(autores, ids_deputados_novo, id_relator)
-        if not etiquetas:
+        # Candidato à relatoria NOVO (o lote aponta relator do NOVO) que as tramitações não
+        # deixam decidir entra com a marca: nada some em silêncio (spec FR-011).
+        candidato_indeterminado = (
+            relatoria.indeterminado is not None
+            and referencia.proposicao.id_relator in ids_deputados_novo
+        )
+        if not etiquetas and not candidato_indeterminado:
             continue
         selecionados.append(
             (

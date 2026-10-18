@@ -486,3 +486,66 @@ def test_dois_apensados_da_mesma_raiz_compartilham_o_relator():
 
     assert [i["id"] for i in resultado] == [2, 3]
     assert {i["relator"]["id"] for i in resultado} == {204455}
+
+
+# --- REL US4: relator indeterminado --------------------------------------------------------
+
+INDETERMINADO = ResultadoRelatoria(indeterminado="tipo de tramitação 9999 não reconhecido")
+
+
+def test_candidato_indeterminado_sem_outra_etiqueta_entra_com_a_marca():
+    p = prop(id=1, relator=204455)  # o lote aponta relator do NOVO, as tramitações não decidem
+
+    [item] = itens_rel([p], {}, {1: INDETERMINADO})
+
+    assert item["etiquetas"] == []
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] == {"motivo": INDETERMINADO.indeterminado}
+
+
+def test_item_de_autoria_indeterminado_mantem_a_etiqueta_de_autoria_e_leva_a_marca():
+    p = prop(id=1, relator=220560)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1: INDETERMINADO})
+
+    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["relator_indeterminado"] is not None
+
+
+def test_indeterminado_sem_candidatura_e_sem_etiqueta_fica_de_fora():
+    p = prop(id=1, relator=220560)  # relator do lote é de outro partido: não é candidato
+
+    assert itens_rel([p], {}, {1: INDETERMINADO}) == []
+
+
+def test_indeterminado_nao_da_nem_nega_a_relatoria_novo():
+    p = prop(id=1, relator=204455)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1: INDETERMINADO})
+
+    assert "relatoria NOVO" not in item["etiquetas"]
+
+
+def test_indeterminado_de_uma_referencia_nao_afeta_os_outros_itens():
+    a, b = prop(id=1, relator=204455), prop(id=2, relator=204455)
+
+    resultado = itens_rel([a, b], {}, {1: INDETERMINADO, 2: COM_LUIZ_LIMA})
+
+    por_id = {i["id"]: i for i in resultado}
+    assert por_id[1]["relator_indeterminado"] is not None and por_id[1]["relator"] is None
+    assert (
+        por_id[2]["etiquetas"] == ["relatoria NOVO"] and por_id[2]["relator_indeterminado"] is None
+    )
+
+
+def test_apensado_de_raiz_indeterminada_tambem_leva_a_marca():
+    raiz = prop(id=1, relator=204455)
+    apensado = prop(id=2, principal=1)
+
+    [item] = itens_apensados([apensado], {}, {1: INDETERMINADO}, {2: 1}, {1: raiz, 2: apensado})
+
+    assert item["etiquetas"] == []
+    assert item["apensado_a"]["id"] == 1
+    assert item["relator_indeterminado"] is not None

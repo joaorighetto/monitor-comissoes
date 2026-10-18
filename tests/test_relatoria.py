@@ -208,3 +208,72 @@ def test_designacao_numa_comissao_que_nao_e_a_atual_nao_vale():
     # A mesma designação feita na CE não conta para quem está na CREDN.
     resultado = relator_atual(depois(base, "CE", "320", LUIZ_LIMA), "CREDN")
     assert resultado.relator is None
+
+
+# --- indeterminado (FR-011) -------------------------------------------------------------------
+
+
+def test_designacao_sem_relator_identificado_e_indeterminada():
+    base = real(PL_330_2025)
+
+    resultado = relator_atual(depois(base, "CREDN", "320", None), "CREDN")
+
+    assert resultado.relator is None
+    assert "designação sem relator" in resultado.indeterminado
+
+
+def test_tipo_de_relatoria_desconhecido_e_indeterminado():
+    nova = Tramitacao(99, "2026-10-18T10:00", "CE", "9999", "Relator(a) Substituído", None)
+
+    resultado = relator_atual([*real(PL_4501_2023), nova], "CE")
+
+    assert resultado.relator is None
+    assert "9999" in resultado.indeterminado
+
+
+def test_tipo_desconhecido_sem_a_palavra_relator_e_ignorado():
+    nova = Tramitacao(99, "2026-10-18T10:00", "CE", "9998", "Pedido de Vista", None)
+
+    resultado = relator_atual([*real(PL_4501_2023), nova], "CE")
+
+    assert resultado.relator.id == LUIZ_LIMA
+    assert resultado.indeterminado is None
+
+
+@pytest.mark.parametrize("codigo", ["320", "507", "1250", "1255"])
+def test_nova_designacao_ou_saida_resolve_a_indeterminacao_por_tipo_desconhecido(codigo):
+    nova = Tramitacao(99, "2026-10-18T10:00", "CE", "9999", "Relator(a) Substituído", None)
+    indeterminada = [*real(PL_4501_2023), nova]
+    assert relator_atual(indeterminada, "CE").indeterminado
+
+    resultado = relator_atual(depois(indeterminada, "CE", codigo, OUTRO), "CE")
+
+    assert resultado.indeterminado is None
+    assert (resultado.relator is not None) == (codigo == "320")
+
+
+def test_materia_em_outra_comissao_na_api_e_indeterminada():
+    # O lote diz CE, mas as tramitações já terminam na CFT (a matéria andou desde ontem).
+    resultado = relator_atual(depois(real(PL_4501_2023), "CFT", "500"), "CE")
+
+    assert resultado.relator is None
+    assert "CFT" in resultado.indeterminado
+    assert "CE" in resultado.indeterminado
+
+
+def test_so_orgaos_de_apoio_e_indeterminado():
+    so_apoio = [t for t in real(PL_4501_2023) if t.orgao in ("MESA", "CCP", "PLEN")]
+
+    resultado = relator_atual(so_apoio, "CE")
+
+    assert resultado.relator is None
+    assert "nenhum órgão de comissão" in resultado.indeterminado
+
+
+def test_relator_e_indeterminado_nunca_aparecem_juntos():
+    ids = [PL_937_2022, PL_4501_2023, PL_1843_2022, PL_3871_2024, PL_330_2025, PL_648_2024]
+    variantes = [real(i) for i in ids]
+    variantes += [depois(real(i), "CE", "9999") for i in ids]
+    for tramitacoes in variantes:
+        resultado = relator_atual(tramitacoes, "CE")
+        assert not (resultado.relator and resultado.indeterminado)
