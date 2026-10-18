@@ -41,6 +41,12 @@ A MUD (comparação entre o retrato de hoje e o anterior) **não captura nenhuma
 
 Todas as 145 linhas PL/PLP do lote têm `ultimoStatus_sequencia` inteiro. "Arquivada" não aparece em nenhuma linha PL/PLP do lote salvo: os testes derivam essa situação, dentro do teste, de uma linha real com a situação alterada em memória. O mesmo vale para o despacho de arquivamento sem menção ao art. 105, derivado do `502` real de 2086175.
 
+## O que é real e o que é derivado nos testes da MUD
+
+- **Real:** as tramitações (arquivamento pelo art. 105, parecer, designação e devolução, idas e voltas pela MESA, chegada à comissão), as linhas do lote (apensado a principal fora das comissões, norma jurídica, Senado, referência na CE) e a sequência do último status de todas elas.
+- **Derivado dentro do teste, nunca em arquivo:** os retratos de "ontem" (sintéticos, em `tests/sinteticos.py`, ou o `atual.json` de hoje alterado em memória); a situação "Arquivada" (não existe em linha PL/PLP do lote salvo); o despacho de arquivamento sem menção ao art. 105 (o `502` real com o texto trocado); a matéria que saiu e voltou da comissão; tramitações lançadas depois do lote (sequências acrescentadas à resposta real); respostas de tramitações sem a sequência de hoje (lista neutra do `TransporteFalso`); e o `atual.json`/`anterior.json` corrompidos, de data futura ou em versão antiga.
+- Os casos em que o PL 7843/2017 (id 2141142) "estava ontem na lista" usam a mesma sequência do lote (134), para não precisar das tramitações dele, que não estão nas fixtures.
+
 ## O que não é real
 
 Devolução, substituição, passagem anterior pela mesma comissão, tipo de tramitação desconhecido, designação sem relator e sequência repetida não existem (ou não de forma controlável) nas tramitações reais. Os testes os derivam, dentro do próprio teste, de tramitações reais alteradas em memória. Nenhum arquivo derivado fica neste diretório.

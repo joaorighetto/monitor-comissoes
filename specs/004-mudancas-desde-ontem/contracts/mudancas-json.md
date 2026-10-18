@@ -56,6 +56,8 @@ Nesta ordem: `tipo`, `id`, `identificacao`, `comissao`, `link`, os campos própr
 
 `motivo.codigo`: `chegou_a_comissao`, `ganhou_etiqueta` (o `texto` diz qual: "ganhou etiqueta: autor hoje no NOVO") ou `nao_determinado`. `etiquetas`: as de hoje.
 
+"Chegada" é o início da passagem mais recente da referência pela comissão (a Mesa, a CCP e o Plenário não iniciam passagem). `tramitacoes`: as da referência de hoje lançadas desde o dia do lote anterior, até a sequência de hoje.
+
 ### `saiu`
 
 ```json
@@ -71,7 +73,9 @@ Nesta ordem: `tipo`, `id`, `identificacao`, `comissao`, `link`, os campos própr
 | `destino.orgao` | Órgão da referência hoje; `null` se a proposição não está no lote |
 | `destino.situacao` | Situação da referência hoje; `null` se a proposição não está no lote |
 | `destino.apensado_a` | `null` ou `{id, identificacao, link}` da raiz |
-| `outros_fatos` | Lista (possivelmente vazia) de códigos que também valiam, entre `situação final` (o código do motivo correspondente), `apensado_fora_da_lista` e `outro_orgao`, na ordem de precedência |
+| `outros_fatos` | Lista (possivelmente vazia) dos códigos de motivo de saída que também valiam além do principal (situação final, `apensado_fora_da_lista`, `outro_orgao` ou `perdeu_etiquetas`), na ordem de precedência |
+
+Um item que estava na lista só como candidato com relator indeterminado (sem etiqueta) e saiu não tem etiqueta a "perder": o motivo é `nao_determinado`.
 
 ### `situacao`
 
@@ -96,6 +100,8 @@ Sem campos próprios. O `link` é o da ficha da referência; as tramitações de
 `{"ganhou": ["relatoria NOVO"], "perdeu": []}`. Pelo menos uma das listas não é vazia. Ordem fixa: `autoria NOVO`, `autor hoje no NOVO`, `relatoria NOVO`.
 
 ## Ressalva
+
+Uma ressalva é registrada **todo dia** em que o relator é indeterminado em algum dos dois retratos, também quando a marca não mudou.
 
 ```json
 {"id": 2388105, "identificacao": "PL 4501/2023", "comissao": "CE", "link": "https://www.camara.leg.br/propostas-legislativas/2388105",
