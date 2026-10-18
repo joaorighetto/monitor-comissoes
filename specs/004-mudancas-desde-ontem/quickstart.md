@@ -85,7 +85,7 @@ Se a execução diária falhar com "retrato anterior inválido (data/atual.json)
 
 ### 3.1 Falha `formato_alterado` por sequência inconsistente
 
-Se a execução falhar com "sequência regrediu" ou "a resposta não contém a sequência do lote" para uma proposição, a Câmara renumerou ou corrigiu as tramitações dela. A execução falha de propósito (nada é publicado pela metade) e continuará falhando até o retrato anterior deixar de conter o item com a sequência antiga. Para recuperar, com a decisão do mantenedor: apague `data/anterior.json` e `data/atual.json` (recomeça com uma linha de base; um dia de eventos se perde, e o arquivo do dia diz isso) e rode a coleta de novo. Registre o caso, com a proposição, em `docs/fontes.md`.
+Se a execução falhar com "sequência regrediu" ou "a resposta não contém a sequência do lote" para uma proposição, a Câmara renumerou ou corrigiu as tramitações dela. A execução falha de propósito (nada é publicado pela metade) e continuará falhando até o retrato anterior deixar de conter o item com a sequência antiga. Para recuperar, com a decisão do mantenedor: apague `data/anterior.json` e `data/atual.json` (recomeça com uma linha de base; um dia de eventos se perde, e o arquivo do dia diz isso) e rode a coleta de novo. Cuidados: perde-se um dia de eventos de **todos** os itens, não só do problemático; e, sem `atual.json`, a checagem de plausibilidade do estoque bruto vira só `AVISO` nessa execução, então confira `estoque_bruto` no `status.json` antes de seguir. Registre o caso, com a proposição, em `docs/fontes.md`.
 
 ## 4. No Actions
 

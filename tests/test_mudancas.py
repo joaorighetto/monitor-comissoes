@@ -1388,6 +1388,25 @@ def test_item_que_passou_a_ser_apensado_a_outra_principal_usa_a_regra_de_data():
     assert fonte.consultas == [99]
 
 
+def test_troca_de_comissao_junto_com_troca_de_referencia_traz_comissao_de_e_a_regra_de_data():
+    a = s.item(1, comissao="CE", sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(
+        1,
+        comissao="CREDN",
+        sequencia=87,
+        situacao="Aguardando Parecer",
+        apensado_a=s.apensado(99, "PL 99/2019"),
+    )
+    lista = {99: [t(80, "2026-10-17T10:00"), t(85, "2026-10-18T10:00"), t(87, "2026-10-18T15:00")]}
+
+    documento, fonte = mantidos(a, h, lista)
+
+    [mudanca] = so(documento, "situacao")
+    assert (mudanca["comissao"], mudanca["comissao_de"]) == ("CREDN", "CE")
+    assert sequencias(mudanca) == [85, 87]
+    assert fonte.consultas == [99]
+
+
 def test_sequencia_que_regride_na_mesma_referencia_e_formato_alterado():
     a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
     h = s.item(1, sequencia=30, situacao="Pronta para Pauta")
