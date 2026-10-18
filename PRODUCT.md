@@ -73,7 +73,9 @@ O item entra na lista se tiver ao menos uma etiqueta.
 | `autor hoje no NOVO` | Algum autor (`idDeputadoAutor`) está entre os deputados em exercício do NOVO no dia | `/api/v2/deputados?siglaPartido=NOVO` |
 | `relatoria NOVO` | O **relator atual** da referência está entre os deputados em exercício do NOVO no dia | Tramitações da referência e a mesma lista de deputados |
 
-**Relator atual** é o deputado designado relator na comissão em que a referência está, desde que não tenha devolvido a matéria depois disso (devolução sem manifestação, substituição). O campo `uriUltimoRelator` aponta para um candidato, que só é confirmado pelas tramitações. O partido considerado é o de hoje, não o da data da designação.
+**Relator atual** é o deputado designado relator na comissão em que a referência está, na passagem mais recente dela por essa comissão, e que não deixou de sê-lo depois disso. Deixam de ser relator a devolução da matéria sem manifestação, a substituição por nova designação e a saída do relator da comissão. Designação feita em passagem anterior da matéria por essa comissão não vale. O campo `uriUltimoRelator` aponta para um candidato, que só é confirmado pelas tramitações. O partido considerado é o de hoje, não o da data da designação.
+
+Quando as tramitações não permitem decidir quem é o relator atual (designação sem relator identificado, tipo de tramitação de relatoria desconhecido, ou a matéria já estar em outro órgão na API), o item leva a marca **"relator indeterminado"** e não ganha nem perde `relatoria NOVO`. Um candidato à relatoria NOVO (o relator registrado no último status é do NOVO) nessa situação entra na lista com a marca, para que nada suma em silêncio. Erro de rede, resposta malformada ou incompleta das APIs continua falhando a execução inteira (§7).
 
 Exemplos verificados na sondagem:
 
