@@ -401,3 +401,88 @@ def test_relatoria_nao_inclui_fora_da_comissao_da_lista():
     p = prop(id=1, orgao="CFT", relator=204455)
 
     assert itens_rel([p], {}, {1: COM_LUIZ_LIMA}) == []
+
+
+# --- REL US2: apensados herdam o relator da principal --------------------------------------
+
+
+def itens_apensados(candidatas, autores, relatorias, mapa, linhas=None):
+    return itens_rel(
+        candidatas,
+        autores,
+        relatorias,
+        mapa_principal=mapa,
+        proposicoes=linhas or {p.id: p for p in candidatas},
+    )
+
+
+def test_apensado_herda_o_relator_da_principal():
+    raiz = prop(id=1, relator=204455)
+    apensado = prop(id=2, orgao="CFT", principal=1, status=datetime(2013, 5, 6))
+    autores = {2: [autor(pid=2, partido="PT", dep=9)]}
+
+    [item] = itens_apensados(
+        [apensado], autores, {1: COM_LUIZ_LIMA}, {2: 1}, {1: raiz, 2: apensado}
+    )
+
+    assert item["id"] == 2
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["apensado_a"]["id"] == 1
+    assert item["relator"]["nome"] == "Luiz Lima"
+    assert item["relator"]["fonte"].endswith("/1")  # a ficha de onde o relator foi lido: a raiz
+
+
+def test_cadeia_de_dois_niveis_usa_o_relator_da_raiz():
+    c = prop(id=3, relator=204455)
+    b = prop(id=2, principal=3)
+    a = prop(id=1, principal=2)
+
+    [item] = itens_apensados(
+        [a], {}, {3: COM_LUIZ_LIMA, 2: SEM_RELATOR}, {1: 2, 2: 3}, {1: a, 2: b, 3: c}
+    )
+
+    assert item["apensado_a"]["id"] == 3
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"]["id"] == 204455
+
+
+def test_relator_do_proprio_apensado_nao_vale_se_a_raiz_nao_tem_relator_do_novo():
+    # O apensado foi relatado pelo NOVO no passado; hoje quem vale é o relator da principal.
+    raiz = prop(id=1, relator=220560)
+    apensado = prop(id=2, principal=1, relator=204455)
+    autores = {2: [autor(pid=2, partido="PT", dep=9)]}
+
+    resultado = itens_apensados(
+        [apensado], autores, {1: COM_THIAGO}, {2: 1}, {1: raiz, 2: apensado}
+    )
+
+    assert resultado == []
+
+
+def test_raiz_fora_da_lista_de_comissoes_deixa_o_apensado_de_fora_mesmo_com_relator():
+    raiz = prop(id=1, orgao="CFT", relator=204455)
+    apensado = prop(id=2, principal=1, orgao="CE")
+
+    assert itens_apensados([apensado], {}, {1: COM_LUIZ_LIMA}, {2: 1}, {1: raiz, 2: apensado}) == []
+
+
+def test_principal_nao_localizada_usa_o_relator_do_proprio_item():
+    # A raiz (id 99) não está nas linhas lidas: vale o status e a relatoria do próprio apensado.
+    apensado = prop(id=2, principal=99, relator=204455)
+
+    [item] = itens_apensados([apensado], {}, {2: COM_LUIZ_LIMA}, {2: 99})
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"]["fonte"].endswith("/2")
+
+
+def test_dois_apensados_da_mesma_raiz_compartilham_o_relator():
+    raiz = prop(id=1, relator=204455)
+    a, b = prop(id=2, principal=1), prop(id=3, principal=1)
+
+    resultado = itens_apensados([a, b], {}, {1: COM_LUIZ_LIMA}, {2: 1, 3: 1}, {1: raiz, 2: a, 3: b})
+
+    assert [i["id"] for i in resultado] == [2, 3]
+    assert {i["relator"]["id"] for i in resultado} == {204455}

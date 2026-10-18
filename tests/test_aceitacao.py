@@ -365,3 +365,100 @@ def test_invariantes_do_contrato(documento):
             assert item["apensado_a"] is None
     ordem = [(i["ultimo_status_em"], i["id"]) for i in itens]
     assert ordem == sorted(ordem)
+
+
+# --- REL US2: apensados herdam o relator da principal ---------------------------------------
+
+
+def test_apensados_reais_de_uma_raiz_com_relatora_do_novo_entram_com_o_relator_da_raiz(
+    documento,
+):
+    itens = [i for i in documento["itens"] if i["apensado_a"]]
+    raiz = por_identificacao(documento)["PL 3961/2004"]
+    apensados = [i for i in itens if i["apensado_a"]["id"] == raiz["id"]]
+
+    assert raiz["relator"]["nome"] == "Adriana Ventura"
+    assert len(apensados) > 10  # a raiz tem dezenas de apensados na CE (fixtures reais)
+    for item in apensados:
+        assert item["etiquetas"] == ["relatoria NOVO"]
+        assert item["relator"] == raiz["relator"]
+        assert item["comissao"] == raiz["comissao"]
+        assert item["situacao"] == raiz["situacao"]
+
+
+def test_a_referencia_compartilhada_e_lida_uma_vez_so(config, transporte, agora, tmp_path):
+    gerar(config, transporte, agora, tmp_path)
+
+    tramitacoes = [u for u in transporte.pedidos if u.endswith("/tramitacoes")]
+    assert len(tramitacoes) == len(set(tramitacoes))
+    deputados = [u for u in transporte.pedidos if "/api/v2/deputados/" in u]
+    assert len(deputados) == len(set(deputados))
+
+
+def test_apensado_cuja_raiz_esta_fora_da_lista_continua_fora_mesmo_com_relator(documento):
+    # PL 4047/2019: o autor é hoje do NOVO, mas a raiz da cadeia está na CFT.
+    assert "PL 4047/2019" not in por_identificacao(documento)
+
+
+# --- REL US3: relator e partido de hoje em todo item -----------------------------------------
+
+NOVO_EM_EXERCICIO_IDS = {156190, 204365, 204455, 204528, 220633}
+
+
+def test_relator_de_outro_partido_mostra_o_partido_de_hoje_sem_relatoria_novo(documento):
+    item = por_identificacao(documento)["PL 3871/2024"]
+
+    assert item["etiquetas"] == ["autor hoje no NOVO"]
+    assert item["relator"] == {
+        "id": 220560,
+        "nome": "Thiago de Joaldo",
+        "partido_hoje": "REPUBLICANOS",
+        "designado_em": "2026-04-27T17:13:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2461936",
+    }
+
+
+def test_item_so_de_autoria_tambem_traz_o_relator(documento):
+    item = por_identificacao(documento)["PL 5594/2020"]
+
+    assert "relatoria NOVO" not in item["etiquetas"]
+    assert item["relator"]["id"] == 178929
+    assert item["relator"]["partido_hoje"]
+
+
+def test_item_sem_relator_atual_traz_relator_nulo(documento):
+    # PL 648/2024 tem autoria do NOVO, mas o relator devolveu a matéria (507).
+    item = por_identificacao(documento)["PL 648/2024"]
+
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
+
+
+def test_relator_mostra_o_partido_de_hoje_e_nao_o_da_designacao(documento):
+    # O despacho da designação registra o partido da época (Luiz Lima já foi do PL); o item
+    # mostra o de hoje, que para quem está em exercício no NOVO vem da lista do dia.
+    item = por_identificacao(documento)["PL 4501/2023"]
+
+    assert item["relator"]["partido_hoje"] == "NOVO"
+    assert item["relator"]["designado_em"] == "2025-04-09T00:00:00"
+
+
+def test_fonte_do_relator_e_a_ficha_da_principal_no_apensado(documento):
+    apensados = [i for i in documento["itens"] if i["apensado_a"] and i["relator"]]
+
+    assert apensados
+    for item in apensados:
+        assert item["relator"]["fonte"] == item["apensado_a"]["link"]
+
+
+def test_relator_do_novo_dispensa_consulta_e_os_demais_sao_consultados_uma_vez(
+    config, transporte, agora, tmp_path
+):
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    consultados = {
+        int(u.rsplit("/", 1)[1]) for u in transporte.pedidos if "/api/v2/deputados/" in u
+    }
+    relatores = {i["relator"]["id"] for i in documento["itens"] if i["relator"]}
+    assert consultados == relatores - NOVO_EM_EXERCICIO_IDS
+    assert relatores & NOVO_EM_EXERCICIO_IDS  # há relatores do NOVO no resultado

@@ -63,9 +63,9 @@
 
 **Objetivo**: spec US2 (FR-004). **Teste independente**: um apensado cuja raiz tem relator do NOVO herda a etiqueta e mostra o relator da raiz.
 
-- [ ] T016 [P] [US2] Em `tests/test_estoque.py` testar a herança: apensado (um nível) cuja raiz tem relator atual do NOVO → `relatoria NOVO` e relator da raiz; cadeia A → B → C → relator de C; apensado com relator próprio do NOVO mas raiz sem relator do NOVO → sem etiqueta; raiz fora da lista de comissões → apensado fora; "principal não localizada" → usa o status e as tramitações do próprio item e mantém a marca. Usar linhas reais da fixture quando existirem (T002) e derivações dentro do teste nos demais casos.
-- [ ] T017 [P] [US2] Em `tests/test_aceitacao.py` testar a expansão de candidatos: apensados cuja raiz está no conjunto de `ler_ids_relator_novo` viram candidatos (inclusive os de outro tipo na raiz); a referência compartilhada é lida **uma vez** (contar as chamadas do transporte falso).
-- [ ] T018 [US2] Em `src/monitor_comissoes/coleta.py` e `src/monitor_comissoes/estoque.py` expandir os candidatos para os apensados das raízes encontradas (subir a cadeia com `subir_ate_a_raiz`), resolver o relator na **referência** e atribuir a etiqueta ao apensado. Fazer T016 e T017 passarem.
+- [X] T016 [P] [US2] Em `tests/test_estoque.py` testar a herança: apensado (um nível) cuja raiz tem relator atual do NOVO → `relatoria NOVO` e relator da raiz; cadeia A → B → C → relator de C; apensado com relator próprio do NOVO mas raiz sem relator do NOVO → sem etiqueta; raiz fora da lista de comissões → apensado fora; "principal não localizada" → usa o status e as tramitações do próprio item e mantém a marca. Usar linhas reais da fixture quando existirem (T002) e derivações dentro do teste nos demais casos.
+- [X] T017 [P] [US2] Em `tests/test_aceitacao.py` testar a expansão de candidatos: apensados cuja raiz está no conjunto de `ler_ids_relator_novo` viram candidatos (inclusive os de outro tipo na raiz); a referência compartilhada é lida **uma vez** (contar as chamadas do transporte falso).
+- [X] T018 [US2] Em `src/monitor_comissoes/coleta.py` e `src/monitor_comissoes/estoque.py` expandir os candidatos para os apensados das raízes encontradas (subir a cadeia com `subir_ate_a_raiz`), resolver o relator na **referência** e atribuir a etiqueta ao apensado. Fazer T016 e T017 passarem.
 
 **Checkpoint**: histórias 1 e 2 funcionam juntas.
 
@@ -75,8 +75,8 @@
 
 **Objetivo**: spec US3 (FR-008, FR-009, FR-015). **Teste independente**: itens com relator do NOVO, de outro partido, sem relator e com relator que mudou de partido.
 
-- [ ] T019 [P] [US3] Em `tests/test_aceitacao.py` testar o conteúdo de `relator`: item com relator de outro partido (PL 3871/2024, relator Thiago de Joaldo) mostra nome e `partido_hoje` de `/deputados/{id}` sem `relatoria NOVO`; Luiz Lima (designado como PL, hoje NOVO) mostra `partido_hoje = "NOVO"` e `designado_em`; item sem relator (`relator = null`); `fonte` = link oficial da referência (a principal, no apensado); item só de autoria (ex.: PL 5594/2020) também traz o relator; relator do NOVO **não** gera consulta a `/deputados/{id}` (contar chamadas) e cada relator fora do NOVO gera **uma** consulta.
-- [ ] T020 [US3] Em `src/monitor_comissoes/coleta.py` e `src/monitor_comissoes/estoque.py` montar `relator` (`id`, `nome`, `partido_hoje`, `designado_em`, `fonte`) em todo item, consultando `obter_deputado` uma vez por relator fora da lista do NOVO, com os campos na ordem de `contracts/atual-json.md`. Fazer T019 passar.
+- [X] T019 [P] [US3] Em `tests/test_aceitacao.py` testar o conteúdo de `relator`: item com relator de outro partido (PL 3871/2024, relator Thiago de Joaldo) mostra nome e `partido_hoje` de `/deputados/{id}` sem `relatoria NOVO`; Luiz Lima (designado como PL, hoje NOVO) mostra `partido_hoje = "NOVO"` e `designado_em`; item sem relator (`relator = null`); `fonte` = link oficial da referência (a principal, no apensado); item só de autoria (ex.: PL 5594/2020) também traz o relator; relator do NOVO **não** gera consulta a `/deputados/{id}` (contar chamadas) e cada relator fora do NOVO gera **uma** consulta.
+- [X] T020 [US3] Em `src/monitor_comissoes/coleta.py` e `src/monitor_comissoes/estoque.py` montar `relator` (`id`, `nome`, `partido_hoje`, `designado_em`, `fonte`) em todo item, consultando `obter_deputado` uma vez por relator fora da lista do NOVO, com os campos na ordem de `contracts/atual-json.md`. Fazer T019 passar.
 
 ---
 
