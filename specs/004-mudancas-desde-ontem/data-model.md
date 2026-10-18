@@ -58,7 +58,7 @@ Item para o qual a comparação de relator não foi possível (relator indetermi
 
 Seja `A` o retrato anterior, `H` o documento de hoje, `ids(A)` e `ids(H)` os ids dos itens.
 
-**Entrou:** `id ∈ ids(H) − ids(A)`. Motivo (R7): chegada à comissão posterior ao retrato anterior → `chegou_a_comissao`; senão, item com etiquetas → `ganhou_etiqueta`; senão `nao_determinado`.
+**Entrou:** `id ∈ ids(H) − ids(A)`. Motivo (R7): chegada à comissão (início da passagem mais recente, com a definição de passagem da REL: MESA, CCP e PLEN não iniciam passagem) posterior ao retrato anterior → `chegou_a_comissao`; senão, item com etiquetas → `ganhou_etiqueta`; senão `nao_determinado`.
 
 **Saiu:** `id ∈ ids(A) − ids(H)`. Estado do lote (`EstadoDeSaida`). Motivo principal, na ordem do clarify (Q4):
 
