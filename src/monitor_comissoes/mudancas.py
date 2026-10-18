@@ -425,7 +425,9 @@ def _mantido(ctx: _Contexto, a: dict, h: dict) -> tuple[list[dict], list[dict]]:
                 _base("relator", h, mudanca=mudanca, de=antes, para=depois, tramitacoes=tramitacoes)
             )
 
-    if any(x.codigo == CODIGO_PARECER and x.orgao == h["comissao"] for x in tramitacoes):
+    # O parecer pode ter sido dado na comissão de ontem, se o item mudou de comissão no intervalo.
+    comissoes_do_item = {a["comissao"], h["comissao"]}
+    if any(x.codigo == CODIGO_PARECER and x.orgao in comissoes_do_item for x in tramitacoes):
         eventos.append(_base("parecer", h, tramitacoes=tramitacoes))
 
     ganhou = _ordenar_etiquetas(set(h["etiquetas"]) - set(a["etiquetas"]))

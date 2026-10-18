@@ -126,7 +126,7 @@ O retrato de hoje é comparado com o anterior pela chave `id` da proposição.
 
   Uma situação fora da tabela não é erro: o motivo vira "foi para outro órgão", e o destino traz a situação.
 - **Entrou:** "chegou à comissão" se a passagem mais recente da referência pela comissão começou no dia do lote anterior ou depois; senão "ganhou etiqueta", dizendo qual; se o item não tem etiqueta (candidato com relator indeterminado), "não determinado". Passagem tem a definição da relatoria (§5.4): a Mesa, a CCP e o Plenário nunca iniciam passagem, então uma ida e volta pela Mesa não é chegada nova.
-- **Parecer** é a tramitação "Parecer do(a) Relator(a)" no órgão da comissão do item. A leitura e a aprovação do parecer não geram evento.
+- **Parecer** é a tramitação "Parecer do(a) Relator(a)" no órgão da comissão do item. Se o item mudou de comissão no intervalo, vale também o parecer dado na comissão anterior (decidido pelo mantenedor em 18/10/2026). A leitura e a aprovação do parecer não geram evento.
 - **Item que muda de comissão e continua na lista** (por exemplo, da CE para a CREDN) gera um evento de **situação**, que traz a comissão anterior mesmo quando o texto da situação não mudou (decidido pelo mantenedor em 18/10/2026).
 - **Relator indeterminado** em um dos retratos não gera evento de relator. O arquivo registra que a comparação de relator não foi possível para o item.
 - **Sem teto:** o arquivo registra todos os eventos. O teto e o "e mais N" são do resumo e da página.

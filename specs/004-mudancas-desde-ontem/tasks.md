@@ -218,9 +218,10 @@
 
 ## Totais
 
-47 tarefas: Fase 1: 2 · Fase 2: 6 · Fase 3 (US3): 9 · Fase 4 (US1): 7 · Fase 5 (US2): 6 · Fase 6 (US4): 3 · Fase 7 (US5): 3 · Fase 8 (US6): 2 · Fase 9: 7 · Convergência: 2. Testes são escritos antes da implementação em cada fase; a única tarefa que pode usar rede é T002 (e só se o inventário T001 achar falta); T044 é conferência manual fora da suíte.
+48 tarefas: Fase 1: 2 · Fase 2: 6 · Fase 3 (US3): 9 · Fase 4 (US1): 7 · Fase 5 (US2): 6 · Fase 6 (US4): 3 · Fase 7 (US5): 3 · Fase 8 (US6): 2 · Fase 9: 7 · Convergência: 3. Testes são escritos antes da implementação em cada fase; a única tarefa que pode usar rede é T002 (e só se o inventário T001 achar falta); T044 é conferência manual fora da suíte.
 
 ## Phase 10: Convergence
 
 - [X] T046 Fazer o dia do arquivo `data/mudancas/AAAA-MM-DD.json` e o `data_referencia` do `status.json` virem do mesmo instante (o da tentativa que gravou), com teste de uma execução que começa às 23:58 de um dia e termina após a meia-noite, per FR-021 (partial). Evidência: `diaria.py` usa o relógio do início da tentativa para o arquivo e `relogio()` no fim para `status.montar_status`.
 - [X] T047 Fazer `ganhou`/`perdeu` do evento `etiquetas` virem da diferença entre os conjuntos de etiquetas dos dois retratos, para uma etiqueta fora de `ETIQUETAS` falhar na validação em vez de ser ignorada em silêncio, com teste, per FR-011 e Constitution III (partial). Evidência: `mudancas.py` (`_mantido`) filtra pela lista fixa `ETIQUETAS`.
+- [X] T048 Parecer dado na comissão anterior também gera o evento `parecer` quando o item mudou de comissão no intervalo (achado da rodada 2 da revisão, decidido pelo mantenedor em 18/10/2026), per FR-010 (partial). Teste em `tests/test_mudancas.py`; PRODUCT §5.6 e FR-010 emendados.

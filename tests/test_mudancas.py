@@ -1440,6 +1440,28 @@ def seis_tipos():
     return a, h, listas, {20: estado(referencia_id=20, orgao="CFT", sequencia=41)}
 
 
+def test_parecer_dado_na_comissao_anterior_conta_quando_o_item_mudou_de_comissao():
+    a = s.item(1, comissao="CE", sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, comissao="CREDN", sequencia=44, situacao="Aguardando Parecer")
+    lista = {1: [t(42, orgao="CE", codigo="322"), t(43, orgao="MESA"), t(44, orgao="CREDN")]}
+
+    documento, _ = mantidos(a, h, lista)
+
+    assert dos_tipos(documento) == ["situacao", "parecer"]
+    [parecer] = so(documento, "parecer")
+    assert parecer["comissao"] == "CREDN" and sequencias(parecer) == [42, 43, 44]
+
+
+def test_parecer_de_outro_orgao_que_nao_e_a_comissao_de_hoje_nem_a_anterior_nao_conta():
+    a = s.item(1, comissao="CE", sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, comissao="CREDN", sequencia=44, situacao="Aguardando Parecer")
+    lista = {1: [t(42, orgao="CCJC", codigo="322"), t(43, orgao="MESA"), t(44, orgao="CREDN")]}
+
+    documento, _ = mantidos(a, h, lista)
+
+    assert dos_tipos(documento) == ["situacao"]
+
+
 def test_comparar_e_funcao_pura_duas_chamadas_dao_o_mesmo_documento():
     a, h, listas, estados = seis_tipos()
 
