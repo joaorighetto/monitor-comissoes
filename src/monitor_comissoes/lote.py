@@ -170,6 +170,25 @@ def ler_ids_com_autor_novo(caminho: Path, partido: str, ids_deputados: set[int])
     return achados
 
 
+def ler_ids_relator_novo(
+    caminho: Path, ids_deputados: set[int], comissoes: tuple[str, ...]
+) -> set[int]:
+    """Ids das linhas cujo órgão está em `comissoes` e cujo último relator está em `ids_deputados`.
+
+    São os candidatos à relatoria NOVO (research R3): o campo aponta o último relator designado,
+    que só vale depois de confirmado pelas tramitações. Não filtra o tipo, porque a raiz de uma
+    cadeia de apensação pode ser de qualquer tipo.
+    """
+    arquivo = caminho.name
+    colunas = ("id", "ultimoStatus_siglaOrgao", "ultimoStatus_uriRelator")
+    achados = set()
+    for pid, orgao, uri in _linhas(caminho, colunas):
+        if orgao in comissoes and uri:
+            if _id_da_uri(uri, "ultimoStatus_uriRelator", arquivo) in ids_deputados:
+                achados.add(_inteiro(pid, "id", arquivo))
+    return achados
+
+
 def contar_estoque_bruto(caminho: Path, tipos: tuple[str, ...], comissoes: tuple[str, ...]) -> int:
     """Quantas proposições de `tipos` têm o órgão do próprio último status em `comissoes`.
 

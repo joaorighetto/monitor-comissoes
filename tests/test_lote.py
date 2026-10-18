@@ -13,6 +13,7 @@ from monitor_comissoes.lote import (
     baixar_lote,
     ler_apensacao,
     ler_autores,
+    ler_ids_relator_novo,
     ler_proposicoes,
     validar_arquivo,
     verificar_frescor,
@@ -84,6 +85,50 @@ def test_proposicao_real_sem_relator_tem_id_relator_nulo():
     [p] = list(ler_proposicoes(FIXTURES / "proposicoes-2019.csv", ids={2211957}))
 
     assert p.id_relator is None
+
+
+NOVO_EM_EXERCICIO = {156190, 204365, 204455, 204528, 220633}
+
+
+def test_candidatos_a_relatoria_novo_nas_fixtures_reais():
+    achados = ler_ids_relator_novo(
+        FIXTURES / "proposicoes-2022.csv", NOVO_EM_EXERCICIO, ("CE", "CREDN")
+    )
+
+    assert 2319917 in achados  # PL 937/2022: o lote ainda aponta Luiz Lima (que devolveu)
+    assert 2331032 in achados  # PL 1843/2022: relatora Adriana Ventura
+    assert 2461936 not in achados  # PL 3871/2024 (2024): outro ano e relator de outro partido
+
+
+def test_candidato_exige_comissao_da_lista_e_relator_do_novo(tmp_path):
+    uri = "https://dadosabertos.camara.leg.br/api/v2/deputados/"
+    caminho = escrever(
+        tmp_path,
+        [
+            linha(id="1", ultimoStatus_uriRelator=uri + "204455"),  # CE, relator do NOVO
+            linha(id="2", ultimoStatus_uriRelator=uri + "999"),  # CE, relator de outro partido
+            linha(id="3", ultimoStatus_uriRelator=""),  # CE, sem relator
+            linha(id="4", ultimoStatus_siglaOrgao="CFT", ultimoStatus_uriRelator=uri + "204455"),
+            linha(id="5", siglaTipo="REQ", ultimoStatus_uriRelator=uri + "220633"),
+        ],
+    )
+
+    achados = ler_ids_relator_novo(caminho, {204455, 220633}, ("CE", "CREDN"))
+
+    # O tipo não filtra: a raiz de uma cadeia pode ser de qualquer tipo (o filtro é adiante).
+    assert achados == {1, 5}
+
+
+def test_candidatos_com_coluna_do_relator_ausente_e_formato_alterado(tmp_path):
+    sem = [c for c in CABECALHO if c != "ultimoStatus_uriRelator"]
+    caminho = escrever(
+        tmp_path, [[v for c, v in zip(CABECALHO, linha(), strict=True) if c in sem]], sem
+    )
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        ler_ids_relator_novo(caminho, {1}, ("CE",))
+
+    assert erro.value.categoria == FORMATO_ALTERADO
 
 
 def test_apensacao_real_so_traz_linhas_com_principal():
