@@ -76,9 +76,8 @@ class TransporteFalso:
         self.pedidos.append(url)
         if "deputados" in self.erro:
             raise self.erro["deputados"]
-        return RespostaJson(
-            corpo=self.json_deputados, cabecalhos={"x-total-count": self.total_deputados}
-        )
+        cabecalhos = {} if self.total_deputados is None else {"x-total-count": self.total_deputados}
+        return RespostaJson(corpo=self.json_deputados, cabecalhos=cabecalhos)
 
     def baixar(self, url: str, destino: Path) -> ArquivoBaixado:
         nome = url.rsplit("/", 1)[1]

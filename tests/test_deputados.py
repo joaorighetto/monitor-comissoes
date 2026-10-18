@@ -117,3 +117,14 @@ def test_link_de_paginacao_fora_da_api_da_camara_e_recusado(href):
 
     assert erro.value.categoria == API_DEPUTADOS
     assert transporte.pedidos == [pagina1]  # o link recusado nunca é pedido
+
+
+def test_resposta_sem_x_total_count_e_falha(transporte):
+    # Sem o total anunciado não há como saber se a lista veio completa.
+    transporte.total_deputados = None
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_deputados_novo(transporte, URL_BASE)
+
+    assert erro.value.categoria == API_DEPUTADOS
+    assert "X-Total-Count" in erro.value.motivo

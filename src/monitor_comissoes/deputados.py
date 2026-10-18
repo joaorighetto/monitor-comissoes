@@ -45,7 +45,9 @@ def obter_deputados_novo(transporte: Transporte, url_base: str) -> list[Deputado
         except (ValueError, KeyError, TypeError) as erro:
             raise _falha(f"resposta inesperada da API ({erro!r})") from erro
         anunciado = resposta.cabecalhos.get("x-total-count")
-        if anunciado is not None and total_anunciado is None:
+        if anunciado is None:
+            raise _falha("a resposta não trouxe o cabeçalho X-Total-Count")
+        if total_anunciado is None:
             try:
                 total_anunciado = int(anunciado)
             except ValueError as erro:
@@ -54,6 +56,6 @@ def obter_deputados_novo(transporte: Transporte, url_base: str) -> list[Deputado
 
     if not deputados:
         raise _falha("a lista veio vazia")
-    if total_anunciado is not None and total_anunciado != len(deputados):
+    if total_anunciado != len(deputados):
         raise _falha(f"a API anunciou {total_anunciado} deputados e entregou {len(deputados)}")
     return sorted(deputados)
