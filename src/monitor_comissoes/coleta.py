@@ -2,6 +2,7 @@
 
 import tempfile
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -37,7 +38,7 @@ from .mudancas import comparar, validar_arquivo
 from .relatoria import ResultadoRelatoria, relator_atual
 from .retratos import Comparacao
 from .saida import gravar_atomico, montar_documento
-from .tramitacoes import obter_tramitacoes
+from .tramitacoes import Tramitacao, obter_tramitacoes
 from .transporte import Transporte
 
 URL_BASE = "https://dadosabertos.camara.leg.br"
@@ -107,13 +108,27 @@ def _referencias_a_ler(
     return referencias, com_autoria
 
 
+def _tramitacoes_da_execucao(transporte: Transporte) -> Callable[[int], list[Tramitacao]]:
+    """Lê as tramitações de cada referência uma só vez por coleta.
+
+    A relatoria (REL) e as tramitações dos eventos (MUD) usam a mesma resposta: duas leituras ao
+    vivo, em instantes diferentes, poderiam divergir dentro da mesma execução.
+    """
+    lidas: dict[int, list[Tramitacao]] = {}
+
+    def ler(id_referencia: int) -> list[Tramitacao]:
+        if id_referencia not in lidas:
+            lidas[id_referencia] = obter_tramitacoes(transporte, URL_BASE, id_referencia)
+        return lidas[id_referencia]
+
+    return ler
+
+
 def _ler_relatorias(
-    transporte: Transporte, referencias: dict[int, str]
+    tramitacoes_de: Callable[[int], list[Tramitacao]], referencias: dict[int, str]
 ) -> dict[int, ResultadoRelatoria]:
     return {
-        id_referencia: relator_atual(
-            obter_tramitacoes(transporte, URL_BASE, id_referencia), referencias[id_referencia]
-        )
+        id_referencia: relator_atual(tramitacoes_de(id_referencia), referencias[id_referencia])
         for id_referencia in sorted(referencias)
     }
 
@@ -208,7 +223,8 @@ def coletar(
     referencias, com_autoria = _referencias_a_ler(
         candidatas, na_comissao, autores_por_id, ids_deputados, mapa_principal, linhas
     )
-    relatorias = _ler_relatorias(transporte, referencias)
+    tramitacoes_de = _tramitacoes_da_execucao(transporte)
+    relatorias = _ler_relatorias(tramitacoes_de, referencias)
     deputados_relator = _deputados_relator(transporte, relatorias, deputados, com_autoria)
 
     itens = construir_itens(
@@ -248,7 +264,7 @@ def coletar(
             comparacao,
             documento,
             estados_de_saida,
-            lambda id_referencia: obter_tramitacoes(transporte, URL_BASE, id_referencia),
+            tramitacoes_de,
             config.comissoes,
             agora.astimezone(BRASILIA).date(),
         )

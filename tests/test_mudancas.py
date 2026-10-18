@@ -839,6 +839,10 @@ def test_o_art_105_so_vale_na_tramitacao_de_arquivamento_do_intervalo():
     assert motivo(t(38, codigo="502", despacho="ARQUIVADO - ART. 105 DO RICD"), t(39)) == (
         "arquivado_art_105"
     )
+    # Outro número que começa por 105 (artigo 1050) não é o art. 105.
+    assert motivo(t(38, codigo="502", despacho="Arquivado nos termos do Artigo 1050"), t(39)) == (
+        "arquivado"
+    )
 
 
 @pytest.mark.parametrize(

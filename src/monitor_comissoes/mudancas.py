@@ -81,7 +81,7 @@ SITUACOES_FINAIS = {
 CODIGO_PARECER = "322"  # "Parecer do(a) Relator(a)" (plan.md, D4)
 CODIGO_ARQUIVAMENTO = "502"  # "Arquivamento" (research R3)
 # "Arquivado nos termos do Artigo 105 do Regimento Interno..." (tramitação 502).
-PADRAO_ART_105 = re.compile(r"art(?:igo|\.)?\s*105", re.IGNORECASE)
+PADRAO_ART_105 = re.compile(r"art(?:igo|\.)?\s*105\b", re.IGNORECASE)
 
 
 # --- construção -------------------------------------------------------------------------------
