@@ -22,7 +22,7 @@ Um arquivo por dia de execução. `AAAA-MM-DD` é a data da execução em Brasí
 
 | Campo | Tipo | Descrição |
 |---|---|---|
-| `meta.versao_formato` | inteiro | `1` |
+| `meta.versao_formato` | inteiro | `1`. Regra de versão (mantenedor, 18/10/2026): nenhum arquivo foi publicado nem tem consumidor, então a versão 1 ainda pode receber campos (como `comissao_de` em `situacao`). **Antes** de a AVI ou a PAG lerem o arquivo, o contrato congela; depois disso, qualquer campo novo, removido ou com outro sentido sobe a versão |
 | `meta.data` | texto `AAAA-MM-DD` | Data da execução (igual ao nome do arquivo) |
 | `meta.retrato` | objeto | `dia` (data de `gerado_em`, Brasília) e `dados_camara_em` (do `meta` do `atual.json` de hoje) |
 | `meta.retrato_anterior` | `null` ou objeto | Mesmos campos do retrato anterior. `null` quando não há retrato anterior. Em linha de base por formato incompatível, vem preenchido (informativo) |
