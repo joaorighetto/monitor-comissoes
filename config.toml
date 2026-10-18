@@ -8,3 +8,12 @@ comissoes = ["CE", "CREDN"]
 # Resolução 33/2022 (art. 3º) arquivou o que tramitava havia 5 legislaturas completas;
 # na sondagem de 17/10/2026 não havia PL anterior a 2003 na CE nem na CREDN.
 ano_minimo = 2003
+
+# Execução diária agendada (feature AGE). Tabela opcional: sem ela valem estes mesmos valores.
+[execucao]
+# Coletas por execução, contando a primeira.
+tentativas = 4
+# Espera entre tentativas, em minutos.
+espera_minutos = 30
+# Variação do estoque bruto acima da qual a execução falha, em %.
+limite_variacao_percentual = 20

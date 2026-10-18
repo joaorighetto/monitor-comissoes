@@ -23,8 +23,8 @@ description: "Tarefas da feature AGE — Execução diária agendada"
 
 **Purpose**: constantes e configuração que as demais fases usam. Nenhuma lógica nova.
 
-- [ ] T001 Em `src/monitor_comissoes/erros.py`, acrescentar as categorias `ESTOQUE_IMPLAUSIVEL = "estoque_implausivel"` e `INTERNA = "interna"`, incluí-las em `CATEGORIAS` (agora nove) e criar `REPETIVEIS = (FONTE_INDISPONIVEL, ARQUIVOS_DESATUALIZADOS, ARQUIVO_INCOMPLETO, API_DEPUTADOS)`. Não repetem: `configuracao`, `formato_alterado`, `estoque_vazio`, `estoque_implausivel` e `interna` (research.md R6; `estoque_vazio` é decisão do plano, a ser refletida no FR-020 pelo `/speckit-analyze`). Não alterar `FalhaDeColeta`.
-- [ ] T002 [P] Em `config.toml`, acrescentar a tabela `[execucao]` com `tentativas = 4`, `espera_minutos = 30` e `limite_variacao_percentual = 20`, com um comentário por campo ("coletas por execução, contando a primeira"; "espera entre tentativas, em minutos"; "variação do estoque bruto acima da qual a execução falha, em %"). Os valores são os padrões de [data-model.md](data-model.md).
+- [X] T001 Em `src/monitor_comissoes/erros.py`, acrescentar as categorias `ESTOQUE_IMPLAUSIVEL = "estoque_implausivel"` e `INTERNA = "interna"`, incluí-las em `CATEGORIAS` (agora nove) e criar `REPETIVEIS = (FONTE_INDISPONIVEL, ARQUIVOS_DESATUALIZADOS, ARQUIVO_INCOMPLETO, API_DEPUTADOS)`. Não repetem: `configuracao`, `formato_alterado`, `estoque_vazio`, `estoque_implausivel` e `interna` (research.md R6; `estoque_vazio` é decisão do plano, a ser refletida no FR-020 pelo `/speckit-analyze`). Não alterar `FalhaDeColeta`.
+- [X] T002 [P] Em `config.toml`, acrescentar a tabela `[execucao]` com `tentativas = 4`, `espera_minutos = 30` e `limite_variacao_percentual = 20`, com um comentário por campo ("coletas por execução, contando a primeira"; "espera entre tentativas, em minutos"; "variação do estoque bruto acima da qual a execução falha, em %"). Os valores são os padrões de [data-model.md](data-model.md).
 
 ---
 
