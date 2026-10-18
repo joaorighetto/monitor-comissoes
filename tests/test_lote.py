@@ -1,5 +1,5 @@
 import csv
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -9,11 +9,13 @@ from monitor_comissoes.lote import (
     AUTORES_COLUNAS,
     PROPOSICOES_COLUNAS,
     PROPOSICOES_DATAS,
+    Lote,
     baixar_lote,
     ler_apensacao,
     ler_autores,
     ler_proposicoes,
     validar_arquivo,
+    verificar_frescor,
 )
 
 URL_BASE = "https://dadosabertos.camara.leg.br"
@@ -242,3 +244,48 @@ def test_arquivo_invalido_interrompe_o_download_do_lote(tmp_path, transporte):
 
     assert erro.value.categoria == ARQUIVO_INCOMPLETO
     assert "proposicoes-2023.csv" in erro.value.motivo
+
+
+# --- frescor e consistência entre os arquivos do lote --------------------------------------
+
+MINIMO = datetime(2026, 10, 17, 4, 30, tzinfo=UTC)
+AGORA_UTC = datetime(2026, 10, 17, 12, 0, tzinfo=UTC)
+
+
+def lote_com(minimo, maximo, tmp_path):
+    return Lote(
+        diretorio=tmp_path, anos=(2020,), last_modified_min=minimo, last_modified_max=maximo
+    )
+
+
+def test_last_modified_maximo_e_o_mais_recente(tmp_path, transporte):
+    transporte.last_modified["proposicoes-2023.csv"] = datetime(2026, 10, 17, 9, 0, tzinfo=UTC)
+
+    lote = baixar_lote(transporte, URL_BASE, 2022, 2024, tmp_path)
+
+    assert lote.last_modified_max == datetime(2026, 10, 17, 9, 0, tzinfo=UTC)
+    assert lote.last_modified_max >= lote.last_modified_min
+
+
+def test_diferenca_de_exatamente_6_horas_entre_os_arquivos_e_aceita(tmp_path):
+    verificar_frescor(lote_com(MINIMO, MINIMO + timedelta(hours=6), tmp_path), AGORA_UTC)
+
+
+def test_mais_de_6_horas_entre_os_arquivos_falha_com_mensagem_clara(tmp_path):
+    lote = lote_com(MINIMO, MINIMO + timedelta(hours=6, seconds=1), tmp_path)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar_frescor(lote, AGORA_UTC)
+
+    assert erro.value.categoria == "arquivos_desatualizados"
+    assert "momentos diferentes" in erro.value.motivo
+    assert "6 horas" in erro.value.motivo
+
+
+def test_idade_maxima_continua_valendo_com_arquivos_consistentes(tmp_path):
+    velho = AGORA_UTC - timedelta(hours=36, minutes=1)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar_frescor(lote_com(velho, velho, tmp_path), AGORA_UTC)
+
+    assert "a Câmara não atualizou os arquivos" in erro.value.motivo

@@ -5,7 +5,8 @@ import io
 import json
 import os
 import tempfile
-from datetime import timedelta
+from datetime import UTC, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 import pytest
@@ -267,3 +268,34 @@ def test_mesmo_transporte_sem_o_corte_gera_o_arquivo(tmp_path, agora, capsys):
 
     assert codigo == 0
     assert json.loads(saida.read_text(encoding="utf-8"))["meta"]["total_itens"] > 0
+
+
+# --- consistência entre os arquivos (regra de 6 horas) -------------------------------------
+
+
+def last_modified_mais_antigo():
+    manifesto = json.loads((FIXTURES / "manifesto.json").read_text(encoding="utf-8"))["arquivos"]
+    return min(
+        parsedate_to_datetime(a["last_modified"]).astimezone(UTC) for a in manifesto.values()
+    )
+
+
+def test_arquivos_gerados_em_momentos_diferentes(tmp_path, transporte, agora, capsys):
+    # Um arquivo de ontem e o resto de hoje: nenhum passa de 36 horas, mas a lista seria mista.
+    transporte.last_modified["proposicoes-2021.csv"] = last_modified_mais_antigo() + timedelta(
+        hours=6, minutes=1
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "arquivos_desatualizados", "momentos diferentes")
+
+
+def test_diferenca_de_6_horas_entre_os_arquivos_ainda_e_aceita(tmp_path, transporte, agora):
+    transporte.last_modified["proposicoes-2021.csv"] = last_modified_mais_antigo() + timedelta(
+        hours=6
+    )
+
+    codigo, _ = rodar(tmp_path, transporte, agora)
+
+    assert codigo == 0

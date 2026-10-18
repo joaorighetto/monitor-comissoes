@@ -80,7 +80,7 @@ Não há estado persistente entre execuções nesta feature. O único estado é 
 | `configuracao` | Valor inválido no `config.toml` | `ano_minimo deve ser um inteiro entre 1990 e 2026` |
 | `fonte_indisponivel` | Rede ou HTTP com erro depois das novas tentativas | `fonte indisponível: proposicoes-2024.csv (HTTP 503)` |
 | `formato_alterado` | Coluna ausente ou valor fora do formato | `formato alterado: coluna ultimoStatus_dataHora` |
-| `arquivos_desatualizados` | `Last-Modified` com mais de 36 horas | `a Câmara não atualizou os arquivos` |
+| `arquivos_desatualizados` | `Last-Modified` mais antigo com mais de 36 horas, ou mais de 6 horas entre o mais antigo e o mais novo | `a Câmara não atualizou os arquivos` ou `os arquivos da Câmara foram gerados em momentos diferentes` |
 | `arquivo_incompleto` | Arquivo vazio, sem linhas ou cortado | `arquivo incompleto: proposicoes-2025.csv` |
 | `api_deputados` | Falha ao obter os deputados do NOVO | `não foi possível obter os deputados do NOVO` |
 | `estoque_vazio` | Lista filtrada sem itens | `nenhum item após os filtros` |

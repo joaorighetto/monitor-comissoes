@@ -68,12 +68,13 @@ Quando a fonte está fora do ar, mudou de formato, está desatualizada, veio vaz
 1. **Dado** que a fonte não responde ou responde com erro depois das novas tentativas, **Quando** o comando roda, **Então** ele sai com erro dizendo que a fonte falhou, e o `atual.json` anterior não muda.
 2. **Dado** um arquivo da fonte sem uma coluna que a coleta usa, ou com tipo de dado inesperado, **Quando** o comando roda, **Então** ele sai com erro "formato alterado: coluna X", e o `atual.json` anterior não muda.
 3. **Dado** arquivos cuja data de modificação tem mais de 36 horas, **Quando** o comando roda, **Então** ele sai com erro "a Câmara não atualizou os arquivos", e o `atual.json` anterior não muda.
-4. **Dado** um arquivo de ano vazio ou ausente dentro do intervalo configurado, **Quando** o comando roda, **Então** ele sai com erro, e o `atual.json` anterior não muda.
-5. **Dado** um arquivo cujo tamanho recebido é menor que o informado pelo servidor, **Quando** o comando roda, **Então** ele sai com erro de arquivo incompleto, e o `atual.json` anterior não muda.
-6. **Dado** um arquivo cuja última linha está incompleta (faltam colunas), **Quando** o comando roda, **Então** ele sai com erro de arquivo incompleto, e o `atual.json` anterior não muda.
-7. **Dado** que a lista de deputados do NOVO não pôde ser obtida, **Quando** o comando roda, **Então** a execução inteira falha: não há publicação parcial só com `autoria NOVO`.
-8. **Dado** que, depois de aplicar os filtros, a lista de itens ficou vazia, **Quando** o comando roda, **Então** ele sai com erro, e o `atual.json` anterior não muda.
-9. **Dado** que o comando falhou no meio da gravação, **Quando** se examina `data/atual.json`, **Então** ele é o arquivo bom anterior ou o novo completo, nunca um arquivo pela metade.
+4. **Dado** arquivos cuja data de modificação mais recente passa em mais de 6 horas a mais antiga (por exemplo, parte dos anos já regenerada pela Câmara e parte não), **Quando** o comando roda, **Então** ele sai com erro "os arquivos da Câmara foram gerados em momentos diferentes", e o `atual.json` anterior não muda.
+5. **Dado** um arquivo de ano vazio ou ausente dentro do intervalo configurado, **Quando** o comando roda, **Então** ele sai com erro, e o `atual.json` anterior não muda.
+6. **Dado** um arquivo cujo tamanho recebido é menor que o informado pelo servidor, **Quando** o comando roda, **Então** ele sai com erro de arquivo incompleto, e o `atual.json` anterior não muda.
+7. **Dado** um arquivo cuja última linha está incompleta (faltam colunas), **Quando** o comando roda, **Então** ele sai com erro de arquivo incompleto, e o `atual.json` anterior não muda.
+8. **Dado** que a lista de deputados do NOVO não pôde ser obtida, **Quando** o comando roda, **Então** a execução inteira falha: não há publicação parcial só com `autoria NOVO`.
+9. **Dado** que, depois de aplicar os filtros, a lista de itens ficou vazia, **Quando** o comando roda, **Então** ele sai com erro, e o `atual.json` anterior não muda.
+10. **Dado** que o comando falhou no meio da gravação, **Quando** se examina `data/atual.json`, **Então** ele é o arquivo bom anterior ou o novo completo, nunca um arquivo pela metade.
 
 ---
 
@@ -130,7 +131,7 @@ Rodar o comando duas vezes sobre os mesmos dados de origem produz a mesma lista,
 - **FR-001**: O sistema DEVE obter, da fonte oficial da Câmara, os arquivos em lote de proposições e de autores de cada ano, do ano mínimo configurado até o ano corrente.
 - **FR-002**: O sistema DEVE validar cada arquivo obtido: resposta bem-sucedida, presença e tipo das colunas que a coleta usa, conteúdo não vazio e arquivo completo. O arquivo é considerado incompleto quando o tamanho recebido é menor que o informado pelo servidor ou quando a última linha tem colunas faltando. A feature NÃO exige número mínimo de linhas por ano.
 - **FR-003**: O sistema DEVE tentar de novo, um número limitado de vezes, as falhas temporárias de rede antes de declarar a fonte indisponível.
-- **FR-004**: O sistema DEVE verificar a data de modificação dos arquivos e falhar com "a Câmara não atualizou os arquivos" quando ela tiver mais de 36 horas.
+- **FR-004**: O sistema DEVE verificar a data de modificação dos arquivos e falhar com "a Câmara não atualizou os arquivos" quando a mais antiga tiver mais de 36 horas. DEVE também falhar, com "os arquivos da Câmara foram gerados em momentos diferentes", quando a diferença entre a data de modificação mais antiga e a mais recente passar de 6 horas, para que a lista nunca misture arquivos de dias diferentes.
 - **FR-005**: O sistema DEVE obter a lista de deputados do NOVO em exercício no dia, pela API da Câmara. Falha nessa obtenção DEVE falhar a execução inteira, sem resultado parcial. Também é falha da execução inteira: resposta sem o total anunciado (`X-Total-Count`), total entregue diferente do anunciado, lista vazia e link de paginação fora da API da Câmara.
 
 **Regras de inclusão (PRODUCT.md §5.1 a §5.5)**

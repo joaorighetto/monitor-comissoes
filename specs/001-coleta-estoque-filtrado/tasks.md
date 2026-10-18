@@ -216,3 +216,13 @@ US2 (apensados) → US3 (falhas) → US4 (configuração) → US5 (repetibilidad
 
 - [X] T046 Acrescentar a `tests/test_falhas.py` um teste de ponta a ponta com o `TransporteHttp` real e `abrir` falso (mover `RespostaFalsa` de `tests/test_transporte.py` para `tests/conftest.py`): um arquivo anunciado com `Content-Length` maior que o corpo termina com `FALHA [arquivo_incompleto]`, código 1 e `atual.json` anterior idêntico byte a byte; o mesmo `abrir` sem o corte termina com código 0 per FR-017 e US3 (partial)
 - [X] T047 Registrar em `spec.md` (FR-005 e FR-020) e em `data-model.md` os comportamentos hoje só em código e em `research.md`: falha se `X-Total-Count` faltar, se a lista de deputados vier vazia ou se o link de paginação sair da API da Câmara, e recusa de sigla de comissão com espaço no começo ou no fim per FR-005 e FR-020 (unrequested)
+
+---
+
+## Phase 10: Ajuste pós-revisão (decisão do mantenedor, 18/10/2026)
+
+**Decisão:** adotar a regra de diferença máxima entre os `Last-Modified` dos arquivos do lote (6 horas), para não gravar uma lista montada com arquivos de dias diferentes. Medido em 18/10/2026: os 48 arquivos têm 49 min 42 s de diferença, todos do mesmo dia.
+
+- [X] T048 Escrever os testes da regra: em `tests/test_lote.py` (`verificar_frescor` com `Lote` de `last_modified_max` exatamente 6 horas acima do mínimo passa; 6 horas e 1 segundo acima falha com `arquivos_desatualizados` e mensagem "momentos diferentes"; `baixar_lote` preenche `last_modified_max`) e em `tests/test_falhas.py` (ponta a ponta pelo comando, com o `atual.json` anterior intacto)
+- [X] T049 Implementar em `src/monitor_comissoes/lote.py`: campo `last_modified_max` em `Lote`, constante `DISPERSAO_MAXIMA = timedelta(hours=6)` e a checagem em `verificar_frescor`, reaproveitando a categoria `arquivos_desatualizados` (as sete categorias do contrato não mudam)
+- [X] T050 Registrar a regra em `PRODUCT.md` §7, `spec.md` (FR-004 e SC-003), `data-model.md`, `contracts/cli.md` e `research.md` (R14), e rodar a verificação completa

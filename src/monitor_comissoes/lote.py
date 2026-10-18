@@ -211,6 +211,7 @@ class Lote:
     diretorio: Path
     anos: tuple[int, ...]
     last_modified_min: datetime  # UTC; o mais antigo entre os arquivos
+    last_modified_max: datetime  # UTC; o mais recente entre os arquivos
 
     def proposicoes(self, ano: int) -> Path:
         return self.diretorio / f"proposicoes-{ano}.csv"
@@ -234,18 +235,44 @@ def baixar_lote(
             baixado = transporte.baixar(f"{url_base}/arquivos/{pasta}/csv/{nome}", diretorio / nome)
             validar_arquivo(baixado.caminho, colunas, datas)
             modificados.append(baixado.last_modified)
-    return Lote(diretorio=diretorio, anos=anos, last_modified_min=min(modificados))
+    return Lote(
+        diretorio=diretorio,
+        anos=anos,
+        last_modified_min=min(modificados),
+        last_modified_max=max(modificados),
+    )
 
 
 LIMITE_DE_IDADE = timedelta(hours=36)
+DISPERSAO_MAXIMA = timedelta(hours=6)
 
 
-def verificar_frescor(lote: Lote, agora: datetime, limite: timedelta = LIMITE_DE_IDADE) -> None:
-    """Falha se o arquivo mais antigo do lote foi gerado há mais de `limite` (PRODUCT.md §7)."""
+def verificar_frescor(
+    lote: Lote,
+    agora: datetime,
+    limite: timedelta = LIMITE_DE_IDADE,
+    dispersao_maxima: timedelta = DISPERSAO_MAXIMA,
+) -> None:
+    """Confere a idade do lote e se os arquivos vieram da mesma geração da Câmara.
+
+    1. Falha se o arquivo mais antigo foi gerado há mais de `limite` (PRODUCT.md §7).
+    2. Falha se a diferença entre o mais antigo e o mais novo passa de `dispersao_maxima`:
+       a Câmara regenera todos os arquivos todo dia, então uma diferença grande indica que a
+       coleta pegou a regeneração no meio e a lista misturaria dias.
+    """
     idade = agora - lote.last_modified_min
     if idade > limite:
         horas = int(idade.total_seconds() // 3600)
         raise FalhaDeColeta(
             ARQUIVOS_DESATUALIZADOS,
             f"a Câmara não atualizou os arquivos (o mais antigo tem {horas} horas)",
+        )
+    diferenca = lote.last_modified_max - lote.last_modified_min
+    if diferenca > dispersao_maxima:
+        horas = int(diferenca.total_seconds() // 3600)
+        maximo = int(dispersao_maxima.total_seconds() // 3600)
+        raise FalhaDeColeta(
+            ARQUIVOS_DESATUALIZADOS,
+            f"os arquivos da Câmara foram gerados em momentos diferentes "
+            f"({horas} horas entre o mais antigo e o mais novo; o limite é de {maximo} horas)",
         )

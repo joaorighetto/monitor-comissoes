@@ -37,7 +37,7 @@ Uma falha inesperada (erro de programação) também sai com código 1 e imprime
 1. Configuração (antes de qualquer rede).
 2. Deputados do NOVO (antes de baixar os arquivos grandes).
 3. Download e validação por ano.
-4. Frescor (`Last-Modified`).
+4. Frescor: idade do `Last-Modified` mais antigo (36 horas) e consistência entre os arquivos (no máximo 6 horas entre o mais antigo e o mais novo).
 5. Cálculo do estoque.
 6. Estoque vazio.
 7. Gravação atômica.
