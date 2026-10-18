@@ -4,6 +4,7 @@ import csv
 import io
 import json
 import os
+import re
 import tempfile
 from datetime import UTC, timedelta
 from email.utils import parsedate_to_datetime
@@ -243,6 +244,10 @@ def abrir_da_camara(arquivo_cortado=None):
 
     def abrir(requisicao, timeout=None):
         url = requisicao.full_url
+        por_id = re.search(r"/api/v2/(proposicoes|deputados)/(\d+)(/tramitacoes)?$", url)
+        if por_id:
+            pasta = "tramitacoes" if por_id.group(3) else "deputados"
+            return RespostaFalsa((FIXTURES / pasta / f"{por_id.group(2)}.json").read_bytes(), {})
         if "/deputados" in url:
             corpo = (FIXTURES / "deputados-novo.json").read_bytes()
             return RespostaFalsa(corpo, {"X-Total-Count": "5"})

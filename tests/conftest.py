@@ -103,6 +103,10 @@ class TransporteFalso:
         self.total_deputados = "5"
         self.transformar_json: dict[str, Callable[[bytes], bytes]] = {}
         self.erro_json: dict[str, FalhaDeColeta] = {}
+        # Para testes de OUTRAS regras que mudam as comissões ou os anos lidos, e por isso
+        # pedem tramitações de referências que não estão nas fixtures reais: serve uma
+        # tramitação neutra (órgão de apoio), o que deixa o relator indeterminado.
+        self.tramitacoes_sinteticas = False
 
     def obter_json(self, url: str) -> RespostaJson:
         self.pedidos.append(url)
@@ -120,6 +124,23 @@ class TransporteFalso:
         if chave in self.erro_json:
             raise self.erro_json[chave]
         arquivo = FIXTURES / f"{chave}.json"
+        if not arquivo.exists() and self.tramitacoes_sinteticas and tramitacoes:
+            corpo = json.dumps(
+                {
+                    "dados": [
+                        {
+                            "sequencia": 1,
+                            "dataHora": "2026-01-01T00:00",
+                            "siglaOrgao": "MESA",
+                            "codTipoTramitacao": "100",
+                            "descricaoTramitacao": "Apresentação de Proposição",
+                            "uriUltimoRelator": None,
+                        }
+                    ],
+                    "links": [],
+                }
+            ).encode()
+            return RespostaJson(corpo=corpo, cabecalhos={})
         assert arquivo.exists(), f"fixture ausente: {arquivo.relative_to(FIXTURES)} ({recurso})"
         corpo = arquivo.read_bytes()
         if chave in self.transformar_json:

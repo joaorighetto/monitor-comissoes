@@ -46,14 +46,14 @@
 - [X] T008 [P] [US1] Em `tests/test_relatoria.py` testar, com tramitações reais alteradas **dentro do teste**: ordenação por `sequencia` e não pela ordem da lista (embaralhar a lista); devolução (`507`) depois da designação; substituição NOVO → outro partido e outro → NOVO (spec US1, cenários 6 e 7); redesignação do mesmo deputado depois de `1250`/`1255`; `1250`/`1255` sem redesignação encerram a relatoria; saída e volta à comissão (C → outra comissão → C) com designação só na primeira passagem → sem relator; passagem por `MESA`/`CCP`/`PLEN` não zera.
 - [X] T009 [P] [US1] Em `tests/test_estoque.py` testar as etiquetas: `etiquetar` mantém a ordem `autoria NOVO`, `autor hoje no NOVO`, `relatoria NOVO`; item só de relatoria entra; item sem etiqueta de autoria e sem relator do NOVO não entra; item com autoria NOVO e relator de outro partido fica só com autoria.
 - [X] T010 [P] [US1] Em `tests/test_lote.py` testar `ler_ids_relator_novo(caminho, ids_deputados, comissoes)`: devolve os ids de linhas com `ultimoStatus_siglaOrgao` em `comissoes` e `id_relator` em `ids_deputados`, de qualquer tipo; ignora relator de outro partido e linhas fora das comissões.
-- [ ] T011 [US1] Em `tests/test_aceitacao.py` escrever os quatro casos de aceitação acima rodando a coleta completa sobre as fixtures com transporte falso (lote, `deputados-novo.json`, tramitações e `/deputados/{id}` salvos).
+- [X] T011 [US1] Em `tests/test_aceitacao.py` escrever os quatro casos de aceitação acima rodando a coleta completa sobre as fixtures com transporte falso (lote, `deputados-novo.json`, tramitações e `/deputados/{id}` salvos).
 
 ### Implementação
 
 - [X] T012 [US1] Criar `src/monitor_comissoes/relatoria.py` (sem I/O) com `RelatorAtual`, o resultado de três estados (com relator, sem relator, indeterminado com motivo) e `relator_atual(tramitacoes, comissao)` conforme a máquina de estados de `data-model.md` e a tabela de tipos de `research.md` R2: órgãos de apoio `{"MESA", "CCP", "PLEN"}` ignorados; mudança de órgão zera; `320` define pelo id da própria tramitação; `507`, `1250`, `1255` zeram; `170`, `322`, `501` mantêm; ordenar por `sequencia`. Fazer T007 e T008 passarem.
 - [X] T013 [US1] Em `src/monitor_comissoes/lote.py` implementar `ler_ids_relator_novo` (T010).
 - [X] T014 [US1] Em `src/monitor_comissoes/estoque.py` acrescentar `ETIQUETA_RELATORIA = "relatoria NOVO"`, fazer `etiquetar` receber o relator atual e atribuir a etiqueta quando `relator.id` está em `ids_deputados_novo`, e fazer `construir_itens` incluir os candidatos confirmados (T009).
-- [ ] T015 [US1] Em `src/monitor_comissoes/coleta.py`: passada de candidatos por relatoria (R3), `necessarias` ampliadas, referência de cada candidato e de cada item com etiqueta de autoria, **uma leitura de tramitações por referência na comissão** (`obter_tramitacoes` + `relator_atual`), `VERSAO_FORMATO = 2`. Fazer T011 passar.
+- [X] T015 [US1] Em `src/monitor_comissoes/coleta.py`: passada de candidatos por relatoria (R3), `necessarias` ampliadas, referência de cada candidato e de cada item com etiqueta de autoria, **uma leitura de tramitações por referência na comissão** (`obter_tramitacoes` + `relator_atual`), `VERSAO_FORMATO = 2`. Fazer T011 passar.
 
 **Checkpoint**: a etiqueta funciona nos quatro casos; `uv run pytest` verde.
 

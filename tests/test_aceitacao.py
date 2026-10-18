@@ -37,7 +37,7 @@ def documento(config, transporte, agora, tmp_path):
 def test_pl_1843_2022_tem_autoria_novo(documento):
     item = por_identificacao(documento)["PL 1843/2022"]
 
-    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
     assert item["comissao"] == "CE"
     assert item["situacao"] == "Aguardando Parecer"
     assert item["id"] == 2331032
@@ -73,7 +73,7 @@ def test_todo_item_tem_link_oficial_etiqueta_e_comissao_da_lista(documento):
     for item in documento["itens"]:
         assert item["link"] == f"https://www.camara.leg.br/propostas-legislativas/{item['id']}"
         assert item["etiquetas"]
-        assert set(item["etiquetas"]) <= {"autoria NOVO", "autor hoje no NOVO"}
+        assert set(item["etiquetas"]) <= {"autoria NOVO", "autor hoje no NOVO", "relatoria NOVO"}
         assert item["comissao"] in ("CE", "CREDN")
         assert item["tipo"] in ("PL", "PLP")
 
@@ -99,6 +99,39 @@ def test_comando_imprime_resumo_e_sai_com_zero(transporte, agora, tmp_path, caps
     assert linha.startswith("OK: ")
     assert "CE:" in linha and "CREDN:" in linha
     assert saida.exists()
+
+
+# --- REL US1: relatoria NOVO atual (PRODUCT.md §5.4) ------------------------------------------
+
+
+def test_pl_4501_2023_entra_so_por_relatoria_novo(documento):
+    # Autoria de Duarte Jr. (PSB); o relator atual na CE é Luiz Lima, hoje do NOVO.
+    item = por_identificacao(documento)["PL 4501/2023"]
+
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["comissao"] == "CE"
+    assert item["relator"]["id"] == 204455
+    assert item["relator"]["nome"] == "Luiz Lima"
+    assert item["relator"]["partido_hoje"] == "NOVO"
+    assert item["relator"]["designado_em"] == "2025-04-09T00:00:00"
+    assert item["relator"]["fonte"].endswith("/2388105")
+    assert item["relator_indeterminado"] is None
+
+
+def test_pl_937_2022_fica_fora_porque_o_relator_do_novo_devolveu_a_materia(documento):
+    assert "PL 937/2022" not in por_identificacao(documento)
+
+
+def test_pl_3514_2023_fica_fora_porque_o_relator_do_novo_era_da_cespo(documento):
+    assert "PL 3514/2023" not in por_identificacao(documento)
+
+
+def test_pl_1843_2022_tem_autoria_e_relatoria(documento):
+    item = por_identificacao(documento)["PL 1843/2022"]
+
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
+    assert item["relator"]["nome"] == "Adriana Ventura"
+    assert item["relator"]["partido_hoje"] == "NOVO"
 
 
 # --- US2: apensados ------------------------------------------------------------------------
@@ -149,7 +182,9 @@ def test_apensado_a_uma_raiz_na_comissao_entra_com_status_da_raiz(
 
     item = por_identificacao(gerar(config, transporte, agora, tmp_path))["PL 4047/2019"]
 
-    assert item["etiquetas"] == ["autor hoje no NOVO"]
+    # Apensado herda o relator da principal: a relatora do PL 1843/2022 é do NOVO (REL, US2).
+    assert item["etiquetas"] == ["autor hoje no NOVO", "relatoria NOVO"]
+    assert item["relator"]["nome"] == "Adriana Ventura"
     assert item["apensado_a"]["identificacao"] == "PL 1843/2022"
     assert item["apensado_a"]["link"].endswith(f"/{PL_1843_2022}")
     assert item["comissao"] == "CE"
@@ -187,6 +222,7 @@ def test_ciclo_de_apensacao_termina_normalmente_com_a_marca(config, transporte, 
 
 def test_trocar_a_comissao_muda_o_resultado_sem_mexer_no_codigo(transporte, agora, tmp_path):
     # O PL 7843/2017 (autoria do NOVO) está na MESA nas fixtures reais.
+    transporte.tramitacoes_sinteticas = True  # tramitações reais só existem para a CE e a CREDN
     documento = gerar(Config(("MESA",), 2003), transporte, agora, tmp_path)
 
     identificacoes = set(por_identificacao(documento))
@@ -204,6 +240,7 @@ def test_so_a_ce_exclui_os_itens_da_credn(config, transporte, agora, tmp_path):
 
 
 def test_ano_minimo_limita_os_arquivos_pedidos(transporte, agora, tmp_path):
+    transporte.tramitacoes_sinteticas = True  # sem os anos antigos, as referências são outras
     documento = gerar(Config(("CE", "CREDN"), 2023), transporte, agora, tmp_path)
 
     pedidos = transporte.arquivos_pedidos()
@@ -287,7 +324,7 @@ def test_meta_traz_origem_e_parametros_na_ordem_do_contrato(documento):
     meta = documento["meta"]
 
     assert list(meta) == ORDEM_DO_META
-    assert meta["versao_formato"] == 1
+    assert meta["versao_formato"] == 2
     assert meta["comissoes"] == ["CE", "CREDN"]
     assert meta["ano_minimo"] == 2003
     assert meta["anos_lidos"] == [2003, 2026]

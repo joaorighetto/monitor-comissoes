@@ -765,9 +765,10 @@ class TransporteIntermitente(TransporteFalso):
         self._falha_da_coleta = None
 
     def obter_json(self, url):
-        # A API de deputados é a primeira chamada de cada coleta.
-        self.coletas += 1
-        self._falha_da_coleta = self.falhas.pop(0) if self.falhas else None
+        # A lista de deputados do NOVO é a primeira chamada de cada coleta.
+        if url.endswith("siglaPartido=NOVO&itens=100"):
+            self.coletas += 1
+            self._falha_da_coleta = self.falhas.pop(0) if self.falhas else None
         return super().obter_json(url)
 
     def baixar(self, url, destino):
