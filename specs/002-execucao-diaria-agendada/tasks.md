@@ -167,11 +167,11 @@ description: "Tarefas da feature AGE — Execução diária agendada"
 
 **Purpose**: fechar a feature sem aumentar o escopo.
 
-- [ ] T031 Rodar `uv run ruff format .` e `uv run ruff check .`, corrigir o que apontarem nos arquivos desta feature e conferir que **nenhum teste existente da COL foi editado** (`git diff --stat` não mostra mudança em `tests/test_aceitacao.py`, `test_falhas.py`, `test_lote.py`, `test_transporte.py`, `test_saida.py`, `test_deputados.py`, `test_estoque.py` nem `test_sem_rede.py`; `tests/test_config.py` só ganha casos).
-- [ ] T032 Rodar a verificação completa (`uv run ruff check . && uv run ruff format --check . && uv run pytest`) e **mostrar a saída**. A suíte inteira, inclusive a da COL, deve passar sem rede (SC-006).
-- [ ] T033 Executar os passos 1 a 3 de [quickstart.md](quickstart.md) e conferir o resultado esperado de cada um. Os passos 4 a 6 (workflow real no GitHub e as 60 dias) dependem do merge e ficam para o fechamento.
-- [ ] T034 Conferir os limites da spec (FR-030, FR-031, SC-009): nenhuma menção a Telegram, página, GitHub Pages, relatoria ou `data/mudancas/` no código e no workflow; nenhum segredo; o formato do `atual.json` e o comando da COL idênticos aos de antes (`git diff` de `contracts/atual-json.md` e `contracts/cli.md` da COL vazio).
-- [ ] T035 **Não alterar o `ROADMAP.md` aqui.** A linha AGE está `em andamento`; ela só vira `concluída` depois da verificação completa, dos casos de aceitação e do merge, por pedido do mantenedor (CLAUDE.md, "Status no ROADMAP.md").
+- [X] T031 Rodar `uv run ruff format .` e `uv run ruff check .`, corrigir o que apontarem nos arquivos desta feature e conferir que **nenhum teste existente da COL foi editado** (`git diff --stat` não mostra mudança em `tests/test_aceitacao.py`, `test_falhas.py`, `test_lote.py`, `test_transporte.py`, `test_saida.py`, `test_deputados.py`, `test_estoque.py` nem `test_sem_rede.py`; `tests/test_config.py` só ganha casos).
+- [X] T032 Rodar a verificação completa (`uv run ruff check . && uv run ruff format --check . && uv run pytest`) e **mostrar a saída**. A suíte inteira, inclusive a da COL, deve passar sem rede (SC-006).
+- [X] T033 Executar os passos 1 a 3 de [quickstart.md](quickstart.md) e conferir o resultado esperado de cada um. Os passos 4 a 6 (workflow real no GitHub e as 60 dias) dependem do merge e ficam para o fechamento.
+- [X] T034 Conferir os limites da spec (FR-030, FR-031, SC-009): nenhuma menção a Telegram, página, GitHub Pages, relatoria ou `data/mudancas/` no código e no workflow; nenhum segredo; o formato do `atual.json` e o comando da COL idênticos aos de antes (`git diff` de `contracts/atual-json.md` e `contracts/cli.md` da COL vazio).
+- [X] T035 **Não alterar o `ROADMAP.md` aqui.** A linha AGE está `em andamento`; ela só vira `concluída` depois da verificação completa, dos casos de aceitação e do merge, por pedido do mantenedor (CLAUDE.md, "Status no ROADMAP.md").
 
 ---
 
