@@ -190,7 +190,7 @@ Duas execuções sobre os mesmos dados dão a mesma lista, na mesma ordem. Cada 
 - **SC-004**: Em 100% dos cenários de falha de leitura da User Story 4 (cenários 1 a 3), o comando termina com erro, a mensagem diz o motivo, e o `atual.json` anterior permanece idêntico byte a byte. Nos cenários 4 e 5 (relator indeterminado), 100% dos itens afetados levam a marca e nenhum deixa de aparecer.
 - **SC-005**: Duas execuções sobre as mesmas fixtures produzem itens idênticos, na mesma ordem.
 - **SC-006**: A suíte inteira (ruff e pytest) passa sem acesso à internet.
-- **SC-007**: Na conferência manual contra a sondagem de 17/10/2026 (34 candidatos pelo "último relator", dos quais vários só por relator histórico), o total de itens com `relatoria NOVO` é menor ou igual a esse número, e cada diferença é explicável item a item pelas tramitações.
+- **SC-007**: Na conferência manual contra a sondagem de 17/10/2026 (34 PL/PLP nas comissões com o "último relator" do NOVO, vários só por relator histórico), os candidatos confirmados pelas tramitações, contados **por referência**, são no máximo esses 34, e cada diferença é explicável item a item pelas tramitações. Os apensados que herdam o relator da principal (D4) são itens à parte e não entram nessa conta. *(Redação ajustada em 18/10/2026, com o OK do mantenedor: a original media o total de itens e ignorava a herança, que a própria REL introduz.)*
 - **SC-008**: Nenhum item entra ou sai por regra que o `PRODUCT.md` não descreva (constituição, princípio II).
 
 ## Assumptions

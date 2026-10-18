@@ -64,6 +64,8 @@ Outra situação ainda não coberta pelos dados reais: designação (`320`) sem 
 
 **Volume:** referências lidas = referências de todos os itens com etiqueta de autoria (spec, clarify 1) ∪ referências dos candidatos. Hoje, algo como 25 + 10 a 30. Mais as consultas de partido (R4). Tudo sequencial, com as novas tentativas do transporte.
 
+**Conferência do SC-007, item a item (18/10/2026, fixtures reais e execução real):** as linhas PL/PLP na CE e na CREDN cujo último relator registrado no lote é deputado do NOVO são **34**, o mesmo número da sondagem. Dessas, **32** são confirmadas pelas tramitações e viram item com `relatoria NOVO`. As **2** não confirmadas são o **PL 937/2022** (o relator Luiz Lima devolveu a matéria sem manifestação em 20/05/2026) e o **PL 3514/2023** (o relator foi designado na CESPO e a matéria está na CREDN sem designação). Os outros 52 itens com `relatoria NOVO` (84 no total) são apensados que herdam o relator da principal e não estão entre as 34 linhas.
+
 **Medição real (18/10/2026, `uv run python -m monitor_comissoes`):** 105 itens (CE 96, CREDN 9), 54 consultas de tramitações e 14 de `/deputados/{id}`, execução inteira em 3 min 55 s (inclui o download do lote). Os 105 itens: 46 não apensados (a sondagem contou 48 sem apensados) e 59 apensados, 44 deles à raiz PL 3961/2004, cuja relatora é Adriana Ventura. A sondagem de 17/10 (56 itens) contava o relator do último status de cada apensado, que fica congelado; a herança da relatoria da principal (D4) é o que faz o total subir. Nenhum item ficou com relator indeterminado.
 
 **Alternativa rejeitada:** ler tramitações de todas as referências do estoque bruto (≈1.500 chamadas por dia, sem ganho porque o candidato já vem do lote).
