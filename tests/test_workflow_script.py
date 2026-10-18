@@ -26,13 +26,21 @@ case "$3" in
   executar)
     case "$FAKE_MODO" in
       ok)
-        mkdir -p data
+        mkdir -p data/mudancas
         echo '{"atual": "novo"}' > data/atual.json
+        echo '{"mudancas": "novo"}' > data/mudancas/2000-01-01.json
+        [ -n "$FAKE_ROTACIONA" ] && echo '{"anterior": "ontem-rotacionado"}' > data/anterior.json
         echo '{"status": "ok"}' > data/status.json
         exit 0 ;;
       falha)
         mkdir -p data
         [ -n "$FAKE_SUJAR_ATUAL" ] && echo '{"atual": "sujo"}' > data/atual.json
+        if [ -n "$FAKE_SUJAR_TUDO" ]; then
+          mkdir -p data/mudancas
+          echo '{"anterior": "sujo"}' > data/anterior.json
+          echo '{"mudancas": "sujo"}' > data/mudancas/2000-01-01.json
+          echo '{"mudancas": "novo-e-sujo"}' > data/mudancas/2000-01-02.json
+        fi
         echo '{"status": "falha"}' > data/status.json
         exit 1 ;;
       morre) exit 1 ;;
@@ -75,6 +83,10 @@ class Ambiente:
             (self.trabalho / "data").mkdir()
             (self.trabalho / "data" / "atual.json").write_text('{"atual": "ontem"}\n')
             (self.trabalho / "data" / "status.json").write_text('{"status": "ontem"}\n')
+            (self.trabalho / "data" / "anterior.json").write_text('{"anterior": "anteontem"}\n')
+            (self.trabalho / "data" / "mudancas").mkdir()
+            (self.trabalho / "data" / "mudancas" / "1999-12-31.json").write_text('{"m": 1}\n')
+            (self.trabalho / "data" / "mudancas" / "2000-01-01.json").write_text('{"m": 2}\n')
         git("add", "-A", cwd=self.trabalho)
         git("commit", "-q", "-m", "semente", cwd=self.trabalho)
         git("remote", "add", "origin", str(self.remoto), cwd=self.trabalho)
@@ -93,7 +105,15 @@ class Ambiente:
         git("config", "user.email", "bot@example.invalid", cwd=pasta)
         git("config", "commit.gpgsign", "false", cwd=pasta)
 
-    def rodar(self, modo: str, *, sujar_atual: bool = False, aceitar: str = "false"):
+    def rodar(
+        self,
+        modo: str,
+        *,
+        sujar_atual: bool = False,
+        sujar_tudo: bool = False,
+        rotaciona: bool = False,
+        aceitar: str = "false",
+    ):
         script = self.raiz / "passo.sh"
         script.write_text(script_do_passo(), encoding="utf-8")
         ambiente = {
@@ -103,8 +123,12 @@ class Ambiente:
             "GITHUB_REF_NAME": "main",
             "ACEITAR_VARIACAO": aceitar,
         }
-        if sujar_atual:
+        if sujar_atual or sujar_tudo:
             ambiente["FAKE_SUJAR_ATUAL"] = "1"
+        if sujar_tudo:
+            ambiente["FAKE_SUJAR_TUDO"] = "1"
+        if rotaciona:
+            ambiente["FAKE_ROTACIONA"] = "1"
         # Como o Actions executa `shell: bash`.
         return subprocess.run(
             ["bash", "--noprofile", "--norc", "-eo", "pipefail", str(script)],
@@ -145,11 +169,16 @@ def primeiro_dia(tmp_path):
     return Ambiente(tmp_path, com_dados_previos=False)
 
 
-def test_sucesso_commita_os_dois_arquivos_e_empurra(com_dados):
+def test_sucesso_commita_atual_status_e_o_arquivo_de_mudancas_e_empurra(com_dados):
     resultado = com_dados.rodar("ok")
 
     assert resultado.returncode == 0, resultado.stderr
-    assert com_dados.arquivos_do_ultimo_commit() == ["data/atual.json", "data/status.json"]
+    # Sem rotação, o anterior.json não muda e fica de fora do commit.
+    assert com_dados.arquivos_do_ultimo_commit() == [
+        "data/atual.json",
+        "data/mudancas/2000-01-01.json",
+        "data/status.json",
+    ]
     assert com_dados.mensagem_do_ultimo_commit() == "dados: teste ok"
     assert com_dados.no_remoto("data/atual.json") == '{"atual": "novo"}\n'
 
@@ -248,3 +277,55 @@ def test_a_confirmacao_so_vira_flag_quando_a_variavel_e_true(com_dados, entrada,
     chamadas = com_dados.log.read_text(encoding="utf-8")
     executar = next(linha for linha in chamadas.splitlines() if "executar" in linha)
     assert ("--aceitar-variacao" in executar) is passa
+
+
+def test_sucesso_com_rotacao_commita_os_quatro_arquivos(com_dados):
+    resultado = com_dados.rodar("ok", rotaciona=True)
+
+    assert resultado.returncode == 0, resultado.stderr
+    assert com_dados.arquivos_do_ultimo_commit() == [
+        "data/anterior.json",
+        "data/atual.json",
+        "data/mudancas/2000-01-01.json",
+        "data/status.json",
+    ]
+    assert com_dados.no_remoto("data/anterior.json") == '{"anterior": "ontem-rotacionado"}\n'
+
+
+def test_sucesso_no_primeiro_dia_nao_tropeca_na_falta_do_anterior(primeiro_dia):
+    resultado = primeiro_dia.rodar("ok")
+
+    assert resultado.returncode == 0, resultado.stderr
+    assert primeiro_dia.arquivos_do_ultimo_commit() == [
+        "data/atual.json",
+        "data/mudancas/2000-01-01.json",
+        "data/status.json",
+    ]
+    assert primeiro_dia.no_remoto("data/anterior.json") is None
+
+
+def test_falha_restaura_atual_e_anterior_e_os_arquivos_de_mudancas(com_dados):
+    resultado = com_dados.rodar("falha", sujar_tudo=True)
+
+    assert resultado.returncode == 1
+    assert com_dados.arquivos_do_ultimo_commit() == ["data/status.json"]
+    pasta = com_dados.trabalho / "data"
+    assert (pasta / "atual.json").read_text() == '{"atual": "ontem"}\n'
+    assert (pasta / "anterior.json").read_text() == '{"anterior": "anteontem"}\n'
+    # O arquivo de mudanças do mesmo dia, já rastreado, volta ao que o Git tem.
+    assert (pasta / "mudancas" / "2000-01-01.json").read_text() == '{"m": 2}\n'
+    # O arquivo novo, ainda não rastreado, é descartado: nem no disco, nem no remoto.
+    assert not (pasta / "mudancas" / "2000-01-02.json").exists()
+    assert com_dados.no_remoto("data/mudancas/2000-01-02.json") is None
+    assert com_dados.no_remoto("data/mudancas/1999-12-31.json") == '{"m": 1}\n'
+
+
+def test_falha_no_primeiro_dia_descarta_a_pasta_de_mudancas_nova(primeiro_dia):
+    resultado = primeiro_dia.rodar("falha", sujar_tudo=True)
+
+    assert resultado.returncode == 1
+    assert primeiro_dia.arquivos_do_ultimo_commit() == ["data/status.json"]
+    assert not (primeiro_dia.trabalho / "data" / "mudancas").exists()  # o clean levou a pasta nova
+    assert primeiro_dia.no_remoto("data/atual.json") is None
+    assert primeiro_dia.no_remoto("data/anterior.json") is None
+    assert primeiro_dia.no_remoto("data/mudancas/2000-01-02.json") is None

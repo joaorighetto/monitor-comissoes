@@ -116,24 +116,39 @@ def linhas_do_passo() -> list[str]:
     return [linha.strip() for linha in passo_de_coleta().splitlines() if linha.strip()]
 
 
-def test_em_falha_restaura_o_atual_antes_de_commitar():
+def test_em_falha_restaura_cada_arquivo_de_dados_antes_de_commitar():
     linhas = linhas_do_passo()
 
     se = linhas.index('if [ "$codigo" -ne 0 ]; then')
-    assert linhas[se + 1] == "git checkout -- data/atual.json || true"
-    assert linhas[se + 2] == "fi"
+    # Um `git checkout --` por caminho, cada um com `|| true`: um caminho que o Git não conhece
+    # (primeiro dia, ou arquivo novo) faria o comando inteiro abortar se fosse tudo de uma vez.
+    assert linhas[se + 1 : se + 6] == [
+        "git checkout -- data/atual.json || true",
+        "git checkout -- data/anterior.json || true",
+        "git checkout -- data/mudancas || true",
+        "git clean -fdq -- data/mudancas || true",
+        "fi",
+    ]
 
 
-def test_status_e_sempre_adicionado_e_o_atual_so_no_ramo_de_sucesso():
+def test_status_e_sempre_adicionado_e_os_dados_so_no_ramo_de_sucesso():
     linhas = linhas_do_passo()
 
     assert [linha for linha in linhas if linha.startswith("git add")] == [
         "git add data/status.json",
         "git add data/atual.json",
+        "git add data/mudancas",
+        "git add data/anterior.json",
     ]
     se = linhas.index('if [ "$codigo" -eq 0 ]; then')
-    assert linhas[se + 1] == "git add data/atual.json"
-    assert linhas[se + 2] == "fi"
+    assert linhas[se + 1 : se + 7] == [
+        "git add data/atual.json",
+        "git add data/mudancas",
+        "if [ -e data/anterior.json ]; then",
+        "git add data/anterior.json",
+        "fi",
+        "fi",
+    ]
     assert linhas.index("git add data/status.json") < se
 
 
@@ -179,3 +194,10 @@ def test_a_entrada_nao_e_interpolada_dentro_do_script():
 
 def test_duas_execucoes_nao_rodam_ao_mesmo_tempo():
     assert blocos(texto(), "concurrency") == [["group: coleta-diaria", "cancel-in-progress: false"]]
+
+
+def test_gitignore_ignora_temporarios_em_qualquer_pasta_de_dados():
+    linhas = (Path(__file__).parent.parent / ".gitignore").read_text(encoding="utf-8").splitlines()
+
+    # Os temporários de `gravar_todos` ficam ao lado de cada destino, inclusive em data/mudancas/.
+    assert "data/**/*.tmp" in linhas
