@@ -73,7 +73,7 @@ O item entra na lista se tiver ao menos uma etiqueta, ou se for candidato à rel
 | `autor hoje no NOVO` | Algum autor (`idDeputadoAutor`) está entre os deputados em exercício do NOVO no dia | `/api/v2/deputados?siglaPartido=NOVO` |
 | `relatoria NOVO` | O **relator atual** da referência está entre os deputados em exercício do NOVO no dia | Tramitações da referência e a mesma lista de deputados |
 
-**Relator atual** é o deputado designado relator na comissão em que a referência está, na passagem mais recente dela por essa comissão, e que não deixou de sê-lo depois disso. Deixam de ser relator a devolução da matéria sem manifestação, a substituição por nova designação e a saída do relator da comissão. Designação feita em passagem anterior da matéria por essa comissão não vale. O campo `uriUltimoRelator` aponta para um candidato, que só é confirmado pelas tramitações. O partido considerado é o de hoje, não o da data da designação.
+**Relator atual** é o deputado designado relator na comissão em que a referência está, na passagem mais recente dela por essa comissão, e que não deixou de sê-lo depois disso. Deixam de ser relator a devolução da matéria sem manifestação, a substituição por nova designação e a saída do relator da comissão. Designação feita em passagem anterior da matéria por essa comissão não vale. Como a situação, o relator vale até a sequência do último status do lote: uma designação ou devolução lançada depois entra no dia seguinte (decidido pelo mantenedor em 18/10/2026). O campo `uriUltimoRelator` aponta para um candidato, que só é confirmado pelas tramitações. O partido considerado é o de hoje, não o da data da designação.
 
 Quando as tramitações não permitem decidir quem é o relator atual (designação sem relator identificado, tipo de tramitação de relatoria desconhecido, ou a matéria já estar em outro órgão na API), o item leva a marca **"relator indeterminado"** e não ganha nem perde `relatoria NOVO`. Um candidato à relatoria NOVO (o relator registrado no último status é do NOVO) nessa situação entra na lista com a marca, para que nada suma em silêncio. Erro de rede, resposta malformada ou incompleta das APIs continua falhando a execução inteira (§7).
 
@@ -100,7 +100,7 @@ O retrato de hoje é comparado com o anterior pela chave `id` da proposição.
 |---|---|---|
 | Entrou | O id não estava no retrato anterior | Chegou à comissão, ou ganhou uma etiqueta |
 | Saiu | O id não está no retrato de hoje | Foi para outro órgão (qual); chegou a uma situação final (aprovado, transformado em norma, arquivado, com menção ao art. 105 quando for o caso); foi apensado a uma proposição fora da lista; ou perdeu as etiquetas |
-| Situação | A situação da referência mudou | De → para |
+| Situação | A situação da referência mudou, ou o item mudou de comissão sem sair da lista | De → para, e a comissão anterior |
 | Relator | O relator atual mudou | Designado, devolveu ou foi substituído |
 | Parecer | Houve tramitação de parecer do relator no período | Link para a ficha |
 | Etiquetas | O item ganhou ou perdeu uma etiqueta e continua na lista | Qual etiqueta |
@@ -127,6 +127,7 @@ O retrato de hoje é comparado com o anterior pela chave `id` da proposição.
   Uma situação fora da tabela não é erro: o motivo vira "foi para outro órgão", e o destino traz a situação.
 - **Entrou:** "chegou à comissão" se a passagem mais recente da referência pela comissão começou no dia do lote anterior ou depois; senão "ganhou etiqueta", dizendo qual; se o item não tem etiqueta (candidato com relator indeterminado), "não determinado". Passagem tem a definição da relatoria (§5.4): a Mesa, a CCP e o Plenário nunca iniciam passagem, então uma ida e volta pela Mesa não é chegada nova.
 - **Parecer** é a tramitação "Parecer do(a) Relator(a)" no órgão da comissão do item. A leitura e a aprovação do parecer não geram evento.
+- **Item que muda de comissão e continua na lista** (por exemplo, da CE para a CREDN) gera um evento de **situação**, que traz a comissão anterior mesmo quando o texto da situação não mudou (decidido pelo mantenedor em 18/10/2026).
 - **Relator indeterminado** em um dos retratos não gera evento de relator. O arquivo registra que a comparação de relator não foi possível para o item.
 - **Sem teto:** o arquivo registra todos os eventos. O teto e o "e mais N" são do resumo e da página.
 - Uma mudança de sequência que não altera situação, relator, parecer nem etiquetas não gera evento (as tramitações só acompanham os eventos). Registrar, por exemplo, pedido de vista e retirada de pauta é a feature futura MOV.

@@ -182,6 +182,7 @@
 - [X] T041 [P] Atualizar `tests/fixtures/camara/README.md` com o que é real e o que é derivado dentro do teste nos casos da MUD.
 - [X] T042 Rodar a verificação completa e mostrar a saída: `uv run ruff check . && uv run ruff format --check . && uv run pytest`. Corrigir o que aparecer, com commits pequenos.
 - [X] T043 Conferir os casos de aceitação do `ROADMAP.md` para a MUD, um a um, indicando o teste que cobre cada um: (1) `data/mudancas/AAAA-MM-DD.json` lista entrou, saiu (com motivo e destino), situação, relator, parecer e etiquetas, com todas as tramitações desde o retrato anterior (T020, T025 a T027, T030); (2) o primeiro dia registra "linha de base" (T010, T011); (3) motivo "arquivado, art. 105" (T020); (4) testes com retratos sintéticos (todos). Conferir o "Não inclui" (envio, página): nenhum módulo de Telegram, HTML ou teto de eventos foi criado (`git diff --stat` contra a base).
+- [X] T045 Revisão independente, rodada 1 (decisões do mantenedor de 18/10/2026): ler as tramitações uma só vez por coleta e acrescentar `\b` ao padrão do art. 105; o relator vale até a sequência do lote (teste: designação lançada depois do lote não muda `atual.json` nem o arquivo do dia); evento `situação` também quando o item muda de comissão (`comissao_de`); recuperação manual de `formato_alterado` por sequência inconsistente no `quickstart.md` (§3.1); PRODUCT §5.6 e spec (FR-008) emendados.
 - [ ] T044 Roteiro manual da seção 2 do `quickstart.md` (precisa de rede, cerca de 1 GB) — **a executar pelo mantenedor ou com o OK dele**; registrar o resultado no relatório final, **inclusive o tempo medido da execução** contra a meta do plano (menos de 2 minutos a mais em dia comum). Não faz parte da suíte.
 
 **Não fazer nesta feature**: alterar a coluna Status do `ROADMAP.md` para `concluída`. Isso só acontece depois da verificação completa, dos casos de aceitação **e do OK do mantenedor com o merge** (CLAUDE.md). Já está `em andamento`.
@@ -217,4 +218,4 @@
 
 ## Totais
 
-44 tarefas: Fase 1: 2 · Fase 2: 6 · Fase 3 (US3): 9 · Fase 4 (US1): 7 · Fase 5 (US2): 6 · Fase 6 (US4): 3 · Fase 7 (US5): 3 · Fase 8 (US6): 2 · Fase 9: 6. Testes são escritos antes da implementação em cada fase; a única tarefa que pode usar rede é T002 (e só se o inventário T001 achar falta); T044 é conferência manual fora da suíte.
+45 tarefas: Fase 1: 2 · Fase 2: 6 · Fase 3 (US3): 9 · Fase 4 (US1): 7 · Fase 5 (US2): 6 · Fase 6 (US4): 3 · Fase 7 (US5): 3 · Fase 8 (US6): 2 · Fase 9: 7. Testes são escritos antes da implementação em cada fase; a única tarefa que pode usar rede é T002 (e só se o inventário T001 achar falta); T044 é conferência manual fora da suíte.

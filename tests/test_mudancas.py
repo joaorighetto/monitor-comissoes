@@ -41,7 +41,11 @@ def um(tipo, id=1, comissao="CE", **proprios):
             "destino": {"orgao": "CFT", "situacao": "Aguardando Parecer", "apensado_a": None},
             "outros_fatos": [],
         },
-        "situacao": {"de": "Aguardando Parecer", "para": "Pronta para Pauta"},
+        "situacao": {
+            "de": "Aguardando Parecer",
+            "para": "Pronta para Pauta",
+            "comissao_de": comissao,
+        },
         "relator": {"mudanca": "designado", "de": None, "para": RELATOR},
         "parecer": {},
         "etiquetas": {"ganhou": ["relatoria NOVO"], "perdeu": []},
@@ -142,7 +146,7 @@ def test_cada_tipo_de_evento_tem_os_campos_comuns_e_os_proprios_na_ordem_do_cont
     assert CAMPOS_PROPRIOS == {
         "entrou": ("motivo", "etiquetas"),
         "saiu": ("motivo", "destino", "outros_fatos"),
-        "situacao": ("de", "para"),
+        "situacao": ("de", "para", "comissao_de"),
         "relator": ("mudanca", "de", "para"),
         "parecer": (),
         "etiquetas": ("ganhou", "perdeu"),
@@ -342,6 +346,28 @@ def test_relator_com_mudanca_incoerente_falha():
     ):
         documento = arquivo(eventos=[um("relator", **proprios)])
         invalido(documento, "relator")
+
+
+def test_situacao_sem_nenhuma_mudanca_de_situacao_ou_de_comissao_falha():
+    documento = arquivo(eventos=[um("situacao", de="Pronta para Pauta", para="Pronta para Pauta")])
+
+    invalido(documento, "situacao")
+
+
+def test_situacao_so_com_troca_de_comissao_e_valida():
+    documento = arquivo(
+        eventos=[
+            um(
+                "situacao",
+                comissao="CREDN",
+                comissao_de="CE",
+                de="Aguardando Parecer",
+                para="Aguardando Parecer",
+            )
+        ]
+    )
+
+    validar_arquivo(documento)
 
 
 def test_etiquetas_sem_ganho_nem_perda_falha():
@@ -1061,6 +1087,30 @@ def test_situacao_de_para_com_o_texto_exato_e_sem_consulta_se_a_sequencia_nao_mu
     assert (mudanca["de"], mudanca["para"]) == ("Aguardando Parecer", "Pronta para Pauta")
     assert mudanca["tramitacoes"] == [] and fonte.consultas == []
     assert dos_tipos(documento) == ["situacao"]
+
+
+def test_troca_de_comissao_na_lista_gera_o_evento_situacao_com_a_comissao_anterior():
+    a = s.item(1, sequencia=41, comissao="CE", situacao="Aguardando Designação de Relator(a)")
+    h = s.item(1, sequencia=43, comissao="CREDN", situacao="Aguardando Designação de Relator(a)")
+    lista = {1: [t(n) for n in range(40, 46)]}
+
+    documento, fonte = mantidos(a, h, lista)
+
+    [mudanca] = so(documento, "situacao")
+    assert mudanca["comissao"] == "CREDN" and mudanca["comissao_de"] == "CE"
+    assert mudanca["de"] == mudanca["para"] == "Aguardando Designação de Relator(a)"
+    assert sequencias(mudanca) == [42, 43]
+    assert dos_tipos(documento) == ["situacao"]
+
+
+def test_situacao_sem_troca_de_comissao_traz_a_mesma_comissao_em_comissao_de():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=41, situacao="Pronta para Pauta")
+
+    documento, _ = mantidos(a, h)
+
+    [mudanca] = so(documento, "situacao")
+    assert mudanca["comissao_de"] == mudanca["comissao"] == "CE"
 
 
 def test_situacao_com_sequencia_nova_traz_todas_as_tramitacoes_do_intervalo():

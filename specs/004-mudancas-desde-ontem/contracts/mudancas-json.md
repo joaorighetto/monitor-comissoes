@@ -79,7 +79,9 @@ Um item que estava na lista só como candidato com relator indeterminado (sem et
 
 ### `situacao`
 
-`{"de": "Aguardando Parecer", "para": "Pronta para Pauta"}`
+`{"de": "Aguardando Parecer", "para": "Pronta para Pauta", "comissao_de": "CE"}`
+
+`comissao_de` é a comissão do item no retrato anterior. O evento existe quando a situação mudou **ou** a comissão mudou (o campo comum `comissao` é a de hoje); o evento sem nenhuma das duas mudanças é inválido. Se só a comissão mudou, `de` e `para` são iguais.
 
 ### `relator`
 

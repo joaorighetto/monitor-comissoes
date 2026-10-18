@@ -74,7 +74,7 @@ Seja `A` o retrato anterior, `H` o documento de hoje, `ids(A)` e `ids(H)` os ids
 
 | Evento | Condição |
 |---|---|
-| `situacao` | `situacao` diferente → `de`, `para` |
+| `situacao` | `situacao` ou `comissao` diferente → `de`, `para`, `comissao_de` (a comissão do retrato anterior) |
 | `relator` | os dois retratos têm relator determinado e o relator mudou: `relator` nulo → não nulo = `designado`; não nulo → nulo = `devolveu`; ids diferentes = `substituido` |
 | `parecer` | alguma tramitação de código `322`, no órgão `comissao`, no intervalo |
 | `etiquetas` | diferença de conjuntos: `ganhou` e/ou `perdeu` |

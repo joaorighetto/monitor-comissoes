@@ -25,7 +25,7 @@ TIPOS = ("entrou", "saiu", "situacao", "relator", "parecer", "etiquetas")
 CAMPOS_PROPRIOS = {
     "entrou": ("motivo", "etiquetas"),
     "saiu": ("motivo", "destino", "outros_fatos"),
-    "situacao": ("de", "para"),
+    "situacao": ("de", "para", "comissao_de"),
     "relator": ("mudanca", "de", "para"),
     "parecer": (),
     "etiquetas": ("ganhou", "perdeu"),
@@ -387,9 +387,16 @@ def _mantido(ctx: _Contexto, a: dict, h: dict) -> tuple[list[dict], list[dict]]:
     eventos: list[dict] = []
     ressalvas: list[dict] = []
 
-    if a["situacao"] != h["situacao"]:
+    if a["situacao"] != h["situacao"] or a["comissao"] != h["comissao"]:
         eventos.append(
-            _base("situacao", h, de=a["situacao"], para=h["situacao"], tramitacoes=tramitacoes)
+            _base(
+                "situacao",
+                h,
+                de=a["situacao"],
+                para=h["situacao"],
+                comissao_de=a["comissao"],
+                tramitacoes=tramitacoes,
+            )
         )
 
     indeterminado_a = a["relator_indeterminado"] is not None
@@ -637,8 +644,12 @@ def _validar_proprios(e: dict, onde: str) -> None:
         if not _lista_de_textos(e["outros_fatos"]):
             raise _invalido(f"{onde}: outros_fatos deve ser lista de textos")
     elif tipo == "situacao":
-        if not (_texto_cheio(e["de"]) and _texto_cheio(e["para"]) and e["de"] != e["para"]):
-            raise _invalido(f"{onde}: situacao deve ter 'de' e 'para' diferentes")
+        if not (
+            _texto_cheio(e["de"]) and _texto_cheio(e["para"]) and _texto_cheio(e["comissao_de"])
+        ):
+            raise _invalido(f"{onde}: situacao deve ter 'de', 'para' e 'comissao_de' preenchidos")
+        if e["de"] == e["para"] and e["comissao_de"] == e["comissao"]:
+            raise _invalido(f"{onde}: situacao sem mudança de situação nem de comissão")
     elif tipo == "relator":
         mudanca, de, para = e["mudanca"], e["de"], e["para"]
         if mudanca not in MUDANCAS_DE_RELATOR:
