@@ -501,3 +501,57 @@ def test_tipo_de_relatoria_novo_numa_referencia_marca_so_o_item_e_a_coleta_termi
     outros = {k: v for k, v in por_identificacao(documento).items() if k != "PL 4501/2023"}
     assert outros == {k: v for k, v in base.items() if k != "PL 4501/2023"}
     assert documento["meta"]["total_itens"] == len(base)
+
+
+# --- REL US5: repetível e auditável ----------------------------------------------------------
+
+
+def test_a_ordem_das_tramitacoes_na_resposta_nao_altera_o_resultado(config, agora, tmp_path):
+    def invertido(transporte):
+        for arquivo in (FIXTURES / "tramitacoes").glob("*.json"):
+
+            def inverter(corpo: bytes) -> bytes:
+                documento = json.loads(corpo)
+                documento["dados"].reverse()
+                return json.dumps(documento).encode()
+
+            transporte.transformar_json[f"tramitacoes/{arquivo.stem}"] = inverter
+        return transporte
+
+    normal = bytes_gerados(config, TransporteFalso(), agora, tmp_path, "a.json")
+    de_tras_para_frente = bytes_gerados(
+        config, invertido(TransporteFalso()), agora, tmp_path, "b.json"
+    )
+
+    assert normal == de_tras_para_frente
+
+
+def test_regras_de_consistencia_do_contrato_atual_json(documento):
+    novo = {d["id"] for d in documento["meta"]["deputados_novo_em_exercicio"]}
+    ordem = ["autoria NOVO", "autor hoje no NOVO", "relatoria NOVO"]
+
+    for item in documento["itens"]:
+        nome = item["identificacao"]
+        # 1. relator e relator_indeterminado nunca são ambos não nulos
+        assert not (item["relator"] and item["relator_indeterminado"]), nome
+        # 2. relatoria NOVO se e somente se o relator atual é do NOVO em exercício
+        tem_relator_novo = bool(item["relator"] and item["relator"]["id"] in novo)
+        assert ("relatoria NOVO" in item["etiquetas"]) == tem_relator_novo, nome
+        # 3. etiquetas só vazia com relator indeterminado
+        assert item["etiquetas"] or item["relator_indeterminado"], nome
+        # 4. todo relator tem a fonte (ficha da referência)
+        if item["relator"]:
+            referencia = item["apensado_a"]["link"] if item["apensado_a"] else item["link"]
+            assert item["relator"]["fonte"] == referencia, nome
+        # etiquetas em ordem fixa e sem repetição
+        assert item["etiquetas"] == [e for e in ordem if e in item["etiquetas"]], nome
+
+
+def test_total_por_comissao_inclui_os_itens_so_de_relatoria(documento):
+    meta, itens = documento["meta"], documento["itens"]
+
+    assert meta["total_itens"] == len(itens)
+    for comissao, total in meta["total_por_comissao"].items():
+        assert total == sum(1 for i in itens if i["comissao"] == comissao)
+    so_relatoria = [i for i in itens if i["etiquetas"] == ["relatoria NOVO"]]
+    assert so_relatoria  # e eles entram nos totais acima

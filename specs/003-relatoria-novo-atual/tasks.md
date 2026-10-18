@@ -94,10 +94,10 @@
 
 **Objetivo**: spec US5 (FR-014, FR-016, FR-017, FR-019). **Teste independente**: duas execuções idênticas; as regras de consistência do contrato.
 
-- [ ] T024 [P] [US5] Em `tests/test_aceitacao.py` testar a repetibilidade: duas execuções sobre as mesmas fixtures dão itens idênticos e na mesma ordem (parado há mais tempo primeiro, desempate por `id`); só `meta.gerado_em` pode diferir; a ordem das tramitações no JSON de entrada não altera o resultado.
-- [ ] T025 [P] [US5] Em `tests/test_saida.py` ou `tests/test_aceitacao.py` testar as cinco regras de consistência de `contracts/atual-json.md` sobre o documento gerado: `relator` e `relator_indeterminado` não são ambos não nulos; `relatoria NOVO` ⇔ `relator.id` em `meta.deputados_novo_em_exercicio`; `etiquetas` vazia só com `relator_indeterminado`; todo `relator` tem `fonte`; `meta.versao_formato == 2`, `total_itens` e `total_por_comissao` incluem os itens só de relatoria.
-- [ ] T026 [US5] Corrigir em `src/monitor_comissoes/estoque.py` e `src/monitor_comissoes/coleta.py` o que T024 e T025 apontarem (ordem determinística, campos na ordem do contrato, `meta`).
-- [ ] T027 [P] [US5] Em `tests/test_sem_rede.py` garantir que a suíte nova não abre socket (o teste existente cobre a suíte inteira); acrescentar o caso de `obter_tramitacoes` e `obter_deputado` com o transporte real bloqueado.
+- [X] T024 [P] [US5] Em `tests/test_aceitacao.py` testar a repetibilidade: duas execuções sobre as mesmas fixtures dão itens idênticos e na mesma ordem (parado há mais tempo primeiro, desempate por `id`); só `meta.gerado_em` pode diferir; a ordem das tramitações no JSON de entrada não altera o resultado.
+- [X] T025 [P] [US5] Em `tests/test_saida.py` ou `tests/test_aceitacao.py` testar as cinco regras de consistência de `contracts/atual-json.md` sobre o documento gerado: `relator` e `relator_indeterminado` não são ambos não nulos; `relatoria NOVO` ⇔ `relator.id` em `meta.deputados_novo_em_exercicio`; `etiquetas` vazia só com `relator_indeterminado`; todo `relator` tem `fonte`; `meta.versao_formato == 2`, `total_itens` e `total_por_comissao` incluem os itens só de relatoria.
+- [X] T026 [US5] Corrigir em `src/monitor_comissoes/estoque.py` e `src/monitor_comissoes/coleta.py` o que T024 e T025 apontarem (ordem determinística, campos na ordem do contrato, `meta`). *(nada a corrigir: T024 e T025 passaram de primeira)*
+- [X] T027 [P] [US5] Em `tests/test_sem_rede.py` garantir que a suíte nova não abre socket (o teste existente cobre a suíte inteira); acrescentar o caso de `obter_tramitacoes` e `obter_deputado` com o transporte real bloqueado.
 
 ---
 
