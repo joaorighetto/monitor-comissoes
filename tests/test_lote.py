@@ -38,6 +38,7 @@ def linha(**valores):
         "ultimoStatus_siglaOrgao": "CE",
         "ultimoStatus_descricaoSituacao": "Aguardando Parecer",
         "ultimoStatus_uriRelator": "",
+        "ultimoStatus_sequencia": "7",
         "keywords": "k",
     }
     base.update(valores)
@@ -223,6 +224,59 @@ def test_uri_de_relator_invalida_e_formato_alterado(tmp_path):
 
     assert erro.value.categoria == FORMATO_ALTERADO
     assert "ultimoStatus_uriRelator" in erro.value.motivo
+
+
+def test_coluna_da_sequencia_e_obrigatoria(tmp_path):
+    sem = [c for c in CABECALHO if c != "ultimoStatus_sequencia"]
+    caminho = escrever(
+        tmp_path, [[v for c, v in zip(CABECALHO, linha(), strict=True) if c in sem]], sem
+    )
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        validar_arquivo(caminho, PROPOSICOES_COLUNAS)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "ultimoStatus_sequencia" in erro.value.motivo
+
+
+def test_le_a_sequencia_do_ultimo_status(tmp_path):
+    caminho = escrever(
+        tmp_path, [linha(ultimoStatus_sequencia="43"), linha(id="11", ultimoStatus_sequencia="1")]
+    )
+
+    achadas = list(ler_proposicoes(caminho))
+
+    assert [p.ultimo_status_sequencia for p in achadas] == [43, 1]
+
+
+def test_le_a_sequencia_real_de_todas_as_linhas_das_fixtures():
+    achadas = [
+        p
+        for arquivo in sorted(FIXTURES.glob("proposicoes-20*.csv"))
+        for p in ler_proposicoes(arquivo)
+    ]
+
+    assert achadas
+    assert all(p.ultimo_status_sequencia >= 1 for p in achadas)
+
+
+@pytest.mark.parametrize("valor", ["", "abc", "4,5", "0", "-3"])
+def test_sequencia_vazia_nao_numerica_ou_menor_que_1_e_formato_alterado(tmp_path, valor):
+    caminho = escrever(tmp_path, [linha(ultimoStatus_sequencia=valor)])
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        list(ler_proposicoes(caminho))
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "ultimoStatus_sequencia" in erro.value.motivo
+
+
+def test_sequencia_so_e_interpretada_nas_linhas_pedidas(tmp_path):
+    caminho = escrever(tmp_path, [linha(id="10", ultimoStatus_sequencia="x"), linha(id="11")])
+
+    achadas = list(ler_proposicoes(caminho, ids={11}))
+
+    assert [p.id for p in achadas] == [11]
 
 
 def test_linha_com_colunas_faltando_e_arquivo_incompleto(tmp_path):
