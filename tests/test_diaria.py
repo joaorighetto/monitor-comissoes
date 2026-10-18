@@ -536,7 +536,22 @@ def test_a_base_do_dia_seguinte_a_uma_falha_e_o_retrato_bom(caminhos, dia1, agor
     assert "7 → 5" in status_novo["falha"]["motivo"]
 
 
-def test_sem_status_a_variacao_nao_se_aplica_e_a_execucao_avisa(caminhos, dia1, capsys):
+def conferir_sem_base(caminhos, dia1, capsys, codigo, estoque_de_hoje):
+    erro = capsys.readouterr().err
+    assert codigo == 1
+    assert erro.startswith("FALHA [sem_base_de_comparacao]: "), erro
+    assert f"estoque bruto de hoje: {estoque_de_hoje}" in erro
+    assert caminhos["atual"].read_bytes() == dia1["atual"]  # idêntico byte a byte
+    status_novo = ler(caminhos["status"])
+    assert status_novo["resultado"] == "falha"
+    assert status_novo["falha"]["categoria"] == "sem_base_de_comparacao"
+    retrato = status_novo["ultimo_retrato_bom"]
+    assert retrato["gerado_em"] == dia1["status"]["ultimo_retrato_bom"]["gerado_em"]
+    assert retrato["estoque_bruto"] is None  # sem base, não há número a manter
+    return status_novo
+
+
+def test_sem_status_com_atual_a_execucao_falha_sem_base_de_comparacao(caminhos, dia1, capsys):
     caminhos["status"].unlink()
     transporte = TransporteFalso()
     queda_de_28_por_cento(transporte)
@@ -544,23 +559,108 @@ def test_sem_status_a_variacao_nao_se_aplica_e_a_execucao_avisa(caminhos, dia1, 
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
 
-    assert codigo == 0
-    assert "sem base para comparar a variação" in capsys.readouterr().err
-    assert ler(caminhos["status"])["ultimo_retrato_bom"]["estoque_bruto"] == 5
+    status_novo = conferir_sem_base(caminhos, dia1, capsys, codigo, 5)
+    assert status_novo["tentativas"] == 1
 
 
-def test_status_que_nao_descreve_o_atual_nao_serve_de_base(caminhos, dia1, capsys):
+def test_status_que_nao_descreve_o_atual_tambem_falha_sem_base_de_comparacao(
+    caminhos, dia1, capsys
+):
     outro = ler(caminhos["status"])
     outro["ultimo_retrato_bom"]["gerado_em"] = "2026-10-17T03:00:00-03:00"
     caminhos["status"].write_text(serializar(outro), encoding="utf-8")
+    capsys.readouterr()
+
+    codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
+
+    conferir_sem_base(caminhos, dia1, capsys, codigo, 7)
+
+
+def test_status_corrompido_com_atual_falha_sem_base_de_comparacao(caminhos, dia1, capsys):
+    caminhos["status"].write_text("{ não é json", encoding="utf-8")
+    capsys.readouterr()
+
+    codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
+
+    conferir_sem_base(caminhos, dia1, capsys, codigo, 7)
+
+
+def test_sem_base_de_comparacao_nao_repete(caminhos, dia1):
+    caminhos["config"].write_text(CONFIG_BASE, encoding="utf-8")  # 4 tentativas permitidas
+    caminhos["status"].unlink()
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([])
+
+    codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), dormidas)
+
+    assert codigo == 1
+    assert transporte.coletas == 1
+    assert dormidas.pedidos == []
+
+
+def test_sem_atual_o_primeiro_dia_continua_passando_mesmo_com_um_status_solto(caminhos, dia1):
+    caminhos["atual"].unlink()  # só o status ficou: não há retrato anterior para comparar
+
+    codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
+
+    assert codigo == 0
+    assert ler(caminhos["status"])["variacao_aceita"] is None
+
+
+def test_confirmacao_aceita_a_falta_de_base_e_registra(caminhos, dia1, capsys):
+    caminhos["status"].unlink()
     transporte = TransporteFalso()
     queda_de_28_por_cento(transporte)
     capsys.readouterr()
 
-    codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
+    codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), aceitar=True)
 
     assert codigo == 0
-    assert "sem base para comparar a variação" in capsys.readouterr().err
+    status_novo = ler(caminhos["status"])
+    assert status_novo["resultado"] == "ok"
+    assert status_novo["variacao_aceita"] == {
+        "estoque_anterior": None,
+        "estoque_novo": 5,
+        "variacao_percentual": None,
+    }
+    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == 5
+    assert main(["mensagem", "--status", str(caminhos["status"])]) == 0
+    assert capsys.readouterr().out.endswith(
+        "dados: 2026-10-18 · ok · aceito sem base de comparação (estoque bruto 5)\n"
+    )
+
+
+def test_a_confirmacao_nao_libera_estoque_vazio_nem_outras_falhas_sem_base(caminhos, dia1, capsys):
+    caminhos["status"].unlink()
+    transporte = TransporteFalso()
+    falha_api(transporte, dia1["agora2"])
+
+    assert executar_main(caminhos, transporte, Relogio(dia1["agora2"]), aceitar=True) == 1
+    assert ler(caminhos["status"])["falha"]["categoria"] == "api_deputados"
+
+    caminhos["config"].write_text(
+        'comissoes = ["CXYZ"]\nano_minimo = 2003\n[execucao]\ntentativas = 1\n', encoding="utf-8"
+    )
+    capsys.readouterr()
+    assert executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]), aceitar=True) == 1
+    assert ler(caminhos["status"])["falha"]["categoria"] == "estoque_vazio"
+    assert caminhos["atual"].read_bytes() == dia1["atual"]
+
+
+def test_no_dia_seguinte_a_um_aceito_sem_base_a_base_e_o_estoque_aceito(caminhos, dia1, agora):
+    caminhos["status"].unlink()
+    aceito = TransporteFalso()
+    queda_de_28_por_cento(aceito)
+    assert executar_main(caminhos, aceito, Relogio(dia1["agora2"]), aceitar=True) == 0
+
+    mesmo = TransporteFalso()
+    queda_de_28_por_cento(mesmo)
+    assert executar_main(caminhos, mesmo, Relogio(agora + timedelta(hours=3))) == 0
+    assert ler(caminhos["status"])["variacao_aceita"] is None
+
+    voltou = TransporteFalso()  # estoque de volta a 7: +40% sobre a base aceita (5)
+    assert executar_main(caminhos, voltou, Relogio(agora + timedelta(hours=4))) == 1
+    assert ler(caminhos["status"])["falha"]["categoria"] == "estoque_implausivel"
 
 
 def test_confirmacao_manual_aceita_a_variacao_e_registra(caminhos, dia1, capsys):

@@ -2,7 +2,12 @@
 
 import pytest
 
-from monitor_comissoes.erros import ESTOQUE_IMPLAUSIVEL, ESTOQUE_VAZIO, FalhaDeColeta
+from monitor_comissoes.erros import (
+    ESTOQUE_IMPLAUSIVEL,
+    ESTOQUE_VAZIO,
+    SEM_BASE_DE_COMPARACAO,
+    FalhaDeColeta,
+)
 from monitor_comissoes.plausibilidade import verificar
 
 
@@ -84,3 +89,52 @@ def test_o_motivo_mostra_duas_casas_para_nao_contradizer_o_limite_por_arredondam
 
     assert "+20,01%" in falha.motivo
     assert "o limite é de 20%" in falha.motivo
+
+
+# --- Base ausente com retrato anterior (decisão do mantenedor, 18/10/2026) -------------------
+
+
+def test_sem_base_mas_com_retrato_anterior_falha_e_o_motivo_traz_o_estoque_de_hoje():
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar(1531, None, 20, False, exige_base=True)
+
+    assert erro.value.categoria == SEM_BASE_DE_COMPARACAO
+    assert "1531" in erro.value.motivo
+
+
+def test_base_zero_tambem_conta_como_sem_base_quando_a_base_e_exigida():
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar(1531, 0, 20, False, exige_base=True)
+
+    assert erro.value.categoria == SEM_BASE_DE_COMPARACAO
+
+
+def test_com_a_confirmacao_a_falta_de_base_e_aceita_e_registrada_sem_numero_anterior():
+    aceita = verificar(1531, None, 20, True, exige_base=True)
+
+    assert aceita == {
+        "estoque_anterior": None,
+        "estoque_novo": 1531,
+        "variacao_percentual": None,
+    }
+    assert list(aceita) == ["estoque_anterior", "estoque_novo", "variacao_percentual"]
+
+
+@pytest.mark.parametrize("base", [None, 1531])
+def test_estoque_zero_falha_mesmo_com_a_confirmacao_e_a_base_exigida(base):
+    assert falha_de(0, base, aceitar=True).categoria == ESTOQUE_VAZIO
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar(0, base, 20, True, exige_base=True)
+    assert erro.value.categoria == ESTOQUE_VAZIO
+
+
+def test_com_base_presente_a_exigencia_de_base_nao_muda_nada():
+    assert verificar(1500, 1531, 20, False, exige_base=True) is None
+    with pytest.raises(FalhaDeColeta) as erro:
+        verificar(1100, 1531, 20, False, exige_base=True)
+    assert erro.value.categoria == ESTOQUE_IMPLAUSIVEL
+
+
+def test_sem_exigir_base_o_primeiro_dia_continua_passando():
+    assert verificar(1531, None, 20, False, exige_base=False) is None
+    assert verificar(1531, None, 20, False) is None  # exige_base é falso por padrão
