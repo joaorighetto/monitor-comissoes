@@ -65,3 +65,23 @@ def test_primeira_execucao_com_falha_nao_cria_o_arquivo(tmp_path):
 
     assert not destino.exists()
     assert sobras(destino.parent) == []
+
+
+def test_nao_usa_nome_fixo_para_o_temporario_de_outra_execucao(tmp_path):
+    # Um .tmp de outra execução (concorrente ou abandonada) não pode ser reaproveitado nem apagado.
+    destino = tmp_path / "atual.json"
+    alheio = tmp_path / "atual.json.tmp"
+    alheio.write_text("de outra execução", encoding="utf-8")
+
+    gravar_atomico({"novo": 1}, destino)
+
+    assert alheio.read_text(encoding="utf-8") == "de outra execução"
+    assert '"novo": 1' in destino.read_text(encoding="utf-8")
+
+
+def test_arquivo_gravado_e_legivel_por_todos(tmp_path):
+    destino = tmp_path / "atual.json"
+
+    gravar_atomico({"a": 1}, destino)
+
+    assert destino.stat().st_mode & 0o777 == 0o644

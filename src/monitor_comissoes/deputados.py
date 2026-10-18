@@ -28,6 +28,8 @@ def obter_deputados_novo(transporte: Transporte, url_base: str) -> list[Deputado
     visitadas: set[str] = set()
 
     while url:
+        if not url.startswith(f"{url_base}/api/"):
+            raise _falha(f"link de paginação fora da API da Câmara: {url!r}")
         if url in visitadas:
             raise _falha("a paginação voltou a uma página já lida")
         visitadas.add(url)

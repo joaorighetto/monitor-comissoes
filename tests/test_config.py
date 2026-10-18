@@ -42,6 +42,8 @@ def test_arquivo_ausente(tmp_path):
         ('comissoes = ["CE", "CE"]\nano_minimo = 2003\n', "comissoes"),
         ('comissoes = ["CE", ""]\nano_minimo = 2003\n', "comissoes"),
         ('comissoes = ["CE", 7]\nano_minimo = 2003\n', "comissoes"),
+        ('comissoes = [" CE"]\nano_minimo = 2003\n', "comissoes"),
+        ('comissoes = ["CE "]\nano_minimo = 2003\n', "comissoes"),
         ('comissoes = ["CE"]\n', "ano_minimo"),
         ('comissoes = ["CE"]\nano_minimo = "2003"\n', "ano_minimo"),
         ('comissoes = ["CE"]\nano_minimo = 2003.5\n', "ano_minimo"),

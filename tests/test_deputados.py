@@ -94,3 +94,26 @@ def test_resposta_invalida_ou_vazia_vira_api_deputados(transporte, corpo):
         obter_deputados_novo(transporte, URL_BASE)
 
     assert erro.value.categoria == API_DEPUTADOS
+
+
+@pytest.mark.parametrize(
+    "href",
+    [
+        "https://outro-host.example/api/v2/deputados?pagina=2",
+        "file:///etc/passwd",
+        "http://dadosabertos.camara.leg.br/api/v2/deputados?pagina=2",
+        "https://dadosabertos.camara.leg.br/outra-coisa",
+    ],
+)
+def test_link_de_paginacao_fora_da_api_da_camara_e_recusado(href):
+    pagina1 = f"{URL_BASE}/api/v2/deputados?siglaPartido=NOVO&itens=100"
+    transporte = TransporteDePaginas(
+        {pagina1: {"dados": [{"id": 1, "nome": "A"}], "links": [{"rel": "next", "href": href}]}},
+        total="2",
+    )
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_deputados_novo(transporte, URL_BASE)
+
+    assert erro.value.categoria == API_DEPUTADOS
+    assert transporte.pedidos == [pagina1]  # o link recusado nunca é pedido

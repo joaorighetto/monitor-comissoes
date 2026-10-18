@@ -32,6 +32,8 @@ def carregar_config(caminho: Path, ano_corrente: int) -> Config:
         raise _falha("comissoes deve ser uma lista não vazia de siglas")
     if not all(isinstance(sigla, str) and sigla.strip() for sigla in comissoes):
         raise _falha("comissoes: cada sigla deve ser um texto não vazio")
+    if any(sigla != sigla.strip() for sigla in comissoes):
+        raise _falha("comissoes: sigla com espaço no começo ou no fim nunca casaria com a fonte")
     if len(set(comissoes)) != len(comissoes):
         raise _falha("comissoes: há sigla repetida")
 

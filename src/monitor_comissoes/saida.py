@@ -2,6 +2,7 @@
 
 import json
 import os
+import tempfile
 from pathlib import Path
 
 
@@ -22,12 +23,15 @@ def gravar_atomico(documento: dict, destino: Path) -> None:
     destino = Path(destino)
     destino.parent.mkdir(parents=True, exist_ok=True)
     texto = serializar(documento)
-    temporario = destino.with_name(destino.name + ".tmp")
+    # Nome único: uma execução concorrente ou abandonada nunca divide o temporário com esta.
+    descritor, nome = tempfile.mkstemp(dir=destino.parent, prefix=f"{destino.name}.", suffix=".tmp")
+    temporario = Path(nome)
     try:
-        with open(temporario, "w", encoding="utf-8", newline="\n") as f:
+        with os.fdopen(descritor, "w", encoding="utf-8", newline="\n") as f:
             f.write(texto)
             f.flush()
             os.fsync(f.fileno())
+        os.chmod(temporario, 0o644)  # mkstemp cria 0600; o arquivo é de leitura pública
         os.replace(temporario, destino)
     except BaseException:
         temporario.unlink(missing_ok=True)
