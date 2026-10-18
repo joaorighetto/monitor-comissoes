@@ -12,6 +12,12 @@ on:
         type: boolean
         default: false
 
+# Uma coleta por vez: o lote tem ~1 GB e duas execuções simultâneas só disputariam o commit.
+# Sem cancelar a que já roda; uma execução pendente mais velha, que nunca começou, é substituída.
+concurrency:
+  group: coleta-diaria
+  cancel-in-progress: false
+
 jobs:
   coletar:
     runs-on: ubuntu-latest

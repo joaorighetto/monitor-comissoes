@@ -139,12 +139,12 @@ description: "Tarefas da feature AGE — Execução diária agendada"
 
 ### Testes (escrever primeiro; devem falhar)
 
-- [ ] T026 [P] [US5] Em `tests/test_diaria.py`, acrescentar: duas execuções bem-sucedidas no mesmo dia de Brasília, com relógios diferentes (09h00 e 11h00), geram `atual.json` com **itens e ordem idênticos**, e só `meta.gerado_em` difere; o `status.json` da segunda traz o `verificado_em` novo e o **mesmo** `data_referencia`; a segunda **grava** (não é descartada), mesmo com o resultado igual ao da primeira; uma execução de sucesso depois de uma falha do mesmo dia grava normalmente; `data_referencia` muda quando o relógio cruza a meia-noite de Brasília.
-- [ ] T027 [P] [US5] Em `tests/test_workflow.py`, acrescentar (texto): `concurrency:` com `group: coleta-diaria` e `cancel-in-progress: false`.
+- [X] T026 [P] [US5] Em `tests/test_diaria.py`, acrescentar: duas execuções bem-sucedidas no mesmo dia de Brasília, com relógios diferentes (09h00 e 11h00), geram `atual.json` com **itens e ordem idênticos**, e só `meta.gerado_em` difere; o `status.json` da segunda traz o `verificado_em` novo e o **mesmo** `data_referencia`; a segunda **grava** (não é descartada), mesmo com o resultado igual ao da primeira; uma execução de sucesso depois de uma falha do mesmo dia grava normalmente; `data_referencia` muda quando o relógio cruza a meia-noite de Brasília.
+- [X] T027 [P] [US5] Em `tests/test_workflow.py`, acrescentar (texto): `concurrency:` com `group: coleta-diaria` e `cancel-in-progress: false`.
 
 ### Implementação
 
-- [ ] T028 [US5] No workflow, acrescentar o bloco `concurrency` com `group: coleta-diaria` e `cancel-in-progress: false`, conforme [contracts/workflow.md](contracts/workflow.md) e research.md R8 (T027 passa). Conferir que T026 passa sem mudança em `diaria.py` (nenhuma regra de descarte existe; se falhar, corrigir a causa em vez de acrescentar descarte).
+- [X] T028 [US5] No workflow, acrescentar o bloco `concurrency` com `group: coleta-diaria` e `cancel-in-progress: false`, conforme [contracts/workflow.md](contracts/workflow.md) e research.md R8 (T027 passa). Conferir que T026 passa sem mudança em `diaria.py` (nenhuma regra de descarte existe; se falhar, corrigir a causa em vez de acrescentar descarte).
 
 **Checkpoint**: reexecuções são seguras, e a concorrência está controlada pelo agendador.
 

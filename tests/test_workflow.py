@@ -164,3 +164,10 @@ def test_a_entrada_nao_e_interpolada_dentro_do_script():
     inicio = conteudo.index("run: |\n          # Falha da coleta")
 
     assert "${{" not in conteudo[inicio:]
+
+
+# --- US5 ------------------------------------------------------------------------------------------
+
+
+def test_duas_execucoes_nao_rodam_ao_mesmo_tempo():
+    assert blocos(texto(), "concurrency") == [["group: coleta-diaria", "cancel-in-progress: false"]]

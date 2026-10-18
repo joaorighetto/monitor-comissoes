@@ -830,3 +830,58 @@ def test_a_confirmacao_de_variacao_nao_gasta_nem_pula_tentativas(caminhos, dia1)
     assert codigo == 0
     assert ler(caminhos["status"])["tentativas"] == 2
     assert ler(caminhos["status"])["variacao_aceita"]["estoque_novo"] == 5
+
+
+# --- US5: reexecução no mesmo dia ----------------------------------------------------------------
+
+
+def frescos(transporte, momento):
+    """Todos os arquivos do lote 'gerados' uma hora antes de `momento` (para testar outros dias)."""
+    for ano in range(2003, 2027):
+        for nome in (f"proposicoes-{ano}.csv", f"proposicoesAutores-{ano}.csv"):
+            transporte.last_modified[nome] = momento - timedelta(hours=1)
+
+
+def test_duas_execucoes_no_mesmo_dia_dao_a_mesma_lista_e_ambas_gravam(caminhos, agora):
+    assert executar_main(caminhos, TransporteFalso(), Relogio(agora)) == 0
+    primeiro_atual, primeiro_status = ler(caminhos["atual"]), ler(caminhos["status"])
+
+    segunda = agora + timedelta(hours=2)
+    assert executar_main(caminhos, TransporteFalso(), Relogio(segunda)) == 0
+    segundo_atual, segundo_status = ler(caminhos["atual"]), ler(caminhos["status"])
+
+    assert segundo_atual["itens"] == primeiro_atual["itens"]  # conteúdo e ordem, mesmo dia
+    diferenca = {
+        chave
+        for chave in primeiro_atual["meta"]
+        if primeiro_atual["meta"][chave] != segundo_atual["meta"][chave]
+    }
+    assert diferenca == {"gerado_em"}
+    assert segundo_status["verificado_em"] == segunda.isoformat(timespec="seconds")
+    assert segundo_status["verificado_em"] != primeiro_status["verificado_em"]
+    assert segundo_status["data_referencia"] == primeiro_status["data_referencia"]
+    assert segundo_status["ultimo_retrato_bom"]["gerado_em"] == segundo_atual["meta"]["gerado_em"]
+
+
+def test_execucao_de_sucesso_depois_de_uma_falha_do_mesmo_dia_grava(caminhos, agora):
+    falhou = TransporteFalso()
+    falha_api(falhou, agora)
+    assert executar_main(caminhos, falhou, Relogio(agora)) == 1
+    assert not caminhos["atual"].exists()
+
+    assert executar_main(caminhos, TransporteFalso(), Relogio(agora + timedelta(hours=1))) == 0
+
+    assert caminhos["atual"].exists()
+    assert ler(caminhos["status"])["resultado"] == "ok"
+
+
+def test_a_data_de_referencia_muda_na_virada_do_dia_de_brasilia(caminhos):
+    antes = datetime(2026, 10, 18, 23, 50, tzinfo=FUSO)
+    depois = datetime(2026, 10, 19, 0, 10, tzinfo=FUSO)
+    for momento, esperado in ((antes, "2026-10-18"), (depois, "2026-10-19")):
+        transporte = TransporteFalso()
+        frescos(transporte, momento)
+
+        assert executar_main(caminhos, transporte, Relogio(momento)) == 0
+
+        assert ler(caminhos["status"])["data_referencia"] == esperado
