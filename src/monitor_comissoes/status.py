@@ -44,6 +44,10 @@ def _inteiro(valor) -> bool:
     return isinstance(valor, int) and not isinstance(valor, bool)
 
 
+def _numero(valor) -> bool:
+    return isinstance(valor, int | float) and not isinstance(valor, bool)
+
+
 def _validar(documento) -> None:
     """Confere o formato e as invariantes do contrato; levanta ValueError se falhar."""
     if not isinstance(documento, dict):
@@ -73,6 +77,15 @@ def _validar(documento) -> None:
         isinstance(variacao, dict) and list(variacao) == list(CAMPOS_VARIACAO)
     ):
         raise _invalido(f"variacao_aceita deve ser null ou {list(CAMPOS_VARIACAO)}")
+    if variacao is not None:
+        anterior, novo, percentual = (variacao[campo] for campo in CAMPOS_VARIACAO)
+        sem_base = anterior is None and percentual is None
+        com_base = _inteiro(anterior) and _numero(percentual)
+        if not _inteiro(novo) or not (sem_base or com_base):
+            raise _invalido(
+                "variacao_aceita: estoque_novo inteiro, e estoque_anterior e "
+                "variacao_percentual ambos preenchidos ou ambos nulos"
+            )
     retrato = documento["ultimo_retrato_bom"]
     if retrato is not None:
         if not (isinstance(retrato, dict) and list(retrato) == list(CAMPOS_RETRATO)):
@@ -231,6 +244,9 @@ def mensagem_commit(status: dict) -> str:
     if status["resultado"] == FALHA:
         return f"dados: {dia} · falha [{status['falha']['categoria']}]"
     variacao = status["variacao_aceita"]
+    if variacao is not None and variacao["estoque_anterior"] is None:
+        estoque = variacao["estoque_novo"]
+        return f"dados: {dia} · ok · aceito sem base de comparação (estoque bruto {estoque})"
     if variacao is not None:
         percentual = percentual_texto(variacao["variacao_percentual"])
         return (

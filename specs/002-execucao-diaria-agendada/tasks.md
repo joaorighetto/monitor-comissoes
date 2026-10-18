@@ -192,6 +192,19 @@ description: "Tarefas da feature AGE — Execução diária agendada"
 
 ---
 
+## Phase 11: Decisões do mantenedor depois da entrega (18/10/2026)
+
+**Purpose**: o que ficou em aberto no fechamento (research.md R5 e R11) e foi decidido pelo mantenedor. Testes antes do código.
+
+- [X] T046 [P] [US3] Em `tests/test_plausibilidade.py`, testar `verificar(..., exige_base=True)`: com base ausente e sem confirmação, falha com `sem_base_de_comparacao` e o motivo traz o estoque bruto de hoje; com confirmação, devolve `{"estoque_anterior": None, "estoque_novo": N, "variacao_percentual": None}`; estoque bruto zero falha com `estoque_vazio` mesmo com confirmação; com base presente, o comportamento de antes não muda; sem `exige_base` (primeiro dia), base ausente passa.
+- [X] T047 [P] [US3] Em `tests/test_status.py`, testar `variacao_aceita` com `estoque_anterior` e `variacao_percentual` nulos (montar, ler, validar) e a mensagem "aceito sem base de comparação (estoque bruto B)"; rejeitar só um dos dois campos nulo.
+- [X] T048 [US3] Em `tests/test_diaria.py`, ajustar os dois testes de "sem base" que hoje esperam sucesso (status apagado; status que não descreve o atual) para esperar falha `sem_base_de_comparacao` com `atual.json` intacto e o `status.json` de falha; acrescentar: com `--aceitar-variacao` grava, registra o aceito sem base e a mensagem do commit; estoque zero com confirmação continua falhando; no dia seguinte sem confirmação a base é o estoque aceito; o primeiro dia (sem `atual.json`) continua passando; `sem_base_de_comparacao` não repete (nenhuma espera).
+- [X] T049 [US3] Em `erros.py`, `SEM_BASE_DE_COMPARACAO = "sem_base_de_comparacao"` em `CATEGORIAS` (fora de `REPETIVEIS`); em `plausibilidade.py`, o parâmetro `exige_base`; em `status.py`, a validação e a mensagem do aceito sem base; em `diaria.py`, `exige_base = retrato_do_atual(atual) is not None` e o aviso do primeiro dia (T046 a T048 passam).
+- [X] T050 [US6] Registrar as decisões nos documentos: spec (Clarifications, FR-016/016a, FR-027a, cenários 13 a 16), research (R5 e R11), data-model, contratos, quickstart e `docs/agendamento-60-dias.md` (decisão, datas dos dias 45, 55 e 60, data de início); `tests/test_docs.py` confere a decisão e as datas. O lembrete de 45 dias foi criado no Google Calendar do mantenedor (evento de dia inteiro recorrente a partir de 2026-12-02).
+- [X] T051 Verificação completa (`uv run ruff check . && uv run ruff format --check . && uv run pytest`) e mostrar a saída.
+
+---
+
 ## Dependencies & Execution Order
 
 - **Fase 1** (T001, T002) → **Fase 2** (testes T003–T005 em paralelo, depois T006–T009; T008 depende de T007; T009 depende de T001 e T008 apenas para os tipos).

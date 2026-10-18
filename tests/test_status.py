@@ -396,3 +396,44 @@ def test_gravar_par_com_dupla_falha_propaga_a_causa_original_com_nota(tmp_path, 
         gravar_par({"novo": 1}, atual, sucesso(), status)
 
     assert any("restauração" in nota for nota in erro.value.__notes__)
+
+
+# --- Aceito sem base de comparação --------------------------------------------------------------
+
+SEM_BASE = {"estoque_anterior": None, "estoque_novo": 1531, "variacao_percentual": None}
+
+
+def test_variacao_aceita_sem_base_tem_o_numero_anterior_e_o_percentual_nulos():
+    status = sucesso(variacao_aceita=SEM_BASE)
+
+    assert status["variacao_aceita"] == SEM_BASE
+    assert ler_status_de(status) == status
+
+
+def ler_status_de(status):
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as pasta:
+        caminho = Path(pasta) / "status.json"
+        gravar_status(status, caminho)
+        return ler_status(caminho)
+
+
+@pytest.mark.parametrize(
+    "invalida",
+    [
+        {"estoque_anterior": None, "estoque_novo": 1531, "variacao_percentual": -1.0},
+        {"estoque_anterior": 1531, "estoque_novo": 1100, "variacao_percentual": None},
+        {"estoque_anterior": None, "estoque_novo": None, "variacao_percentual": None},
+        {"estoque_anterior": "1531", "estoque_novo": 1100, "variacao_percentual": -28.2},
+    ],
+)
+def test_variacao_aceita_com_nulos_so_vale_os_dois_juntos_e_com_estoque_novo(invalida):
+    with pytest.raises(ValueError, match="status"):
+        sucesso(variacao_aceita=invalida)
+
+
+def test_mensagem_do_aceito_sem_base_de_comparacao():
+    assert mensagem_commit(sucesso(variacao_aceita=SEM_BASE)) == (
+        "dados: 2026-10-19 · ok · aceito sem base de comparação (estoque bruto 1531)"
+    )

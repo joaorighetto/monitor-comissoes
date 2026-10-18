@@ -16,7 +16,7 @@ uv run python -m monitor_comissoes.diaria mensagem [--status data/status.json]
 | `--config` | `config.toml` | Arquivo de configuração (inclui a tabela opcional `[execucao]`) |
 | `--atual` | `data/atual.json` | Arquivo de dados |
 | `--status` | `data/status.json` | Arquivo de status |
-| `--aceitar-variacao` | desligada | Ignora **somente** a falha de variação acima do limite, só nesta execução. Não ignora estoque vazio nem nenhuma outra falha |
+| `--aceitar-variacao` | desligada | Ignora **somente** a falha de variação acima do limite e a falha `sem_base_de_comparacao`, só nesta execução. Não ignora estoque vazio nem nenhuma outra falha |
 
 Sem variáveis de ambiente e sem segredos.
 

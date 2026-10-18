@@ -17,6 +17,11 @@
 - Q: O que são as "novas tentativas" da AGE? → A: Repetir a execução inteira dentro do mesmo job, com espera entre tentativas: até 4 tentativas, 30 minutos entre elas (janela de cerca de 1h30), só para falhas que podem ser passageiras. O workflow só fica vermelho se todas falharem. Não há mais de um agendamento por dia.
 - Q: Uma segunda execução bem-sucedida no mesmo dia gera novo commit ou é descartada? → A: Cada execução bem-sucedida gera o seu commit. Os itens são idênticos e só mudam os momentos de geração e verificação. Nenhuma execução bem-sucedida é descartada. MUD e AVI devem tratar reexecuções do mesmo dia (requisito para elas, não implementado aqui).
 
+### Session 2026-10-18 (após a entrega, decisões do mantenedor)
+
+- Q: Existe `atual.json` válido, mas não há base de comparação utilizável (status ausente, inválido ou que não descreve o `atual.json`). A execução publica só com aviso ou falha? → A: **Falha** com a categoria `sem_base_de_comparacao`, liberável pelo disparo manual com "aceito esta variação"; o `status.json` e o commit registram que foi aceito sem base. O primeiro dia de todos (sem `atual.json`) continua passando, sem checar a variação. Substitui o comportamento "só avisa" (FR-016 original).
+- Q: Qual mitigação para o prazo de 60 dias do GitHub (FR-027)? → A: **Lembrete do mantenedor a cada 45 dias** para conferir na aba Actions que a "Coleta diária" segue ativa. Nenhum commit artificial e nenhum serviço externo por ora. A hipótese de que o commit diário do bot basta se confirma observando o repositório por mais de 60 dias.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Todo dia, o retrato do dia fica versionado (Priority: P1)
@@ -70,7 +75,7 @@ Antes de substituir o `atual.json`, o sistema confere se o resultado é plausív
 2. **Dado** um candidato com variação de até 20%, **Quando** a execução roda, **Então** a checagem passa e o resultado é gravado normalmente.
 3. **Dado** um estoque bruto vazio (nenhum PL/PLP nas comissões acompanhadas), **Quando** a execução roda, **Então** ela falha, mesmo sem retrato anterior para comparar.
 4. **Dado** uma lista filtrada vazia, **Quando** a execução roda, **Então** ela falha (a COL já faz isso; a AGE mantém o comportamento e o registra no `status.json`).
-5. **Dado** que não existe retrato anterior (primeiro dia), **Quando** a execução roda, **Então** a comparação de variação não se aplica, e só valem as checagens de estoque e lista vazios.
+5. **Dado** que não existe `atual.json` anterior (primeiro dia de todos), **Quando** a execução roda, **Então** a comparação de variação não se aplica, e só valem as checagens de estoque e lista vazios.
 6. **Dado** uma lista filtrada do NOVO que encolheu mais de 20% (por exemplo, um deputado do NOVO se licenciou) com o estoque bruto estável, **Quando** a execução roda, **Então** a checagem de variação passa: a variação da lista filtrada não é critério de plausibilidade.
 7. **Dado** uma falha no dia anterior, **Quando** a execução do dia compara os totais, **Então** a base de comparação é o estoque bruto do último retrato **bom**, e não o da execução que falhou.
 8. **Dado** uma execução bloqueada por variação acima de 20% que o mantenedor, depois de conferir na fonte, reconhece como legítima, **Quando** ele dispara o workflow manualmente marcando a confirmação "aceito esta variação", **Então** aquela execução ignora o limite, grava o resultado e registra no `status.json` e na mensagem do commit que a variação foi aceita manualmente, com os dois totais.
@@ -78,6 +83,10 @@ Antes de substituir o `atual.json`, o sistema confere se o resultado é plausív
 10. **Dado** o disparo manual com a confirmação marcada, **Quando** a coleta falha por outro motivo (fonte fora do ar, formato alterado), **Então** a confirmação não libera nada: só a falha de variação é ignorada, as demais continuam sendo falha.
 11. **Dado** o disparo manual sem a confirmação marcada, **Quando** a variação passa de 20%, **Então** a execução falha como no agendamento.
 12. **Dado** uma variação de exatamente 20%, **Quando** a checagem roda, **Então** ela passa: só "mais de 20%" é implausível.
+13. **Dado** um `atual.json` válido e um `status.json` ausente, ou inválido, ou cujo `gerado_em` não bate com o do `atual.json`, **Quando** a execução roda sem a confirmação manual, **Então** ela falha com a categoria `sem_base_de_comparacao`, o motivo traz o estoque bruto de hoje, e o `atual.json` anterior fica intacto.
+14. **Dado** o mesmo cenário do item 13, **Quando** o mantenedor dispara o workflow manualmente marcando "aceito esta variação", **Então** a execução grava normalmente, o `status.json` registra `variacao_aceita` com `estoque_anterior` e `variacao_percentual` nulos, e a mensagem do commit diz "aceito sem base de comparação".
+15. **Dado** o cenário do item 13 com a confirmação marcada e estoque bruto zero, **Quando** a execução roda, **Então** ela falha com `estoque_vazio`: a confirmação nunca libera estoque vazio.
+16. **Dado** o `status.json` de um dia aceito sem base, **Quando** a execução do dia seguinte roda sem confirmação, **Então** a base é o estoque bruto aceito e o limite de 20% volta a valer.
 
 ---
 
@@ -177,7 +186,8 @@ O ROADMAP.md deixa em aberto se o GitHub desativa o agendamento de um repositór
 - **FR-014**: Antes de substituir o `atual.json`, o sistema DEVE falhar quando o estoque bruto for vazio ou a lista filtrada for vazia, com ou sem retrato anterior.
 - **FR-015**: O sistema DEVE falhar quando o **estoque bruto** variar mais de 20% em relação ao do último retrato bom, em qualquer sentido (aumento ou queda). A variação de exatamente 20% passa. A variação da lista filtrada do NOVO NÃO é critério de plausibilidade.
 - **FR-015a**: O **estoque bruto** é o total de PL e PLP que estão nas comissões acompanhadas, contado antes de aplicar as etiquetas do NOVO. O critério exato de contagem (órgão do próprio último status ou da referência) é decidido no `plan.md`, desde que seja o mesmo todo dia e independa das etiquetas. O total de cada execução bem-sucedida DEVE ser gravado no `status.json` (FR-010); o formato do `atual.json` da COL NÃO muda.
-- **FR-016**: Sem retrato anterior (primeiro dia), o sistema NÃO DEVE aplicar a checagem de variação.
+- **FR-016**: Sem `atual.json` anterior (primeiro dia de todos), o sistema NÃO DEVE aplicar a checagem de variação.
+- **FR-016a**: Com `atual.json` válido e sem base de comparação utilizável (status ausente, inválido ou que não descreve o `atual.json`), o sistema DEVE falhar com a categoria `sem_base_de_comparacao`, a menos que a confirmação manual (FR-018a) esteja marcada. A falha NÃO é repetível. Com a confirmação, o `status.json` DEVE registrar `variacao_aceita` com `estoque_anterior` e `variacao_percentual` nulos, e a mensagem do commit DEVE dizer "aceito sem base de comparação". O estoque bruto vazio continua falhando.
 - **FR-017**: A falha de plausibilidade DEVE ter categoria própria, e o motivo DEVE trazer os totais comparados e a variação, para que o mantenedor reconheça o caso.
 - **FR-018**: O limite de 20% DEVE ser um valor de configuração, não constante no código. Trocá-lo NÃO DEVE exigir mudança de código. O limite NÃO é o caminho previsto para liberar um dia atípico.
 - **FR-018a**: O disparo manual DEVE oferecer uma confirmação explícita ("aceito esta variação"), desligada por padrão. Com ela marcada, a execução DEVE ignorar **somente** a falha de variação de mais de 20%; as demais falhas e a checagem de estoque vazio continuam valendo. A confirmação vale só para aquela execução e NÃO DEVE ser possível no agendamento automático.
@@ -202,6 +212,7 @@ O ROADMAP.md deixa em aberto se o GitHub desativa o agendamento de um repositór
 
 - **FR-026**: A feature DEVE entregar um documento no repositório que confirme, com link oficial e data da consulta, a regra de desativação do agendamento por inatividade em repositório público e se os commits do bot contam como atividade.
 - **FR-027**: Se o risco existir apesar do commit diário, o documento DEVE propor a mitigação, que só será implementada por decisão do mantenedor.
+- **FR-027a**: A mitigação decidida pelo mantenedor (lembrete a cada 45 dias, sem commits artificiais nem serviço externo) DEVE constar no documento do FR-026, com a data de início da operação e as datas dos dias 45 e 55.
 
 **Testes**
 
@@ -220,7 +231,7 @@ O ROADMAP.md deixa em aberto se o GitHub desativa o agendamento de um repositór
 - **Status da execução** (`data/status.json`): resultado da última execução: "ok" ou "falha", momento da verificação, categoria e motivo da falha, data dos últimos dados bons, momento da geração do último `atual.json` bom e tentativas (FR-010).
 - **Estoque bruto**: total de PL e PLP nas comissões acompanhadas, antes do filtro do NOVO (cerca de 1.500 itens na sondagem de 17/10/2026). É a base da checagem de variação.
 - **Checagem de plausibilidade**: comparação entre o estoque bruto do candidato e o do último retrato bom (e entre o candidato e zero), que decide se o candidato pode substituir o `atual.json`.
-- **Categoria de falha**: as da COL (`configuracao`, `fonte_indisponivel`, `formato_alterado`, `arquivos_desatualizados`, `arquivo_incompleto`, `api_deputados`, `estoque_vazio`), mais a de plausibilidade (`estoque_implausivel`) e a "interna". A falha ao gravar no repositório (commit ou envio) não é categoria do `status.json`, porque nesse caso não há como registrá-la: aparece só como workflow vermelho.
+- **Categoria de falha**: as da COL (`configuracao`, `fonte_indisponivel`, `formato_alterado`, `arquivos_desatualizados`, `arquivo_incompleto`, `api_deputados`, `estoque_vazio`), mais a de plausibilidade (`estoque_implausivel`), a de base ausente (`sem_base_de_comparacao`) e a "interna". A falha ao gravar no repositório (commit ou envio) não é categoria do `status.json`, porque nesse caso não há como registrá-la: aparece só como workflow vermelho.
 - **Confirmação do risco de desativação**: documento com a regra do GitHub, a fonte, a data da consulta e a conclusão (FR-026).
 
 ## Success Criteria *(mandatory)*

@@ -95,10 +95,13 @@ def executar_diaria(
         agora = relogio()
         config = carregar_config(caminho_config, agora.astimezone(BRASILIA).year)
         base = base_de_comparacao(atual, status)
-        if base is None:
+        # Há retrato anterior a comparar? Sem ele é o primeiro dia de todos; com ele, a falta de
+        # base é falha (decisão do mantenedor, 18/10/2026), liberável com a confirmação manual.
+        exige_base = retrato_do_atual(atual) is not None
+        if base is None and not exige_base:
             _aviso(
                 "sem base para comparar a variação do estoque bruto "
-                "(primeiro dia ou status que não descreve o atual.json)"
+                "(primeiro dia: ainda não há atual.json válido)"
             )
         coletado = None
         for tentativa in range(1, config.tentativas + 1):
@@ -118,7 +121,11 @@ def executar_diaria(
                 )
                 dormir(config.espera_minutos * 60)
         variacao_aceita = verificar(
-            coletado.estoque_bruto, base, config.limite_variacao_percentual, aceitar_variacao
+            coletado.estoque_bruto,
+            base,
+            config.limite_variacao_percentual,
+            aceitar_variacao,
+            exige_base=exige_base,
         )
         meta = coletado.documento["meta"]
         retrato = {
@@ -142,7 +149,12 @@ def executar_diaria(
         motivo = f"{type(erro).__name__}: {erro}"
         return _registrar_falha(INTERNA, motivo, atual, status, tentativas, relogio)
 
-    if variacao_aceita is not None:
+    if variacao_aceita is not None and variacao_aceita["estoque_anterior"] is None:
+        _aviso(
+            "aceito manualmente sem base de comparação "
+            f"(estoque bruto {variacao_aceita['estoque_novo']})"
+        )
+    elif variacao_aceita is not None:
         _aviso(
             "variação aceita manualmente "
             f"({variacao_aceita['estoque_anterior']} → {variacao_aceita['estoque_novo']}, "

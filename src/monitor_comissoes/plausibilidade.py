@@ -3,7 +3,7 @@
 Aritmética de inteiros, para que "exatamente 20%" passe sem erro de ponto flutuante.
 """
 
-from .erros import ESTOQUE_IMPLAUSIVEL, ESTOQUE_VAZIO, FalhaDeColeta
+from .erros import ESTOQUE_IMPLAUSIVEL, ESTOQUE_VAZIO, SEM_BASE_DE_COMPARACAO, FalhaDeColeta
 
 
 def percentual_texto(percentual: float, casas: int = 1) -> str:
@@ -12,19 +12,38 @@ def percentual_texto(percentual: float, casas: int = 1) -> str:
 
 
 def verificar(
-    estoque_bruto: int, base: int | None, limite_percentual: int, aceitar: bool
+    estoque_bruto: int,
+    base: int | None,
+    limite_percentual: int,
+    aceitar: bool,
+    exige_base: bool = False,
 ) -> dict | None:
     """Falha se o estoque bruto é vazio ou variou mais que o limite em relação à `base`.
 
     - Estoque bruto zero falha sempre, com ou sem base, e a confirmação não o libera.
-    - Sem base (`None` ou 0) a variação não se aplica (primeiro dia, ou base que não vale).
+    - Sem base (`None` ou 0) e sem `exige_base` (primeiro dia, sem retrato anterior), a variação
+      não se aplica.
+    - Sem base mas com `exige_base` (há retrato anterior que ninguém consegue comparar), falha com
+      `sem_base_de_comparacao`; com `aceitar`, passa e devolve o registro sem número anterior.
     - Variação acima do limite falha com `estoque_implausivel`; com `aceitar` não falha e
       devolve o registro da variação aceita. Só "mais de" o limite é implausível.
     """
     if estoque_bruto == 0:
         raise FalhaDeColeta(ESTOQUE_VAZIO, "nenhum PL/PLP nas comissões acompanhadas")
     if not base:
-        return None
+        if not exige_base:
+            return None
+        if aceitar:
+            return {
+                "estoque_anterior": None,
+                "estoque_novo": estoque_bruto,
+                "variacao_percentual": None,
+            }
+        raise FalhaDeColeta(
+            SEM_BASE_DE_COMPARACAO,
+            "há atual.json, mas não há base para comparar a variação (status ausente, inválido "
+            f"ou que não o descreve); estoque bruto de hoje: {estoque_bruto}",
+        )
     diferenca = estoque_bruto - base
     if abs(diferenca) * 100 <= limite_percentual * base:
         return None
