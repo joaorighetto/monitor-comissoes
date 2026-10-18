@@ -29,11 +29,19 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Coleta e commit
         shell: bash
+        env:
+          # Só o disparo manual pode aceitar uma variação; no agendamento isto vale "false".
+          # A entrada passa por variável de ambiente, nunca interpolada no script.
+          ACEITAR_VARIACAO: ${{ github.event_name == 'workflow_dispatch' && inputs.aceitar_variacao }}
         run: |
           # Falha da coleta não pode impedir o registro do status: guarda o código, commita
           # e só no fim devolve o código (workflow vermelho).
+          argumentos=()
+          if [ "$ACEITAR_VARIACAO" = "true" ]; then
+            argumentos+=(--aceitar-variacao)
+          fi
           set +e
-          uv run python -m monitor_comissoes.diaria executar
+          uv run python -m monitor_comissoes.diaria executar "${argumentos[@]}"
           codigo=$?
           set -e
           if [ "$codigo" -ne 0 ]; then

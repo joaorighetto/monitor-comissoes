@@ -15,6 +15,7 @@ from .coleta import coletar
 from .config import carregar_config
 from .erros import INTERNA, FalhaDeColeta
 from .estoque import BRASILIA
+from .plausibilidade import percentual_texto, verificar
 from .status import (
     base_de_comparacao,
     gravar_par,
@@ -76,8 +77,18 @@ def executar_diaria(
     try:
         agora = relogio()
         config = carregar_config(caminho_config, agora.astimezone(BRASILIA).year)
+        base = base_de_comparacao(atual, status)
+        if base is None:
+            print(
+                "AVISO: sem base para comparar a variação do estoque bruto "
+                "(primeiro dia ou status que não descreve o atual.json)",
+                file=sys.stderr,
+            )
         tentativas = 1
         coletado = coletar(config, transporte, agora)
+        variacao_aceita = verificar(
+            coletado.estoque_bruto, base, config.limite_variacao_percentual, aceitar_variacao
+        )
         meta = coletado.documento["meta"]
         retrato = {
             "gerado_em": meta["gerado_em"],
@@ -90,7 +101,7 @@ def executar_diaria(
             verificado_em=relogio(),
             tentativas=tentativas,
             falha=None,
-            variacao_aceita=None,
+            variacao_aceita=variacao_aceita,
             retrato=retrato,
         )
         gravar_par(coletado.documento, atual, documento_status, status)
@@ -100,6 +111,13 @@ def executar_diaria(
         motivo = f"{type(erro).__name__}: {erro}"
         return _registrar_falha(INTERNA, motivo, atual, status, tentativas, relogio)
 
+    if variacao_aceita is not None:
+        print(
+            "AVISO: variação aceita manualmente "
+            f"({variacao_aceita['estoque_anterior']} → {variacao_aceita['estoque_novo']}, "
+            f"{percentual_texto(variacao_aceita['variacao_percentual'])})",
+            file=sys.stderr,
+        )
     dia = coletado.dados_camara_em.astimezone(BRASILIA).strftime("%d/%m/%Y")
     print(
         f"OK: {meta['total_itens']} itens · estoque bruto {coletado.estoque_bruto}"

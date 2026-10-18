@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TypedDict
 
 from .estoque import BRASILIA
+from .plausibilidade import percentual_texto
 from .saida import escrever_temporario, gravar_atomico, serializar
 
 VERSAO_FORMATO = 1
@@ -209,10 +210,10 @@ def mensagem_commit(status: dict) -> str:
         return f"dados: {dia} · falha [{status['falha']['categoria']}]"
     variacao = status["variacao_aceita"]
     if variacao is not None:
-        percentual = f"{variacao['variacao_percentual']:+.1f}".replace(".", ",")
+        percentual = percentual_texto(variacao["variacao_percentual"])
         return (
             f"dados: {dia} · ok · variação aceita manualmente "
-            f"({variacao['estoque_anterior']} → {variacao['estoque_novo']}, {percentual}%)"
+            f"({variacao['estoque_anterior']} → {variacao['estoque_novo']}, {percentual})"
         )
     retrato = status["ultimo_retrato_bom"]
     itens, estoque = retrato["total_itens"], retrato["estoque_bruto"]

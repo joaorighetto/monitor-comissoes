@@ -137,3 +137,30 @@ def test_o_passo_termina_com_o_codigo_da_coleta_depois_de_commit_e_push():
 
     assert comando("git commit") < comando("git pull --rebase") < comando("git push")
     assert comando("git push") < comando('exit "$codigo"')
+
+
+# --- US3 ------------------------------------------------------------------------------------------
+
+
+def test_entrada_aceitar_variacao_e_booleana_e_desligada_por_padrao():
+    bloco = blocos(texto(), "aceitar_variacao")[0]
+
+    assert "type: boolean" in bloco
+    assert "default: false" in bloco
+
+
+def test_a_confirmacao_so_chega_a_coleta_no_disparo_manual():
+    conteudo = texto()
+
+    assert "github.event_name == 'workflow_dispatch' && inputs.aceitar_variacao" in conteudo
+    assert conteudo.count("--aceitar-variacao") == 1
+    linhas = [linha.strip() for linha in conteudo.splitlines()]
+    se = linhas.index('if [ "$ACEITAR_VARIACAO" = "true" ]; then')
+    assert "--aceitar-variacao" in linhas[se + 1]
+
+
+def test_a_entrada_nao_e_interpolada_dentro_do_script():
+    conteudo = texto()
+    inicio = conteudo.index("run: |\n          # Falha da coleta")
+
+    assert "${{" not in conteudo[inicio:]
