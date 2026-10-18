@@ -86,10 +86,13 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
     meta = {
         "versao_formato": VERSAO_FORMATO,
         "gerado_em": agora.astimezone(BRASILIA).isoformat(timespec="seconds"),
+        "dados_camara_em": lote.last_modified_min.isoformat(timespec="seconds"),
         "comissoes": list(config.comissoes),
         "ano_minimo": config.ano_minimo,
+        "anos_lidos": [lote.anos[0], lote.anos[-1]],
         "total_itens": len(itens),
         "total_por_comissao": por_comissao,
+        "deputados_novo_em_exercicio": [{"id": d.id, "nome": d.nome} for d in deputados],
     }
     gravar_atomico(montar_documento(itens, meta), saida)
     return Resultado(len(itens), por_comissao, lote.last_modified_min)

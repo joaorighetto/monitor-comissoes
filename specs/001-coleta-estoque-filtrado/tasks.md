@@ -133,11 +133,11 @@ description: "Tarefas da feature COL — Coleta e estoque filtrado"
 
 ### Testes
 
-- [ ] T036 [P] [US4] Estender `tests/test_aceitacao.py`: com `comissoes = ["CE"]` sai só CE; com outra sigla presente nas fixtures, saem os itens dela e não os da CE; com `ano_minimo = 2022` a `TransporteFalso` registra pedidos só dos anos 2022 a 2026 e os itens apresentados antes entram como "principal não localizada" ou saem conforme as regras da US2; configuração inválida não faz nenhum pedido de rede.
+- [X] T036 [P] [US4] Estender `tests/test_aceitacao.py`: com `comissoes = ["CE"]` sai só CE; com outra sigla presente nas fixtures, saem os itens dela e não os da CE; com `ano_minimo = 2022` a `TransporteFalso` registra pedidos só dos anos 2022 a 2026 e os itens apresentados antes entram como "principal não localizada" ou saem conforme as regras da US2; configuração inválida não faz nenhum pedido de rede.
 
 ### Implementação
 
-- [ ] T037 [US4] Garantir que `coleta.py` e `lote.py` leiam `comissoes` e `ano_minimo` apenas da `Config` (sem valores fixos no código) e que `__main__.py` aceite `--config`. Ajustar o que T036 revelar (T036 passa).
+- [X] T037 [US4] Garantir que `coleta.py` e `lote.py` leiam `comissoes` e `ano_minimo` apenas da `Config` (sem valores fixos no código) e que `__main__.py` aceite `--config`. Ajustar o que T036 revelar (T036 passa).
 
 **Checkpoint**: US4 independente de código.
 
@@ -151,12 +151,12 @@ description: "Tarefas da feature COL — Coleta e estoque filtrado"
 
 ### Testes
 
-- [ ] T038 [P] [US5] Estender `tests/test_saida.py` e `tests/test_aceitacao.py`: duas execuções com o mesmo `agora` geram arquivos idênticos byte a byte; com `agora` diferente no mesmo dia, só `gerado_em` muda; `dados_camara_em` é o menor `Last-Modified`; `anos_lidos` = `[ano_minimo, ano corrente]`; `deputados_novo_em_exercicio` ordenada por `id`; `total_por_comissao` com uma chave por comissão da configuração, inclusive com 0; as sete invariantes do contrato (`meta.total_itens == len(itens) > 0`, soma por comissão, `link` e etiqueta em todo item, `comissao` ∈ `comissoes`, `principal_nao_localizada` ⇒ `apensado_a` nulo, `id`s únicos, repetibilidade); JSON UTF-8 sem escape de acentos, indentado com 2 espaços, com quebra de linha final.
+- [X] T038 [P] [US5] Estender `tests/test_saida.py` e `tests/test_aceitacao.py`: duas execuções com o mesmo `agora` geram arquivos idênticos byte a byte; com `agora` diferente no mesmo dia, só `gerado_em` muda; `dados_camara_em` é o menor `Last-Modified`; `anos_lidos` = `[ano_minimo, ano corrente]`; `deputados_novo_em_exercicio` ordenada por `id`; `total_por_comissao` com uma chave por comissão da configuração, inclusive com 0; as sete invariantes do contrato (`meta.total_itens == len(itens) > 0`, soma por comissão, `link` e etiqueta em todo item, `comissao` ∈ `comissoes`, `principal_nao_localizada` ⇒ `apensado_a` nulo, `id`s únicos, repetibilidade); JSON UTF-8 sem escape de acentos, indentado com 2 espaços, com quebra de linha final.
 
 ### Implementação
 
-- [ ] T039 [US5] Completar `meta` em `saida.py`/`coleta.py` (`dados_camara_em`, `anos_lidos`, `deputados_novo_em_exercicio`) e garantir serialização determinística: ordem fixa dos campos, listas ordenadas, `ensure_ascii=False`, `indent=2` (T038 passa).
-- [ ] T040 [US5] Rodar a suíte inteira; comitar.
+- [X] T039 [US5] Completar `meta` em `saida.py`/`coleta.py` (`dados_camara_em`, `anos_lidos`, `deputados_novo_em_exercicio`) e garantir serialização determinística: ordem fixa dos campos, listas ordenadas, `ensure_ascii=False`, `indent=2` (T038 passa).
+- [X] T040 [US5] Rodar a suíte inteira; comitar.
 
 ---
 
