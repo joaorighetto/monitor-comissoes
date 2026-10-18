@@ -1,0 +1,28 @@
+[project]
+name = "monitor-comissoes"
+version = "0.0.0"
+description = "Monitor diário das comissões da Câmara dos Deputados"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+include = ["src/**/*.py", "tests/**/*.py"]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
