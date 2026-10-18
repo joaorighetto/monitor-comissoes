@@ -111,15 +111,15 @@ description: "Tarefas da feature COL — Coleta e estoque filtrado"
 
 ### Testes (escrever primeiro; devem falhar)
 
-- [ ] T030 [P] [US3] Escrever `tests/test_falhas.py`, parametrizado, partindo de um `atual.json` sentinela já existente e conferindo, em cada caso, saída 1, categoria, mensagem com o motivo e arquivo intacto: HTTP 503 persistente (`fonte_indisponivel`); coluna ausente (`formato_alterado: coluna X`); `Last-Modified` com mais de 36 horas (`arquivos_desatualizados`, mensagem "a Câmara não atualizou os arquivos"); arquivo só com cabeçalho e arquivo ausente (404) (`arquivo_incompleto` e `fonte_indisponivel`); `Content-Length` maior que o corpo; última linha com colunas faltando (`arquivo_incompleto`); API de deputados fora do ar (`api_deputados`, e **nenhum** arquivo grande é pedido); estoque filtrado vazio (`estoque_vazio`); exceção forçada durante a gravação (arquivo anterior intacto, sem `.tmp`); exceção inesperada → `FALHA [interna]`, código 1. Também: o diretório temporário é apagado em sucesso e em falha.
-- [ ] T031 [P] [US3] Cobrir a **ordem de verificação** de [contracts/cli.md](contracts/cli.md) em `tests/test_falhas.py`: configuração inválida falha sem nenhum pedido de rede; falha da API de deputados ocorre antes de qualquer download de arquivo em lote.
+- [X] T030 [P] [US3] Escrever `tests/test_falhas.py`, parametrizado, partindo de um `atual.json` sentinela já existente e conferindo, em cada caso, saída 1, categoria, mensagem com o motivo e arquivo intacto: HTTP 503 persistente (`fonte_indisponivel`); coluna ausente (`formato_alterado: coluna X`); `Last-Modified` com mais de 36 horas (`arquivos_desatualizados`, mensagem "a Câmara não atualizou os arquivos"); arquivo só com cabeçalho e arquivo ausente (404) (`arquivo_incompleto` e `fonte_indisponivel`); `Content-Length` maior que o corpo; última linha com colunas faltando (`arquivo_incompleto`); API de deputados fora do ar (`api_deputados`, e **nenhum** arquivo grande é pedido); estoque filtrado vazio (`estoque_vazio`); exceção forçada durante a gravação (arquivo anterior intacto, sem `.tmp`); exceção inesperada → `FALHA [interna]`, código 1. Também: o diretório temporário é apagado em sucesso e em falha.
+- [X] T031 [P] [US3] Cobrir a **ordem de verificação** de [contracts/cli.md](contracts/cli.md) em `tests/test_falhas.py`: configuração inválida falha sem nenhum pedido de rede; falha da API de deputados ocorre antes de qualquer download de arquivo em lote.
 
 ### Implementação
 
-- [ ] T032 [US3] Implementar em `lote.py`/`coleta.py` a checagem de frescor: falha se o `Last-Modified` de qualquer arquivo tiver mais de 36 horas em relação a `agora` (T030 passa nesse ponto).
-- [ ] T033 [US3] Implementar em `coleta.py` a falha `estoque_vazio` (lista filtrada sem itens), sempre antes da gravação.
-- [ ] T034 [US3] Implementar em `coleta.py` e `__main__.py` a ordem de verificação do contrato (configuração → deputados → download e validação por ano → frescor → cálculo → estoque vazio → gravação), a conversão de `FalhaDeColeta` em `FALHA [categoria]: motivo` em `stderr` com código 1, a captura de exceção inesperada como `FALHA [interna]`, e a limpeza do diretório temporário em `finally` (T030 e T031 passam).
-- [ ] T035 [US3] Rodar a suíte inteira; comitar.
+- [X] T032 [US3] Implementar em `lote.py`/`coleta.py` a checagem de frescor: falha se o `Last-Modified` de qualquer arquivo tiver mais de 36 horas em relação a `agora` (T030 passa nesse ponto).
+- [X] T033 [US3] Implementar em `coleta.py` a falha `estoque_vazio` (lista filtrada sem itens), sempre antes da gravação.
+- [X] T034 [US3] Implementar em `coleta.py` e `__main__.py` a ordem de verificação do contrato (configuração → deputados → download e validação por ano → frescor → cálculo → estoque vazio → gravação), a conversão de `FalhaDeColeta` em `FALHA [categoria]: motivo` em `stderr` com código 1, a captura de exceção inesperada como `FALHA [interna]`, e a limpeza do diretório temporário em `finally` (T030 e T031 passam).
+- [X] T035 [US3] Rodar a suíte inteira; comitar.
 
 **Checkpoint**: nenhuma falha deixa saída parcial; US1 a US3 completas.
 

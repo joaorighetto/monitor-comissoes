@@ -30,6 +30,9 @@ def main(
     except FalhaDeColeta as falha:
         print(f"FALHA [{falha.categoria}]: {falha.motivo}", file=sys.stderr)
         return 1
+    except Exception as erro:  # nenhuma falha pode terminar sem aviso nem saída parcial
+        print(f"FALHA [interna]: {type(erro).__name__}: {erro}", file=sys.stderr)
+        return 1
 
     por_comissao = ", ".join(f"{c}: {n}" for c, n in resultado.por_comissao.items())
     dia = resultado.dados_camara_em.astimezone(BRASILIA).strftime("%d/%m/%Y")

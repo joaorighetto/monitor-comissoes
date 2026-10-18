@@ -4,11 +4,16 @@ import csv
 import sys
 from collections.abc import Iterator
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import NamedTuple
 
-from .erros import ARQUIVO_INCOMPLETO, FORMATO_ALTERADO, FalhaDeColeta
+from .erros import (
+    ARQUIVO_INCOMPLETO,
+    ARQUIVOS_DESATUALIZADOS,
+    FORMATO_ALTERADO,
+    FalhaDeColeta,
+)
 from .transporte import Transporte
 
 PROPOSICOES_COLUNAS = (
@@ -211,3 +216,17 @@ def baixar_lote(
             validar_arquivo(baixado.caminho, colunas)
             modificados.append(baixado.last_modified)
     return Lote(diretorio=diretorio, anos=anos, last_modified_min=min(modificados))
+
+
+LIMITE_DE_IDADE = timedelta(hours=36)
+
+
+def verificar_frescor(lote: Lote, agora: datetime, limite: timedelta = LIMITE_DE_IDADE) -> None:
+    """Falha se o arquivo mais antigo do lote foi gerado há mais de `limite` (PRODUCT.md §7)."""
+    idade = agora - lote.last_modified_min
+    if idade > limite:
+        horas = int(idade.total_seconds() // 3600)
+        raise FalhaDeColeta(
+            ARQUIVOS_DESATUALIZADOS,
+            f"a Câmara não atualizou os arquivos (o mais antigo tem {horas} horas)",
+        )

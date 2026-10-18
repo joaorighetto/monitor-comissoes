@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .config import Config
 from .deputados import obter_deputados_novo
+from .erros import ESTOQUE_VAZIO, FalhaDeColeta
 from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens, ids_na_comissao, subir_ate_a_raiz
 from .lote import (
     baixar_lote,
@@ -15,6 +16,7 @@ from .lote import (
     ler_autores,
     ler_ids_com_autor_novo,
     ler_proposicoes,
+    verificar_frescor,
 )
 from .saida import gravar_atomico, montar_documento
 from .transporte import Transporte
@@ -38,6 +40,7 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
 
     with tempfile.TemporaryDirectory(prefix="monitor-comissoes-") as pasta:
         lote = baixar_lote(transporte, URL_BASE, config.ano_minimo, ano_corrente, Path(pasta))
+        verificar_frescor(lote, agora)
 
         # Quais proposições têm autor do NOVO (na data) ou autor deputado do NOVO hoje.
         ligadas_ao_novo: set[int] = set()
@@ -77,6 +80,8 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
         mapa_principal=mapa_principal,
         proposicoes=linhas,
     )
+    if not itens:
+        raise FalhaDeColeta(ESTOQUE_VAZIO, "nenhum item após os filtros; a lista não é gravada")
     por_comissao = {c: sum(1 for i in itens if i["comissao"] == c) for c in config.comissoes}
     meta = {
         "versao_formato": VERSAO_FORMATO,
