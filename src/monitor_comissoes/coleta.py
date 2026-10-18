@@ -12,6 +12,7 @@ from .erros import ESTOQUE_VAZIO, FalhaDeColeta
 from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens, ids_na_comissao, subir_ate_a_raiz
 from .lote import (
     baixar_lote,
+    contar_estoque_bruto,
     ler_apensacao,
     ler_autores,
     ler_ids_com_autor_novo,
@@ -32,8 +33,17 @@ class Resultado:
     dados_camara_em: datetime  # UTC
 
 
-def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:
-    """Gera `saida` ou levanta FalhaDeColeta sem tocar no arquivo existente."""
+@dataclass(frozen=True)
+class Coletado:
+    """Resultado de uma coleta ainda não gravada: o documento e o que a AGE confere."""
+
+    documento: dict
+    estoque_bruto: int  # PL/PLP nas comissões, pelo órgão do próprio status (AGE, FR-015a)
+    dados_camara_em: datetime  # UTC
+
+
+def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado:
+    """Baixa, valida e filtra o lote; devolve o documento sem gravar nada."""
     ano_corrente = agora.astimezone(BRASILIA).year
     deputados = obter_deputados_novo(transporte, URL_BASE)
     ids_deputados = {d.id for d in deputados}
@@ -41,6 +51,10 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
     with tempfile.TemporaryDirectory(prefix="monitor-comissoes-") as pasta:
         lote = baixar_lote(transporte, URL_BASE, config.ano_minimo, ano_corrente, Path(pasta))
         verificar_frescor(lote, agora)
+        estoque_bruto = sum(
+            contar_estoque_bruto(lote.proposicoes(ano), TIPOS, config.comissoes)
+            for ano in lote.anos
+        )
 
         # Quais proposições têm autor do NOVO (na data) ou autor deputado do NOVO hoje.
         ligadas_ao_novo: set[int] = set()
@@ -94,5 +108,12 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
         "total_por_comissao": por_comissao,
         "deputados_novo_em_exercicio": [{"id": d.id, "nome": d.nome} for d in deputados],
     }
-    gravar_atomico(montar_documento(itens, meta), saida)
-    return Resultado(len(itens), por_comissao, lote.last_modified_min)
+    return Coletado(montar_documento(itens, meta), estoque_bruto, lote.last_modified_min)
+
+
+def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:
+    """Gera `saida` ou levanta FalhaDeColeta sem tocar no arquivo existente."""
+    coletado = coletar(config, transporte, agora)
+    gravar_atomico(coletado.documento, saida)
+    meta = coletado.documento["meta"]
+    return Resultado(meta["total_itens"], meta["total_por_comissao"], coletado.dados_camara_em)
