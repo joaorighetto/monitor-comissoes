@@ -1,5 +1,7 @@
 """Casos de aceitação da COL sobre as fixtures reais da Câmara (sem rede)."""
 
+import csv
+import io
 import json
 from datetime import date
 from pathlib import Path
@@ -95,3 +97,84 @@ def test_comando_imprime_resumo_e_sai_com_zero(transporte, agora, tmp_path, caps
     assert linha.startswith("OK: ")
     assert "CE:" in linha and "CREDN:" in linha
     assert saida.exists()
+
+
+# --- US2: apensados ------------------------------------------------------------------------
+
+PL_4047_2019 = 2211957  # apensado; a cadeia real termina no PL 3047/2015, na CFT
+PL_3047_2015 = 1734799  # raiz real da cadeia do PL 4047/2019
+PL_1843_2022 = 2331032
+
+
+def variar_principal(transporte, arquivo, id_proposicao, novo_principal):
+    """Variante DERIVADA de uma linha real: troca só o uriPropPrincipal da proposição.
+
+    Existe apenas dentro do teste; nada é gravado em tests/fixtures/.
+    """
+
+    def transformar(corpo: bytes) -> bytes:
+        leitor = csv.reader(
+            io.StringIO(corpo.decode("utf-8-sig"), newline=""), delimiter=";", strict=True
+        )
+        cabecalho = next(leitor)
+        i_id, i_principal = cabecalho.index("id"), cabecalho.index("uriPropPrincipal")
+        linhas = list(leitor)
+        for linha in linhas:
+            if int(linha[i_id]) == id_proposicao:
+                linha[i_principal] = (
+                    f"https://dadosabertos.camara.leg.br/api/v2/proposicoes/{novo_principal}"
+                )
+        saida = io.StringIO(newline="")
+        escritor = csv.writer(saida, delimiter=";", quoting=csv.QUOTE_ALL, lineterminator="\r\n")
+        escritor.writerow(cabecalho)
+        escritor.writerows(linhas)
+        return saida.getvalue().encode("utf-8-sig")
+
+    transporte.transformar[arquivo] = transformar
+
+
+def test_pl_4047_2019_fica_fora_porque_a_raiz_da_cadeia_esta_na_cft(documento):
+    assert PL_4047_2019 not in {i["id"] for i in documento["itens"]}
+    # O status do próprio apensado é da CE, e o autor (Luiz Lima) é hoje do NOVO.
+    assert "PL 4047/2019" not in por_identificacao(documento)
+
+
+def test_apensado_a_uma_raiz_na_comissao_entra_com_status_da_raiz(
+    config, transporte, agora, tmp_path
+):
+    # Derivada: o PL 4047/2019 passa a ser apensado direto ao PL 1843/2022 (CE).
+    variar_principal(transporte, "proposicoes-2019.csv", PL_4047_2019, PL_1843_2022)
+
+    item = por_identificacao(gerar(config, transporte, agora, tmp_path))["PL 4047/2019"]
+
+    assert item["etiquetas"] == ["autor hoje no NOVO"]
+    assert item["apensado_a"]["identificacao"] == "PL 1843/2022"
+    assert item["apensado_a"]["link"].endswith(f"/{PL_1843_2022}")
+    assert item["comissao"] == "CE"
+    assert (
+        item["situacao"] == "Aguardando Parecer"
+    )  # situação da raiz, não "Tramitando em Conjunto"
+    assert item["ultimo_status_em"] == "2025-10-16T00:00:00"
+    assert item["principal_nao_localizada"] is False
+
+
+def test_raiz_inexistente_vira_principal_nao_localizada(config, transporte, agora, tmp_path):
+    # Derivada: o PL 4047/2019 passa a apontar para um id que não existe em nenhum arquivo.
+    variar_principal(transporte, "proposicoes-2019.csv", PL_4047_2019, 999_999_999)
+
+    item = por_identificacao(gerar(config, transporte, agora, tmp_path))["PL 4047/2019"]
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None
+    assert item["comissao"] == "CE"
+    assert item["situacao"] == "Tramitando em Conjunto"  # o próprio status
+
+
+def test_ciclo_de_apensacao_termina_normalmente_com_a_marca(config, transporte, agora, tmp_path):
+    # Derivada: a raiz real (PL 3047/2015) passa a ser apensada ao PL 4047/2019, fechando o ciclo.
+    variar_principal(transporte, "proposicoes-2015.csv", PL_3047_2015, PL_4047_2019)
+
+    item = por_identificacao(gerar(config, transporte, agora, tmp_path))["PL 4047/2019"]
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None

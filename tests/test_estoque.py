@@ -1,7 +1,9 @@
 from datetime import datetime
 
+import pytest
+
 from conftest import BRASILIA
-from monitor_comissoes.estoque import construir_itens, etiquetar
+from monitor_comissoes.estoque import construir_itens, etiquetar, resolver_referencia
 from monitor_comissoes.lote import Autor, Proposicao
 
 AGORA = datetime(2026, 10, 18, 9, 0, tzinfo=BRASILIA)
@@ -156,3 +158,139 @@ def test_parado_ha_conta_dias_inteiros_pela_data_de_brasilia():
     autores = {i: [autor(pid=i, partido="NOVO")] for i in (1, 2, 3)}
 
     assert {i["id"]: i["parado_ha_dias"] for i in itens(candidatas, autores)} == {1: 1, 2: 1, 3: 0}
+
+
+# --- apensados e proposição de referência (dados SINTÉTICOS em memória) ---------------------
+
+
+def com_referencia(candidatas, autores, mapa, linhas=None, comissoes=COMISSOES):
+    todas = {p.id: p for p in candidatas}
+    todas.update({p.id: p for p in (linhas or [])})
+    return construir_itens(
+        {p.id: p for p in candidatas}, autores, DEPUTADOS_NOVO, comissoes, AGORA,
+        mapa_principal=mapa, proposicoes=todas,
+    )  # fmt: skip
+
+
+def test_sem_principal_a_referencia_e_a_propria():
+    p = prop(id=1)
+
+    referencia = resolver_referencia(p, {}, {1: p})
+
+    assert referencia.estado == "propria"
+    assert referencia.proposicao is p and referencia.raiz is None
+
+
+def test_apensado_usa_comissao_situacao_e_data_da_raiz():
+    raiz = prop(id=2, orgao="CREDN", status=datetime(2026, 9, 1), situacao="Pronta para Pauta")
+    apensado = prop(
+        id=1,
+        orgao="CE",
+        status=datetime(2013, 5, 5),
+        situacao="Tramitando em Conjunto",
+        principal=2,
+    )
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
+
+    assert item["comissao"] == "CREDN"
+    assert item["situacao"] == "Pronta para Pauta"
+    assert item["ultimo_status_em"] == "2026-09-01T00:00:00"
+    assert item["parado_ha_dias"] == 47
+    assert item["apensado_a"] == {
+        "id": 2,
+        "identificacao": "PL 10/2020",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2",
+    }
+    assert item["principal_nao_localizada"] is False
+
+
+def test_cadeia_de_dois_niveis_sobe_ate_a_raiz_e_nao_para_no_meio():
+    a = prop(id=1, orgao="CE", principal=2)
+    b = prop(id=2, orgao="CE", principal=3, situacao="Tramitando em Conjunto")
+    c = prop(id=3, orgao="CREDN", situacao="Aguardando Parecer")
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([a], autores, {1: 2, 2: 3}, linhas=[b, c])
+
+    assert item["apensado_a"]["id"] == 3
+    assert item["comissao"] == "CREDN"
+    assert item["situacao"] == "Aguardando Parecer"
+
+
+def test_raiz_em_outra_comissao_deixa_o_apensado_de_fora_mesmo_com_status_proprio_na_lista():
+    raiz = prop(id=2, orgao="CFT")
+    apensado = prop(id=1, orgao="CE", principal=2)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    assert com_referencia([apensado], autores, {1: 2}, linhas=[raiz]) == []
+
+
+def test_raiz_na_lista_inclui_o_apensado_mesmo_com_status_proprio_em_outro_orgao():
+    raiz = prop(id=2, orgao="CE")
+    apensado = prop(id=1, orgao="MESA", principal=2)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
+
+    assert item["comissao"] == "CE"
+
+
+def test_raiz_ausente_usa_o_proprio_status_com_a_marca():
+    apensado = prop(id=1, orgao="CE", principal=99, situacao="Tramitando em Conjunto")
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 99})
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None
+    assert item["comissao"] == "CE"
+    assert item["situacao"] == "Tramitando em Conjunto"
+
+
+def test_raiz_ausente_com_o_proprio_orgao_fora_da_lista_nao_entra():
+    apensado = prop(id=1, orgao="CFT", principal=99)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    assert com_referencia([apensado], autores, {1: 99}) == []
+
+
+def test_elo_intermediario_ausente_tambem_e_nao_localizada():
+    a = prop(id=1, orgao="CE", principal=2)  # o id 2 não existe nas linhas lidas
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([a], autores, {1: 2, 2: 3})
+
+    assert item["principal_nao_localizada"] is True
+
+
+@pytest.mark.parametrize("mapa", [{1: 2, 2: 1}, {1: 1}, {1: 2, 2: 3, 3: 2}])
+def test_ciclo_e_tratado_como_principal_nao_localizada(mapa):
+    a = prop(id=1, orgao="CE", principal=mapa[1])
+    outras = [prop(id=i, orgao="CE", principal=mapa.get(i)) for i in mapa if i != 1]
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([a], autores, mapa, linhas=outras)
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None
+    assert item["comissao"] == "CE"
+
+
+def test_etiquetas_vem_dos_autores_do_proprio_apensado_nunca_da_raiz():
+    raiz = prop(id=2, orgao="CE")
+    apensado = prop(id=1, orgao="CE", principal=2)
+    autores = {1: [autor(pid=1, partido="PT", dep=7)], 2: [autor(pid=2, partido="NOVO")]}
+
+    assert com_referencia([apensado], autores, {1: 2}, linhas=[raiz]) == []
+
+
+def test_raiz_pode_ser_de_qualquer_tipo():
+    raiz = prop(id=2, tipo="PEC", orgao="CE")
+    apensado = prop(id=1, tipo="PL", orgao="CE", principal=2)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
+
+    assert item["apensado_a"]["identificacao"] == "PEC 10/2020"

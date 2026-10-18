@@ -89,15 +89,15 @@ description: "Tarefas da feature COL — Coleta e estoque filtrado"
 
 ### Testes (escrever primeiro; devem falhar)
 
-- [ ] T024 [P] [US2] Estender `tests/test_estoque.py` com `resolver_referencia`: sem principal → própria; cadeia A→B (raiz B); cadeia A→B→C (raiz C, não B); raiz em outra comissão → item fora, mesmo que o status do próprio apensado seja da lista; raiz ausente → `principal_nao_localizada` com o status do próprio item; ciclo A→B→A → igual à raiz ausente; **raiz ausente com o próprio órgão fora da lista → fora** (esclarecimento 1); etiquetas sempre pelos autores do próprio apensado. Estruturas em memória, marcadas como sintéticas.
-- [ ] T025 [P] [US2] Estender `tests/test_aceitacao.py`: PL 4047/2019 **não** aparece (a raiz está na CFT); um apensado real do conjunto de fixtures aparece com `apensado_a` preenchido e comissão da raiz; casos **derivados**, criados no teste a partir das linhas reais com `uriPropPrincipal` alterada (raiz inexistente e ciclo) em um diretório temporário, nunca gravados em `tests/fixtures/`, para conferir `principal_nao_localizada: true` e `apensado_a: null`.
+- [X] T024 [P] [US2] Estender `tests/test_estoque.py` com `resolver_referencia`: sem principal → própria; cadeia A→B (raiz B); cadeia A→B→C (raiz C, não B); raiz em outra comissão → item fora, mesmo que o status do próprio apensado seja da lista; raiz ausente → `principal_nao_localizada` com o status do próprio item; ciclo A→B→A → igual à raiz ausente; **raiz ausente com o próprio órgão fora da lista → fora** (esclarecimento 1); etiquetas sempre pelos autores do próprio apensado. Estruturas em memória, marcadas como sintéticas.
+- [X] T025 [P] [US2] Estender `tests/test_aceitacao.py`: PL 4047/2019 **não** aparece (a raiz está na CFT); um apensado real do conjunto de fixtures aparece com `apensado_a` preenchido e comissão da raiz; casos **derivados**, criados no teste a partir das linhas reais com `uriPropPrincipal` alterada (raiz inexistente e ciclo) em um diretório temporário, nunca gravados em `tests/fixtures/`, para conferir `principal_nao_localizada: true` e `apensado_a: null`.
 
 ### Implementação
 
-- [ ] T026 [US2] Implementar em `estoque.py` `resolver_referencia(id, mapa_principal, linhas_necessarias)`: sobe a cadeia com conjunto de visitados (ciclo), devolve estado `própria`, `raiz` ou `não localizada` conforme [data-model.md](data-model.md) (T024 passa).
-- [ ] T027 [US2] Estender `coleta.py`: passada que monta o mapa `id → id da principal` somente para linhas com `uriPropPrincipal` (id = último trecho numérico da URI); resolução das raízes das candidatas; segunda leitura das proposições para extrair as linhas das candidatas e das raízes; avaliar comissão, situação e "parado há" pela referência.
-- [ ] T028 [US2] Estender `montar_item` e `montar_documento` com `apensado_a` (`id`, `identificacao`, `link`) e `principal_nao_localizada`, conforme [contracts/atual-json.md](contracts/atual-json.md) (T025 passa).
-- [ ] T029 [US2] Rodar a suíte inteira; comitar.
+- [X] T026 [US2] Implementar em `estoque.py` `resolver_referencia(id, mapa_principal, linhas_necessarias)`: sobe a cadeia com conjunto de visitados (ciclo), devolve estado `própria`, `raiz` ou `não localizada` conforme [data-model.md](data-model.md) (T024 passa).
+- [X] T027 [US2] Estender `coleta.py`: passada que monta o mapa `id → id da principal` somente para linhas com `uriPropPrincipal` (id = último trecho numérico da URI); resolução das raízes das candidatas; segunda leitura das proposições para extrair as linhas das candidatas e das raízes; avaliar comissão, situação e "parado há" pela referência.
+- [X] T028 [US2] Estender `montar_item` e `montar_documento` com `apensado_a` (`id`, `identificacao`, `link`) e `principal_nao_localizada`, conforme [contracts/atual-json.md](contracts/atual-json.md) (T025 passa).
+- [X] T029 [US2] Rodar a suíte inteira; comitar.
 
 **Checkpoint**: US1 e US2 funcionam juntas.
 

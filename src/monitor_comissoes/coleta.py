@@ -8,8 +8,14 @@ from pathlib import Path
 
 from .config import Config
 from .deputados import obter_deputados_novo
-from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens
-from .lote import baixar_lote, ler_autores, ler_ids_com_autor_novo, ler_proposicoes
+from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens, ids_na_comissao, subir_ate_a_raiz
+from .lote import (
+    baixar_lote,
+    ler_apensacao,
+    ler_autores,
+    ler_ids_com_autor_novo,
+    ler_proposicoes,
+)
 from .saida import gravar_atomico, montar_documento
 from .transporte import Transporte
 
@@ -38,18 +44,39 @@ def executar(config: Config, transporte: Transporte, agora: datetime, saida: Pat
         for ano in lote.anos:
             ligadas_ao_novo |= ler_ids_com_autor_novo(lote.autores(ano), PARTIDO, ids_deputados)
 
-        candidatas = {}
+        # Cadeias de apensação: id -> id da principal, só das proposições apensadas.
+        mapa_principal: dict[int, int] = {}
         for ano in lote.anos:
-            for p in ler_proposicoes(lote.proposicoes(ano), ids=ligadas_ao_novo):
-                if p.tipo in TIPOS and p.orgao in config.comissoes:
-                    candidatas[p.id] = p
+            mapa_principal.update(ler_apensacao(lote.proposicoes(ano)))
 
+        # Linhas necessárias: as proposições ligadas ao NOVO e as raízes de suas cadeias.
+        necessarias = set(ligadas_ao_novo)
+        for id_proposicao in ligadas_ao_novo:
+            raiz = subir_ate_a_raiz(id_proposicao, mapa_principal)
+            if raiz is not None:
+                necessarias.add(raiz)
+        linhas = {}
+        for ano in lote.anos:
+            for p in ler_proposicoes(lote.proposicoes(ano), ids=necessarias):
+                linhas[p.id] = p
+        candidatas = {i: p for i, p in linhas.items() if i in ligadas_ao_novo and p.tipo in TIPOS}
+
+        # Autores completos só das que estão na comissão (a referência é que decide).
+        na_comissao = ids_na_comissao(candidatas, config.comissoes, mapa_principal, linhas)
         autores_por_id = defaultdict(list)
         for ano in lote.anos:
-            for autor in ler_autores(lote.autores(ano), ids=set(candidatas)):
+            for autor in ler_autores(lote.autores(ano), ids=na_comissao):
                 autores_por_id[autor.id_proposicao].append(autor)
 
-    itens = construir_itens(candidatas, autores_por_id, ids_deputados, config.comissoes, agora)
+    itens = construir_itens(
+        candidatas,
+        autores_por_id,
+        ids_deputados,
+        config.comissoes,
+        agora,
+        mapa_principal=mapa_principal,
+        proposicoes=linhas,
+    )
     por_comissao = {c: sum(1 for i in itens if i["comissao"] == c) for c in config.comissoes}
     meta = {
         "versao_formato": VERSAO_FORMATO,
