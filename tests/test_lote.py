@@ -36,6 +36,7 @@ def linha(**valores):
         "ultimoStatus_dataHora": "2024-05-06T07:08:09",
         "ultimoStatus_siglaOrgao": "CE",
         "ultimoStatus_descricaoSituacao": "Aguardando Parecer",
+        "ultimoStatus_uriRelator": "",
         "keywords": "k",
     }
     base.update(valores)
@@ -69,6 +70,20 @@ def test_le_proposicao_real_com_todos_os_campos():
     assert p.situacao == "Tramitando em Conjunto"
     assert p.ultimo_status_em == datetime(2026, 4, 15, 12, 22)
     assert p.data_apresentacao.year == 2019
+
+
+def test_le_o_relator_do_ultimo_status_real():
+    # PL 937/2022: o último relator registrado no lote é Luiz Lima (que devolveu a matéria).
+    [p] = list(ler_proposicoes(FIXTURES / "proposicoes-2022.csv", ids={2319917}))
+
+    assert p.id_relator == 204455
+
+
+def test_proposicao_real_sem_relator_tem_id_relator_nulo():
+    # PL 1843/2022 tem relatora; o PL 4047/2019 (apensado) não tem relator no último status.
+    [p] = list(ler_proposicoes(FIXTURES / "proposicoes-2019.csv", ids={2211957}))
+
+    assert p.id_relator is None
 
 
 def test_apensacao_real_so_traz_linhas_com_principal():
@@ -131,6 +146,38 @@ def test_coluna_ausente_nomeia_a_coluna(tmp_path):
 
     assert erro.value.categoria == FORMATO_ALTERADO
     assert "ultimoStatus_dataHora" in erro.value.motivo
+
+
+def test_coluna_do_relator_e_obrigatoria(tmp_path):
+    sem = [c for c in CABECALHO if c != "ultimoStatus_uriRelator"]
+    caminho = escrever(
+        tmp_path, [[v for c, v in zip(CABECALHO, linha(), strict=True) if c in sem]], sem
+    )
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        validar_arquivo(caminho, PROPOSICOES_COLUNAS)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "ultimoStatus_uriRelator" in erro.value.motivo
+
+
+def test_id_relator_vem_da_uri_do_deputado(tmp_path):
+    uri = "https://dadosabertos.camara.leg.br/api/v2/deputados/204455"
+    caminho = escrever(tmp_path, [linha(ultimoStatus_uriRelator=uri), linha(id="11")])
+
+    achadas = list(ler_proposicoes(caminho))
+
+    assert [p.id_relator for p in achadas] == [204455, None]
+
+
+def test_uri_de_relator_invalida_e_formato_alterado(tmp_path):
+    caminho = escrever(tmp_path, [linha(ultimoStatus_uriRelator="https://x/deputados/abc")])
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        list(ler_proposicoes(caminho))
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "ultimoStatus_uriRelator" in erro.value.motivo
 
 
 def test_linha_com_colunas_faltando_e_arquivo_incompleto(tmp_path):

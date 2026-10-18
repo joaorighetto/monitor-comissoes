@@ -28,6 +28,7 @@ PROPOSICOES_COLUNAS = (
     "ultimoStatus_dataHora",
     "ultimoStatus_siglaOrgao",
     "ultimoStatus_descricaoSituacao",
+    "ultimoStatus_uriRelator",
 )
 PROPOSICOES_DATAS = ("dataApresentacao", "ultimoStatus_dataHora")
 AUTORES_COLUNAS = (
@@ -55,6 +56,7 @@ class Proposicao(NamedTuple):
     ultimo_status_em: datetime
     orgao: str
     situacao: str
+    id_relator: int | None = None  # último relator registrado no status (candidato, REL R3)
 
 
 class Autor(NamedTuple):
@@ -187,7 +189,7 @@ def ler_proposicoes(caminho: Path, ids: set[int] | None = None) -> Iterator[Prop
         pid = _inteiro(linha[0], "id", arquivo)
         if ids is not None and pid not in ids:
             continue
-        principal = linha[6]
+        principal, relator = linha[6], linha[10]
         yield Proposicao(
             id=pid,
             tipo=linha[1],
@@ -199,6 +201,7 @@ def ler_proposicoes(caminho: Path, ids: set[int] | None = None) -> Iterator[Prop
             ultimo_status_em=_data(linha[7], "ultimoStatus_dataHora", arquivo),
             orgao=linha[8],
             situacao=linha[9],
+            id_relator=_id_da_uri(relator, "ultimoStatus_uriRelator", arquivo) if relator else None,
         )
 
 
