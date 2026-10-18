@@ -5,6 +5,8 @@ O comando da COL (`python -m monitor_comissoes`) não muda.
 """
 
 import argparse
+import os
+import signal
 import sys
 import time
 from collections.abc import Callable
@@ -30,6 +32,21 @@ from .transporte import Transporte, TransporteHttp
 
 def _agora() -> datetime:
     return datetime.now(BRASILIA)
+
+
+class InterrupcaoPorSinal(Exception):
+    """O processo recebeu SIGTERM (por exemplo, o `timeout` do workflow estourou)."""
+
+
+def _ao_receber_sigterm(numero, quadro) -> None:
+    raise InterrupcaoPorSinal("recebeu SIGTERM (provavelmente o tempo limite da execução)")
+
+
+def _aviso(texto: str) -> None:
+    """Aviso que não derruba a execução: vai ao log e, no Actions, vira anotação na execução."""
+    print(f"AVISO: {texto}", file=sys.stderr)
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        print(f"::warning title=Coleta diária::{texto}")
 
 
 def _registrar_falha(
@@ -79,10 +96,9 @@ def executar_diaria(
         config = carregar_config(caminho_config, agora.astimezone(BRASILIA).year)
         base = base_de_comparacao(atual, status)
         if base is None:
-            print(
-                "AVISO: sem base para comparar a variação do estoque bruto "
-                "(primeiro dia ou status que não descreve o atual.json)",
-                file=sys.stderr,
+            _aviso(
+                "sem base para comparar a variação do estoque bruto "
+                "(primeiro dia ou status que não descreve o atual.json)"
             )
         coletado = None
         for tentativa in range(1, config.tentativas + 1):
@@ -127,11 +143,10 @@ def executar_diaria(
         return _registrar_falha(INTERNA, motivo, atual, status, tentativas, relogio)
 
     if variacao_aceita is not None:
-        print(
-            "AVISO: variação aceita manualmente "
+        _aviso(
+            "variação aceita manualmente "
             f"({variacao_aceita['estoque_anterior']} → {variacao_aceita['estoque_novo']}, "
-            f"{percentual_texto(variacao_aceita['variacao_percentual'])})",
-            file=sys.stderr,
+            f"{percentual_texto(variacao_aceita['variacao_percentual'])})"
         )
     dia = coletado.dados_camara_em.astimezone(BRASILIA).strftime("%d/%m/%Y")
     print(
@@ -172,15 +187,25 @@ def main(
 
     if args.comando == "mensagem":
         return _mensagem(args.status)
-    return executar_diaria(
-        args.config,
-        args.atual,
-        args.status,
-        args.aceitar_variacao,
-        transporte or TransporteHttp(),
-        relogio or _agora,
-        dormir or time.sleep,
-    )
+    # SIGTERM vira exceção: o `timeout` do workflow pode estourar no meio da espera ou do
+    # download, e mesmo assim o status de falha precisa ser gravado antes de sair.
+    try:
+        anterior = signal.signal(signal.SIGTERM, _ao_receber_sigterm)
+    except ValueError:  # fora da thread principal não é possível instalar o tratador
+        anterior = None
+    try:
+        return executar_diaria(
+            args.config,
+            args.atual,
+            args.status,
+            args.aceitar_variacao,
+            transporte or TransporteHttp(),
+            relogio or _agora,
+            dormir or time.sleep,
+        )
+    finally:
+        if anterior is not None:
+            signal.signal(signal.SIGTERM, anterior)
 
 
 if __name__ == "__main__":

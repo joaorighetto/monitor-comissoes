@@ -80,7 +80,7 @@ Os valores acima são **ilustrativos do formato**, não resultado real.
 | `versao_formato` | inteiro | 1 nesta feature. Muda se o formato mudar de forma incompatível |
 | `resultado` | `"ok"` ou `"falha"` | |
 | `verificado_em` | texto ISO 8601 com fuso | Momento em que a execução terminou, em Brasília (−03:00). É a base da faixa de atraso (30 horas) |
-| `data_referencia` | texto `AAAA-MM-DD` | Data de Brasília de `verificado_em`. Permite distinguir a execução de hoje do retrato de ontem, e uma reexecução do mesmo dia |
+| `data_referencia` | texto `AAAA-MM-DD` | Data de Brasília de `verificado_em`, ou seja, do **fim** da execução (uma execução que cruzasse a meia-noite teria a data do dia seguinte; com o agendamento às 03h37 e janela de ~1h40, isso não ocorre). Permite distinguir a execução de hoje do retrato de ontem, e uma reexecução do mesmo dia |
 | `tentativas` | inteiro ≥ 0 | Coletas efetivamente tentadas. 0 quando falhou antes de coletar (configuração inválida) |
 | `falha` | `null` ou objeto | `{"categoria": texto, "motivo": texto}`. `null` se e somente se `resultado = "ok"`. Categorias em [../data-model.md](../data-model.md) |
 | `variacao_aceita` | `null` ou objeto | `{"estoque_anterior": inteiro, "estoque_novo": inteiro, "variacao_percentual": número com 1 casa decimal}`. Só em sucesso com confirmação manual e variação acima do limite |

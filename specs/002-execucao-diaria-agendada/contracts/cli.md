@@ -26,6 +26,8 @@ Sem variáveis de ambiente e sem segredos.
 - Falha: **não toca no `atual.json`**, grava o `status.json` com `resultado = "falha"`, imprime em `stderr` uma linha `FALHA [categoria]: motivo` e sai com 1.
 - Cada tentativa que falha por causa repetível imprime em `stderr` `TENTATIVA n de N falhou [categoria]: motivo; nova tentativa em M minutos`.
 - Se nem o `status.json` puder ser gravado, imprime `FALHA [interna]: …` em `stderr` e sai com 1.
+- Ao receber `SIGTERM` (o `timeout` do workflow estourou), grava o status de falha `interna` com o motivo "recebeu SIGTERM …" e sai com 1.
+- Avisos (`AVISO: …`) vão a `stderr`; com `GITHUB_ACTIONS=true` saem também como anotação `::warning title=Coleta diária::…` em `stdout`.
 - Arquivos temporários são apagados em sucesso e em falha.
 
 ### Códigos de saída

@@ -175,6 +175,21 @@ description: "Tarefas da feature AGE — Execução diária agendada"
 
 ---
 
+## Phase 10: Correções da revisão independente (18/10/2026)
+
+**Purpose**: problemas importantes e menores apontados pela primeira rodada de revisão. Sem problema crítico. Os itens I2 (base ausente) e M7 (terceira conclusão do documento de 60 dias) ficam como decisão do mantenedor, registrados em research.md (R5) e no relatório de fechamento.
+
+- [X] T036 [US2] I1: o `timeout-minutes` do job passa a 240 e a coleta roda sob `timeout --signal=TERM 200m` com o Python do `.venv` direto (o `uv run` não repassa o SIGTERM); `diaria.py` instala um tratador de `SIGTERM` que grava o status de falha `interna` (research.md R15). Teste: `tests/test_diaria.py::test_sigterm_no_meio_da_espera_grava_o_status_de_falha`.
+- [X] T037 [US2] I3: `tests/test_workflow_script.py` executa o script do passo "Coleta e commit" com remoto bare local e Python falso: sucesso, falha com `atual.json` sujo, primeiro dia, Python que morre sem status, remoto adiantado e a confirmação só como flag quando a variável é `true`.
+- [X] T038 [US2] M1: `status.gravar_par` restaura o `atual.json` (ou o remove) se a troca do `status.json` falhar depois da dele. Testes em `tests/test_status.py` e `tests/test_diaria.py`.
+- [X] T039 [US2] M2: `git pull --rebase origin "$GITHUB_REF_NAME"`, push com uma nova tentativa de pull e push e variável entre aspas.
+- [X] T040 [US3] M4: o motivo de `estoque_implausivel` mostra duas casas decimais (`+20,01%`), para não contradizer o limite por arredondamento.
+- [X] T041 [P] M6: os padrões de `[execucao]` ficam em `config.PADROES`; teste confere que o `config.toml` do repositório tem os mesmos valores.
+- [X] T042 [US1] I2 (parcial, sem mudar a regra aprovada): o aviso "sem base para comparar a variação" vira anotação `::warning::` no Actions; a decisão e a alternativa estrita estão em research.md (R5).
+- [X] T043 M5: `data_referencia` documentada como a data do fim da execução (contracts/status-json.md).
+
+---
+
 ## Dependencies & Execution Order
 
 - **Fase 1** (T001, T002) → **Fase 2** (testes T003–T005 em paralelo, depois T006–T009; T008 depende de T007; T009 depende de T001 e T008 apenas para os tipos).

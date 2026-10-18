@@ -35,6 +35,7 @@ Decisões técnicas do plano. R11 foi pesquisado em fontes públicas em 18/10/20
   3. Sem base anterior: a variação não se aplica (FR-016).
   4. Com `--aceitar-variacao`, **só** a falha do item 2 é ignorada e registrada (FR-018a/b). O item 1 e todas as outras falhas continuam valendo.
 - **Base anterior**: o `estoque_bruto` do campo `ultimo_retrato_bom` do `status.json` do commit anterior. Ele só vale se o `gerado_em` desse campo for igual ao `meta.gerado_em` do `atual.json` em disco. Se não for (arquivo editado à mão, ou `atual.json` da COL de antes da AGE, sem status), não há base: a variação não se aplica, e a execução imprime em `stderr` "sem base para comparar a variação". Assim, o total bruto nunca é comparado com um retrato que não é o que ele descreve.
+- **Decisão registrada (revisão de 18/10/2026, I2)**: com `atual.json` presente e base ausente (status apagado ou corrompido, `gerado_em` diferente, `atual.json` de antes da AGE), a variação **não é checada**, como este plano e a spec (FR-016) previram. O aviso vai ao log e, no Actions, vira anotação `::warning::` na execução; o workflow segue verde. Uma alternativa mais estrita, **não adotada e dependente de decisão do mantenedor**: falhar nesse caso, liberável por `--aceitar-variacao`. Custo dela: o primeiro dia depois de um `atual.json` commitado à mão e qualquer status perdido exigiriam um disparo manual com confirmação.
 - **Rationale**: aritmética de inteiros evita erro de ponto flutuante na fronteira de exatamente 20%. Ligar a base ao `gerado_em` mantém a integridade (prioridade 1: nada em silêncio, nada comparado com o dado errado).
 - **Alternatives considered**: comparar com o `total_itens` do `atual.json` (rejeitado pela pergunta 1 da clarificação). Guardar o histórico de totais (rejeitado: o Git já tem o histórico e só o último importa).
 
@@ -42,7 +43,7 @@ Decisões técnicas do plano. R11 foi pesquisado em fontes públicas em 18/10/20
 
 - **Decision**: o laço fica em `diaria.py`. Até `tentativas` (4) execuções da coleta, com `espera_minutos` (30) entre elas, só quando a categoria da falha for repetível: `fonte_indisponivel`, `arquivos_desatualizados`, `arquivo_incompleto` e `api_deputados`. Não repetem: `configuracao`, `formato_alterado`, `estoque_vazio`, `estoque_implausivel` e `interna`. `dormir` e o relógio são injetáveis, e os testes não esperam tempo real (FR-019, FR-020, FR-028).
 - **Lacuna da spec, a registrar**: a spec lista as categorias repetíveis (FR-019) e as não repetíveis (FR-020), mas **não cita `estoque_vazio`** (lista filtrada vazia ou estoque bruto vazio). O plano a trata como **não repetível**, igual ao estoque implausível: é problema de conteúdo do dado, e repetir 30 minutos depois só atrasaria a falha. O `/speckit-analyze` deve acrescentar `estoque_vazio` ao FR-020.
-- **Orçamento de tempo**: uma coleta completa levou ~159 s (COL, R7). Quatro tentativas com três esperas de 30 min somam ~1h40 (4 × 3 min + 90 min). O job leva `timeout-minutes: 150`.
+- **Orçamento de tempo**: uma coleta completa levou ~159 s (COL, R7). Quatro tentativas com três esperas de 30 min somam ~1h40 (4 × 3 min + 90 min). O `timeout` interno é de 200 min e o job leva `timeout-minutes: 240` (R15).
 - **Rationale**: decidido pelo mantenedor na pergunta 3. Um único job só fica vermelho, e só manda e-mail, se todas as tentativas falharem. Em repositório público os minutos do Actions não são cobrados.
 - **Alternatives considered**: vários agendamentos por dia (rejeitado pelo mantenedor: ruído de e-mail a cada tentativa que falha).
 
@@ -58,7 +59,7 @@ Decisões técnicas do plano. R11 foi pesquisado em fontes públicas em 18/10/20
   - Gatilhos: `schedule` (um cron diário) e `workflow_dispatch` com a entrada booleana `aceitar_variacao` (padrão `false`). Não há gatilho `push`, então o commit do bot não pode disparar a coleta (FR-003).
   - `concurrency` com grupo fixo e `cancel-in-progress: false` (FR-023).
   - `permissions: contents: write` só nesse job; nenhum segredo além do token padrão (FR-031).
-  - `timeout-minutes: 150`.
+  - `timeout-minutes: 240`, com a coleta limitada a 200 min por `timeout` interno (R15).
 - **Fatos da documentação do GitHub** (consultados em 18/10/2026, [eventos que disparam workflows](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows) e [concorrência](https://docs.github.com/en/actions/using-jobs/using-concurrency)):
   - "Scheduled workflows run on the latest commit on the default branch." Portanto o agendamento só passa a existir depois do merge na branch principal, e a verificação real do workflow é depois do merge.
   - "The `schedule` event can be delayed during periods of high loads of GitHub Actions workflow runs." Por isso o cron não usa minuto 0.
@@ -71,11 +72,11 @@ Decisões técnicas do plano. R11 foi pesquisado em fontes públicas em 18/10/20
 - **Decision**: o passo do workflow roda a coleta com `set +e`, guarda o código de saída e continua:
   1. Se o código for diferente de zero: `git checkout -- data/atual.json` (cinto e suspensórios: o Python já não o altera em falha; isso garante FR-007 mesmo se o processo morrer entre duas gravações). Em falha, só o `data/status.json` é adicionado.
   2. Se for zero: adiciona `data/atual.json` e `data/status.json`.
-  3. Commit com a mensagem de `python -m monitor_comissoes.diaria mensagem`, `git pull --rebase`, `git push`.
+  3. Commit com a mensagem de `python -m monitor_comissoes.diaria mensagem`, `git pull --rebase origin <branch>` e `git push` (com uma nova tentativa de pull e push se o primeiro push for recusado).
   4. O passo termina com o código de saída da coleta. Se o próprio commit ou o push falhar, o passo falha por `set -e` a partir daí (FR-006, FR-008).
-- **Gravação do par em sucesso**: o Python **prepara os dois arquivos como temporários** (com `fsync`) e só então troca os dois com `os.replace`, o `atual.json` primeiro. Assim, uma falha ao preparar qualquer um deles (disco cheio, permissão) não troca nenhum dos dois, e o `atual.json` anterior continua intacto já no nível do processo. O que sobra é a janela entre os dois `os.replace`: se o processo morrer ali, o código de saída é diferente de zero e o passo do workflow restaura o `atual.json` antes de commitar só o status de falha.
+- **Gravação do par em sucesso**: o Python **prepara os dois arquivos como temporários** (com `fsync`) e só então troca os dois com `os.replace`, o `atual.json` primeiro. Assim, uma falha ao preparar qualquer um deles (disco cheio, permissão) não troca nenhum dos dois, e o `atual.json` anterior continua intacto já no nível do processo. Se a troca do segundo falhar depois da do primeiro (erro, não morte do processo), `gravar_par` restaura o `atual.json` ao conteúdo anterior (ou o remove, se não existia) antes de propagar o erro; o status de falha gravado em seguida descreve, então, o retrato que está de fato em disco. O que sobra é a morte do processo entre os dois `os.replace`: o código de saída é diferente de zero e o passo do workflow restaura o `atual.json` do Git antes de commitar só o status de falha (revisão de 18/10/2026, M1).
 - **Rationale**: FR-007, FR-008 e FR-009.
-- **Conflito no push**: o bot só toca em `data/`. O `git pull --rebase` imediatamente antes do push cobre alguém ter empurrado para a branch principal durante a janela de até 1h40. Uma segunda recusa falha o job de forma visível (caso de borda da spec).
+- **Conflito no push**: o bot só toca em `data/`. O `git pull --rebase` imediatamente antes do push cobre alguém ter empurrado para a branch principal durante a janela de até 1h40. Uma segunda recusa falha o job de forma visível (caso de borda da spec). Um disparo manual numa branch que não é a padrão grava os dados nessa branch; é intencional, para o teste do quickstart (passo 5).
 
 ## R10. Aceitar a variação
 
@@ -115,3 +116,11 @@ Decisões técnicas do plano. R11 foi pesquisado em fontes públicas em 18/10/20
 
 - **Decision**: o plano assume push direto na branch padrão com o `GITHUB_TOKEN` (spec, Assumptions). Se houver proteção de branch exigindo pull request, o push falha de forma visível, e o ajuste é decisão do mantenedor (por exemplo, liberar o `github-actions[bot]` na proteção). A pasta `data/` ainda não existe no repositório: o primeiro commit do bot cria `data/atual.json` e `data/status.json` (FR-002, cenário 3 da US1).
 - **Rationale**: simplicidade. Abrir pull request automático a cada dia seria muito mais código e ruído.
+
+## R15. Tempo limite: o `timeout` interno grava o status antes de o job ser morto
+
+- **Problema** (revisão independente de 18/10/2026, I1): se o job estourar o `timeout-minutes`, o GitHub mata o processo; o Python não passa por nenhum `except`, o bash não chega ao commit, e fica um workflow vermelho **sem** `status.json` de falha (contra FR-008 e FR-021).
+- **Decision**: a coleta roda sob `timeout --signal=TERM 200m`, e o Python instala um tratador de `SIGTERM` que levanta `InterrupcaoPorSinal`. A exceção cai no `except Exception`, o status de falha `interna` ("recebeu SIGTERM …") é gravado e o código de saída é 1; o bash então commita o status e termina vermelho. O job tem `timeout-minutes: 240` como rede de segurança, com 40 minutos para o commit. O tratador é instalado só no comando `executar` e restaurado ao sair.
+- **Conferido**: `uv run` **não** repassa o `SIGTERM` ao Python (testado em 18/10/2026: o `timeout` mata o `uv` e o tratador do Python nem roda). Por isso o workflow chama `.venv/bin/python -m monitor_comissoes.diaria` direto, depois do `uv sync --locked`.
+- **Orçamento**: 4 coletas e 3 esperas de 30 min somam ~1h40 com coletas de ~3 min. As 200 min permitem coletas de até ~27 min cada antes de estourar.
+- **Alternatives considered**: só aumentar o `timeout-minutes` (rejeitado: não grava status se estourar mesmo assim). Gravar um status provisório antes de começar (rejeitado: mudaria o contrato e o `status.json` de "sucesso" intermediário seria uma mentira).

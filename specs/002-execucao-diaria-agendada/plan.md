@@ -26,7 +26,7 @@ Abordagem técnica (detalhes em [research.md](research.md)): só biblioteca padr
 
 **Performance Goals**: uma execução completa em até ~3 minutos por tentativa (159 s medidos na COL), com a contagem do estoque bruto somando poucos segundos. Janela máxima de ~1h40 com 4 tentativas.
 
-**Constraints**: um agendamento por dia; sem execuções simultâneas; nenhum arquivo de dados pela metade; nenhum segredo além do `GITHUB_TOKEN` padrão; o `atual.json` byte a byte intacto em qualquer falha; job com `timeout-minutes: 150`.
+**Constraints**: um agendamento por dia; sem execuções simultâneas; nenhum arquivo de dados pela metade; nenhum segredo além do `GITHUB_TOKEN` padrão; o `atual.json` byte a byte intacto em qualquer falha; job com `timeout-minutes: 240` e coleta limitada por `timeout` de 200 minutos.
 
 **Scale/Scope**: ~1 GB baixado por tentativa (48 arquivos), ~50 itens na lista, ~1.500 itens no estoque bruto; um commit por execução bem-sucedida.
 

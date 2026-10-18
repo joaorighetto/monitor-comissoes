@@ -183,11 +183,25 @@ def gravar_status(status: dict, caminho: Path) -> None:
     gravar_atomico(status, caminho)
 
 
+def _restaurar(destino: Path, anterior: bytes | None) -> None:
+    """Devolve `destino` ao conteúdo de antes da troca (ou o remove, se não existia)."""
+    if anterior is None:
+        destino.unlink(missing_ok=True)
+        return
+    temporario = escrever_temporario(anterior.decode("utf-8"), destino)
+    try:
+        os.replace(temporario, destino)
+    finally:
+        temporario.unlink(missing_ok=True)
+
+
 def gravar_par(atual: dict, caminho_atual: Path, status: dict, caminho_status: Path) -> None:
     """Grava `atual.json` e `status.json` juntos: os dois temporários primeiro, depois a troca.
 
     Se algo falhar ao preparar qualquer um dos dois (serialização, disco), nenhum destino é
-    trocado e nenhum temporário sobra. Só a janela entre os dois `os.replace` não é atômica.
+    trocado e nenhum temporário sobra. Se a troca do segundo falhar depois da do primeiro, o
+    primeiro é restaurado ao conteúdo anterior (ou removido, se não existia). Só a morte do
+    processo entre as duas trocas deixa o primeiro trocado, e o workflow o restaura do Git.
     """
     textos = (serializar(atual), serializar(status))
     destinos = (Path(caminho_atual), Path(caminho_status))
@@ -195,8 +209,13 @@ def gravar_par(atual: dict, caminho_atual: Path, status: dict, caminho_status: P
     try:
         for texto, destino in zip(textos, destinos, strict=True):
             temporarios.append(escrever_temporario(texto, destino))
-        for temporario, destino in zip(temporarios, destinos, strict=True):
-            os.replace(temporario, destino)
+        anterior = destinos[0].read_bytes() if destinos[0].exists() else None
+        os.replace(temporarios[0], destinos[0])
+        try:
+            os.replace(temporarios[1], destinos[1])
+        except BaseException:
+            _restaurar(destinos[0], anterior)
+            raise
     finally:
         for temporario in temporarios:
             temporario.unlink(missing_ok=True)

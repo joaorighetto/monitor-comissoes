@@ -17,7 +17,7 @@ Não há gatilho `push` nem `pull_request`: o commit do bot não pode disparar a
 |---|---|
 | `concurrency` | grupo fixo `coleta-diaria`, `cancel-in-progress: false` (FR-023) |
 | `permissions` | `contents: write`, só no job. Nenhum outro escopo |
-| `timeout-minutes` | 150 (4 coletas de ~3 min com 3 esperas de 30 min, mais folga) |
+| `timeout-minutes` | 240. A coleta roda sob `timeout --signal=TERM 200m` e o Python grava o status de falha ao receber o `SIGTERM` (research.md R15) |
 | Segredos | nenhum além do `GITHUB_TOKEN` padrão (FR-031) |
 
 ## Passos
@@ -29,15 +29,15 @@ Não há gatilho `push` nem `pull_request`: o commit do bot não pode disparar a
 
 ```text
 set +e
-uv run python -m monitor_comissoes.diaria executar [--aceitar-variacao se dispatch e entrada verdadeira]
+timeout --signal=TERM 200m .venv/bin/python -m monitor_comissoes.diaria executar [--aceitar-variacao se dispatch e entrada verdadeira]
 codigo=$?
 set -e
 se codigo ≠ 0: git checkout -- data/atual.json   (ignora se o arquivo não existir)
 git add data/status.json
 se codigo = 0: git add data/atual.json
-git commit -m "$(uv run python -m monitor_comissoes.diaria mensagem)"
-git pull --rebase
-git push
+git commit -m "$(.venv/bin/python -m monitor_comissoes.diaria mensagem)"
+git pull --rebase origin "$GITHUB_REF_NAME"
+git push origin "HEAD:$GITHUB_REF_NAME"   (se recusado: novo pull --rebase e novo push)
 exit $codigo
 ```
 

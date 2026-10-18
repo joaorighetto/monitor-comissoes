@@ -14,15 +14,16 @@ EXECUCAO = (
     ("espera_minutos", 30, 0, 120),
     ("limite_variacao_percentual", 20, 1, 100),
 )
+PADROES = {nome: padrao for nome, padrao, _, _ in EXECUCAO}
 
 
 @dataclass(frozen=True)
 class Config:
     comissoes: tuple[str, ...]
     ano_minimo: int
-    tentativas: int = 4
-    espera_minutos: int = 30
-    limite_variacao_percentual: int = 20
+    tentativas: int = PADROES["tentativas"]
+    espera_minutos: int = PADROES["espera_minutos"]
+    limite_variacao_percentual: int = PADROES["limite_variacao_percentual"]
 
 
 def _falha(motivo: str) -> FalhaDeColeta:
@@ -64,7 +65,7 @@ def carregar_config(caminho: Path, ano_corrente: int) -> Config:
 def _ler_execucao(tabela) -> dict[str, int]:
     """Lê a tabela opcional [execucao]; sem ela, valem os padrões."""
     if tabela is None:
-        return {nome: padrao for nome, padrao, _, _ in EXECUCAO}
+        return dict(PADROES)
     if not isinstance(tabela, dict):
         raise _falha("execucao deve ser uma tabela [execucao]")
     conhecidos = {nome for nome, _, _, _ in EXECUCAO}

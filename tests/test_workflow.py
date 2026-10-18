@@ -60,11 +60,11 @@ def blocos(conteudo: str, chave: str) -> list[list[str]]:
     return achados
 
 
-def test_permissao_so_de_escrita_em_conteudo_e_timeout_de_150_minutos():
+def test_permissao_so_de_escrita_em_conteudo_e_timeout_de_240_minutos():
     conteudo = texto()
 
     assert blocos(conteudo, "permissions") == [["contents: write"]]
-    assert "timeout-minutes: 150" in conteudo
+    assert "timeout-minutes: 240" in conteudo
 
 
 def test_usa_os_mesmos_pins_de_checkout_e_setup_uv_do_ci():

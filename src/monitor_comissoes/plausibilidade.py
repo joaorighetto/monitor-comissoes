@@ -6,9 +6,9 @@ Aritmética de inteiros, para que "exatamente 20%" passe sem erro de ponto flutu
 from .erros import ESTOQUE_IMPLAUSIVEL, ESTOQUE_VAZIO, FalhaDeColeta
 
 
-def percentual_texto(percentual: float) -> str:
+def percentual_texto(percentual: float, casas: int = 1) -> str:
     """`-28,2%`, `+25,0%`: sinal explícito e vírgula decimal, como nas mensagens do produto."""
-    return f"{percentual:+.1f}".replace(".", ",") + "%"
+    return f"{percentual:+.{casas}f}".replace(".", ",") + "%"
 
 
 def verificar(
@@ -37,6 +37,6 @@ def verificar(
         }
     raise FalhaDeColeta(
         ESTOQUE_IMPLAUSIVEL,
-        f"estoque bruto variou {percentual_texto(percentual)} ({base} → {estoque_bruto}); "
-        f"o limite é de {limite_percentual}%",
+        f"estoque bruto variou {percentual_texto(diferenca * 100 / base, 2)} "
+        f"({base} → {estoque_bruto}); o limite é de {limite_percentual}%",
     )

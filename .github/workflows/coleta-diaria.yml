@@ -21,7 +21,7 @@ concurrency:
 jobs:
   coletar:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 240
     permissions:
       contents: write
     steps:
@@ -46,8 +46,12 @@ jobs:
           if [ "$ACEITAR_VARIACAO" = "true" ]; then
             argumentos+=(--aceitar-variacao)
           fi
+          # O `timeout` chama o Python do .venv direto: o `uv run` não repassa o SIGTERM, e o
+          # Python precisa recebê-lo para gravar o status de falha antes de sair (200 min, com
+          # folga sobre as 4 coletas e as 3 esperas de 30 min; o job tem teto de 240).
           set +e
-          uv run python -m monitor_comissoes.diaria executar "${argumentos[@]}"
+          timeout --signal=TERM 200m .venv/bin/python -m monitor_comissoes.diaria executar \
+            "${argumentos[@]}"
           codigo=$?
           set -e
           if [ "$codigo" -ne 0 ]; then
@@ -57,7 +61,11 @@ jobs:
           if [ "$codigo" -eq 0 ]; then
             git add data/atual.json
           fi
-          git commit -m "$(uv run python -m monitor_comissoes.diaria mensagem)"
-          git pull --rebase
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git commit -m "$(.venv/bin/python -m monitor_comissoes.diaria mensagem)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          # Se alguém empurrou entre o pull e o push, uma nova tentativa custa quase nada.
+          git push origin "HEAD:${GITHUB_REF_NAME}" || {
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          }
           exit "$codigo"

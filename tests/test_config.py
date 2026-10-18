@@ -149,3 +149,18 @@ def test_execucao_que_nao_e_tabela_falha(tmp_path):
 
     assert erro.value.categoria == CONFIGURACAO
     assert "execucao" in erro.value.motivo
+
+
+def test_os_valores_de_execucao_do_config_toml_sao_os_padroes():
+    from pathlib import Path
+
+    from monitor_comissoes.config import PADROES
+
+    raiz = Path(__file__).parent.parent
+    config = carregar_config(raiz / "config.toml", 2026)
+
+    assert {
+        "tentativas": config.tentativas,
+        "espera_minutos": config.espera_minutos,
+        "limite_variacao_percentual": config.limite_variacao_percentual,
+    } == PADROES

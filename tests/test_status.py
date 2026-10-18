@@ -1,7 +1,9 @@
 """data/status.json: conteúdo, invariantes, base de comparação e mensagem do commit (AGE)."""
 
 import json
+import os
 from datetime import UTC, datetime, timedelta, timezone
+from pathlib import Path
 
 import pytest
 
@@ -339,3 +341,42 @@ def test_gravar_status_sozinho_grava_so_o_status(tmp_path):
     gravar_status(falha(), status)
 
     assert sorted(p.name for p in status.parent.iterdir()) == ["status.json"]
+
+
+def falhar_troca_do(monkeypatch, destino_que_falha):
+    original = os.replace
+
+    def falso(origem, destino):
+        if Path(destino) == destino_que_falha:
+            raise OSError("falha simulada na troca")
+        return original(origem, destino)
+
+    monkeypatch.setattr(os, "replace", falso)
+
+
+def test_gravar_par_restaura_o_primeiro_se_a_troca_do_segundo_falhar(tmp_path, monkeypatch):
+    atual, status = tmp_path / "atual.json", tmp_path / "status.json"
+    atual.write_text('{"anterior": 1}\n', encoding="utf-8")
+    status.write_text('{"anterior": 2}\n', encoding="utf-8")
+    falhar_troca_do(monkeypatch, status)
+
+    with pytest.raises(OSError, match="falha simulada"):
+        gravar_par({"novo": 1}, atual, sucesso(), status)
+
+    assert atual.read_text(encoding="utf-8") == '{"anterior": 1}\n'
+    assert status.read_text(encoding="utf-8") == '{"anterior": 2}\n'
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["atual.json", "status.json"]
+
+
+def test_gravar_par_remove_o_primeiro_se_ele_nao_existia_e_a_troca_do_segundo_falhar(
+    tmp_path, monkeypatch
+):
+    atual, status = tmp_path / "data" / "atual.json", tmp_path / "data" / "status.json"
+    falhar_troca_do(monkeypatch, status)
+
+    with pytest.raises(OSError, match="falha simulada"):
+        gravar_par({"novo": 1}, atual, sucesso(), status)
+
+    assert not atual.exists()
+    assert not status.exists()
+    assert list(atual.parent.iterdir()) == []

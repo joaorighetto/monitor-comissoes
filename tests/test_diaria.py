@@ -4,6 +4,7 @@ import csv
 import io
 import json
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import pytest
 
@@ -480,7 +481,7 @@ def test_queda_acima_de_20_por_cento_bloqueia_e_mantem_os_dados_bons(caminhos, d
     status_novo = conferir_falha_com_dados_bons_intactos(
         caminhos, dia1, capsys, codigo, "estoque_implausivel", "7 → 5"
     )
-    assert "-28,6%" in status_novo["falha"]["motivo"]
+    assert "-28,57%" in status_novo["falha"]["motivo"]
     assert dia1["status"]["ultimo_retrato_bom"]["estoque_bruto"] == 7
 
 
@@ -885,3 +886,71 @@ def test_a_data_de_referencia_muda_na_virada_do_dia_de_brasilia(caminhos):
         assert executar_main(caminhos, transporte, Relogio(momento)) == 0
 
         assert ler(caminhos["status"])["data_referencia"] == esperado
+
+
+# --- Revisão: SIGTERM, anotação do Actions, retorno do par ---------------------------------------
+
+
+def test_sigterm_no_meio_da_espera_grava_o_status_de_falha(caminhos, agora):
+    import os
+    import signal
+
+    def dormir_e_ser_interrompido(segundos):
+        os.kill(os.getpid(), signal.SIGTERM)  # o `timeout` do workflow estourou
+
+    antes = signal.getsignal(signal.SIGTERM)
+    transporte = TransporteIntermitente([passageira()])
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormir_e_ser_interrompido)
+
+    assert codigo == 1
+    status_novo = ler(caminhos["status"])
+    assert status_novo["resultado"] == "falha"
+    assert status_novo["falha"]["categoria"] == "interna"
+    assert "SIGTERM" in status_novo["falha"]["motivo"]
+    assert status_novo["tentativas"] == 1
+    assert not caminhos["atual"].exists()
+    assert signal.getsignal(signal.SIGTERM) == antes  # o tratador não vaza para fora do main
+
+
+def test_no_actions_o_aviso_de_sem_base_vira_anotacao(caminhos, agora, capsys, monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+
+    assert executar_main(caminhos, TransporteFalso(), Relogio(agora)) == 0
+
+    saida = capsys.readouterr()
+    assert "::warning title=Coleta diária::sem base para comparar a variação" in saida.out
+    assert "AVISO: sem base para comparar a variação" in saida.err
+
+
+def test_fora_do_actions_o_aviso_nao_gera_anotacao(caminhos, agora, capsys, monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+
+    assert executar_main(caminhos, TransporteFalso(), Relogio(agora)) == 0
+
+    assert "::warning" not in capsys.readouterr().out
+
+
+def test_se_a_troca_do_status_falha_o_atual_volta_ao_que_era_e_o_status_fica_coerente(
+    caminhos, dia1, capsys, monkeypatch
+):
+    import os
+
+    original = os.replace
+    falhas = []
+
+    def falso(origem, destino):
+        if Path(destino) == caminhos["status"] and not falhas:
+            falhas.append(destino)
+            raise OSError("falha simulada na troca do status")
+        return original(origem, destino)
+
+    monkeypatch.setattr(os, "replace", falso)
+    capsys.readouterr()
+
+    codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
+
+    status_novo = conferir_falha_com_dados_bons_intactos(
+        caminhos, dia1, capsys, codigo, "interna", "falha simulada"
+    )
+    assert status_novo["tentativas"] == 1

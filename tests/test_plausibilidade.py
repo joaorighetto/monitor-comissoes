@@ -16,7 +16,7 @@ def test_queda_de_28_por_cento_falha_e_o_motivo_traz_os_totais_e_a_variacao():
     falha = falha_de(1100, 1531)
 
     assert falha.categoria == ESTOQUE_IMPLAUSIVEL
-    for trecho in ("1531", "1100", "-28,2%", "20%"):
+    for trecho in ("1531", "1100", "-28,15%", "20%"):
         assert trecho in falha.motivo
 
 
@@ -24,7 +24,7 @@ def test_alta_de_mais_de_20_por_cento_tambem_falha():
     falha = falha_de(1250, 1000)
 
     assert falha.categoria == ESTOQUE_IMPLAUSIVEL
-    assert "+25,0%" in falha.motivo
+    assert "+25,00%" in falha.motivo
 
 
 @pytest.mark.parametrize("estoque", [800, 1200])
@@ -77,3 +77,10 @@ def test_o_limite_vem_do_parametro():
     assert verificar(600, 1000, 50, False) is None  # o mesmo -40% passa com limite de 50%
     assert verificar(500, 1000, 50, False) is None  # exatamente 50%
     assert falha_de(499, 1000, limite=50).categoria == ESTOQUE_IMPLAUSIVEL
+
+
+def test_o_motivo_mostra_duas_casas_para_nao_contradizer_o_limite_por_arredondamento():
+    falha = falha_de(12001, 10000)  # +20,01%: acima de 20%, mas arredondado a 1 casa daria 20,0
+
+    assert "+20,01%" in falha.motivo
+    assert "o limite é de 20%" in falha.motivo
