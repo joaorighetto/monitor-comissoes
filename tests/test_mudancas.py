@@ -80,7 +80,7 @@ def invalido(documento, trecho):
     assert trecho in erro.value.motivo
 
 
-# --- montar_arquivo -------------------------------------------------------------------------
+# --- montar_arquivo ---
 
 
 def test_nome_do_arquivo_e_a_data_da_execucao():
@@ -203,7 +203,7 @@ def test_serializacao_igual_a_dos_outros_arquivos_de_dados():
     assert texto.startswith('{\n  "meta": {\n    "versao_formato": 1,')
 
 
-# --- validar_arquivo: o que passa -------------------------------------------------------------
+# --- validar_arquivo: o que passa ---
 
 
 def test_arquivo_valido_com_um_evento_de_cada_tipo_passa():
@@ -216,7 +216,7 @@ def test_mesmo_item_pode_ter_um_evento_de_cada_tipo():
     validar_arquivo(arquivo(eventos=eventos))
 
 
-# --- validar_arquivo: regra 1, totais ----------------------------------------------------------
+# --- validar_arquivo: regra 1, totais ---
 
 
 def test_total_de_eventos_que_nao_bate_falha():
@@ -247,7 +247,7 @@ def test_campos_do_meta_fora_da_ordem_ou_a_mais_falham():
     invalido(documento, "meta")
 
 
-# --- validar_arquivo: regra 2, linha de base ----------------------------------------------------
+# --- validar_arquivo: regra 2, linha de base ---
 
 
 def test_linha_de_base_com_evento_falha():
@@ -297,7 +297,7 @@ def test_linha_de_base_por_formato_incompativel_pode_trazer_o_retrato_anterior()
     assert documento["meta"]["retrato_anterior"] == ANTERIOR
 
 
-# --- validar_arquivo: regra 3, link e motivo ----------------------------------------------------
+# --- validar_arquivo: regra 3, link e motivo ---
 
 
 @pytest.mark.parametrize("link", ["", "https://exemplo.com/1", None, 5])
@@ -350,7 +350,7 @@ def test_etiquetas_sem_ganho_nem_perda_falha():
     invalido(documento, "etiquetas")
 
 
-# --- validar_arquivo: regras 4 e 6, repetição e tramitações --------------------------------------
+# --- validar_arquivo: regras 4 e 6, repetição e tramitações ---
 
 
 def test_o_mesmo_item_com_dois_eventos_do_mesmo_tipo_falha():
@@ -390,7 +390,7 @@ def test_evento_sem_a_lista_de_tramitacoes_falha():
     invalido(documento, "campos")
 
 
-# --- ressalvas ------------------------------------------------------------------------------
+# --- ressalvas ---
 
 
 def test_ressalva_valida_passa_e_invalida_falha():
@@ -408,7 +408,7 @@ def test_ressalva_valida_passa_e_invalida_falha():
         invalido(documento, "ressalva")
 
 
-# --- ordenar_eventos --------------------------------------------------------------------------
+# --- ordenar_eventos ---
 
 
 def test_ordem_por_comissao_da_configuracao_depois_tipo_depois_id():
@@ -452,7 +452,7 @@ def test_ordenar_nao_altera_a_lista_de_entrada_e_independe_da_ordem_dela():
     assert a == b
 
 
-# --- comparar: linha de base (User Story 3) -----------------------------------------------------
+# --- comparar: linha de base (User Story 3) ---
 
 HOJE = date(2026, 10, 19)
 
@@ -541,7 +541,7 @@ def test_retrato_do_dia_usa_a_data_de_gerado_em_em_brasilia():
     assert documento["meta"]["retrato"]["dia"] == "2026-10-19"
 
 
-# --- comparar: entrou e saiu (User Story 1) -----------------------------------------------------
+# --- comparar: entrou e saiu (User Story 1) ---
 
 from conftest import TransporteFalso  # noqa: E402
 from monitor_comissoes.erros import FORMATO_ALTERADO  # noqa: E402
@@ -1015,7 +1015,7 @@ def test_candidato_so_indeterminado_que_sai_nao_tem_etiqueta_a_perder_e_fica_nao
     assert saida["motivo"] == {"codigo": "nao_determinado", "texto": "não determinado"}
 
 
-# --- comparar: itens que continuam na lista (User Story 2) ---------------------------------------
+# --- comparar: itens que continuam na lista (User Story 2) ---
 
 PL_COM_PARECERES = 2330962  # CCTI: pareceres do relator nas sequências 22 e 28 (reais)
 LUIZ = {"id": 204455, "nome": "Luiz Lima", "partido_hoje": "NOVO"}
@@ -1334,7 +1334,7 @@ def test_sequencia_que_regride_na_mesma_referencia_e_formato_alterado():
     assert erro.value.categoria == FORMATO_ALTERADO
 
 
-# --- repetibilidade da comparação (User Story 4) -------------------------------------------------
+# --- repetibilidade da comparação (User Story 4) ---
 
 
 def seis_tipos():
@@ -1410,3 +1410,89 @@ def test_a_ordem_dos_itens_de_entrada_nao_muda_o_documento():
     )
 
     assert serializar(base) == serializar(invertido)
+
+
+# --- rastreabilidade: todo evento tem link oficial e motivo (User Story 6) ---
+
+
+def tudo_junto():
+    """Um arquivo com todos os motivos de entrada, todos os motivos de saída e os quatro tipos de
+    mudança, sobre tramitações reais onde existem e derivadas onde não existem."""
+    saidas = {
+        10: estado(referencia_id=10, orgao="CFT", sequencia=45),  # outro órgão
+        PL_ARQUIVADO: estado(  # arquivado, art. 105 (real)
+            referencia_id=PL_ARQUIVADO, orgao="MESA", situacao="Arquivada", sequencia=43
+        ),
+        12: estado(referencia_id=12, orgao="MESA", situacao="Transformado em Norma Jurídica"),
+        13: estado(referencia_id=13, orgao="MESA", situacao="Enviada ao Senado Federal"),
+        14: estado(referencia_id=14, orgao="MESA", situacao="Recusado"),
+        15: estado(referencia_id=99, orgao="CFT", sequencia=87, apensado_a=s.apensado(99)),
+        16: estado(referencia_id=16, orgao="CE", sequencia=41, na_comissao=True),  # perdeu
+        17: EstadoDeSaida(False, None, None, None, None, None, False),
+    }
+    ontem = [
+        s.item(10, sequencia=41),
+        s.item(PL_ARQUIVADO, sequencia=37, situacao="Pronta para Pauta"),
+        *[s.item(i, sequencia=41) for i in (12, 13, 14, 15, 16, 17)],
+        s.item(20, sequencia=41, situacao="Aguardando Parecer"),
+        s.item(21, sequencia=41, relator=com_relator(LUIZ, 21)),
+        s.item(PL_COM_PARECERES, comissao="CCTI", sequencia=20),
+        s.item(23, sequencia=41, etiquetas=("autoria NOVO",)),
+    ]
+    hoje = [
+        s.item(20, sequencia=43, situacao="Pronta para Pauta"),
+        s.item(21, sequencia=41, relator=com_relator(ADRIANA, 21)),
+        s.item(PL_COM_PARECERES, comissao="CCTI", sequencia=30),
+        s.item(23, sequencia=41, etiquetas=("autoria NOVO", "autor hoje no NOVO")),
+        s.item(30, comissao="CREDN", sequencia=29),  # chegou à comissão
+        s.item(31, sequencia=63),  # ganhou etiqueta
+        s.item(32, sequencia=63, etiquetas=(), relator_indeterminado={"motivo": "x"}),
+    ]
+    listas = {
+        10: [t(n) for n in range(40, 48)],
+        PL_ARQUIVADO: real(PL_ARQUIVADO),
+        12: [t(n) for n in range(40, 48)],
+        13: [t(n) for n in range(40, 48)],
+        14: [t(n) for n in range(40, 48)],
+        99: [t(n, "2026-10-18T10:00") for n in range(80, 90)],
+        20: [t(n) for n in range(40, 48)],
+        PL_COM_PARECERES: real(PL_COM_PARECERES),
+        30: real(PL_3514_2023),
+        31: real(PL_COM_MESA),
+        32: real(PL_COM_MESA),
+    }
+    return ontem, hoje, listas, saidas
+
+
+def test_todo_evento_tem_link_oficial_motivo_e_tramitacoes_em_ordem():
+    from monitor_comissoes.mudancas import LINK_OFICIAL
+
+    ontem, hoje, listas, saidas = tudo_junto()
+
+    documento = rodar(
+        anterior_com(ontem, "2025-07-07T04:30:00+00:00"), hoje_com(hoje), Fonte(listas), saidas
+    )
+
+    eventos = documento["eventos"]
+    assert {e["tipo"] for e in eventos} == set(TIPOS)  # os seis tipos
+    motivos_de_saida = {e["motivo"]["codigo"] for e in eventos if e["tipo"] == "saiu"}
+    assert motivos_de_saida == {
+        "outro_orgao",
+        "arquivado_art_105",
+        "transformado_em_norma",
+        "aprovado_segue_ao_senado",
+        "encerrado",
+        "apensado_fora_da_lista",
+        "perdeu_etiquetas",
+        "nao_determinado",
+    }
+    motivos_de_entrada = {e["motivo"]["codigo"] for e in eventos if e["tipo"] == "entrou"}
+    assert motivos_de_entrada == {"chegou_a_comissao", "ganhou_etiqueta", "nao_determinado"}
+    for e in eventos:
+        assert e["link"].startswith(LINK_OFICIAL) and e["link"].endswith(f"/{e['id']}")
+        if "motivo" in e:
+            assert e["motivo"]["codigo"] and e["motivo"]["texto"]
+        sequencias_ = [x["sequencia"] for x in e["tramitacoes"]]
+        assert sequencias_ == sorted(set(sequencias_))
+    assert documento["meta"]["total_eventos"] == len(eventos)
+    assert sum(documento["meta"]["total_por_tipo"].values()) == len(eventos)

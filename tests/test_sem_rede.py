@@ -38,3 +38,26 @@ def test_leituras_novas_da_rel_tambem_ficam_atras_da_guarda():
         obter_tramitacoes(transporte, url, 2319917)
     with pytest.raises(RuntimeError, match="rede"):
         obter_deputado(transporte, url, 204455)
+
+
+def test_modulos_da_mud_nao_importam_nada_de_rede():
+    # A comparação recebe as tramitações por função injetada e lê só arquivos locais: nenhum
+    # destes módulos deve importar uma biblioteca de rede nem o transporte HTTP.
+    import ast
+    from pathlib import Path
+
+    proibidos = {"urllib", "http", "socket", "ssl", "requests", "httpx", "ftplib", "smtplib"}
+    pasta = Path(__file__).parent.parent / "src" / "monitor_comissoes"
+    for modulo in ("retratos.py", "mudancas.py"):
+        arvore = ast.parse((pasta / modulo).read_text(encoding="utf-8"))
+        importados = set()
+        for no in ast.walk(arvore):
+            if isinstance(no, ast.Import):
+                importados |= {a.name.split(".")[0] for a in no.names}
+            elif isinstance(no, ast.ImportFrom):
+                if no.level == 0 and no.module:
+                    importados.add(no.module.split(".")[0])
+                elif no.level == 1:
+                    importados.add(f".{no.module}")
+        assert not importados & proibidos, (modulo, importados & proibidos)
+        assert ".transporte" not in importados, modulo  # nem o transporte da Câmara

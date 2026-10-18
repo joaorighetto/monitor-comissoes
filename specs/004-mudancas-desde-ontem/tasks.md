@@ -164,8 +164,8 @@
 
 **Objetivo**: cada evento aponta para a fonte oficial e nenhum teste usa a rede (spec US6; FR-013, FR-024).
 
-- [ ] T037 [P] [US6] Ler `tests/test_sem_rede.py` e fazer a guarda cobrir os módulos novos (`retratos.py`, `mudancas.py`) da mesma forma que cobre os existentes; confirmar que os testes novos rodam com a guarda de rede do `conftest.py` ativa.
-- [ ] T038 [P] [US6] Em `tests/test_mudancas.py` acrescentar um teste parametrizado que gera o arquivo a partir de todos os cenários das Fases 4 e 5 e confere, com `validar_arquivo`, que **todo** evento tem `link` iniciado por `https://www.camara.leg.br/propostas-legislativas/`, `motivo` não vazio (nos tipos que o têm) e `tramitacoes` em ordem de `sequencia`.
+- [X] T037 [P] [US6] Ler `tests/test_sem_rede.py` e fazer a guarda cobrir os módulos novos (`retratos.py`, `mudancas.py`) da mesma forma que cobre os existentes; confirmar que os testes novos rodam com a guarda de rede do `conftest.py` ativa.
+- [X] T038 [P] [US6] Em `tests/test_mudancas.py` acrescentar um teste parametrizado que gera o arquivo a partir de todos os cenários das Fases 4 e 5 e confere, com `validar_arquivo`, que **todo** evento tem `link` iniciado por `https://www.camara.leg.br/propostas-legislativas/`, `motivo` não vazio (nos tipos que o têm) e `tramitacoes` em ordem de `sequencia`.
 
 **Checkpoint**: conformidade de rastreabilidade e de testes sem rede.
 
