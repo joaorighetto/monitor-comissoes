@@ -8,6 +8,7 @@ from monitor_comissoes.erros import ARQUIVO_INCOMPLETO, FORMATO_ALTERADO, FalhaD
 from monitor_comissoes.lote import (
     AUTORES_COLUNAS,
     PROPOSICOES_COLUNAS,
+    PROPOSICOES_DATAS,
     baixar_lote,
     ler_apensacao,
     ler_autores,
@@ -178,6 +179,26 @@ def test_data_fora_do_formato_e_formato_alterado(tmp_path, coluna, valor):
 
     assert erro.value.categoria == FORMATO_ALTERADO
     assert coluna in erro.value.motivo
+
+
+@pytest.mark.parametrize("coluna", PROPOSICOES_DATAS)
+@pytest.mark.parametrize("valor", ["17/10/2026", "2026-10-17", "", "ontem"])
+def test_validacao_confere_o_formato_das_datas_em_todas_as_linhas(tmp_path, coluna, valor):
+    # A linha ruim é a segunda e nenhuma leitura posterior a consumiria.
+    caminho = escrever(tmp_path, [linha(), linha(id="11", **{coluna: valor})])
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        validar_arquivo(caminho, PROPOSICOES_COLUNAS, PROPOSICOES_DATAS)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert coluna in erro.value.motivo
+    assert "linha 3" in erro.value.motivo
+
+
+def test_validacao_aceita_datas_bem_formadas(tmp_path):
+    caminho = escrever(tmp_path, [linha(), linha(id="11")])
+
+    assert validar_arquivo(caminho, PROPOSICOES_COLUNAS, PROPOSICOES_DATAS) == 2
 
 
 def test_id_nao_numerico_e_formato_alterado(tmp_path):

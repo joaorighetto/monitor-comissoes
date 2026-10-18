@@ -1,6 +1,7 @@
 """Arquivos em lote da Câmara: download, validação e leitura em fluxo."""
 
 import csv
+import re
 import sys
 from collections.abc import Iterator
 from dataclasses import dataclass
@@ -28,6 +29,7 @@ PROPOSICOES_COLUNAS = (
     "ultimoStatus_siglaOrgao",
     "ultimoStatus_descricaoSituacao",
 )
+PROPOSICOES_DATAS = ("dataApresentacao", "ultimoStatus_dataHora")
 AUTORES_COLUNAS = (
     "idProposicao",
     "idDeputadoAutor",
@@ -36,6 +38,7 @@ AUTORES_COLUNAS = (
     "ordemAssinatura",
 )
 FORMATO_DATA = "%Y-%m-%dT%H:%M:%S"
+PADRAO_DATA = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
 # ementaDetalhada e keywords passam do limite padrão do leitor de CSV.
 csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
@@ -117,11 +120,27 @@ def _id_da_uri(uri: str, coluna: str, arquivo: str) -> int:
     return _inteiro(uri.rstrip("/").rsplit("/", 1)[-1], coluna, arquivo)
 
 
-def validar_arquivo(caminho: Path, colunas: tuple[str, ...]) -> int:
-    """Percorre o arquivo inteiro e devolve o número de linhas de dados."""
-    total = sum(1 for _ in _linhas(caminho, colunas))
+def validar_arquivo(
+    caminho: Path, colunas: tuple[str, ...], colunas_data: tuple[str, ...] = ()
+) -> int:
+    """Percorre o arquivo inteiro e devolve o número de linhas de dados.
+
+    Além da estrutura (colunas, tamanho das linhas, fim do arquivo), confere em todas as linhas
+    que as `colunas_data` têm o formato AAAA-MM-DDTHH:MM:SS: uma mudança de formato não pode
+    passar só porque a linha ruim não foi consumida por nenhum cálculo.
+    """
+    arquivo = caminho.name
+    posicoes = [(coluna, colunas.index(coluna)) for coluna in colunas_data]
+    total = 0
+    for total, linha in enumerate(_linhas(caminho, colunas), start=1):
+        for coluna, i in posicoes:
+            if not PADRAO_DATA.fullmatch(linha[i]):
+                raise FalhaDeColeta(
+                    FORMATO_ALTERADO,
+                    f"{arquivo}: formato alterado: coluna {coluna} (linha {total + 1})",
+                )
     if total == 0:
-        raise FalhaDeColeta(ARQUIVO_INCOMPLETO, f"{caminho.name}: arquivo sem linhas de dados")
+        raise FalhaDeColeta(ARQUIVO_INCOMPLETO, f"{arquivo}: arquivo sem linhas de dados")
     return total
 
 
@@ -207,13 +226,13 @@ def baixar_lote(
     anos = tuple(range(ano_minimo, ano_corrente + 1))
     modificados = []
     for ano in anos:
-        for pasta, colunas in (
-            ("proposicoesAutores", AUTORES_COLUNAS),
-            ("proposicoes", PROPOSICOES_COLUNAS),
+        for pasta, colunas, datas in (
+            ("proposicoesAutores", AUTORES_COLUNAS, ()),
+            ("proposicoes", PROPOSICOES_COLUNAS, PROPOSICOES_DATAS),
         ):
             nome = f"{pasta}-{ano}.csv"
             baixado = transporte.baixar(f"{url_base}/arquivos/{pasta}/csv/{nome}", diretorio / nome)
-            validar_arquivo(baixado.caminho, colunas)
+            validar_arquivo(baixado.caminho, colunas, datas)
             modificados.append(baixado.last_modified)
     return Lote(diretorio=diretorio, anos=anos, last_modified_min=min(modificados))
 

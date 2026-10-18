@@ -162,11 +162,11 @@ description: "Tarefas da feature COL — Coleta e estoque filtrado"
 
 ## Phase 8: Polish & verificação final
 
-- [ ] T041 Remover `tests/test_ambiente.py` (teste provisório) e conferir que `uv run pytest` continua coletando testes reais (não sai com código 5).
-- [ ] T042 Execução real (com rede): `uv run python -m monitor_comissoes --saida /tmp/atual-real.json`. Registrar em research.md R7 o tempo total, o pico de memória e o espaço em disco usados, e comparar `total_itens` com a ordem de grandeza da sondagem (~50). Explicar item a item qualquer diferença grande. **Não comitar** `data/atual.json` real: o commit diário é da feature AGE.
-- [ ] T043 Executar os passos 2 a 5 de [quickstart.md](quickstart.md) e conferir, no resultado real, PL 1843/2022, PL 3871/2024 e PL 4047/2019 e dois links oficiais.
-- [ ] T044 Rodar a verificação completa e mostrar a saída: `uv run ruff check . && uv run ruff format --check . && uv run pytest`.
-- [ ] T045 Conferir cada requisito FR-001 a FR-023 e SC-001 a SC-008 da spec contra o código e os testes; anotar no relatório final o que ficou como limite conhecido.
+- [X] T041 Remover `tests/test_ambiente.py` (teste provisório) e conferir que `uv run pytest` continua coletando testes reais (não sai com código 5).
+- [X] T042 Execução real (com rede): `uv run python -m monitor_comissoes --saida /tmp/atual-real.json`. Registrar em research.md R7 o tempo total, o pico de memória e o espaço em disco usados, e comparar `total_itens` com a ordem de grandeza da sondagem (~50). Explicar item a item qualquer diferença grande. **Não comitar** `data/atual.json` real: o commit diário é da feature AGE.
+- [X] T043 Executar os passos 2 a 5 de [quickstart.md](quickstart.md) e conferir, no resultado real, PL 1843/2022, PL 3871/2024 e PL 4047/2019 e dois links oficiais.
+- [X] T044 Rodar a verificação completa e mostrar a saída: `uv run ruff check . && uv run ruff format --check . && uv run pytest`.
+- [X] T045 Conferir cada requisito FR-001 a FR-023 e SC-001 a SC-008 da spec contra o código e os testes; anotar no relatório final o que ficou como limite conhecido.
 
 ---
 

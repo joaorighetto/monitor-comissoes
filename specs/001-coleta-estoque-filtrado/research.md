@@ -12,6 +12,7 @@ Decisões técnicas do plano. Os itens R2, R3, R4, R7 e R10 foram conferidos con
 
 - **Decision**: o parser de `ultimoStatus_dataHora` e `dataApresentacao` é estrito, no formato ISO sem fuso, `AAAA-MM-DDTHH:MM:SS`. Um valor que não segue esse formato falha a execução com "formato alterado: coluna X". Datas sem fuso são tratadas como horário de Brasília.
 - **Conferido na fonte real**: `dataApresentacao` = `2004-05-13T14:41:00` e `ultimoStatus_dataHora` = `2024-12-17T00:00:00` (amostra de `proposicoes-2024.csv`).
+- **Conferido em todas as linhas**: a validação do arquivo (`validar_arquivo`) confere o formato das duas colunas de data em **todas** as linhas, e não só nas consumidas pelo cálculo. Contra os dados reais de 2003 a 2026 (848.839 linhas de proposições), nenhuma linha fica fora do formato, e a validação inteira leva ~10 s.
 - **Rationale**: aceitar variações em silêncio violaria a falha visível (princípio III).
 - **Alternatives considered**: parser tolerante que tenta vários formatos. Rejeitado: esconde mudança de formato.
 
@@ -54,8 +55,9 @@ Decisões técnicas do plano. Os itens R2, R3, R4, R7 e R10 foram conferidos con
 
 - **Decision**: nenhuma meta formal. Meta interna de menos de 20 minutos por execução. Registrar aqui o tempo e o pico de memória da primeira execução completa.
 - **Medido em 18/10/2026** com o maior arquivo, `proposicoes-2025.csv`: 90.184.324 bytes e 107.587 linhas (igual à sondagem). Download em 6,9 s (~13 MB/s). Leitura completa com `csv.reader` em modo estrito, com conferência de colunas por linha, em 0,6 s, com pico de 12 MB de memória.
-- **Extrapolação, não medida**: para ~1 GB, o download deve levar da ordem de 80 s e a leitura, alguns segundos por passada. A folga sobre a meta é grande; o gargalo é a rede. A primeira execução completa confirma ou corrige.
-- **Rationale**: a medição de um arquivo real mostra que Python puro basta e que paralelizar não se justifica.
+- **Medido na execução completa** (18/10/2026, 48 arquivos, 1.168 MB, Python 3.13, saída pelo proxy do ambiente): 159 s e 154 s em duas execuções seguidas, **pico de 96 a 97 MB de memória**, ~1,2 GB de disco temporário (apagado ao fim). Resultado: 23 itens (CE 18, CREDN 5), idêntico entre as duas execuções exceto `gerado_em`. A meta interna de 20 minutos tem folga de cerca de 7 vezes.
+- **Conferência com a sondagem (SC-008)**: aplicando o critério da sondagem (status do próprio item) às mesmas fontes, saem A=20, B=18, A∪B=24, B−A=4 e A−B=6, **exatamente os números de `docs/fontes.md`**. Os 23 itens do `atual.json` são esses 24 menos um: o **PL 4047/2019**, cujo status é da CE mas cuja raiz (PL 3047/2015) está na CFT, como pede o `PRODUCT.md` (D4 e §5.4). Nenhum item novo apareceu. Dos 23, 7 são apensados avaliados pela raiz e nenhum tem "principal não localizada".
+- **Rationale**: as medições mostram que Python puro basta e que paralelizar não se justifica.
 - **Alternatives considered**: paralelizar downloads. Rejeitado até medir: complexidade sem necessidade comprovada.
 
 ## R8. Formato da configuração: TOML
