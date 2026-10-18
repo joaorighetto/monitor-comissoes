@@ -32,7 +32,9 @@ from .lote import (
     ler_proposicoes,
     verificar_frescor,
 )
+from .mudancas import comparar, validar_arquivo
 from .relatoria import ResultadoRelatoria, relator_atual
+from .retratos import Comparacao
 from .saida import gravar_atomico, montar_documento
 from .tramitacoes import obter_tramitacoes
 from .transporte import Transporte
@@ -55,6 +57,7 @@ class Coletado:
     documento: dict
     estoque_bruto: int  # PL/PLP nas comissões, pelo órgão do próprio status (AGE, FR-015a)
     dados_camara_em: datetime  # UTC
+    mudancas: dict | None = None  # o arquivo de mudanças do dia (MUD); None sem comparação
 
 
 def _candidatos_a_relatoria(
@@ -137,8 +140,18 @@ def _deputados_relator(
     return {i: do_novo[i] if i in do_novo else obter_deputado(transporte, URL_BASE, i) for i in ids}
 
 
-def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado:
-    """Baixa, valida e filtra o lote; devolve o documento sem gravar nada."""
+def coletar(
+    config: Config,
+    transporte: Transporte,
+    agora: datetime,
+    comparacao: Comparacao | None = None,
+) -> Coletado:
+    """Baixa, valida e filtra o lote; devolve o documento sem gravar nada.
+
+    Com `comparacao` (a execução diária), devolve também o arquivo de mudanças do dia. A
+    comparação roda aqui dentro para que uma falha de rede dela entre no mesmo laço de novas
+    tentativas da coleta.
+    """
     ano_corrente = agora.astimezone(BRASILIA).year
     deputados = obter_deputados_novo(transporte, URL_BASE)
     ids_deputados = {d.id for d in deputados}
@@ -217,7 +230,19 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         "total_por_comissao": por_comissao,
         "deputados_novo_em_exercicio": [{"id": d.id, "nome": d.nome} for d in deputados],
     }
-    return Coletado(montar_documento(itens, meta), estoque_bruto, lote.last_modified_min)
+    documento = montar_documento(itens, meta)
+    mudancas = None
+    if comparacao is not None:
+        mudancas = comparar(
+            comparacao,
+            documento,
+            {},
+            lambda id_referencia: obter_tramitacoes(transporte, URL_BASE, id_referencia),
+            config.comissoes,
+            agora.astimezone(BRASILIA).date(),
+        )
+        validar_arquivo(mudancas)
+    return Coletado(documento, estoque_bruto, lote.last_modified_min, mudancas)
 
 
 def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:

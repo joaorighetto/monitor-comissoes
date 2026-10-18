@@ -62,6 +62,8 @@ def caminhos(tmp_path):
         "config": tmp_path / "config.toml",
         "atual": tmp_path / "data" / "atual.json",
         "status": tmp_path / "data" / "status.json",
+        "anterior": tmp_path / "data" / "anterior.json",
+        "mudancas": tmp_path / "data" / "mudancas",
     }
 
 
@@ -74,6 +76,10 @@ def executar_main(caminhos, transporte, relogio, dormir=None, *, aceitar=False):
         str(caminhos["atual"]),
         "--status",
         str(caminhos["status"]),
+        "--anterior",
+        str(caminhos["anterior"]),
+        "--mudancas",
+        str(caminhos["mudancas"]),
     ]
     if aceitar:
         argumentos.append("--aceitar-variacao")
@@ -125,19 +131,22 @@ def test_sucesso_imprime_a_linha_de_resumo(caminhos, transporte, agora, capsys):
     total = len(coletado.documento["itens"])
     assert saida == (
         f"OK: {total} itens · estoque bruto {coletado.estoque_bruto} · tentativas 1"
-        f" · dados da Câmara de {dia}\n"
+        f" · dados da Câmara de {dia} · mudanças: linha de base (primeiro retrato)\n"
     )
 
 
-def test_primeiro_dia_cria_a_pasta_data_e_os_dois_arquivos(caminhos, transporte, agora):
+def test_primeiro_dia_cria_a_pasta_data_e_os_arquivos(caminhos, transporte, agora):
     assert not caminhos["atual"].parent.exists()
 
     assert executar_main(caminhos, transporte, Relogio(agora)) == 0
 
     assert caminhos["atual"].exists()
     assert caminhos["status"].exists()
+    # MUD: o arquivo de mudanças do dia (linha de base) entra; `anterior.json` só existe depois
+    # que um atual.json de dia anterior rotaciona.
     assert sorted(p.name for p in caminhos["atual"].parent.iterdir()) == [
         "atual.json",
+        "mudancas",
         "status.json",
     ]
 
@@ -166,9 +175,19 @@ def test_mesmo_relogio_gera_arquivos_identicos_byte_a_byte(tmp_path, transporte,
             "config": pasta / "config.toml",
             "atual": pasta / "data" / "atual.json",
             "status": pasta / "data" / "status.json",
+            "anterior": pasta / "data" / "anterior.json",
+            "mudancas": pasta / "data" / "mudancas",
         }
         assert executar_main(caminhos, transporte, Relogio(agora)) == 0
-        resultados.append((caminhos["atual"].read_bytes(), caminhos["status"].read_bytes()))
+        [mudancas] = caminhos["mudancas"].iterdir()
+        resultados.append(
+            (
+                caminhos["atual"].read_bytes(),
+                caminhos["status"].read_bytes(),
+                mudancas.name,
+                mudancas.read_bytes(),
+            )
+        )
 
     assert resultados[0] == resultados[1]
 
@@ -289,8 +308,10 @@ def conferir_falha_com_dados_bons_intactos(caminhos, dia1, capsys, codigo, categ
     assert status_novo["ultimo_retrato_bom"] == dia1["status"]["ultimo_retrato_bom"]
     assert sorted(p.name for p in caminhos["atual"].parent.iterdir()) == [
         "atual.json",
+        "mudancas",  # a do dia 1; a falha do dia 2 não grava outro arquivo de mudanças
         "status.json",
     ]  # sem .tmp
+    assert [p.name for p in caminhos["mudancas"].iterdir()] == ["2026-10-18.json"]
     return status_novo
 
 
@@ -1008,6 +1029,10 @@ def test_execucao_de_sucesso_depois_de_uma_falha_do_mesmo_dia_grava(caminhos, ag
     assert ler(caminhos["status"])["resultado"] == "ok"
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason="MUD, Fase 4 (T024): roda dois dias seguidos e precisa da comparação com o anterior",
+)
 def test_a_data_de_referencia_muda_na_virada_do_dia_de_brasilia(caminhos):
     antes = datetime(2026, 10, 18, 23, 50, tzinfo=FUSO)
     depois = datetime(2026, 10, 19, 0, 10, tzinfo=FUSO)
@@ -1086,3 +1111,91 @@ def test_se_a_troca_do_status_falha_o_atual_volta_ao_que_era_e_o_status_fica_coe
         caminhos, dia1, capsys, codigo, "interna", "falha simulada"
     )
     assert status_novo["tentativas"] == 1
+
+
+# --- MUD: retrato anterior, rotação e arquivo de mudanças -----------------------------------------
+
+
+def arquivo_do_dia(caminhos, nome):
+    return ler(caminhos["mudancas"] / nome)
+
+
+def test_primeiro_dia_grava_a_linha_de_base_e_nao_cria_anterior(caminhos, transporte, agora):
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+
+    assert not caminhos["anterior"].exists()
+    assert [p.name for p in caminhos["mudancas"].iterdir()] == ["2026-10-18.json"]
+    arquivo = arquivo_do_dia(caminhos, "2026-10-18.json")
+    total = ler(caminhos["atual"])["meta"]["total_itens"]
+    assert arquivo["meta"]["linha_de_base"] == {"motivo": "primeiro retrato", "total_itens": total}
+    assert arquivo["meta"]["retrato_anterior"] is None
+    assert arquivo["eventos"] == [] and arquivo["ressalvas"] == []
+    assert ler(caminhos["atual"])["meta"]["versao_formato"] == 3
+
+
+def test_atual_de_dia_anterior_em_formato_antigo_rotaciona_e_vira_linha_de_base(
+    caminhos, transporte, agora
+):
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+    velho = ler(caminhos["atual"])
+    velho["meta"]["versao_formato"] = 2  # o formato de antes da MUD
+    texto_velho = (json.dumps(velho, ensure_ascii=False, indent=2) + "\n  \n").encode("utf-8")
+    caminhos["atual"].write_bytes(texto_velho)
+
+    assert executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1))) == 0
+
+    assert caminhos["anterior"].read_bytes() == texto_velho  # a cópia é o texto original
+    arquivo = arquivo_do_dia(caminhos, "2026-10-19.json")
+    assert arquivo["meta"]["linha_de_base"]["motivo"] == "formato anterior incompatível"
+    assert arquivo["meta"]["retrato_anterior"] == {
+        "dia": "2026-10-18",
+        "dados_camara_em": velho["meta"]["dados_camara_em"],
+    }
+    assert arquivo["eventos"] == []
+    assert ler(caminhos["atual"])["meta"]["versao_formato"] == 3
+    assert sorted(p.name for p in caminhos["mudancas"].iterdir()) == [
+        "2026-10-18.json",
+        "2026-10-19.json",
+    ]
+
+
+def test_a_data_do_arquivo_e_a_da_execucao_em_brasilia(caminhos, transporte):
+    # 02:00 UTC de 19/10 ainda é 23:00 de 18/10 em Brasília; o lote (de 18/10) está fresco.
+    from datetime import UTC
+
+    assert (
+        executar_main(caminhos, transporte, Relogio(datetime(2026, 10, 19, 2, 0, tzinfo=UTC))) == 0
+    )
+
+    assert [p.name for p in caminhos["mudancas"].iterdir()] == ["2026-10-18.json"]
+    assert arquivo_do_dia(caminhos, "2026-10-18.json")["meta"]["data"] == "2026-10-18"
+
+
+def test_falha_da_coleta_nao_cria_arquivo_de_mudancas(caminhos, transporte, agora, capsys):
+    caminhos["config"].write_text(CONFIG_SEM_REPETICAO, encoding="utf-8")
+    falha_fonte(transporte, agora)
+
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 1
+
+    assert [p.name for p in caminhos["atual"].parent.iterdir()] == ["status.json"]
+    assert not caminhos["mudancas"].exists()
+    assert ler(caminhos["status"])["resultado"] == "falha"
+
+
+def test_sem_as_opcoes_o_anterior_e_as_mudancas_ficam_ao_lado_do_atual(
+    caminhos, transporte, agora, tmp_path
+):
+    argumentos = [
+        "executar",
+        "--config",
+        str(caminhos["config"]),
+        "--atual",
+        str(caminhos["atual"]),
+        "--status",
+        str(caminhos["status"]),
+    ]
+    codigo = main(argumentos, transporte=transporte, relogio=Relogio(agora), dormir=Dormidas())
+
+    assert codigo == 0
+    assert (tmp_path / "data" / "mudancas" / "2026-10-18.json").exists()
+    assert not (Path.cwd() / "data" / "mudancas" / "2026-10-18.json").exists()

@@ -10,18 +10,21 @@ import signal
 import sys
 import time
 from collections.abc import Callable
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 
 from .coleta import coletar
 from .config import carregar_config
 from .erros import INTERNA, REPETIVEIS, FalhaDeColeta
 from .estoque import BRASILIA
+from .mudancas import nome_do_arquivo, resumo
 from .plausibilidade import percentual_texto, verificar
+from .retratos import preparar
+from .saida import serializar
 from .status import (
     base_de_comparacao,
-    gravar_par,
     gravar_status,
+    gravar_todos,
     ler_status,
     mensagem_commit,
     montar_status,
@@ -84,6 +87,8 @@ def executar_diaria(
     caminho_config: Path,
     atual: Path,
     status: Path,
+    anterior: Path,
+    mudancas: Path,
     aceitar_variacao: bool,
     transporte: Transporte,
     relogio: Callable[[], datetime],
@@ -108,7 +113,9 @@ def executar_diaria(
             tentativas = tentativa
             agora = relogio()  # cada tentativa lê o relógio de novo
             try:
-                coletado = coletar(config, transporte, agora)
+                # O retrato anterior é decidido por data (MUD, R5); um arquivo ilegível falha aqui.
+                comparacao = preparar(atual, anterior, agora.astimezone(BRASILIA).date())
+                coletado = coletar(config, transporte, agora, comparacao)
                 break
             except FalhaDeColeta as falha:
                 if falha.categoria not in REPETIVEIS or tentativa == config.tentativas:
@@ -142,7 +149,22 @@ def executar_diaria(
             variacao_aceita=variacao_aceita,
             retrato=retrato,
         )
-        gravar_par(coletado.documento, atual, documento_status, status)
+        # Ordem das trocas: a cópia do retrato anterior primeiro. Se o processo morresse entre
+        # duas trocas, o `atual.json` ainda de ontem rotacionaria de novo, sem perder nada; o
+        # contrário (atual novo e cópia velha) quebraria a comparação do dia.
+        escritas = []
+        if comparacao.copia_anterior is not None:
+            escritas.append((comparacao.copia_anterior, anterior))
+        escritas += [
+            (
+                serializar(coletado.mudancas),
+                Path(mudancas)
+                / nome_do_arquivo(date.fromisoformat(coletado.mudancas["meta"]["data"])),
+            ),
+            (serializar(coletado.documento), atual),
+            (serializar(documento_status), status),
+        ]
+        gravar_todos(escritas)
     except FalhaDeColeta as falha:
         return _registrar_falha(falha.categoria, falha.motivo, atual, status, tentativas, relogio)
     except Exception as erro:  # nenhuma falha pode terminar sem aviso nem saída parcial
@@ -164,6 +186,7 @@ def executar_diaria(
     print(
         f"OK: {meta['total_itens']} itens · estoque bruto {coletado.estoque_bruto}"
         f" · tentativas {tentativas} · dados da Câmara de {dia}"
+        f" · mudanças: {resumo(coletado.mudancas)}"
     )
     return 0
 
@@ -192,6 +215,12 @@ def main(
     executar.add_argument("--config", type=Path, default=Path("config.toml"))
     executar.add_argument("--atual", type=Path, default=Path("data/atual.json"))
     executar.add_argument("--status", type=Path, default=Path("data/status.json"))
+    executar.add_argument(
+        "--anterior", type=Path, default=None, help="padrão: anterior.json ao lado do --atual"
+    )
+    executar.add_argument(
+        "--mudancas", type=Path, default=None, help="padrão: a pasta mudancas ao lado do --atual"
+    )
     executar.add_argument("--aceitar-variacao", action="store_true")
     mensagem = subcomandos.add_parser("mensagem", help="mensagem de uma linha do commit")
     mensagem.add_argument("--status", type=Path, default=Path("data/status.json"))
@@ -210,6 +239,8 @@ def main(
             args.config,
             args.atual,
             args.status,
+            args.anterior or args.atual.parent / "anterior.json",
+            args.mudancas or args.atual.parent / "mudancas",
             args.aceitar_variacao,
             transporte or TransporteHttp(),
             relogio or _agora,

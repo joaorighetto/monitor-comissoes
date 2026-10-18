@@ -199,6 +199,32 @@ def comparar(
     raise NotImplementedError("comparação com retrato anterior: Fase 4")
 
 
+ROTULOS_DOS_TIPOS = {
+    "entrou": "entrou",
+    "saiu": "saiu",
+    "situacao": "situação",
+    "relator": "relator",
+    "parecer": "parecer",
+    "etiquetas": "etiquetas",
+}
+
+
+def resumo(documento: dict) -> str:
+    """Resumo de uma linha do arquivo, para a saída da execução diária."""
+    meta = documento["meta"]
+    if meta["linha_de_base"] is not None:
+        return f"linha de base ({meta['linha_de_base']['motivo']})"
+    total = meta["total_eventos"]
+    if total == 0:
+        return "sem mudanças"
+    partes = ", ".join(
+        f"{meta['total_por_tipo'][t]} {ROTULOS_DOS_TIPOS[t]}"
+        for t in TIPOS
+        if meta["total_por_tipo"][t]
+    )
+    return f"{total} {'evento' if total == 1 else 'eventos'} ({partes})"
+
+
 # --- validação --------------------------------------------------------------------------------
 
 

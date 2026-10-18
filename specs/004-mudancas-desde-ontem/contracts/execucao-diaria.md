@@ -8,8 +8,10 @@ Vale tudo o que está em [`specs/002-execucao-diaria-agendada/contracts/`](../..
 
 | Opção | Padrão | Descrição |
 |---|---|---|
-| `--anterior` | `data/anterior.json` | Cópia rotativa do retrato anterior |
-| `--mudancas` | `data/mudancas` | Pasta dos arquivos de mudanças |
+| `--anterior` | `anterior.json` ao lado do `--atual` (em produção, `data/anterior.json`) | Cópia rotativa do retrato anterior |
+| `--mudancas` | pasta `mudancas` ao lado do `--atual` (em produção, `data/mudancas`) | Pasta dos arquivos de mudanças |
+
+Os padrões ficam **ao lado do `--atual`**, e não relativos ao diretório atual, para uma execução com `--atual` em outra pasta (como nos testes) nunca gravar dentro de `data/` do repositório.
 
 `--config`, `--atual`, `--status` e `--aceitar-variacao` continuam como estão. O subcomando `mensagem` não muda.
 
