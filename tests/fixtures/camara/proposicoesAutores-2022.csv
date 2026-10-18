@@ -1,0 +1,4 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2646249";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646249";"";"https://dadosabertos.camara.leg.br/api/v2/orgaos/78";"40000";"Órgão do Poder Legislativo";"Senado Federal";"";"";"";"1";"1"
+"2646105";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646105";"";"https://dadosabertos.camara.leg.br/api/v2/orgaos/78";"40000";"Órgão do Poder Legislativo";"Senado Federal - Soraya Thronicke";"PSB";"";"MS";"1";"1"
+"2331032";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2331032";"204523";"https://dadosabertos.camara.leg.br/api/v2/deputados/204523";"10000";"Deputado(a)";"Lucas Gonzalez";"NOVO";"https://dadosabertos.camara.leg.br/api/v2/partidos/37901";"MG";"1";"1"

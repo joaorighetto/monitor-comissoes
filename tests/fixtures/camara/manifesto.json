@@ -1,0 +1,266 @@
+{
+  "capturado_em": "2026-10-18T02:11:41+00:00",
+  "arquivos": {
+    "proposicoes-2003.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:25 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 26470874
+    },
+    "proposicoesAutores-2003.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:13:52 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 56769020
+    },
+    "proposicoes-2004.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:31:43 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 20140506
+    },
+    "proposicoesAutores-2004.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:14:28 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 19450950
+    },
+    "proposicoes-2005.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:16 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 22247788
+    },
+    "proposicoesAutores-2005.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:15:01 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 19149148
+    },
+    "proposicoes-2006.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:31:39 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 17808346
+    },
+    "proposicoesAutores-2006.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:15:25 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 12115949
+    },
+    "proposicoes-2007.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:33 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 27560840
+    },
+    "proposicoesAutores-2007.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:15:58 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 13683075
+    },
+    "proposicoes-2008.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:16 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 25075468
+    },
+    "proposicoesAutores-2008.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:16:21 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 33118843
+    },
+    "proposicoes-2009.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:58 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 26982496
+    },
+    "proposicoesAutores-2009.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:16:34 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 11113058
+    },
+    "proposicoes-2010.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:31:40 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 15888349
+    },
+    "proposicoesAutores-2010.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:16:41 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 5512364
+    },
+    "proposicoes-2011.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:40 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 28580085
+    },
+    "proposicoesAutores-2011.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:16:56 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 10156019
+    },
+    "proposicoes-2012.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:01 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 19585404
+    },
+    "proposicoesAutores-2012.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:17:04 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 7080642
+    },
+    "proposicoes-2013.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:41 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 24332486
+    },
+    "proposicoesAutores-2013.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:17:14 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 10914001
+    },
+    "proposicoes-2014.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:31:39 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 14590570
+    },
+    "proposicoesAutores-2014.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:17:21 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 5424771
+    },
+    "proposicoes-2015.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:45 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 34171659
+    },
+    "proposicoesAutores-2015.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:17:38 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 14394726
+    },
+    "proposicoes-2016.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:12 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 21377260
+    },
+    "proposicoesAutores-2016.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:17:49 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 8775344
+    },
+    "proposicoes-2017.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:34:00 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 27697191
+    },
+    "proposicoesAutores-2017.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:18:02 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 16164295
+    },
+    "proposicoes-2018.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:31:40 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 16247332
+    },
+    "proposicoesAutores-2018.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:18:09 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 5566844
+    },
+    "proposicoes-2019.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:52 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 33296739
+    },
+    "proposicoesAutores-2019.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:18:41 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 32918667
+    },
+    "proposicoes-2020.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:13 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 25260313
+    },
+    "proposicoesAutores-2020.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:18:57 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 14165100
+    },
+    "proposicoes-2021.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:34:07 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 34592023
+    },
+    "proposicoesAutores-2021.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:19:17 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 19442789
+    },
+    "proposicoes-2022.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:14 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 23190908
+    },
+    "proposicoesAutores-2022.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:19:26 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 11093939
+    },
+    "proposicoes-2023.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:34:14 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 52259514
+    },
+    "proposicoesAutores-2023.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:20:12 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 42276306
+    },
+    "proposicoes-2024.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:33:58 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 53086966
+    },
+    "proposicoesAutores-2024.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:20:36 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 24401498
+    },
+    "proposicoes-2025.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:34:40 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 90184324
+    },
+    "proposicoesAutores-2025.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:21:06 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 38939258
+    },
+    "proposicoes-2026.csv": {
+      "last_modified": "Sat, 17 Oct 2026 04:32:59 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 40476106
+    },
+    "proposicoesAutores-2026.csv": {
+      "last_modified": "Sat, 17 Oct 2026 05:21:21 GMT",
+      "content_type": "application/octet-stream",
+      "tamanho_original": 14550456
+    }
+  },
+  "deputados": {
+    "x_total_count": "5"
+  },
+  "selecao": {
+    "alvos": {
+      "PL 4047/2019": 2211957,
+      "PL 1843/2022": 2331032,
+      "PL 3871/2024": 2461936
+    },
+    "contraste": {
+      "PL_outro_partido_na_comissao": 104404,
+      "REQ_na_comissao": 105105,
+      "PL_novo_fora_das_comissoes": 2141142,
+      "PDL_na_comissao": 2231899
+    },
+    "exemplos_reais": {
+      "raiz_ausente": 29517,
+      "cadeia_2_niveis": 104788
+    },
+    "total_ids_selecionados": 16
+  }
+}

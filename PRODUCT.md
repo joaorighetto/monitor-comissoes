@@ -161,6 +161,7 @@ A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens
 | Fonte fora do ar ou lenta, depois de novas tentativas | Falha anunciada, com o motivo |
 | Formato alterado (coluna ausente, tipo inesperado) | Falha com "formato alterado: coluna X" |
 | Arquivos desatualizados (`Last-Modified` com mais de cerca de 36 horas) | Falha com "a Câmara não atualizou os arquivos" |
+| Arquivos gerados em momentos diferentes (mais de 6 horas entre o `Last-Modified` mais antigo e o mais novo) | Falha com "os arquivos da Câmara foram gerados em momentos diferentes". A Câmara regenera todos os arquivos todo dia; uma diferença grande indica que a coleta pegou a regeneração no meio |
 | Estoque implausível: variação de mais de 20% em um dia ou estoque vazio | Falha. Provavelmente o arquivo veio truncado |
 | Lista filtrada vazia | Sempre tratada como falha |
 | Erro na API (deputados ou tramitações) | A execução inteira falha. Não há publicação parcial |

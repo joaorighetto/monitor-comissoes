@@ -1,0 +1,10 @@
+# Configuração do monitor de comissões.
+# Trocar estes valores não exige mudança de código (PRODUCT.md, D1).
+
+# Siglas das comissões acompanhadas, como a Câmara as registra no órgão do último status.
+comissoes = ["CE", "CREDN"]
+
+# Primeiro ano dos arquivos em lote lidos. 2003 porque, ao fim da 56ª legislatura, a
+# Resolução 33/2022 (art. 3º) arquivou o que tramitava havia 5 legislaturas completas;
+# na sondagem de 17/10/2026 não havia PL anterior a 2003 na CE nem na CREDN.
+ano_minimo = 2003

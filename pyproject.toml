@@ -11,8 +11,12 @@ dev = [
     "ruff",
 ]
 
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
 [tool.uv]
-package = false
+package = true
 
 [tool.ruff]
 include = ["src/**/*.py", "tests/**/*.py"]
