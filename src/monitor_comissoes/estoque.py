@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from typing import NamedTuple
 
 from .deputados import DeputadoHoje
+from .erros import INTERNA, FalhaDeColeta
 from .lote import Autor, Proposicao
 from .relatoria import ResultadoRelatoria
 
@@ -45,6 +46,20 @@ def etiquetar(
     if id_relator is not None and id_relator in ids_deputados_novo:
         etiquetas.append(ETIQUETA_RELATORIA)
     return etiquetas
+
+
+def deve_ler_tramitacoes(
+    autores: Iterable[Autor], ids_deputados_novo: set[int], referencia: Proposicao
+) -> bool:
+    """Se as tramitações da referência precisam ser lidas para este item.
+
+    Todo item com etiqueta de autoria (para informar o relator) e todo candidato à relatoria
+    NOVO (o relator do último status da referência é do NOVO). É a única definição: a coleta
+    lê por ela e `construir_itens` exige a leitura por ela.
+    """
+    return bool(etiquetar(autores, ids_deputados_novo)) or (
+        referencia.id_relator in ids_deputados_novo
+    )
 
 
 class Referencia(NamedTuple):
@@ -87,6 +102,11 @@ def resolver_referencia(
     return Referencia("raiz", raiz, raiz)
 
 
+def _com_segundos(data_hora: str) -> str:
+    """A API entrega AAAA-MM-DDTHH:MM; o `atual.json` usa AAAA-MM-DDTHH:MM:SS."""
+    return data_hora if len(data_hora) == 19 else f"{data_hora}:00"
+
+
 def _relator(
     resultado: ResultadoRelatoria, referencia_id: int, deputados: dict[int, DeputadoHoje]
 ) -> dict | None:
@@ -97,7 +117,7 @@ def _relator(
         "id": deputado.id,
         "nome": deputado.nome,
         "partido_hoje": deputado.partido,
-        "designado_em": f"{resultado.relator.designado_em}:00",
+        "designado_em": _com_segundos(resultado.relator.designado_em),
         "fonte": link_oficial(referencia_id),
     }
 
@@ -186,7 +206,6 @@ def construir_itens(
     hoje = agora.astimezone(BRASILIA).date()
     mapa = mapa_principal or {}
     linhas = proposicoes if proposicoes is not None else candidatas
-    relatorias = relatorias or {}
     deputados_relator = deputados_relator or {}
     selecionados = []
     for candidata in candidatas.values():
@@ -196,7 +215,18 @@ def construir_itens(
         if referencia.proposicao.orgao not in comissoes:
             continue
         autores = autores_por_id.get(candidata.id, [])
-        relatoria = relatorias.get(referencia.proposicao.id, ResultadoRelatoria())
+        relatoria = ResultadoRelatoria()
+        if relatorias is not None:
+            if not deve_ler_tramitacoes(autores, ids_deputados_novo, referencia.proposicao):
+                continue  # sem autoria e sem relator do NOVO no lote: não há como entrar
+            if referencia.proposicao.id not in relatorias:
+                # Nunca tratar uma referência não lida como "sem relator": seria uma omissão
+                # silenciosa de `relatoria NOVO` (constituição, III).
+                raise FalhaDeColeta(
+                    INTERNA,
+                    f"tramitações da referência {referencia.proposicao.id} não foram lidas",
+                )
+            relatoria = relatorias[referencia.proposicao.id]
         id_relator = relatoria.relator.id if relatoria.relator else None
         etiquetas = etiquetar(autores, ids_deputados_novo, id_relator)
         # Candidato à relatoria NOVO (o lote aponta relator do NOVO) que as tramitações não

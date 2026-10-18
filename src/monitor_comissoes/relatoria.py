@@ -14,6 +14,7 @@ from .tramitacoes import Tramitacao
 # não são comissões e nunca iniciam uma passagem.
 ORGAOS_DE_APOIO = frozenset({"MESA", "CCP", "PLEN"})
 
+RECEBIMENTO = "500"
 DESIGNACAO = "320"
 # 507 Recebimento - Relator(a) (Sem Manifestação); 1250 e 1255 Saída de Relator(a) da Comissão.
 ENCERRAM_A_RELATORIA = frozenset({"507", "1250", "1255"})
@@ -33,14 +34,25 @@ class ResultadoRelatoria(NamedTuple):
     indeterminado: str | None = None
 
 
+def _comissoes(tramitacoes: list[Tramitacao], comissao: str) -> set[str]:
+    """Órgãos que recebem a matéria: a comissão do lote e quem registra recebimento (500) ou
+    designação de relator (320). Um órgão de serviço que só notifica (por exemplo, a SGM, em
+    "Notificações") não inicia passagem: tratá-lo como comissão apagaria o relator em silêncio.
+    """
+    recebem = {t.orgao for t in tramitacoes if t.codigo in (RECEBIMENTO, DESIGNACAO)}
+    return (recebem | {comissao}) - ORGAOS_DE_APOIO
+
+
 def relator_atual(tramitacoes: Iterable[Tramitacao], comissao: str) -> ResultadoRelatoria:
     """Relator atual de uma referência que o lote diz estar na `comissao`."""
     corrente: str | None = None
     relator: RelatorAtual | None = None
     indeterminado: str | None = None
 
+    tramitacoes = list(tramitacoes)
+    comissoes = _comissoes(tramitacoes, comissao)
     for t in sorted(tramitacoes, key=lambda t: t.sequencia):
-        if t.orgao in ORGAOS_DE_APOIO:
+        if t.orgao not in comissoes:
             continue
         if t.orgao != corrente:  # nova passagem: nada da anterior vale
             corrente, relator, indeterminado = t.orgao, None, None

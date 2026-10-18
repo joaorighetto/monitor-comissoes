@@ -7,8 +7,8 @@
 | Campo | Tipo | Uso |
 |---|---|---|
 | `sequencia` | inteiro | Ordem de leitura. Única por proposição; repetida é falha |
-| `dataHora` | texto `AAAA-MM-DDTHH:MM` | Data da designação (`designado_em`) |
-| `siglaOrgao` | texto | Comissão da tramitação; `MESA`, `CCP` e `PLEN` são órgãos de apoio e ficam fora da regra |
+| `dataHora` | texto `AAAA-MM-DDTHH:MM` (ou com `:SS`) | Data da designação (`designado_em`) |
+| `siglaOrgao` | texto | Comissão da tramitação. Só contam órgãos que recebem a matéria (a comissão do lote e quem registra `500` ou `320` na história, exceto `MESA`, `CCP` e `PLEN`); os demais, como a `SGM`, só notificam e ficam fora da regra |
 | `codTipoTramitacao` | texto | Classe da tramitação (research R2) |
 | `descricaoTramitacao` | texto | Só para detectar tipo novo de relatoria (contém "relator") |
 | `uriUltimoRelator` | texto ou nulo | Em `320`, URI do designado; nas demais NÃO é lido |
@@ -41,7 +41,7 @@ Um de três estados, mutuamente exclusivos:
 #### Transições (por passagem, em ordem de `sequencia`)
 
 ```text
-nova passagem (órgão muda, fora MESA/CCP/PLEN) → sem relator
+nova passagem (órgão que recebe a matéria muda) → sem relator
 320 em C com uriUltimoRelator            → com relator (id, dataHora)
 320 em C sem uriUltimoRelator            → indeterminado
 507 | 1250 | 1255 em C                   → sem relator

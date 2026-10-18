@@ -216,3 +216,48 @@ def test_fixtures_reais_de_todas_as_referencias_passam_na_validacao(transporte):
 
     for id_proposicao in ids:
         assert obter_tramitacoes(transporte, URL_BASE, id_proposicao)
+
+
+# --- revisão independente: validação mais firme (M1) -----------------------------------------
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "https://dadosabertos.camara.leg.br/api/v2/deputados/²",
+        "https://dadosabertos.camara.leg.br/api/v2/deputados/٣",
+        "https://dadosabertos.camara.leg.br/api/v2/orgaos/55",
+        "https://dadosabertos.camara.leg.br/api/v2/deputados",
+    ],
+)
+def test_uri_do_relator_precisa_ser_de_deputado_com_id_inteiro_ascii(transporte, uri):
+    def estragar(documento):
+        for t in documento["dados"]:
+            if t["codTipoTramitacao"] == "320":
+                t["uriUltimoRelator"] = uri
+
+    alterar(transporte, PL_937_2022, estragar)
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_tramitacoes(transporte, URL_BASE, PL_937_2022)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+
+
+@pytest.mark.parametrize("data_hora", ["ontem", "2026-10-18", "18/10/2026 10:00", ""])
+def test_data_hora_fora_do_formato_e_formato_alterado(transporte, data_hora):
+    alterar(transporte, PL_937_2022, lambda d: d["dados"][0].update(dataHora=data_hora))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_tramitacoes(transporte, URL_BASE, PL_937_2022)
+
+    assert erro.value.categoria == FORMATO_ALTERADO
+    assert "dataHora" in erro.value.motivo
+
+
+def test_data_hora_com_segundos_e_aceita(transporte):
+    alterar(transporte, PL_937_2022, lambda d: d["dados"][0].update(dataHora="2022-04-18T15:44:07"))
+
+    assert (
+        obter_tramitacoes(transporte, URL_BASE, PL_937_2022)[0].data_hora == "2022-04-18T15:44:07"
+    )

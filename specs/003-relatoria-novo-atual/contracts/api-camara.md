@@ -8,9 +8,9 @@ Exigido:
 
 - Resposta JSON objeto com `dados` (lista **não vazia**) e `links`.
 - Nenhum link com `rel` diferente de `self` (paginação inesperada é falha) e todo `href` dentro de `https://dadosabertos.camara.leg.br/api/`.
-- Em cada elemento: `sequencia` inteiro; `siglaOrgao` texto; `codTipoTramitacao` texto; `dataHora` texto; `descricaoTramitacao` texto ou nulo; `uriUltimoRelator` texto ou nulo.
+- Em cada elemento: `sequencia` inteiro; `siglaOrgao` texto; `codTipoTramitacao` texto; `dataHora` texto no formato `AAAA-MM-DDTHH:MM` (segundos opcionais); `descricaoTramitacao` texto ou nulo; `uriUltimoRelator` texto ou nulo.
 - `sequencia` única na resposta.
-- `uriUltimoRelator` de uma tramitação `320`, quando presente, termina em `/deputados/{inteiro}`.
+- `uriUltimoRelator` de uma tramitação `320`, quando presente, é uma URI de `/deputados/{inteiro}` (dígitos ASCII).
 
 Não exigido (não existe na fonte, research R1): `X-Total-Count`, paginação.
 

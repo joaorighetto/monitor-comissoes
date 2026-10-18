@@ -65,7 +65,7 @@ Uma proposição distribuída a várias comissões passa por elas em sequência,
 
 ### 5.4 "Do NOVO": etiquetas
 
-O item entra na lista se tiver ao menos uma etiqueta.
+O item entra na lista se tiver ao menos uma etiqueta, ou se for candidato à relatoria NOVO com relator indeterminado (abaixo).
 
 | Etiqueta | Regra | Fonte |
 |---|---|---|

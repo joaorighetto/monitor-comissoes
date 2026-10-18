@@ -277,3 +277,42 @@ def test_relator_e_indeterminado_nunca_aparecem_juntos():
     for tramitacoes in variantes:
         resultado = relator_atual(tramitacoes, "CE")
         assert not (resultado.relator and resultado.indeterminado)
+
+
+# --- revisão independente: órgãos de serviço (C1) ----------------------------------------------
+
+PL_2459367 = 2459367  # história real com um órgão de serviço (SGM) entre tramitações da CE
+
+
+def test_notificacao_de_orgao_de_servico_nao_apaga_o_relator():
+    # SGM só notifica; nunca recebe a matéria. A CE continua com ela e o relator segue valendo.
+    base = depois(real(PL_4501_2023), "SGM", "1005")
+
+    resultado = relator_atual(depois(base, "CE", "501"), "CE")
+
+    assert resultado.relator.id == LUIZ_LIMA
+    assert resultado.indeterminado is None
+
+
+def test_historia_real_com_sgm_entre_tramitacoes_da_ce():
+    orgaos = {t.orgao for t in real(PL_2459367)}
+    assert "SGM" in orgaos  # o caso real que o revisor apontou
+
+    resultado = relator_atual(real(PL_2459367), "CE")
+
+    assert resultado.relator.id == LUIZ_LIMA
+    assert resultado.relator.designado_em == "2026-03-20T14:18"
+
+
+def test_orgao_de_servico_depois_da_designacao_e_antes_de_uma_nova_nao_muda_o_resultado():
+    sem_servico = depois(real(PL_4501_2023), "CE", "501")
+    com_servico = depois(depois(real(PL_4501_2023), "SGM", "1005"), "CE", "501")
+
+    assert relator_atual(com_servico, "CE") == relator_atual(sem_servico, "CE")
+
+
+def test_orgao_que_recebe_a_materia_continua_iniciando_uma_nova_passagem():
+    # CFT recebe a matéria (500): é comissão, e a designação da passagem anterior na CE não vale.
+    voltou = depois(depois(depois(real(PL_4501_2023), "CFT", "500"), "CFT", "322"), "CE", "500")
+
+    assert relator_atual(voltou, "CE").relator is None

@@ -5,12 +5,15 @@ formato; qualquer desvio falha a execução inteira, sem resultado parcial.
 """
 
 import json
+import re
 from typing import NamedTuple
 
 from .erros import FORMATO_ALTERADO, FalhaDeColeta
 from .transporte import Transporte
 
 CODIGO_DESIGNACAO = "320"
+PADRAO_DATA_HORA = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?")
+PADRAO_URI_DEPUTADO = re.compile(r".*/deputados/([0-9]+)/?")
 
 
 class Tramitacao(NamedTuple):
@@ -34,10 +37,10 @@ def _texto(elemento: dict, campo: str, id_proposicao: int, *, anulavel: bool = F
 
 
 def _id_do_relator(uri: str, id_proposicao: int) -> int:
-    ultimo = uri.rstrip("/").rsplit("/", 1)[-1]
-    if not uri or not ultimo.isdigit():
+    achado = PADRAO_URI_DEPUTADO.fullmatch(uri)
+    if achado is None:
         raise _falha(id_proposicao, f"formato alterado: campo uriUltimoRelator ({uri!r})")
-    return int(ultimo)
+    return int(achado.group(1))
 
 
 def _conferir_links(corpo: dict, url_base: str, id_proposicao: int) -> None:
@@ -85,12 +88,15 @@ def obter_tramitacoes(
         if sequencia in vistas:
             raise _falha(id_proposicao, f"sequencia repetida: {sequencia}")
         vistas.add(sequencia)
+        data_hora = _texto(elemento, "dataHora", id_proposicao)
+        if not PADRAO_DATA_HORA.fullmatch(data_hora):
+            raise _falha(id_proposicao, f"formato alterado: campo dataHora ({data_hora!r})")
         codigo = _texto(elemento, "codTipoTramitacao", id_proposicao)
         uri = _texto(elemento, "uriUltimoRelator", id_proposicao, anulavel=True)
         tramitacoes.append(
             Tramitacao(
                 sequencia=sequencia,
-                data_hora=_texto(elemento, "dataHora", id_proposicao),
+                data_hora=data_hora,
                 orgao=_texto(elemento, "siglaOrgao", id_proposicao),
                 codigo=codigo,
                 descricao=_texto(elemento, "descricaoTramitacao", id_proposicao, anulavel=True)

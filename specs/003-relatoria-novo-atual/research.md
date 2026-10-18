@@ -22,8 +22,8 @@ Conferências feitas em 18/10/2026 contra a API real da Câmara (rede liberada),
 
 **Decisão:** percorrer as tramitações em ordem de `sequencia`, com a comissão C vinda do lote (`ultimoStatus_siglaOrgao` da referência):
 
-1. Tramitações de **órgãos de apoio** (`MESA`, `CCP`, `PLEN`) são ignoradas. Nas 25 histórias só esses três não são comissões.
-2. Quando o órgão da tramitação muda (entre órgãos que não são de apoio), começa uma **nova passagem**: o relator é zerado. É isto que faz a designação de uma passagem anterior não valer (decidido no clarify) e que descarta o relator da CESPO no PL 3514/2023.
+1. Só **órgãos que recebem a matéria** contam. São a comissão do lote e todo órgão que registra, na própria história, um recebimento (`500`) ou uma designação de relator (`320`), exceto `MESA`, `CCP` e `PLEN`. Tramitações dos demais são ignoradas: nas fixtures recapturadas aparece a `SGM` ("Notificações", `1005`), que só notifica e nunca recebe a matéria. A revisão independente mostrou que tratá-la como comissão apagaria o relator em silêncio (CE `320` → SGM → CE `501`).
+2. Quando o órgão da tramitação muda (entre órgãos que recebem a matéria), começa uma **nova passagem**: o relator é zerado. É isto que faz a designação de uma passagem anterior não valer (decidido no clarify) e que descarta o relator da CESPO no PL 3514/2023.
 3. Dentro de C: `320` (Designação de Relator) define o relator pelo `uriUltimoRelator` **dessa** tramitação e a data da designação; `507` (Recebimento - Relator(a) Sem Manifestação, a devolução), `1250` e `1255` (Saída de Relator(a) da Comissão) zeram o relator. Os demais tipos de relatoria (`170` devolução **ao** relator, `322` parecer, `501` recebimento do parecer) mantêm o relator.
 4. No fim, o relator atual é o que sobrou. Se a última passagem **não** é em C, o item é "relator indeterminado" (divergência entre o lote e a API, por exemplo a matéria mudou de comissão entre as duas fontes).
 
@@ -107,3 +107,10 @@ Casos que **não existem** nos dados reais (devolução e redesignação em sequ
 ## R8. Dependências e configuração
 
 **Decisão:** nenhuma dependência nova; só `urllib`, `json`, `csv`. Nenhuma chave nova em `config.toml`: os órgãos de apoio e a tabela de tipos são regra de domínio fixa no código (R2), como os tipos PL/PLP.
+
+## R9. Limites conhecidos (revisão independente, 18/10/2026)
+
+- **Corpo que não é JSON** numa resposta 200 (por exemplo, página de erro de gateway) em `/tramitacoes` é `formato_alterado` e não é repetido pela AGE, enquanto o mesmo defeito em `/deputados` (lista do NOVO) é `api_deputados`, repetível. Mantido como decidido (decisão 2): a mensagem diz o motivo. Se na prática o gateway devolver HTML com frequência, tratar "corpo não JSON" como `fonte_indisponivel`.
+- **Passagem por "Devolução à CCP" (`1010`) e volta à mesma comissão** conta como a mesma passagem (a CCP é órgão de apoio): a designação anterior seguiria valendo. Só há uma ocorrência nas fixtures, sem relator em vigor. Risco teórico, sem regra no `PRODUCT.md`.
+- **Defasagem lote × API:** o candidato nasce do lote, gerado de madrugada. Uma designação do NOVO feita depois da geração só aparece no dia seguinte (limite do `PRODUCT.md` §8). Não há trilha de auditoria de candidatos × confirmados no `meta`; fica como melhoria futura.
+- **Fixtures sintéticas:** o transporte falso só serve tramitações neutras (`tramitacoes_sinteticas`) nos dois testes que trocam comissões ou anos lidos.

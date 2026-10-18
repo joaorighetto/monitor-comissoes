@@ -555,3 +555,41 @@ def test_total_por_comissao_inclui_os_itens_so_de_relatoria(documento):
         assert total == sum(1 for i in itens if i["comissao"] == comissao)
     so_relatoria = [i for i in itens if i["etiquetas"] == ["relatoria NOVO"]]
     assert so_relatoria  # e eles entram nos totais acima
+
+
+# --- revisão independente: só consultar o partido de quem aparece na lista (M5) ---------------
+
+
+def test_relator_de_candidato_refutado_nao_gera_consulta_de_partido(config, agora, tmp_path):
+    # Derivada: o lote ainda aponta Luiz Lima (NOVO) no PL 937/2022, mas as tramitações passam a
+    # dizer que o relator vigente é outro deputado, de outro partido, e o PL não tem autoria do
+    # NOVO. O PL não entra na lista, então o partido desse relator não precisa ser consultado.
+    usados = {
+        i["relator"]["id"] for i in gerar(config, TransporteFalso(), agora, tmp_path)["itens"]
+        if i["relator"]
+    }  # fmt: skip
+    livres = sorted(
+        int(a.stem)
+        for a in (FIXTURES / "deputados").glob("*.json")
+        if int(a.stem) not in usados | NOVO_EM_EXERCICIO_IDS
+    )
+    assert livres, "as fixtures têm deputados que nenhum item usa"
+    outro = livres[0]
+
+    def trocar_relator(corpo: bytes) -> bytes:
+        documento = json.loads(corpo)
+        documento["dados"] = [t for t in documento["dados"] if t["sequencia"] != 28]  # sem o 507
+        for t in documento["dados"]:
+            if t["sequencia"] == 23:  # a última designação de Luiz Lima
+                t["uriUltimoRelator"] = (
+                    f"https://dadosabertos.camara.leg.br/api/v2/deputados/{outro}"
+                )
+        return json.dumps(documento).encode()
+
+    transporte = TransporteFalso()
+    transporte.transformar_json["tramitacoes/2319917"] = trocar_relator
+
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    assert "PL 937/2022" not in por_identificacao(documento)
+    assert not [u for u in transporte.pedidos if u.endswith(f"/deputados/{outro}")]

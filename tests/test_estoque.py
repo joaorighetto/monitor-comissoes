@@ -4,7 +4,13 @@ import pytest
 
 from conftest import BRASILIA
 from monitor_comissoes.deputados import DeputadoHoje
-from monitor_comissoes.estoque import construir_itens, etiquetar, resolver_referencia
+from monitor_comissoes.erros import INTERNA, FalhaDeColeta
+from monitor_comissoes.estoque import (
+    construir_itens,
+    deve_ler_tramitacoes,
+    etiquetar,
+    resolver_referencia,
+)
 from monitor_comissoes.lote import Autor, Proposicao
 from monitor_comissoes.relatoria import RelatorAtual, ResultadoRelatoria
 
@@ -549,3 +555,49 @@ def test_apensado_de_raiz_indeterminada_tambem_leva_a_marca():
     assert item["etiquetas"] == []
     assert item["apensado_a"]["id"] == 1
     assert item["relator_indeterminado"] is not None
+
+
+# --- revisão independente: nada de "sem relator" por referência não lida (I1) ---------------
+
+
+def test_referencia_que_deveria_ter_sido_lida_e_erro_interno_e_nao_sem_relator():
+    p = prop(id=1, relator=204455)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        itens_rel([p], autores, {})  # a coleta deveria ter lido a referência 1
+
+    assert erro.value.categoria == INTERNA
+    assert "referência 1" in erro.value.motivo
+
+
+def test_candidato_que_nao_precisa_ser_lido_nao_exige_relatoria():
+    # O relator do lote é de outro partido e não há autoria do NOVO: nada a ler, nada a listar.
+    p = prop(id=1, relator=220560)
+
+    assert itens_rel([p], {}, {}) == []
+
+
+def test_apensado_com_relator_proprio_do_novo_mas_raiz_de_outro_nao_exige_leitura():
+    raiz = prop(id=1, relator=220560)
+    apensado = prop(id=2, principal=1, relator=204455)
+
+    assert itens_apensados([apensado], {}, {}, {2: 1}, {1: raiz, 2: apensado}) == []
+
+
+def test_deve_ler_tramitacoes_decide_pela_autoria_ou_pelo_relator_do_lote():
+    com_autoria = [autor(partido="NOVO")]
+
+    assert deve_ler_tramitacoes(com_autoria, DEPUTADOS_NOVO, prop(relator=None))
+    assert deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=204455))
+    assert not deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=220560))
+    assert not deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=None))
+
+
+def test_designado_em_com_segundos_nao_ganha_segundos_a_mais():
+    p = prop(id=1, relator=204455)
+    comsegundos = ResultadoRelatoria(RelatorAtual(204455, "2025-04-09T10:11:12"))
+
+    [item] = itens_rel([p], {1: [autor(pid=1, partido="NOVO", dep=1)]}, {1: comsegundos})
+
+    assert item["relator"]["designado_em"] == "2025-04-09T10:11:12"

@@ -14,6 +14,7 @@ from .estoque import (
     PARTIDO,
     TIPOS,
     construir_itens,
+    deve_ler_tramitacoes,
     etiquetar,
     ids_na_comissao,
     resolver_referencia,
@@ -81,21 +82,25 @@ def _referencias_a_ler(
     ids_deputados: set[int],
     mapa_principal: dict[int, int],
     linhas: dict[int, Proposicao],
-) -> dict[int, str]:
-    """Referências cujas tramitações são lidas: id da referência -> comissão do lote.
+) -> tuple[dict[int, str], set[int]]:
+    """Referências cujas tramitações são lidas: (id da referência -> comissão do lote, ids das
+    que têm item com etiqueta de autoria).
 
     Todo item com etiqueta de autoria (para informar o relator) e todo candidato à relatoria
-    NOVO. A referência compartilhada por vários itens entra uma vez.
+    NOVO (`deve_ler_tramitacoes`). A referência compartilhada por vários itens entra uma vez.
     """
     referencias: dict[int, str] = {}
+    com_autoria: set[int] = set()
     for candidata in candidatas.values():
         if candidata.id not in na_comissao:
             continue
+        autores = autores_por_id.get(candidata.id, [])
         referencia = resolver_referencia(candidata, mapa_principal, linhas).proposicao
-        com_autoria = bool(etiquetar(autores_por_id.get(candidata.id, []), ids_deputados))
-        if com_autoria or referencia.id_relator in ids_deputados:
+        if deve_ler_tramitacoes(autores, ids_deputados, referencia):
             referencias[referencia.id] = referencia.orgao
-    return referencias
+            if etiquetar(autores, ids_deputados):
+                com_autoria.add(referencia.id)
+    return referencias, com_autoria
 
 
 def _ler_relatorias(
@@ -113,10 +118,22 @@ def _deputados_relator(
     transporte: Transporte,
     relatorias: dict[int, ResultadoRelatoria],
     deputados_novo: list[Deputado],
+    com_autoria: set[int],
 ) -> dict[int, DeputadoHoje]:
-    """Nome e partido de hoje dos relatores: o NOVO em exercício dispensa a consulta."""
+    """Nome e partido de hoje dos relatores que aparecem na lista.
+
+    O NOVO em exercício dispensa a consulta. Um relator só é consultado se a referência dele
+    tem item com etiqueta de autoria: o de um candidato refutado pelas tramitações não entra na
+    lista, e uma falha ao consultá-lo derrubaria o dia por alguém que nem aparece.
+    """
     do_novo = {d.id: DeputadoHoje(d.id, d.nome, PARTIDO) for d in deputados_novo}
-    ids = sorted({r.relator.id for r in relatorias.values() if r.relator})
+    ids = sorted(
+        {
+            r.relator.id
+            for id_referencia, r in relatorias.items()
+            if r.relator and (r.relator.id in do_novo or id_referencia in com_autoria)
+        }
+    )
     return {i: do_novo[i] if i in do_novo else obter_deputado(transporte, URL_BASE, i) for i in ids}
 
 
@@ -169,11 +186,11 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
                 autores_por_id[autor.id_proposicao].append(autor)
 
     # Tramitações (API ao vivo): relator atual de cada referência e partido de hoje dos relatores.
-    referencias = _referencias_a_ler(
+    referencias, com_autoria = _referencias_a_ler(
         candidatas, na_comissao, autores_por_id, ids_deputados, mapa_principal, linhas
     )
     relatorias = _ler_relatorias(transporte, referencias)
-    deputados_relator = _deputados_relator(transporte, relatorias, deputados)
+    deputados_relator = _deputados_relator(transporte, relatorias, deputados, com_autoria)
 
     itens = construir_itens(
         candidatas,
