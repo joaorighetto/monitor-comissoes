@@ -59,3 +59,38 @@ def obter_deputados_novo(transporte: Transporte, url_base: str) -> list[Deputado
     if total_anunciado != len(deputados):
         raise _falha(f"a API anunciou {total_anunciado} deputados e entregou {len(deputados)}")
     return sorted(deputados)
+
+
+class DeputadoHoje(NamedTuple):
+    id: int
+    nome: str
+    partido: str  # partido de hoje (último status registrado pela Câmara)
+
+
+def obter_deputado(transporte: Transporte, url_base: str, id_deputado: int) -> DeputadoHoje:
+    """Nome e partido de hoje de um deputado (`/deputados/{id}`), para exibir o relator.
+
+    Quem está na lista do NOVO em exercício dispensa a consulta. Qualquer problema falha a
+    execução inteira, sem atribuir a um relator o partido de outra pessoa.
+    """
+
+    def falha(detalhe: str) -> FalhaDeColeta:
+        return FalhaDeColeta(
+            API_DEPUTADOS, f"não foi possível obter o deputado {id_deputado}: {detalhe}"
+        )
+
+    try:
+        resposta = transporte.obter_json(f"{url_base}/api/v2/deputados/{id_deputado}")
+    except FalhaDeColeta as erro:
+        raise falha(erro.motivo) from erro
+    try:
+        dados = json.loads(resposta.corpo)["dados"]
+        status = dados["ultimoStatus"]
+        identificador, nome, partido = dados["id"], status["nomeEleitoral"], status["siglaPartido"]
+    except (ValueError, KeyError, TypeError) as erro:
+        raise falha(f"resposta inesperada da API ({erro!r})") from erro
+    if identificador != id_deputado:
+        raise falha(f"a API respondeu com o deputado {identificador!r}")
+    if not (isinstance(nome, str) and nome and isinstance(partido, str) and partido):
+        raise falha("nome ou partido ausente na resposta")
+    return DeputadoHoje(id=id_deputado, nome=nome, partido=partido)

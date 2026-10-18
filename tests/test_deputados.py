@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from monitor_comissoes.deputados import obter_deputados_novo
+from monitor_comissoes.deputados import obter_deputado, obter_deputados_novo
 from monitor_comissoes.erros import API_DEPUTADOS, FONTE_INDISPONIVEL, FalhaDeColeta
 from monitor_comissoes.transporte import RespostaJson
 
@@ -128,3 +128,72 @@ def test_resposta_sem_x_total_count_e_falha(transporte):
 
     assert erro.value.categoria == API_DEPUTADOS
     assert "X-Total-Count" in erro.value.motivo
+
+
+# --- partido de hoje de um relator (REL, research R4) ---------------------------------------
+
+THIAGO_DE_JOALDO = 220560  # relator do PL 3871/2024; partido de hoje fora do NOVO
+
+
+def test_le_nome_e_partido_de_hoje_de_um_deputado_real(transporte):
+    deputado = obter_deputado(transporte, URL_BASE, THIAGO_DE_JOALDO)
+
+    assert (deputado.id, deputado.nome, deputado.partido) == (
+        THIAGO_DE_JOALDO,
+        "Thiago de Joaldo",
+        "REPUBLICANOS",
+    )
+    assert transporte.pedidos == [f"{URL_BASE}/api/v2/deputados/{THIAGO_DE_JOALDO}"]
+
+
+def test_deputado_que_mudou_de_partido_traz_o_de_hoje(transporte):
+    # Luiz Lima foi designado relator como PL e hoje é do NOVO.
+    assert obter_deputado(transporte, URL_BASE, 204455).partido == "NOVO"
+
+
+def test_erro_de_http_ao_obter_deputado_vira_api_deputados(transporte):
+    transporte.erro_json[f"deputados/{THIAGO_DE_JOALDO}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, "deputados: HTTP 503"
+    )
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_deputado(transporte, URL_BASE, THIAGO_DE_JOALDO)
+
+    assert erro.value.categoria == API_DEPUTADOS
+    assert str(THIAGO_DE_JOALDO) in erro.value.motivo
+    assert "503" in erro.value.motivo
+
+
+@pytest.mark.parametrize(
+    "corpo",
+    [
+        b"<html>erro</html>",
+        b"[]",
+        b'{"x": 1}',
+        b'{"dados": {}}',
+        b'{"dados": {"ultimoStatus": {}}}',
+        b'{"dados": {"ultimoStatus": {"siglaPartido": "PL"}}}',
+        b'{"dados": {"ultimoStatus": {"nomeEleitoral": "A", "siglaPartido": ""}}}',
+        b'{"dados": {"ultimoStatus": {"nomeEleitoral": "", "siglaPartido": "PL"}}}',
+        b'{"dados": {"ultimoStatus": {"nomeEleitoral": 5, "siglaPartido": "PL"}}}',
+    ],
+)
+def test_resposta_de_deputado_invalida_vira_api_deputados(transporte, corpo):
+    transporte.transformar_json[f"deputados/{THIAGO_DE_JOALDO}"] = lambda _: corpo
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_deputado(transporte, URL_BASE, THIAGO_DE_JOALDO)
+
+    assert erro.value.categoria == API_DEPUTADOS
+
+
+def test_resposta_de_outro_deputado_e_recusada(transporte):
+    # O id da resposta precisa ser o pedido: nunca atribuir o partido de outra pessoa.
+    transporte.transformar_json[f"deputados/{THIAGO_DE_JOALDO}"] = lambda _: json.dumps(
+        {"dados": {"id": 1, "ultimoStatus": {"nomeEleitoral": "A", "siglaPartido": "PL"}}}
+    ).encode()
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        obter_deputado(transporte, URL_BASE, THIAGO_DE_JOALDO)
+
+    assert erro.value.categoria == API_DEPUTADOS
