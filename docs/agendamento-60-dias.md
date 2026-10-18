@@ -47,9 +47,25 @@ seriam desativados.
   ainda não implementada). A AGE só garante que `verificado_em` no `data/status.json` é o da
   última execução.
 
+## Decisão do mantenedor (2026-10-18)
+
+**Opção 2: lembrete a cada 45 dias.** O mantenedor abre a aba Actions do repositório e confere que a "Coleta diária" segue ativa e que há commit do bot recente. Sem commits artificiais e sem serviço externo por ora.
+
+O lembrete já está criado no Google Calendar do mantenedor: evento de dia inteiro **a cada 45 dias, a partir de 2026-12-02**, com o passo a passo na descrição.
+
+Datas a partir do início da operação (2026-10-18):
+
+| Quando | Data |
+|---|---|
+| Dia 45 | 2026-12-02 |
+| Dia 55 | 2026-12-12 |
+| Dia 60 (limite do GitHub, se commits do bot não contarem e não houver atividade humana) | 2026-12-17 |
+
+Com a feature em desenvolvimento ativo (REL, MUD, AVI e PAG), os commits e merges do próprio mantenedor já reiniciam o relógio nas próximas semanas. Depois de mais de 60 dias sem atividade humana, se o workflow seguir rodando só com commits do bot, a hipótese fica confirmada e este documento é atualizado.
+
 ## Mitigações
 
-Propostas para decisão do mantenedor; **nenhuma foi implementada**:
+As quatro consideradas; **nenhuma foi implementada** (a escolhida é a 2, que é um hábito do mantenedor e não código):
 
 1. **Não fazer nada** e confiar no commit diário. Custo zero. Se a hipótese estiver errada, o
    produto para em silêncio, com o sinal descrito acima.
@@ -68,4 +84,4 @@ Reativar na aba Actions do repositório (workflow "Coleta diária" → "Enable w
 
 ## Data de início da operação
 
-Anotar aqui o dia do primeiro commit do bot depois do merge: _a preencher_.
+**2026-10-18**: primeiro commit do bot na `main` (`098becc`, execução manual do workflow depois do merge do PR #2).

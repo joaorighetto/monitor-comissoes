@@ -63,4 +63,4 @@ Com o passo 4 já feito, provoque uma falha controlada sem tocar no código: dis
 - No dia seguinte ao merge, conferir na aba Actions que o workflow rodou sozinho por volta das 03h37 de Brasília (pode atrasar em carga alta) e que há um commit do bot.
 - Depois de 7 dias de operação, conferir no histórico do Git que há ao menos um commit de dados do bot por dia e que o `verificado_em` do `status.json` nunca passou de 30 horas (SC-007).
 - Conferir que `docs/agendamento-60-dias.md` existe, com os links oficiais, a data da consulta e a conclusão.
-- Anotar a data de início da operação; por volta do dia 55, conferir que o workflow segue ativo (R11 do [research.md](research.md)).
+- Lembrete a cada 45 dias (decisão do mantenedor): conferir na aba Actions que a "Coleta diária" segue ativa. Datas a partir de 18/10/2026: dia 45 = 02/12/2026 e dia 55 = 12/12/2026 (R11 do [research.md](research.md)).

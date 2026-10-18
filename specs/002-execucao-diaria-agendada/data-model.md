@@ -61,11 +61,11 @@ Invariantes:
 
 ## Base de comparação
 
-O estoque bruto do `ultimo_retrato_bom` do `status.json` lido no início da execução, **se** passar na regra de coerência. Caso contrário, não há base, e a variação não se aplica (primeiro dia, ou arquivos que não se correspondem). Nesse caso a execução avisa em `stderr`, e as checagens de estoque bruto vazio e de lista vazia continuam valendo.
+O estoque bruto do `ultimo_retrato_bom` do `status.json` lido no início da execução, **se** passar na regra de coerência. Caso contrário, não há base. Se também não existe `atual.json` válido, é o primeiro dia de todos: a variação não se aplica (a execução avisa em `stderr`) e valem as checagens de estoque bruto vazio e de lista vazia. Se existe `atual.json` válido (status ausente, inválido ou que não o descreve), a execução **falha** com `sem_base_de_comparacao`, a menos que a confirmação manual esteja marcada; nesse caso o `status.json` registra `variacao_aceita` com `estoque_anterior` e `variacao_percentual` nulos.
 
 ## Categorias de falha
 
-As sete da COL mais duas, `estoque_implausivel` e `interna`. A coluna "Repete?" diz se a AGE tenta de novo depois de esperar (FR-019, FR-020).
+As sete da COL mais três: `estoque_implausivel`, `sem_base_de_comparacao` e `interna`. A coluna "Repete?" diz se a AGE tenta de novo depois de esperar (FR-019, FR-020).
 
 | Categoria | Origem | Repete? | Exemplo de motivo |
 |---|---|---|---|
@@ -77,6 +77,7 @@ As sete da COL mais duas, `estoque_implausivel` e `interna`. A coluna "Repete?" 
 | `api_deputados` | COL | **Sim** | `não foi possível obter os deputados do NOVO` |
 | `estoque_vazio` | COL (lista filtrada vazia) e AGE (estoque bruto vazio) | Não | `nenhum PL/PLP nas comissões acompanhadas` |
 | `estoque_implausivel` | AGE | Não | `estoque bruto variou -28,2% (1531 → 1100); o limite é de 20%` |
+| `sem_base_de_comparacao` | AGE | Não | `há atual.json, mas não há base para comparar; estoque bruto de hoje: 1531` |
 | `interna` | AGE e COL (exceção inesperada) | Não | `KeyError: 'itens'` |
 
 A falha ao commitar ou empurrar para o repositório **não** é categoria do `status.json`: nesse caso não há como gravar o registro. Ela aparece só como workflow vermelho e no log do passo (FR-008).
@@ -110,4 +111,5 @@ Uma linha, gerada a partir do `status.json`:
 |---|---|
 | Sucesso | `dados: AAAA-MM-DD · ok · N itens · estoque bruto B` |
 | Sucesso com variação aceita | `dados: AAAA-MM-DD · ok · variação aceita manualmente (A → B, ±X,X%)` |
+| Sucesso aceito sem base de comparação | `dados: AAAA-MM-DD · ok · aceito sem base de comparação (estoque bruto B)` |
 | Falha | `dados: AAAA-MM-DD · falha [categoria]` |

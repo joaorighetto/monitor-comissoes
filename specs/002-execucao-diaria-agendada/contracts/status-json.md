@@ -83,7 +83,7 @@ Os valores acima são **ilustrativos do formato**, não resultado real.
 | `data_referencia` | texto `AAAA-MM-DD` | Data de Brasília de `verificado_em`, ou seja, do **fim** da execução (uma execução que cruzasse a meia-noite teria a data do dia seguinte; com o agendamento às 03h37 e janela de ~1h40, isso não ocorre). Permite distinguir a execução de hoje do retrato de ontem, e uma reexecução do mesmo dia |
 | `tentativas` | inteiro ≥ 0 | Coletas efetivamente tentadas. 0 quando falhou antes de coletar (configuração inválida) |
 | `falha` | `null` ou objeto | `{"categoria": texto, "motivo": texto}`. `null` se e somente se `resultado = "ok"`. Categorias em [../data-model.md](../data-model.md) |
-| `variacao_aceita` | `null` ou objeto | `{"estoque_anterior": inteiro, "estoque_novo": inteiro, "variacao_percentual": número com 1 casa decimal}`. Só em sucesso com confirmação manual e variação acima do limite |
+| `variacao_aceita` | `null` ou objeto | `{"estoque_anterior": inteiro, "estoque_novo": inteiro, "variacao_percentual": número com 1 casa decimal}`. Só em sucesso com confirmação manual e variação acima do limite. Quando a confirmação liberou a falta de base de comparação (`sem_base_de_comparacao`), `estoque_anterior` e `variacao_percentual` são `null` e só `estoque_novo` vem preenchido |
 | `ultimo_retrato_bom` | `null` ou objeto | `gerado_em` e `dados_camara_em` (como no `meta` do `atual.json`), `total_itens` e `estoque_bruto`. Em sucesso descreve o retrato gravado; em falha, o retrato mantido. `null` se não existe `atual.json` (ou se ele não tem `meta` válido). `estoque_bruto` é `null` só no retrato mantido em falha quando não há base válida para ele (por exemplo, `atual.json` gerado pela COL antes da AGE) |
 
 ## Invariantes (cobertos por testes)
