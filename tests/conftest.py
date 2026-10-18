@@ -1,10 +1,12 @@
 """Infraestrutura de teste: sem rede, com as fixtures reais de tests/fixtures/camara/."""
 
+import io
 import json
 import socket
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
+from http.client import HTTPMessage
 from pathlib import Path
 
 import pytest
@@ -49,6 +51,23 @@ def agora():
 @pytest.fixture
 def config():
     return Config(comissoes=("CE", "CREDN"), ano_minimo=2003)
+
+
+class RespostaFalsa:
+    def __init__(self, corpo: bytes, cabecalhos: dict[str, str]):
+        self._corpo = io.BytesIO(corpo)
+        self.headers = HTTPMessage()
+        for nome, valor in cabecalhos.items():
+            self.headers[nome] = valor
+
+    def read(self, n=-1):
+        return self._corpo.read(n)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
 
 
 class TransporteFalso:

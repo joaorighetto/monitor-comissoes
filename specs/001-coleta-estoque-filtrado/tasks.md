@@ -209,3 +209,10 @@ US2 (apensados) → US3 (falhas) → US4 (configuração) → US5 (repetibilidad
 - Se algum teste só puder ser escrito contra dados que a captura (T005) não trouxe, parar e voltar a T004/T005 em vez de inventar dados.
 - Nenhuma dependência nova: tudo com biblioteca padrão (constituição, princípio I).
 - Fora do escopo desta lista (limite da COL): relatoria, comparação com ontem, agendamento, `status.json`, Telegram, página, variação de 20%.
+
+---
+
+## Phase 9: Convergence
+
+- [X] T046 Acrescentar a `tests/test_falhas.py` um teste de ponta a ponta com o `TransporteHttp` real e `abrir` falso (mover `RespostaFalsa` de `tests/test_transporte.py` para `tests/conftest.py`): um arquivo anunciado com `Content-Length` maior que o corpo termina com `FALHA [arquivo_incompleto]`, código 1 e `atual.json` anterior idêntico byte a byte; o mesmo `abrir` sem o corte termina com código 0 per FR-017 e US3 (partial)
+- [X] T047 Registrar em `spec.md` (FR-005 e FR-020) e em `data-model.md` os comportamentos hoje só em código e em `research.md`: falha se `X-Total-Count` faltar, se a lista de deputados vier vazia ou se o link de paginação sair da API da Câmara, e recusa de sigla de comissão com espaço no começo ou no fim per FR-005 e FR-020 (unrequested)

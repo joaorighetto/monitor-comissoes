@@ -1,10 +1,10 @@
-import io
 import urllib.error
 from datetime import UTC, datetime
 from http.client import HTTPMessage
 
 import pytest
 
+from conftest import RespostaFalsa
 from monitor_comissoes.erros import (
     ARQUIVO_INCOMPLETO,
     FONTE_INDISPONIVEL,
@@ -15,23 +15,6 @@ from monitor_comissoes.transporte import TransporteHttp
 
 URL = "https://exemplo.invalido/arquivos/x.csv"
 LAST_MODIFIED = "Sat, 17 Oct 2026 04:33:58 GMT"
-
-
-class RespostaFalsa:
-    def __init__(self, corpo: bytes, cabecalhos: dict[str, str]):
-        self._corpo = io.BytesIO(corpo)
-        self.headers = HTTPMessage()
-        for nome, valor in cabecalhos.items():
-            self.headers[nome] = valor
-
-    def read(self, n=-1):
-        return self._corpo.read(n)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        return False
 
 
 def resposta_ok(corpo=b"abc", **extras):

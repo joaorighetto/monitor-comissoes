@@ -2,6 +2,7 @@
 
 import csv
 import io
+import json
 import os
 import tempfile
 from datetime import timedelta
@@ -9,9 +10,11 @@ from pathlib import Path
 
 import pytest
 
+from conftest import FIXTURES, RespostaFalsa
 from monitor_comissoes import coleta
 from monitor_comissoes.cli import main
 from monitor_comissoes.erros import FONTE_INDISPONIVEL, FalhaDeColeta
+from monitor_comissoes.transporte import TransporteHttp
 
 CONFIG_REPO = Path(__file__).parent.parent / "config.toml"
 SENTINELA = '{"sentinela": true}\n'
@@ -221,3 +224,46 @@ def test_ordem_de_verificacao_deputados_antes_do_lote_e_frescor_antes_do_calculo
     # Os pedidos da API vêm antes de qualquer arquivo em lote.
     assert transporte.pedidos[0].endswith("siglaPartido=NOVO&itens=100")
     assert all(url.endswith(".csv") for url in transporte.pedidos[1:])
+
+
+# --- ponta a ponta com o TransporteHttp real (apenas `abrir` é falso) ----------------------
+
+
+def abrir_da_camara(arquivo_cortado=None):
+    """Serve as fixtures por HTTP falso; `arquivo_cortado` é anunciado maior do que o corpo."""
+    manifesto = json.loads((FIXTURES / "manifesto.json").read_text(encoding="utf-8"))["arquivos"]
+
+    def abrir(requisicao, timeout=None):
+        url = requisicao.full_url
+        if "/deputados" in url:
+            corpo = (FIXTURES / "deputados-novo.json").read_bytes()
+            return RespostaFalsa(corpo, {"X-Total-Count": "5"})
+        nome = url.rsplit("/", 1)[1]
+        corpo = (FIXTURES / nome).read_bytes()
+        anunciado = len(corpo) + 500 if nome == arquivo_cortado else len(corpo)
+        cabecalhos = {
+            "Content-Length": str(anunciado),
+            "Last-Modified": manifesto[nome]["last_modified"],
+        }
+        return RespostaFalsa(corpo, cabecalhos)
+
+    return abrir
+
+
+def test_download_cortado_pelo_transporte_real_falha_e_preserva_o_arquivo(tmp_path, agora, capsys):
+    transporte = TransporteHttp(
+        abrir=abrir_da_camara("proposicoes-2020.csv"), dormir=lambda s: None
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "arquivo_incompleto", "proposicoes-2020.csv")
+
+
+def test_mesmo_transporte_sem_o_corte_gera_o_arquivo(tmp_path, agora, capsys):
+    transporte = TransporteHttp(abrir=abrir_da_camara(), dormir=lambda s: None)
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    assert codigo == 0
+    assert json.loads(saida.read_text(encoding="utf-8"))["meta"]["total_itens"] > 0

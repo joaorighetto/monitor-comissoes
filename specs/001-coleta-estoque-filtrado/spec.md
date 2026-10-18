@@ -131,7 +131,7 @@ Rodar o comando duas vezes sobre os mesmos dados de origem produz a mesma lista,
 - **FR-002**: O sistema DEVE validar cada arquivo obtido: resposta bem-sucedida, presença e tipo das colunas que a coleta usa, conteúdo não vazio e arquivo completo. O arquivo é considerado incompleto quando o tamanho recebido é menor que o informado pelo servidor ou quando a última linha tem colunas faltando. A feature NÃO exige número mínimo de linhas por ano.
 - **FR-003**: O sistema DEVE tentar de novo, um número limitado de vezes, as falhas temporárias de rede antes de declarar a fonte indisponível.
 - **FR-004**: O sistema DEVE verificar a data de modificação dos arquivos e falhar com "a Câmara não atualizou os arquivos" quando ela tiver mais de 36 horas.
-- **FR-005**: O sistema DEVE obter a lista de deputados do NOVO em exercício no dia, pela API da Câmara. Falha nessa obtenção DEVE falhar a execução inteira, sem resultado parcial.
+- **FR-005**: O sistema DEVE obter a lista de deputados do NOVO em exercício no dia, pela API da Câmara. Falha nessa obtenção DEVE falhar a execução inteira, sem resultado parcial. Também é falha da execução inteira: resposta sem o total anunciado (`X-Total-Count`), total entregue diferente do anunciado, lista vazia e link de paginação fora da API da Câmara.
 
 **Regras de inclusão (PRODUCT.md §5.1 a §5.5)**
 
@@ -158,7 +158,7 @@ Rodar o comando duas vezes sobre os mesmos dados de origem produz a mesma lista,
 
 **Configuração e testes**
 
-- **FR-020**: A lista de comissões e o ano mínimo DEVEM ser lidos de um arquivo de configuração. Mudar esses valores NÃO DEVE exigir mudança de código. Valores inválidos DEVEM falhar a execução antes de qualquer download.
+- **FR-020**: A lista de comissões e o ano mínimo DEVEM ser lidos de um arquivo de configuração. Mudar esses valores NÃO DEVE exigir mudança de código. Valores inválidos DEVEM falhar a execução antes de qualquer download, inclusive sigla de comissão com espaço no começo ou no fim, que nunca casaria com a fonte.
 - **FR-021**: O comportamento DEVE ser coberto por testes que usam fixtures reais salvas e NÃO DEVEM depender de rede.
 - **FR-022**: Os testes DEVEM cobrir, no mínimo, os três casos de aceitação da User Story 1, a cadeia de apensação (dois níveis, principal não localizada, ciclo) e cada tipo de falha da User Story 3.
 

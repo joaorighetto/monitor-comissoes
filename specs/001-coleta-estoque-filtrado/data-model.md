@@ -6,7 +6,7 @@ Entidades da spec com seus campos, fontes e regras de validação. Nomes de camp
 
 | Campo | Tipo | Regra de validação |
 |---|---|---|
-| `comissoes` | lista de textos | Não vazia; cada sigla é texto não vazio, sem repetição |
+| `comissoes` | lista de textos | Não vazia; cada sigla é texto não vazio, sem repetição e sem espaço no começo ou no fim |
 | `ano_minimo` | inteiro | Entre 1990 e o ano corrente |
 
 Valor inválido → falha de configuração antes de qualquer acesso à rede (FR-020).
@@ -41,6 +41,8 @@ Valor inválido → falha de configuração antes de qualquer acesso à rede (FR
 |---|---|---|
 | `id` | `dados[].id` | Base de `autor hoje no NOVO` |
 | `nome` | `dados[].nome` | Registrado no `meta` para auditoria |
+
+Validação da resposta (qualquer falha é `api_deputados`): o cabeçalho `X-Total-Count` deve existir; o total de deputados lidos deve ser igual a ele; a lista não pode ser vazia; cada link de paginação deve começar com o endereço da API da Câmara (`https://dadosabertos.camara.leg.br/api/`).
 
 ## Referência
 
