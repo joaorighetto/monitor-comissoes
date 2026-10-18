@@ -1,0 +1,3 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2646721";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646721";"74862";"https://dadosabertos.camara.leg.br/api/v2/deputados/74862";"10000";"Deputado(a)";"Miro Teixeira";"PROS";"https://dadosabertos.camara.leg.br/api/v2/partidos/36763";"RJ";"1";"1"
+"2646708";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646708";"160976";"https://dadosabertos.camara.leg.br/api/v2/deputados/160976";"10000";"Deputado(a)";"Tiririca";"PSD";"https://dadosabertos.camara.leg.br/api/v2/partidos/36834";"SP";"1";"1"

@@ -1,0 +1,3 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2646714";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646714";"74693";"https://dadosabertos.camara.leg.br/api/v2/deputados/74693";"10000";"Deputado(a)";"Rodrigo Maia";"DEM";"https://dadosabertos.camara.leg.br/api/v2/partidos/36769";"RJ";"1";"1"
+"2646700";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646700";"160613";"https://dadosabertos.camara.leg.br/api/v2/deputados/160613";"10000";"Deputado(a)";"Sibá Machado";"PT";"https://dadosabertos.camara.leg.br/api/v2/partidos/36844";"AC";"1";"1"

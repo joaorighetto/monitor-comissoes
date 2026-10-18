@@ -1,0 +1,3 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2646782";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646782";"73579";"https://dadosabertos.camara.leg.br/api/v2/deputados/73579";"10000";"Deputado(a)";"Alberto Fraga";"PL";"https://dadosabertos.camara.leg.br/api/v2/partidos/37906";"DF";"1";"1"
+"2646781";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646781";"141408";"https://dadosabertos.camara.leg.br/api/v2/deputados/141408";"10000";"Deputado(a)";"Cleber Verde";"MDB";"https://dadosabertos.camara.leg.br/api/v2/partidos/36899";"MA";"1";"1"

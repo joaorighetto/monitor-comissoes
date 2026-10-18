@@ -1,0 +1,5 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2345364";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2345364";"74366";"https://dadosabertos.camara.leg.br/api/v2/deputados/74366";"10000";"Deputado(a)";"João Campos";"REPUBLIC";"";"GO";"1";"1"
+"2345363";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2345363";"74366";"https://dadosabertos.camara.leg.br/api/v2/deputados/74366";"10000";"Deputado(a)";"João Campos";"REPUBLIC";"";"GO";"1";"1"
+"523527";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/523527";"";"https://dadosabertos.camara.leg.br/api/v2/orgaos/78";"40000";"Órgão do Poder Legislativo";"Senado Federal - Expedito Júnior";"PR";"";"RO";"1";"1"
+"497966";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/497966";"160597";"https://dadosabertos.camara.leg.br/api/v2/deputados/160597";"10000";"Deputado(a)";"Romário";"PSB";"https://dadosabertos.camara.leg.br/api/v2/partidos/36832";"RJ";"1";"1"

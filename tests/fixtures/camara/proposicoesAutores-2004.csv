@@ -1,0 +1,3 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2646727";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646727";"74166";"https://dadosabertos.camara.leg.br/api/v2/deputados/74166";"10000";"Deputado(a)";"Renato Casagrande";"PSB";"https://dadosabertos.camara.leg.br/api/v2/partidos/36832";"ES";"1";"1"
+"2646726";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646726";"73471";"https://dadosabertos.camara.leg.br/api/v2/deputados/73471";"10000";"Deputado(a)";"Fernando Coruja";"PPS";"https://dadosabertos.camara.leg.br/api/v2/partidos/36813";"SC";"1";"1"

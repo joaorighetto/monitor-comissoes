@@ -1,0 +1,5 @@
+﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
+"2647394";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2647394";"74171";"https://dadosabertos.camara.leg.br/api/v2/deputados/74171";"10000";"Deputado(a)";"Chico Alencar";"PSOL";"https://dadosabertos.camara.leg.br/api/v2/partidos/36839";"RJ";"1";"1"
+"2646792";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646792";"73441";"https://dadosabertos.camara.leg.br/api/v2/deputados/73441";"10000";"Deputado(a)";"Celso Russomanno";"REPUBLIC";"";"SP";"1";"1"
+"1734799";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/1734799";"";"https://dadosabertos.camara.leg.br/api/v2/orgaos/78";"40000";"Órgão do Poder Legislativo";"Senado Federal - Eduardo Amorim";"PSC";"";"SE";"1";"1"
+"1579135";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/1579135";"141536";"https://dadosabertos.camara.leg.br/api/v2/deputados/141536";"10000";"Deputado(a)";"Rômulo Gouveia";"PSD";"https://dadosabertos.camara.leg.br/api/v2/partidos/36834";"PB";"1";"1"
