@@ -13,13 +13,53 @@ from pathlib import Path
 
 from .coleta import coletar
 from .config import carregar_config
+from .erros import INTERNA, FalhaDeColeta
 from .estoque import BRASILIA
-from .status import gravar_par, ler_status, mensagem_commit, montar_status
+from .status import (
+    base_de_comparacao,
+    gravar_par,
+    gravar_status,
+    ler_status,
+    mensagem_commit,
+    montar_status,
+    retrato_do_atual,
+)
 from .transporte import Transporte, TransporteHttp
 
 
 def _agora() -> datetime:
     return datetime.now(BRASILIA)
+
+
+def _registrar_falha(
+    categoria: str,
+    motivo: str,
+    atual: Path,
+    status: Path,
+    tentativas: int,
+    relogio: Callable[[], datetime],
+) -> int:
+    """Anuncia a falha e grava só o `status.json`: o `atual.json` nunca é tocado aqui."""
+    print(f"FALHA [{categoria}]: {motivo}", file=sys.stderr)
+    try:
+        retrato = retrato_do_atual(atual)
+        if retrato is not None:
+            retrato = {**retrato, "estoque_bruto": base_de_comparacao(atual, status)}
+        documento = montar_status(
+            resultado="falha",
+            verificado_em=relogio(),
+            tentativas=tentativas,
+            falha={"categoria": categoria, "motivo": motivo},
+            variacao_aceita=None,
+            retrato=retrato,
+        )
+        gravar_status(documento, status)
+    except Exception as erro:
+        print(
+            f"FALHA [{INTERNA}]: não foi possível gravar {status} ({type(erro).__name__}: {erro})",
+            file=sys.stderr,
+        )
+    return 1
 
 
 def executar_diaria(
@@ -31,30 +71,39 @@ def executar_diaria(
     relogio: Callable[[], datetime],
     dormir: Callable[[float], None],
 ) -> int:
-    """Uma execução diária. Devolve o código de saída: 0 em sucesso."""
-    agora = relogio()
-    config = carregar_config(caminho_config, agora.astimezone(BRASILIA).year)
-    coletado = coletar(config, transporte, agora)
-    retrato = {
-        "gerado_em": coletado.documento["meta"]["gerado_em"],
-        "dados_camara_em": coletado.documento["meta"]["dados_camara_em"],
-        "total_itens": coletado.documento["meta"]["total_itens"],
-        "estoque_bruto": coletado.estoque_bruto,
-    }
-    documento_status = montar_status(
-        resultado="ok",
-        verificado_em=relogio(),
-        tentativas=1,
-        falha=None,
-        variacao_aceita=None,
-        retrato=retrato,
-    )
-    gravar_par(coletado.documento, atual, documento_status, status)
-    meta = coletado.documento["meta"]
+    """Uma execução diária. Devolve o código de saída: 0 em sucesso, 1 em qualquer falha."""
+    tentativas = 0
+    try:
+        agora = relogio()
+        config = carregar_config(caminho_config, agora.astimezone(BRASILIA).year)
+        tentativas = 1
+        coletado = coletar(config, transporte, agora)
+        meta = coletado.documento["meta"]
+        retrato = {
+            "gerado_em": meta["gerado_em"],
+            "dados_camara_em": meta["dados_camara_em"],
+            "total_itens": meta["total_itens"],
+            "estoque_bruto": coletado.estoque_bruto,
+        }
+        documento_status = montar_status(
+            resultado="ok",
+            verificado_em=relogio(),
+            tentativas=tentativas,
+            falha=None,
+            variacao_aceita=None,
+            retrato=retrato,
+        )
+        gravar_par(coletado.documento, atual, documento_status, status)
+    except FalhaDeColeta as falha:
+        return _registrar_falha(falha.categoria, falha.motivo, atual, status, tentativas, relogio)
+    except Exception as erro:  # nenhuma falha pode terminar sem aviso nem saída parcial
+        motivo = f"{type(erro).__name__}: {erro}"
+        return _registrar_falha(INTERNA, motivo, atual, status, tentativas, relogio)
+
     dia = coletado.dados_camara_em.astimezone(BRASILIA).strftime("%d/%m/%Y")
     print(
         f"OK: {meta['total_itens']} itens · estoque bruto {coletado.estoque_bruto}"
-        f" · tentativas 1 · dados da Câmara de {dia}"
+        f" · tentativas {tentativas} · dados da Câmara de {dia}"
     )
     return 0
 

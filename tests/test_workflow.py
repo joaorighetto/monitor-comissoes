@@ -85,3 +85,55 @@ def test_instala_pelo_lock_e_chama_o_modulo_da_execucao_diaria():
 
 def test_nao_usa_segredos():
     assert "secrets." not in texto()
+
+
+# --- US2 ------------------------------------------------------------------------------------------
+
+
+def passo_de_coleta() -> str:
+    conteudo = texto()
+    inicio = conteudo.index("python -m monitor_comissoes.diaria executar")
+    return conteudo[inicio:]
+
+
+def test_o_passo_guarda_o_codigo_de_saida_e_continua_para_registrar_a_falha():
+    passo = passo_de_coleta()
+
+    assert "set +e" in texto()
+    assert "codigo=$?" in passo
+    assert "set -e" in passo
+
+
+def linhas_do_passo() -> list[str]:
+    return [linha.strip() for linha in passo_de_coleta().splitlines() if linha.strip()]
+
+
+def test_em_falha_restaura_o_atual_antes_de_commitar():
+    linhas = linhas_do_passo()
+
+    se = linhas.index('if [ "$codigo" -ne 0 ]; then')
+    assert linhas[se + 1] == "git checkout -- data/atual.json || true"
+    assert linhas[se + 2] == "fi"
+
+
+def test_status_e_sempre_adicionado_e_o_atual_so_no_ramo_de_sucesso():
+    linhas = linhas_do_passo()
+
+    assert [linha for linha in linhas if linha.startswith("git add")] == [
+        "git add data/status.json",
+        "git add data/atual.json",
+    ]
+    se = linhas.index('if [ "$codigo" -eq 0 ]; then')
+    assert linhas[se + 1] == "git add data/atual.json"
+    assert linhas[se + 2] == "fi"
+    assert linhas.index("git add data/status.json") < se
+
+
+def test_o_passo_termina_com_o_codigo_da_coleta_depois_de_commit_e_push():
+    linhas = linhas_do_passo()
+
+    def comando(prefixo):
+        return next(i for i, linha in enumerate(linhas) if linha.startswith(prefixo))
+
+    assert comando("git commit") < comando("git pull --rebase") < comando("git push")
+    assert comando("git push") < comando('exit "$codigo"')

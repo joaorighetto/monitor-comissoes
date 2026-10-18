@@ -30,8 +30,20 @@ jobs:
       - name: Coleta e commit
         shell: bash
         run: |
+          # Falha da coleta não pode impedir o registro do status: guarda o código, commita
+          # e só no fim devolve o código (workflow vermelho).
+          set +e
           uv run python -m monitor_comissoes.diaria executar
-          git add data/atual.json data/status.json
+          codigo=$?
+          set -e
+          if [ "$codigo" -ne 0 ]; then
+            git checkout -- data/atual.json || true
+          fi
+          git add data/status.json
+          if [ "$codigo" -eq 0 ]; then
+            git add data/atual.json
+          fi
           git commit -m "$(uv run python -m monitor_comissoes.diaria mensagem)"
           git pull --rebase
           git push origin HEAD:${GITHUB_REF_NAME}
+          exit "$codigo"
