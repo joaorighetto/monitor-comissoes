@@ -48,9 +48,10 @@ jobs:
           fi
           # O `timeout` chama o Python do .venv direto: o `uv run` não repassa o SIGTERM, e o
           # Python precisa recebê-lo para gravar o status de falha antes de sair (200 min, com
-          # folga sobre as 4 coletas e as 3 esperas de 30 min; o job tem teto de 240).
+          # folga sobre as 4 coletas e as 3 esperas de 30 min). Se o Python não sair em 10 min
+          # depois do TERM, o KILL; o job tem teto de 240.
           set +e
-          timeout --signal=TERM 200m .venv/bin/python -m monitor_comissoes.diaria executar \
+          timeout --kill-after=10m --signal=TERM 200m .venv/bin/python -m monitor_comissoes.diaria executar \
             "${argumentos[@]}"
           codigo=$?
           set -e

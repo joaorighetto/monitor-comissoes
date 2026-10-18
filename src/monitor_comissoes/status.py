@@ -213,8 +213,11 @@ def gravar_par(atual: dict, caminho_atual: Path, status: dict, caminho_status: P
         os.replace(temporarios[0], destinos[0])
         try:
             os.replace(temporarios[1], destinos[1])
-        except BaseException:
-            _restaurar(destinos[0], anterior)
+        except BaseException as erro:
+            try:
+                _restaurar(destinos[0], anterior)
+            except Exception as restauracao:  # a causa original continua sendo a que sobe
+                erro.add_note(f"restauração de {destinos[0]} também falhou: {restauracao!r}")
             raise
     finally:
         for temporario in temporarios:

@@ -83,6 +83,14 @@ def test_instala_pelo_lock_e_chama_o_modulo_da_execucao_diaria():
     assert "github-actions[bot]" in conteudo
 
 
+def test_a_coleta_roda_sob_timeout_no_python_do_venv():
+    conteudo = texto()
+
+    assert "timeout --kill-after=10m --signal=TERM 200m .venv/bin/python -m" in conteudo
+    # 200 + 10 de kill-after tem de caber no teto do job (240), com folga para o commit
+    assert "timeout-minutes: 240" in conteudo
+
+
 def test_nao_usa_segredos():
     assert "secrets." not in texto()
 

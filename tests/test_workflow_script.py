@@ -192,6 +192,35 @@ def test_python_que_morre_no_primeiro_dia_nao_commita_nada(primeiro_dia):
     assert primeiro_dia.commits_no_remoto() == antes
 
 
+def test_push_recusado_uma_vez_e_tentado_de_novo(com_dados):
+    gancho = com_dados.remoto / "hooks" / "pre-receive"
+    marca = com_dados.raiz / "ja-recusou"
+    gancho.write_text(
+        "#!/bin/bash\n"
+        f'if [ ! -e "{marca}" ]; then touch "{marca}"; echo recusado >&2; exit 1; fi\n',
+        encoding="utf-8",
+    )
+    gancho.chmod(0o755)
+
+    resultado = com_dados.rodar("ok")
+
+    assert resultado.returncode == 0, resultado.stderr
+    assert marca.exists()  # o primeiro push foi mesmo recusado
+    assert com_dados.no_remoto("data/atual.json") == '{"atual": "novo"}\n'
+
+
+def test_push_recusado_duas_vezes_deixa_o_workflow_vermelho(com_dados):
+    gancho = com_dados.remoto / "hooks" / "pre-receive"
+    gancho.write_text("#!/bin/bash\necho recusado >&2\nexit 1\n", encoding="utf-8")
+    gancho.chmod(0o755)
+    antes = com_dados.commits_no_remoto()
+
+    resultado = com_dados.rodar("ok")
+
+    assert resultado.returncode != 0
+    assert com_dados.commits_no_remoto() == antes
+
+
 def test_remoto_adiantado_nao_impede_o_commit_do_bot(com_dados, tmp_path):
     outro = tmp_path / "outro"
     outro.mkdir()

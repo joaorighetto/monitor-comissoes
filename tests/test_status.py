@@ -380,3 +380,19 @@ def test_gravar_par_remove_o_primeiro_se_ele_nao_existia_e_a_troca_do_segundo_fa
     assert not atual.exists()
     assert not status.exists()
     assert list(atual.parent.iterdir()) == []
+
+
+def test_gravar_par_com_dupla_falha_propaga_a_causa_original_com_nota(tmp_path, monkeypatch):
+    atual, status = tmp_path / "atual.json", tmp_path / "status.json"
+    atual.write_text('{"anterior": 1}\n', encoding="utf-8")
+    falhar_troca_do(monkeypatch, status)
+
+    def restauracao_quebrada(destino, anterior):
+        raise OSError("restauração quebrada")
+
+    monkeypatch.setattr("monitor_comissoes.status._restaurar", restauracao_quebrada)
+
+    with pytest.raises(OSError, match="falha simulada") as erro:
+        gravar_par({"novo": 1}, atual, sucesso(), status)
+
+    assert any("restauração" in nota for nota in erro.value.__notes__)
