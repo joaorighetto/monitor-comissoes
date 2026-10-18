@@ -7,7 +7,7 @@ comissoes = ["CE", "CREDN"]
 # Primeiro ano dos arquivos em lote lidos. 2003 porque, ao fim da 56ª legislatura, a
 # Resolução 33/2022 (art. 3º) arquivou o que tramitava havia 5 legislaturas completas;
 # na sondagem de 17/10/2026 não havia PL anterior a 2003 na CE nem na CREDN.
-ano_minimo = 2003
+ano_minimo = 2999
 
 # Execução diária agendada (feature AGE). Tabela opcional: sem ela valem estes mesmos valores.
 [execucao]
