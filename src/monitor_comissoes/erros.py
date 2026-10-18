@@ -7,6 +7,8 @@ ARQUIVOS_DESATUALIZADOS = "arquivos_desatualizados"
 ARQUIVO_INCOMPLETO = "arquivo_incompleto"
 API_DEPUTADOS = "api_deputados"
 ESTOQUE_VAZIO = "estoque_vazio"
+ESTOQUE_IMPLAUSIVEL = "estoque_implausivel"
+INTERNA = "interna"
 
 CATEGORIAS = (
     CONFIGURACAO,
@@ -16,6 +18,17 @@ CATEGORIAS = (
     ARQUIVO_INCOMPLETO,
     API_DEPUTADOS,
     ESTOQUE_VAZIO,
+    ESTOQUE_IMPLAUSIVEL,
+    INTERNA,
+)
+
+# Falhas que podem ser passageiras: a execução diária espera e tenta de novo (AGE, FR-019).
+# As demais (configuração, formato, estoque vazio ou implausível, interna) repetir não resolve.
+REPETIVEIS = (
+    FONTE_INDISPONIVEL,
+    ARQUIVOS_DESATUALIZADOS,
+    ARQUIVO_INCOMPLETO,
+    API_DEPUTADOS,
 )
 
 

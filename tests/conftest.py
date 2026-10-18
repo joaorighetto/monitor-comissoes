@@ -43,6 +43,14 @@ def sem_rede(monkeypatch):
     monkeypatch.setattr(socket, "getaddrinfo", resolver_local)
 
 
+@pytest.fixture(autouse=True)
+def sem_ambiente_do_actions(monkeypatch):
+    """O CI define GITHUB_ACTIONS=true, o que faria o `_aviso` imprimir anotações do Actions e
+    mudaria a saída que os testes conferem. Os testes da anotação definem a variável por conta
+    própria."""
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+
+
 @pytest.fixture
 def agora():
     return datetime(2026, 10, 18, 9, 0, tzinfo=BRASILIA)

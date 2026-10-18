@@ -8,11 +8,22 @@ from .erros import CONFIGURACAO, FalhaDeColeta
 
 PRIMEIRO_ANO_POSSIVEL = 1990
 
+# Campos de [execucao] (AGE): nome, padrão, mínimo e máximo (data-model.md da AGE).
+EXECUCAO = (
+    ("tentativas", 4, 1, 10),
+    ("espera_minutos", 30, 0, 120),
+    ("limite_variacao_percentual", 20, 1, 100),
+)
+PADROES = {nome: padrao for nome, padrao, _, _ in EXECUCAO}
+
 
 @dataclass(frozen=True)
 class Config:
     comissoes: tuple[str, ...]
     ano_minimo: int
+    tentativas: int = PADROES["tentativas"]
+    espera_minutos: int = PADROES["espera_minutos"]
+    limite_variacao_percentual: int = PADROES["limite_variacao_percentual"]
 
 
 def _falha(motivo: str) -> FalhaDeColeta:
@@ -46,4 +57,29 @@ def carregar_config(caminho: Path, ano_corrente: int) -> Config:
             f" (recebido: {ano_minimo})"
         )
 
-    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo)
+    execucao = _ler_execucao(dados.get("execucao"))
+
+    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo, **execucao)
+
+
+def _ler_execucao(tabela) -> dict[str, int]:
+    """Lê a tabela opcional [execucao]; sem ela, valem os padrões."""
+    if tabela is None:
+        return dict(PADROES)
+    if not isinstance(tabela, dict):
+        raise _falha("execucao deve ser uma tabela [execucao]")
+    conhecidos = {nome for nome, _, _, _ in EXECUCAO}
+    for chave in tabela:
+        if chave not in conhecidos:
+            raise _falha(f"execucao.{chave} não é um campo conhecido de [execucao]")
+    valores = {}
+    for nome, padrao, minimo, maximo in EXECUCAO:
+        valor = tabela.get(nome, padrao)
+        if isinstance(valor, bool) or not isinstance(valor, int):
+            raise _falha(f"execucao.{nome} deve ser um número inteiro")
+        if not minimo <= valor <= maximo:
+            raise _falha(
+                f"execucao.{nome} deve estar entre {minimo} e {maximo} (recebido: {valor})"
+            )
+        valores[nome] = valor
+    return valores

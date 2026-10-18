@@ -1,0 +1,72 @@
+name: Coleta diária
+
+on:
+  schedule:
+    # 06:37 UTC = 03:37 de Brasília: depois da regeneração do lote da Câmara (por volta de
+    # 02h21) e fora do topo da hora, quando o agendador do GitHub mais atrasa.
+    - cron: "37 6 * * *"
+  workflow_dispatch:
+    inputs:
+      aceitar_variacao:
+        description: "Aceito esta variação do estoque bruto (só para esta execução)"
+        type: boolean
+        default: false
+
+# Uma coleta por vez: o lote tem ~1 GB e duas execuções simultâneas só disputariam o commit.
+# Sem cancelar a que já roda; uma execução pendente mais velha, que nunca começou, é substituída.
+concurrency:
+  group: coleta-diaria
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      # O setup-uv não publica tag móvel de versão maior (v10 não existe): fixa-se a versão completa.
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - run: uv sync --locked
+      - name: Identidade do bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Coleta e commit
+        shell: bash
+        env:
+          # Só o disparo manual pode aceitar uma variação; no agendamento isto vale "false".
+          # A entrada passa por variável de ambiente, nunca interpolada no script.
+          ACEITAR_VARIACAO: ${{ github.event_name == 'workflow_dispatch' && inputs.aceitar_variacao }}
+        run: |
+          # Falha da coleta não pode impedir o registro do status: guarda o código, commita
+          # e só no fim devolve o código (workflow vermelho).
+          argumentos=()
+          if [ "$ACEITAR_VARIACAO" = "true" ]; then
+            argumentos+=(--aceitar-variacao)
+          fi
+          # O `timeout` chama o Python do .venv direto: o `uv run` não repassa o SIGTERM, e o
+          # Python precisa recebê-lo para gravar o status de falha antes de sair (200 min, com
+          # folga sobre as 4 coletas e as 3 esperas de 30 min). Se o Python não sair em 10 min
+          # depois do TERM, o KILL; o job tem teto de 240.
+          set +e
+          timeout --kill-after=10m --signal=TERM 200m .venv/bin/python -m monitor_comissoes.diaria executar \
+            "${argumentos[@]}"
+          codigo=$?
+          set -e
+          if [ "$codigo" -ne 0 ]; then
+            git checkout -- data/atual.json || true
+          fi
+          git add data/status.json
+          if [ "$codigo" -eq 0 ]; then
+            git add data/atual.json
+          fi
+          git commit -m "$(.venv/bin/python -m monitor_comissoes.diaria mensagem)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          # Se alguém empurrou entre o pull e o push, uma nova tentativa custa quase nada.
+          git push origin "HEAD:${GITHUB_REF_NAME}" || {
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          }
+          exit "$codigo"

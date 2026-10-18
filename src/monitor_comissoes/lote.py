@@ -168,6 +168,18 @@ def ler_ids_com_autor_novo(caminho: Path, partido: str, ids_deputados: set[int])
     return achados
 
 
+def contar_estoque_bruto(caminho: Path, tipos: tuple[str, ...], comissoes: tuple[str, ...]) -> int:
+    """Quantas proposições de `tipos` têm o órgão do próprio último status em `comissoes`.
+
+    É o estoque bruto da AGE (PRODUCT.md §7, "estoque implausível"): conta o status de cada
+    proposição, sem resolver apensação e sem etiquetas, para servir de termômetro do lote.
+    """
+    colunas = ("siglaTipo", "ultimoStatus_siglaOrgao")
+    return sum(
+        1 for tipo, orgao in _linhas(caminho, colunas) if tipo in tipos and orgao in comissoes
+    )
+
+
 def ler_proposicoes(caminho: Path, ids: set[int] | None = None) -> Iterator[Proposicao]:
     """Proposições do arquivo; com `ids`, só essas (e só elas têm as datas interpretadas)."""
     arquivo = caminho.name

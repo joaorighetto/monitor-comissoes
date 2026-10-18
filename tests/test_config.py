@@ -70,3 +70,97 @@ def test_toml_malformado(tmp_path):
 def test_limites_do_ano_minimo(tmp_path):
     assert carregar_config(escrever(tmp_path, 'comissoes = ["CE"]\nano_minimo = 1990\n'), 2026)
     assert carregar_config(escrever(tmp_path, 'comissoes = ["CE"]\nano_minimo = 2026\n'), 2026)
+
+
+# --- Tabela [execucao] (AGE) ---------------------------------------------------------------
+
+BASE = 'comissoes = ["CE"]\nano_minimo = 2003\n'
+
+
+def test_sem_a_tabela_execucao_valem_os_padroes(tmp_path):
+    config = carregar_config(escrever(tmp_path, BASE), 2026)
+
+    assert (config.tentativas, config.espera_minutos, config.limite_variacao_percentual) == (
+        4,
+        30,
+        20,
+    )
+
+
+def test_tabela_execucao_completa_e_lida(tmp_path):
+    texto = BASE + (
+        "[execucao]\ntentativas = 2\nespera_minutos = 5\nlimite_variacao_percentual = 50\n"
+    )
+
+    config = carregar_config(escrever(tmp_path, texto), 2026)
+
+    assert (config.tentativas, config.espera_minutos, config.limite_variacao_percentual) == (
+        2,
+        5,
+        50,
+    )
+
+
+@pytest.mark.parametrize(
+    ("campo", "valores_validos", "valores_invalidos"),
+    [
+        ("tentativas", (1, 10), (0, 11)),  # Entre 1 e 10
+        ("espera_minutos", (0, 120), (-1, 121)),  # Entre 0 e 120
+        ("limite_variacao_percentual", (1, 100), (0, 101)),  # Entre 1 e 100
+    ],
+)
+def test_limites_dos_campos_de_execucao(tmp_path, campo, valores_validos, valores_invalidos):
+    for valor in valores_validos:
+        texto = BASE + f"[execucao]\n{campo} = {valor}\n"
+        assert carregar_config(escrever(tmp_path, texto), 2026)
+    for valor in valores_invalidos:
+        texto = BASE + f"[execucao]\n{campo} = {valor}\n"
+        with pytest.raises(FalhaDeColeta) as erro:
+            carregar_config(escrever(tmp_path, texto), 2026)
+        assert erro.value.categoria == CONFIGURACAO
+        assert f"execucao.{campo}" in erro.value.motivo
+
+
+@pytest.mark.parametrize("valor", ['"4"', "4.5", "true"])
+@pytest.mark.parametrize("campo", ["tentativas", "espera_minutos", "limite_variacao_percentual"])
+def test_campo_de_execucao_que_nao_e_inteiro_falha(tmp_path, campo, valor):
+    texto = BASE + f"[execucao]\n{campo} = {valor}\n"
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, texto), 2026)
+
+    assert erro.value.categoria == CONFIGURACAO
+    assert f"execucao.{campo}" in erro.value.motivo
+
+
+def test_chave_desconhecida_em_execucao_falha(tmp_path):
+    texto = BASE + "[execucao]\ntentativa = 3\n"
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, texto), 2026)
+
+    assert erro.value.categoria == CONFIGURACAO
+    assert "tentativa" in erro.value.motivo
+
+
+def test_execucao_que_nao_e_tabela_falha(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, 'execucao = "x"\n' + BASE), 2026)
+
+    assert erro.value.categoria == CONFIGURACAO
+    assert "execucao" in erro.value.motivo
+
+
+def test_os_valores_de_execucao_do_config_toml_sao_os_padroes():
+    from pathlib import Path
+
+    from monitor_comissoes.config import PADROES
+
+    raiz = Path(__file__).parent.parent
+    config = carregar_config(raiz / "config.toml", 2026)
+
+    assert {
+        "tentativas": config.tentativas,
+        "espera_minutos": config.espera_minutos,
+        "limite_variacao_percentual": config.limite_variacao_percentual,
+    } == PADROES
