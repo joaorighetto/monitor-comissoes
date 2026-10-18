@@ -1,9 +1,9 @@
 """Plausibilidade do estoque bruto (AGE, FR-014 a FR-018b), em aritmética de inteiros."""
 
 import pytest
-from monitor_comissoes.plausibilidade import verificar
 
 from monitor_comissoes.erros import ESTOQUE_IMPLAUSIVEL, ESTOQUE_VAZIO, FalhaDeColeta
+from monitor_comissoes.plausibilidade import verificar
 
 
 def falha_de(estoque, base, limite=20, aceitar=False):
