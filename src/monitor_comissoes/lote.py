@@ -128,6 +128,22 @@ def ler_apensacao(caminho: Path) -> Iterator[tuple[int, int]]:
             yield _inteiro(pid, "id", arquivo), _id_da_uri(uri, "uriPropPrincipal", arquivo)
 
 
+def ler_ids_com_autor_novo(caminho: Path, partido: str, ids_deputados: set[int]) -> set[int]:
+    """Ids das proposições com autor do `partido` na data da autoria ou deputado em `ids_deputados`.
+
+    Percorre só as três colunas necessárias, sem montar um Autor por linha.
+    """
+    arquivo = caminho.name
+    achados = set()
+    colunas = ("idProposicao", "idDeputadoAutor", "siglaPartidoAutor")
+    for id_proposicao, id_deputado, sigla in _linhas(caminho, colunas):
+        if sigla == partido or (
+            id_deputado and _inteiro(id_deputado, "idDeputadoAutor", arquivo) in ids_deputados
+        ):
+            achados.add(_inteiro(id_proposicao, "idProposicao", arquivo))
+    return achados
+
+
 def ler_proposicoes(caminho: Path, ids: set[int] | None = None) -> Iterator[Proposicao]:
     """Proposições do arquivo; com `ids`, só essas (e só elas têm as datas interpretadas)."""
     arquivo = caminho.name

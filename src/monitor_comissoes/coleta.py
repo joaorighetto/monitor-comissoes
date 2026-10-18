@@ -1,0 +1,63 @@
+"""Orquestração da coleta: baixa o lote, filtra o estoque e grava data/atual.json."""
+
+import tempfile
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+
+from .config import Config
+from .deputados import obter_deputados_novo
+from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens
+from .lote import baixar_lote, ler_autores, ler_ids_com_autor_novo, ler_proposicoes
+from .saida import gravar_atomico, montar_documento
+from .transporte import Transporte
+
+URL_BASE = "https://dadosabertos.camara.leg.br"
+VERSAO_FORMATO = 1
+
+
+@dataclass(frozen=True)
+class Resultado:
+    total_itens: int
+    por_comissao: dict[str, int]
+    dados_camara_em: datetime  # UTC
+
+
+def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:
+    """Gera `saida` ou levanta FalhaDeColeta sem tocar no arquivo existente."""
+    ano_corrente = agora.astimezone(BRASILIA).year
+    deputados = obter_deputados_novo(transporte, URL_BASE)
+    ids_deputados = {d.id for d in deputados}
+
+    with tempfile.TemporaryDirectory(prefix="monitor-comissoes-") as pasta:
+        lote = baixar_lote(transporte, URL_BASE, config.ano_minimo, ano_corrente, Path(pasta))
+
+        # Quais proposições têm autor do NOVO (na data) ou autor deputado do NOVO hoje.
+        ligadas_ao_novo: set[int] = set()
+        for ano in lote.anos:
+            ligadas_ao_novo |= ler_ids_com_autor_novo(lote.autores(ano), PARTIDO, ids_deputados)
+
+        candidatas = {}
+        for ano in lote.anos:
+            for p in ler_proposicoes(lote.proposicoes(ano), ids=ligadas_ao_novo):
+                if p.tipo in TIPOS and p.orgao in config.comissoes:
+                    candidatas[p.id] = p
+
+        autores_por_id = defaultdict(list)
+        for ano in lote.anos:
+            for autor in ler_autores(lote.autores(ano), ids=set(candidatas)):
+                autores_por_id[autor.id_proposicao].append(autor)
+
+    itens = construir_itens(candidatas, autores_por_id, ids_deputados, config.comissoes, agora)
+    por_comissao = {c: sum(1 for i in itens if i["comissao"] == c) for c in config.comissoes}
+    meta = {
+        "versao_formato": VERSAO_FORMATO,
+        "gerado_em": agora.astimezone(BRASILIA).isoformat(timespec="seconds"),
+        "comissoes": list(config.comissoes),
+        "ano_minimo": config.ano_minimo,
+        "total_itens": len(itens),
+        "total_por_comissao": por_comissao,
+    }
+    gravar_atomico(montar_documento(itens, meta), saida)
+    return Resultado(len(itens), por_comissao, lote.last_modified_min)

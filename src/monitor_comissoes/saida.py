@@ -5,6 +5,10 @@ import os
 from pathlib import Path
 
 
+def montar_documento(itens: list[dict], meta: dict) -> dict:
+    return {"meta": meta, "itens": itens}
+
+
 def serializar(documento: dict) -> str:
     return json.dumps(documento, ensure_ascii=False, indent=2) + "\n"
 
