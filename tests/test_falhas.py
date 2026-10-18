@@ -104,8 +104,15 @@ def test_arquivos_desatualizados(tmp_path, transporte, agora, capsys):
     )
 
 
-def test_exatamente_36_horas_ainda_e_aceito(tmp_path, transporte, agora, capsys):
-    transporte.last_modified["proposicoes-2021.csv"] = agora - timedelta(hours=36)
+def test_exatamente_36_horas_ainda_e_aceito(tmp_path, transporte, capsys):
+    # O arquivo mais antigo passa a ter 1 hora a menos que o mais antigo do manifesto, e o
+    # relógio é fixado em exatamente 36 horas depois dele (a dispersão fica abaixo de 6 horas).
+    manifesto = json.loads((FIXTURES / "manifesto.json").read_text(encoding="utf-8"))["arquivos"]
+    mais_antigo = min(
+        parsedate_to_datetime(a["last_modified"]).astimezone(UTC) for a in manifesto.values()
+    )
+    transporte.last_modified["proposicoes-2021.csv"] = mais_antigo - timedelta(hours=1)
+    agora = mais_antigo - timedelta(hours=1) + timedelta(hours=36)
 
     codigo, saida = rodar(tmp_path, transporte, agora)
 

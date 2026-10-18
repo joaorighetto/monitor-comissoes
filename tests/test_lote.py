@@ -259,11 +259,12 @@ def lote_com(minimo, maximo, tmp_path):
 
 
 def test_last_modified_maximo_e_o_mais_recente(tmp_path, transporte):
-    transporte.last_modified["proposicoes-2023.csv"] = datetime(2026, 10, 17, 9, 0, tzinfo=UTC)
+    # Depois de todos os Last-Modified das fixtures (18/10/2026, entre 04:33 e 05:21 UTC).
+    transporte.last_modified["proposicoes-2023.csv"] = datetime(2026, 10, 18, 9, 0, tzinfo=UTC)
 
     lote = baixar_lote(transporte, URL_BASE, 2022, 2024, tmp_path)
 
-    assert lote.last_modified_max == datetime(2026, 10, 17, 9, 0, tzinfo=UTC)
+    assert lote.last_modified_max == datetime(2026, 10, 18, 9, 0, tzinfo=UTC)
     assert lote.last_modified_max >= lote.last_modified_min
 
 

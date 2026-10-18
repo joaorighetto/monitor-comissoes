@@ -8,16 +8,26 @@ from pathlib import Path
 
 import pytest
 
-from conftest import TransporteFalso
+from conftest import FIXTURES, TransporteFalso
 from monitor_comissoes import diaria, status
 from monitor_comissoes.coleta import coletar, executar
 from monitor_comissoes.config import Config
 from monitor_comissoes.diaria import main
 from monitor_comissoes.erros import FONTE_INDISPONIVEL, REPETIVEIS, FalhaDeColeta
 from monitor_comissoes.estoque import BRASILIA as FUSO
+from monitor_comissoes.lote import contar_estoque_bruto
 from monitor_comissoes.saida import serializar
 
 CONFIG_BASE = 'comissoes = ["CE", "CREDN"]\nano_minimo = 2003\n'
+
+# Estoque bruto das fixtures reais (capturadas em 18/10/2026): PL/PLP com o órgão do próprio
+# último status na CE ou na CREDN. Os números são fatos das fixtures, conferidos por
+# `test_estoque_bruto_das_fixtures`; recapturar as fixtures exige atualizá-los.
+BRUTO = 122
+ANOS_QUEDA_GRANDE = (2022, 2023, 2025)  # 18 + 11 + 14 = 43 → 79 (-35,25%)
+BRUTO_QUEDA_GRANDE = 79
+ANO_QUEDA_PEQUENA = 2015  # 11 → 111 (-9,02%)
+BRUTO_QUEDA_PEQUENA = 111
 
 
 class Relogio:
@@ -448,14 +458,31 @@ def trocar_orgao(corpo: bytes) -> bytes:
     return reescrever_csv(corpo, alterar)
 
 
-def queda_de_28_por_cento(transporte):
-    """Estoque bruto das fixtures: 7. Tirando as 2 de 2011, fica 5 (-28,6%), com os 2 itens."""
-    transporte.transformar["proposicoes-2011.csv"] = trocar_orgao
+def queda_grande(transporte):
+    """Tirando as de 2022, 2023 e 2025 da CE e da CREDN, o estoque cai de 122 para 79 (-35,25%)."""
+    for ano in ANOS_QUEDA_GRANDE:
+        transporte.transformar[f"proposicoes-{ano}.csv"] = trocar_orgao
 
 
-def queda_de_14_por_cento(transporte):
-    """Tirando a de 2003, o estoque fica 6 (-14,3%)."""
-    transporte.transformar["proposicoes-2003.csv"] = trocar_orgao
+def queda_pequena(transporte):
+    """Tirando as de 2015, o estoque cai de 122 para 111 (-9,02%), dentro do limite de 20%."""
+    transporte.transformar[f"proposicoes-{ANO_QUEDA_PEQUENA}.csv"] = trocar_orgao
+
+
+def test_estoque_bruto_das_fixtures():
+    """Conferência dos números acima contra a função de produção (aviso de recaptura)."""
+
+    def bruto(anos):
+        return sum(
+            contar_estoque_bruto(
+                FIXTURES / f"proposicoes-{ano}.csv", ("PL", "PLP"), ("CE", "CREDN")
+            )
+            for ano in anos
+        )
+
+    assert bruto(range(2003, 2027)) == BRUTO
+    assert BRUTO - bruto(ANOS_QUEDA_GRANDE) == BRUTO_QUEDA_GRANDE
+    assert BRUTO - bruto((ANO_QUEDA_PEQUENA,)) == BRUTO_QUEDA_PEQUENA
 
 
 def sem_autores_do_novo_em_2022(transporte):
@@ -473,28 +500,28 @@ def sem_autores_do_novo_em_2022(transporte):
 
 def test_queda_acima_de_20_por_cento_bloqueia_e_mantem_os_dados_bons(caminhos, dia1, capsys):
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
     capsys.readouterr()
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
 
     status_novo = conferir_falha_com_dados_bons_intactos(
-        caminhos, dia1, capsys, codigo, "estoque_implausivel", "7 → 5"
+        caminhos, dia1, capsys, codigo, "estoque_implausivel", f"{BRUTO} → {BRUTO_QUEDA_GRANDE}"
     )
-    assert "-28,57%" in status_novo["falha"]["motivo"]
-    assert dia1["status"]["ultimo_retrato_bom"]["estoque_bruto"] == 7
+    assert "-35,25%" in status_novo["falha"]["motivo"]
+    assert dia1["status"]["ultimo_retrato_bom"]["estoque_bruto"] == BRUTO
 
 
 def test_variacao_dentro_do_limite_grava_normalmente(caminhos, dia1):
     transporte = TransporteFalso()
-    queda_de_14_por_cento(transporte)
+    queda_pequena(transporte)
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
 
     assert codigo == 0
     status_novo = ler(caminhos["status"])
     assert status_novo["resultado"] == "ok"
-    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == 6
+    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == BRUTO_QUEDA_PEQUENA
     assert status_novo["variacao_aceita"] is None
 
 
@@ -505,8 +532,10 @@ def test_variacao_da_lista_filtrada_nao_e_criterio_de_plausibilidade(caminhos, d
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
 
     assert codigo == 0
-    assert ler(caminhos["status"])["ultimo_retrato_bom"]["total_itens"] == 1
-    assert ler(caminhos["status"])["ultimo_retrato_bom"]["estoque_bruto"] == 7
+    # A lista filtrada encolhe (sem `autoria NOVO` em 2022), mas o estoque bruto não muda.
+    novo = ler(caminhos["status"])["ultimo_retrato_bom"]
+    assert 0 < novo["total_itens"] < dia1["status"]["ultimo_retrato_bom"]["total_itens"]
+    assert novo["estoque_bruto"] == BRUTO
 
 
 def test_comissao_sem_nenhuma_proposicao_falha_no_primeiro_dia(caminhos, agora, capsys):
@@ -524,16 +553,16 @@ def test_a_base_do_dia_seguinte_a_uma_falha_e_o_retrato_bom(caminhos, dia1, agor
     falhou = TransporteFalso()
     falha_api(falhou, dia1["agora2"])
     assert executar_main(caminhos, falhou, Relogio(dia1["agora2"])) == 1
-    assert ler(caminhos["status"])["ultimo_retrato_bom"]["estoque_bruto"] == 7
+    assert ler(caminhos["status"])["ultimo_retrato_bom"]["estoque_bruto"] == BRUTO
 
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
     codigo = executar_main(caminhos, transporte, Relogio(agora + timedelta(hours=3)))
 
     status_novo = ler(caminhos["status"])
     assert codigo == 1
     assert status_novo["falha"]["categoria"] == "estoque_implausivel"
-    assert "7 → 5" in status_novo["falha"]["motivo"]
+    assert f"{BRUTO} → {BRUTO_QUEDA_GRANDE}" in status_novo["falha"]["motivo"]
 
 
 def conferir_sem_base(caminhos, dia1, capsys, codigo, estoque_de_hoje):
@@ -554,12 +583,12 @@ def conferir_sem_base(caminhos, dia1, capsys, codigo, estoque_de_hoje):
 def test_sem_status_com_atual_a_execucao_falha_sem_base_de_comparacao(caminhos, dia1, capsys):
     caminhos["status"].unlink()
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
     capsys.readouterr()
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]))
 
-    status_novo = conferir_sem_base(caminhos, dia1, capsys, codigo, 5)
+    status_novo = conferir_sem_base(caminhos, dia1, capsys, codigo, BRUTO_QUEDA_GRANDE)
     assert status_novo["tentativas"] == 1
 
 
@@ -573,7 +602,7 @@ def test_status_que_nao_descreve_o_atual_tambem_falha_sem_base_de_comparacao(
 
     codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
 
-    conferir_sem_base(caminhos, dia1, capsys, codigo, 7)
+    conferir_sem_base(caminhos, dia1, capsys, codigo, BRUTO)
 
 
 def test_status_corrompido_com_atual_falha_sem_base_de_comparacao(caminhos, dia1, capsys):
@@ -582,7 +611,7 @@ def test_status_corrompido_com_atual_falha_sem_base_de_comparacao(caminhos, dia1
 
     codigo = executar_main(caminhos, TransporteFalso(), Relogio(dia1["agora2"]))
 
-    conferir_sem_base(caminhos, dia1, capsys, codigo, 7)
+    conferir_sem_base(caminhos, dia1, capsys, codigo, BRUTO)
 
 
 def test_sem_base_de_comparacao_nao_repete(caminhos, dia1):
@@ -610,7 +639,7 @@ def test_sem_atual_o_primeiro_dia_continua_passando_mesmo_com_um_status_solto(ca
 def test_confirmacao_aceita_a_falta_de_base_e_registra(caminhos, dia1, capsys):
     caminhos["status"].unlink()
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
     capsys.readouterr()
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), aceitar=True)
@@ -620,13 +649,14 @@ def test_confirmacao_aceita_a_falta_de_base_e_registra(caminhos, dia1, capsys):
     assert status_novo["resultado"] == "ok"
     assert status_novo["variacao_aceita"] == {
         "estoque_anterior": None,
-        "estoque_novo": 5,
+        "estoque_novo": BRUTO_QUEDA_GRANDE,
         "variacao_percentual": None,
     }
-    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == 5
+    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == BRUTO_QUEDA_GRANDE
     assert main(["mensagem", "--status", str(caminhos["status"])]) == 0
     assert capsys.readouterr().out.endswith(
-        "dados: 2026-10-18 · ok · aceito sem base de comparação (estoque bruto 5)\n"
+        "dados: 2026-10-18 · ok · aceito sem base de comparação "
+        f"(estoque bruto {BRUTO_QUEDA_GRANDE})\n"
     )
 
 
@@ -650,11 +680,11 @@ def test_a_confirmacao_nao_libera_estoque_vazio_nem_outras_falhas_sem_base(camin
 def test_no_dia_seguinte_a_um_aceito_sem_base_a_base_e_o_estoque_aceito(caminhos, dia1, agora):
     caminhos["status"].unlink()
     aceito = TransporteFalso()
-    queda_de_28_por_cento(aceito)
+    queda_grande(aceito)
     assert executar_main(caminhos, aceito, Relogio(dia1["agora2"]), aceitar=True) == 0
 
     mesmo = TransporteFalso()
-    queda_de_28_por_cento(mesmo)
+    queda_grande(mesmo)
     assert executar_main(caminhos, mesmo, Relogio(agora + timedelta(hours=3))) == 0
     assert ler(caminhos["status"])["variacao_aceita"] is None
 
@@ -665,7 +695,7 @@ def test_no_dia_seguinte_a_um_aceito_sem_base_a_base_e_o_estoque_aceito(caminhos
 
 def test_confirmacao_manual_aceita_a_variacao_e_registra(caminhos, dia1, capsys):
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
     capsys.readouterr()
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), aceitar=True)
@@ -674,14 +704,15 @@ def test_confirmacao_manual_aceita_a_variacao_e_registra(caminhos, dia1, capsys)
     status_novo = ler(caminhos["status"])
     assert status_novo["resultado"] == "ok"
     assert status_novo["variacao_aceita"] == {
-        "estoque_anterior": 7,
-        "estoque_novo": 5,
-        "variacao_percentual": -28.6,
+        "estoque_anterior": BRUTO,
+        "estoque_novo": BRUTO_QUEDA_GRANDE,
+        "variacao_percentual": -35.2,
     }
-    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == 5
+    assert status_novo["ultimo_retrato_bom"]["estoque_bruto"] == BRUTO_QUEDA_GRANDE
     assert main(["mensagem", "--status", str(caminhos["status"])]) == 0
     assert capsys.readouterr().out.endswith(
-        "dados: 2026-10-18 · ok · variação aceita manualmente (7 → 5, -28,6%)\n"
+        "dados: 2026-10-18 · ok · variação aceita manualmente "
+        f"({BRUTO} → {BRUTO_QUEDA_GRANDE}, -35,2%)\n"
     )
 
 
@@ -700,11 +731,11 @@ def test_a_confirmacao_nao_libera_outras_falhas(caminhos, dia1, capsys, preparar
 
 def test_no_dia_seguinte_a_uma_variacao_aceita_o_limite_volta_a_valer(caminhos, dia1, agora):
     aceita = TransporteFalso()
-    queda_de_28_por_cento(aceita)
+    queda_grande(aceita)
     assert executar_main(caminhos, aceita, Relogio(dia1["agora2"]), aceitar=True) == 0
 
     mesmo_estoque = TransporteFalso()
-    queda_de_28_por_cento(mesmo_estoque)
+    queda_grande(mesmo_estoque)
     assert executar_main(caminhos, mesmo_estoque, Relogio(agora + timedelta(hours=3))) == 0
     assert ler(caminhos["status"])["variacao_aceita"] is None  # sem resto da aceitação
 
@@ -714,7 +745,7 @@ def test_no_dia_seguinte_a_uma_variacao_aceita_o_limite_volta_a_valer(caminhos, 
     assert codigo == 1
     status_novo = ler(caminhos["status"])
     assert status_novo["falha"]["categoria"] == "estoque_implausivel"
-    assert "5 → 7" in status_novo["falha"]["motivo"]
+    assert f"{BRUTO_QUEDA_GRANDE} → {BRUTO}" in status_novo["falha"]["motivo"]
 
 
 # --- US4: novas tentativas ------------------------------------------------------------------------
@@ -858,7 +889,7 @@ def test_estoque_implausivel_real_nao_repete(caminhos, dia1):
     caminhos["config"].write_text(CONFIG_BASE, encoding="utf-8")  # 4 tentativas permitidas
     dormidas = Dormidas()
     transporte = TransporteFalso()
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), dormidas)
 
@@ -924,13 +955,13 @@ def test_a_confirmacao_de_variacao_nao_gasta_nem_pula_tentativas(caminhos, dia1)
     caminhos["config"].write_text(CONFIG_BASE, encoding="utf-8")  # 4 tentativas permitidas
     dormidas = Dormidas()
     transporte = TransporteIntermitente([passageira()])
-    queda_de_28_por_cento(transporte)
+    queda_grande(transporte)
 
     codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), dormidas, aceitar=True)
 
     assert codigo == 0
     assert ler(caminhos["status"])["tentativas"] == 2
-    assert ler(caminhos["status"])["variacao_aceita"]["estoque_novo"] == 5
+    assert ler(caminhos["status"])["variacao_aceita"]["estoque_novo"] == BRUTO_QUEDA_GRANDE
 
 
 # --- US5: reexecução no mesmo dia ----------------------------------------------------------------

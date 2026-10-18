@@ -1,3 +1,4 @@
 ﻿"idProposicao";"uriProposicao";"idDeputadoAutor";"uriAutor";"codTipoAutor";"tipoAutor";"nomeAutor";"siglaPartidoAutor";"uriPartidoAutor";"siglaUFAutor";"ordemAssinatura";"proponente"
 "2320423";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2320423";"74283";"https://dadosabertos.camara.leg.br/api/v2/deputados/74283";"10000";"Deputado(a)";"Vicentinho";"PT";"https://dadosabertos.camara.leg.br/api/v2/partidos/36844";"SP";"1";"1"
 "2320422";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/2320422";"74283";"https://dadosabertos.camara.leg.br/api/v2/deputados/74283";"10000";"Deputado(a)";"Vicentinho";"PT";"https://dadosabertos.camara.leg.br/api/v2/partidos/36844";"SP";"1";"1"
+"470644";"https://dadosabertos.camara.leg.br/api/v2/proposicoes/470644";"141535";"https://dadosabertos.camara.leg.br/api/v2/deputados/141535";"10000";"Deputado(a)";"Rogério Marinho";"PSDB";"https://dadosabertos.camara.leg.br/api/v2/partidos/36835";"RN";"1";"1"
