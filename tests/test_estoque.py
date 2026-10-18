@@ -20,7 +20,7 @@ DEPUTADOS_NOVO = {204455, 220633}
 
 
 def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026, 10, 8, 14, 30),
-         situacao="Aguardando Parecer", principal=None, relator=None):  # fmt: skip
+         situacao="Aguardando Parecer", principal=None, relator=None, sequencia=7):  # fmt: skip
     return Proposicao(
         id=id,
         tipo=tipo,
@@ -33,6 +33,7 @@ def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026,
         orgao=orgao,
         situacao=situacao,
         id_relator=relator,
+        ultimo_status_sequencia=sequencia,
     )
 
 
@@ -93,13 +94,15 @@ def test_item_completo_conforme_o_contrato():
 
     assert list(item) == [
         "id", "tipo", "numero", "ano", "identificacao", "ementa", "data_apresentacao", "link",
-        "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em", "parado_ha_dias",
+        "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em",
+        "ultimo_status_sequencia", "parado_ha_dias",
         "apensado_a", "principal_nao_localizada", "relator", "relator_indeterminado",
     ]  # fmt: skip
     assert item["identificacao"] == "PL 1843/2022"
     assert item["link"] == "https://www.camara.leg.br/propostas-legislativas/7"
     assert item["data_apresentacao"] == "2022-03-02T10:00:00"
     assert item["ultimo_status_em"] == "2026-10-08T14:30:00"
+    assert item["ultimo_status_sequencia"] == 7
     assert item["parado_ha_dias"] == 10
     assert item["comissao"] == "CE"
     assert item["situacao"] == "Aguardando Parecer"
@@ -181,6 +184,40 @@ def com_referencia(candidatas, autores, mapa, linhas=None, comissoes=COMISSOES):
         {p.id: p for p in candidatas}, autores, DEPUTADOS_NOVO, comissoes, AGORA,
         mapa_principal=mapa, proposicoes=todas,
     )  # fmt: skip
+
+
+def test_item_traz_a_sequencia_do_ultimo_status_da_referencia():
+    raiz = prop(id=2, status=datetime(2026, 9, 1), situacao="Pronta para Pauta", sequencia=43)
+    apensado = prop(id=1, status=datetime(2013, 5, 5), principal=2, sequencia=3)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
+
+    # A sequência é a da raiz (de onde vêm situação e data), não a do apensado.
+    assert item["ultimo_status_sequencia"] == 43
+    assert item["situacao"] == "Pronta para Pauta"
+
+
+def test_principal_nao_localizada_usa_a_sequencia_do_proprio_item():
+    apensado = prop(id=1, principal=999, sequencia=5)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 999})
+
+    assert item["principal_nao_localizada"] is True
+    assert item["ultimo_status_sequencia"] == 5
+
+
+@pytest.mark.parametrize("sequencia", [0, -1])
+def test_sequencia_menor_que_1_e_falha_interna(sequencia):
+    p = prop(id=1, sequencia=sequencia)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        itens([p], autores)
+
+    assert erro.value.categoria == INTERNA
+    assert "ultimo_status_sequencia" in erro.value.motivo
 
 
 def test_sem_principal_a_referencia_e_a_propria():

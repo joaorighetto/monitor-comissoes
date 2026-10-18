@@ -320,11 +320,36 @@ def test_em_outro_dia_so_o_parado_ha_muda(config, agora, tmp_path):
     assert sem_gerado_em(a) == sem_gerado_em(b)
 
 
+def test_todo_item_real_traz_a_sequencia_do_ultimo_status_logo_depois_da_data(documento):
+    campos = list(documento["itens"][0])
+    posicao = campos.index("ultimo_status_em")
+
+    assert campos[posicao + 1] == "ultimo_status_sequencia"
+    for item in documento["itens"]:
+        assert isinstance(item["ultimo_status_sequencia"], int)
+        assert not isinstance(item["ultimo_status_sequencia"], bool)
+        assert item["ultimo_status_sequencia"] >= 1
+
+
+def test_apensado_e_principal_compartilham_situacao_data_e_sequencia(documento):
+    por_id = {i["id"]: i for i in documento["itens"]}
+    apensados = [
+        i for i in documento["itens"] if i["apensado_a"] and i["apensado_a"]["id"] in por_id
+    ]
+
+    assert apensados  # as fixtures reais têm apensados cuja raiz também é item da lista
+    for apensado in apensados:
+        raiz = por_id[apensado["apensado_a"]["id"]]
+        assert apensado["ultimo_status_sequencia"] == raiz["ultimo_status_sequencia"]
+        assert apensado["ultimo_status_em"] == raiz["ultimo_status_em"]
+        assert apensado["situacao"] == raiz["situacao"]
+
+
 def test_meta_traz_origem_e_parametros_na_ordem_do_contrato(documento):
     meta = documento["meta"]
 
     assert list(meta) == ORDEM_DO_META
-    assert meta["versao_formato"] == 2
+    assert meta["versao_formato"] == 3
     assert meta["comissoes"] == ["CE", "CREDN"]
     assert meta["ano_minimo"] == 2003
     assert meta["anos_lidos"] == [2003, 2026]

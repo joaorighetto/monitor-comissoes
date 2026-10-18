@@ -38,7 +38,7 @@ from .tramitacoes import obter_tramitacoes
 from .transporte import Transporte
 
 URL_BASE = "https://dadosabertos.camara.leg.br"
-VERSAO_FORMATO = 2
+VERSAO_FORMATO = 3
 
 
 @dataclass(frozen=True)

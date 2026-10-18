@@ -133,6 +133,10 @@ def _item(
 ) -> dict:
     status = referencia.proposicao
     raiz = referencia.raiz
+    if status.ultimo_status_sequencia < 1:
+        raise FalhaDeColeta(
+            INTERNA, f"proposição {status.id}: ultimo_status_sequencia ausente (MUD, R1)"
+        )
     return {
         "id": candidata.id,
         "tipo": candidata.tipo,
@@ -155,6 +159,7 @@ def _item(
         "comissao": status.orgao,
         "situacao": status.situacao,
         "ultimo_status_em": status.ultimo_status_em.strftime(FORMATO_DATA),
+        "ultimo_status_sequencia": status.ultimo_status_sequencia,
         "parado_ha_dias": max(0, (hoje_brasilia - status.ultimo_status_em.date()).days),
         "apensado_a": (
             {"id": raiz.id, "identificacao": identificacao(raiz), "link": link_oficial(raiz.id)}
