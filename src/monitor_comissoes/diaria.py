@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .coleta import coletar
 from .config import carregar_config
-from .erros import INTERNA, FalhaDeColeta
+from .erros import INTERNA, REPETIVEIS, FalhaDeColeta
 from .estoque import BRASILIA
 from .plausibilidade import percentual_texto, verificar
 from .status import (
@@ -84,8 +84,23 @@ def executar_diaria(
                 "(primeiro dia ou status que não descreve o atual.json)",
                 file=sys.stderr,
             )
-        tentativas = 1
-        coletado = coletar(config, transporte, agora)
+        coletado = None
+        for tentativa in range(1, config.tentativas + 1):
+            tentativas = tentativa
+            agora = relogio()  # cada tentativa lê o relógio de novo
+            try:
+                coletado = coletar(config, transporte, agora)
+                break
+            except FalhaDeColeta as falha:
+                if falha.categoria not in REPETIVEIS or tentativa == config.tentativas:
+                    raise
+                print(
+                    f"TENTATIVA {tentativa} de {config.tentativas} falhou "
+                    f"[{falha.categoria}]: {falha.motivo}; "
+                    f"nova tentativa em {config.espera_minutos} minutos",
+                    file=sys.stderr,
+                )
+                dormir(config.espera_minutos * 60)
         variacao_aceita = verificar(
             coletado.estoque_bruto, base, config.limite_variacao_percentual, aceitar_variacao
         )

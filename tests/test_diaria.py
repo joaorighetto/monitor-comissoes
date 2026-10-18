@@ -12,7 +12,7 @@ from monitor_comissoes import diaria, status
 from monitor_comissoes.coleta import coletar, executar
 from monitor_comissoes.config import Config
 from monitor_comissoes.diaria import main
-from monitor_comissoes.erros import FONTE_INDISPONIVEL, FalhaDeColeta
+from monitor_comissoes.erros import FONTE_INDISPONIVEL, REPETIVEIS, FalhaDeColeta
 from monitor_comissoes.estoque import BRASILIA as FUSO
 from monitor_comissoes.saida import serializar
 
@@ -614,3 +614,219 @@ def test_no_dia_seguinte_a_uma_variacao_aceita_o_limite_volta_a_valer(caminhos, 
     status_novo = ler(caminhos["status"])
     assert status_novo["falha"]["categoria"] == "estoque_implausivel"
     assert "5 → 7" in status_novo["falha"]["motivo"]
+
+
+# --- US4: novas tentativas ------------------------------------------------------------------------
+
+
+class TransporteIntermitente(TransporteFalso):
+    """Falha as primeiras coletas com as falhas dadas (uma por coleta), depois funciona.
+
+    A falha sai no primeiro download da coleta, para chegar à execução diária com a categoria
+    exata (a API de deputados reembrulha qualquer erro como `api_deputados`).
+    """
+
+    def __init__(self, falhas):
+        super().__init__()
+        self.falhas = list(falhas)
+        self.coletas = 0
+        self._falha_da_coleta = None
+
+    def obter_json(self, url):
+        # A API de deputados é a primeira chamada de cada coleta.
+        self.coletas += 1
+        self._falha_da_coleta = self.falhas.pop(0) if self.falhas else None
+        return super().obter_json(url)
+
+    def baixar(self, url, destino):
+        if self._falha_da_coleta is not None:
+            falha, self._falha_da_coleta = self._falha_da_coleta, None
+            raise falha
+        return super().baixar(url, destino)
+
+
+def passageira(categoria=FONTE_INDISPONIVEL, motivo="proposicoes-2024.csv: HTTP 503"):
+    return FalhaDeColeta(categoria, motivo)
+
+
+def test_falha_passageira_seguida_de_sucesso_termina_ok_com_duas_tentativas(
+    caminhos, agora, capsys
+):
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([passageira()])
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 0
+    assert dormidas.pedidos == [1800]  # 30 minutos
+    status_novo = ler(caminhos["status"])
+    assert status_novo["resultado"] == "ok"
+    assert status_novo["tentativas"] == 2
+    assert status_novo["falha"] is None
+    assert "tentativas 2" in capsys.readouterr().out
+
+
+def test_duas_falhas_repetiveis_e_sucesso_na_terceira(caminhos, agora):
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente(
+        [passageira(), passageira("arquivos_desatualizados", "a Câmara não atualizou")]
+    )
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 0
+    assert dormidas.pedidos == [1800, 1800]
+    assert ler(caminhos["status"])["tentativas"] == 3
+
+
+def test_quatro_falhas_repetiveis_esgotam_as_tentativas(caminhos, agora, capsys):
+    dormidas = Dormidas()
+    ultimas = [passageira(motivo=f"tentativa {n}") for n in range(1, 5)]
+    transporte = TransporteIntermitente(ultimas)
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 1
+    assert transporte.coletas == 4
+    assert dormidas.pedidos == [1800, 1800, 1800]  # nenhuma espera depois da última
+    status_novo = ler(caminhos["status"])
+    assert status_novo["resultado"] == "falha"
+    assert status_novo["tentativas"] == 4
+    assert status_novo["falha"] == {
+        "categoria": "fonte_indisponivel",
+        "motivo": "tentativa 4",
+    }
+    erro = capsys.readouterr().err
+    assert erro.count("TENTATIVA ") == 3
+    assert (
+        "TENTATIVA 1 de 4 falhou [fonte_indisponivel]: tentativa 1; nova tentativa em 30 minutos"
+        in erro
+    )
+    assert "FALHA [fonte_indisponivel]: tentativa 4" in erro
+    assert not caminhos["atual"].exists()
+
+
+@pytest.mark.parametrize("categoria", REPETIVEIS)
+def test_cada_categoria_repetivel_repete(caminhos, agora, categoria):
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([passageira(categoria, "x")])
+
+    assert executar_main(caminhos, transporte, Relogio(agora), dormidas) == 0
+
+    assert dormidas.pedidos == [1800]
+    assert ler(caminhos["status"])["tentativas"] == 2
+
+
+def test_so_as_quatro_categorias_da_spec_sao_repetiveis():
+    assert set(REPETIVEIS) == {
+        "fonte_indisponivel",
+        "arquivos_desatualizados",
+        "arquivo_incompleto",
+        "api_deputados",
+    }
+
+
+@pytest.mark.parametrize(
+    "categoria", ["formato_alterado", "estoque_vazio", "estoque_implausivel", "configuracao"]
+)
+def test_categorias_nao_repetiveis_falham_de_imediato(caminhos, agora, categoria):
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([passageira(categoria, "x"), passageira(categoria, "x")])
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 1
+    assert dormidas.pedidos == []
+    assert transporte.coletas == 1
+    assert ler(caminhos["status"])["tentativas"] == 1
+
+
+def test_formato_alterado_real_nao_repete(caminhos, agora):
+    dormidas = Dormidas()
+    transporte = TransporteFalso()
+    falha_formato(transporte, agora)
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 1
+    assert dormidas.pedidos == []
+    assert ler(caminhos["status"])["tentativas"] == 1
+
+
+def test_estoque_implausivel_real_nao_repete(caminhos, dia1):
+    caminhos["config"].write_text(CONFIG_BASE, encoding="utf-8")  # 4 tentativas permitidas
+    dormidas = Dormidas()
+    transporte = TransporteFalso()
+    queda_de_28_por_cento(transporte)
+
+    codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), dormidas)
+
+    assert codigo == 1
+    assert dormidas.pedidos == []
+    assert ler(caminhos["status"])["tentativas"] == 1
+
+
+def test_configuracao_invalida_nao_repete_e_nao_coleta(caminhos, agora):
+    caminhos["config"].write_text("comissoes = []\nano_minimo = 2003\n", encoding="utf-8")
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([])
+
+    assert executar_main(caminhos, transporte, Relogio(agora), dormidas) == 1
+
+    assert dormidas.pedidos == []
+    assert transporte.coletas == 0
+    assert ler(caminhos["status"])["tentativas"] == 0
+
+
+def test_falha_interna_nao_repete(caminhos, agora):
+    class Quebra(TransporteIntermitente):
+        def obter_json(self, url):
+            self.coletas += 1
+            raise KeyError("itens")
+
+    dormidas = Dormidas()
+    transporte = Quebra([])
+
+    assert executar_main(caminhos, transporte, Relogio(agora), dormidas) == 1
+
+    assert dormidas.pedidos == []
+    assert transporte.coletas == 1
+    assert ler(caminhos["status"])["falha"]["categoria"] == "interna"
+
+
+def test_tentativas_e_espera_vem_da_configuracao(caminhos, agora):
+    caminhos["config"].write_text(
+        CONFIG_BASE + "[execucao]\ntentativas = 2\nespera_minutos = 5\n", encoding="utf-8"
+    )
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([passageira(), passageira(), passageira()])
+
+    codigo = executar_main(caminhos, transporte, Relogio(agora), dormidas)
+
+    assert codigo == 1
+    assert transporte.coletas == 2
+    assert dormidas.pedidos == [300]
+    assert ler(caminhos["status"])["tentativas"] == 2
+
+
+def test_o_relogio_e_lido_de_novo_a_cada_tentativa(caminhos, agora):
+    relogio = Relogio(agora, passo=timedelta(minutes=30))
+    transporte = TransporteIntermitente([passageira()])
+
+    assert executar_main(caminhos, transporte, relogio, Dormidas()) == 0
+
+    gerado_em = datetime.fromisoformat(ler(caminhos["atual"])["meta"]["gerado_em"])
+    assert gerado_em > agora + timedelta(minutes=30)  # da 2ª tentativa, não da 1ª
+
+
+def test_a_confirmacao_de_variacao_nao_gasta_nem_pula_tentativas(caminhos, dia1):
+    caminhos["config"].write_text(CONFIG_BASE, encoding="utf-8")  # 4 tentativas permitidas
+    dormidas = Dormidas()
+    transporte = TransporteIntermitente([passageira()])
+    queda_de_28_por_cento(transporte)
+
+    codigo = executar_main(caminhos, transporte, Relogio(dia1["agora2"]), dormidas, aceitar=True)
+
+    assert codigo == 0
+    assert ler(caminhos["status"])["tentativas"] == 2
+    assert ler(caminhos["status"])["variacao_aceita"]["estoque_novo"] == 5
