@@ -1235,3 +1235,44 @@ def test_um_item_que_entrou_e_um_que_saiu_viram_eventos_no_arquivo_do_dia(
     assert saida["comissao"] == "CE" and saida["tramitacoes"] == []
     assert capsys.readouterr().out.endswith(" · mudanças: 2 eventos (1 entrou, 1 saiu)\n")
     assert caminhos["anterior"].exists()  # o atual de ontem rotacionou
+
+
+def test_item_que_continua_gera_um_evento_por_tipo_de_mudanca_com_o_parecer_real(
+    caminhos, transporte, agora, capsys
+):
+    """PL 4501/2023 (relator Luiz Lima, `relatoria NOVO`), com um retrato de ontem sintético."""
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+    hoje_doc = ler(caminhos["atual"])
+    pl_4501_2023 = 2388105
+    [item_hoje] = [i for i in hoje_doc["itens"] if i["id"] == pl_4501_2023]
+    assert item_hoje["relator"]["id"] == 204455 and item_hoje["ultimo_status_sequencia"] == 26
+    ontem = json.loads(json.dumps(hoje_doc))
+    [item_ontem] = [i for i in ontem["itens"] if i["id"] == pl_4501_2023]
+    item_ontem["situacao"] = "Aguardando Designação de Relator(a)"
+    item_ontem["relator"] = None
+    item_ontem["etiquetas"] = []
+    item_ontem["ultimo_status_sequencia"] = 25
+    caminhos["atual"].write_text(json.dumps(ontem, ensure_ascii=False, indent=2), encoding="utf-8")
+    capsys.readouterr()
+
+    assert executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1))) == 0
+
+    arquivo = arquivo_do_dia(caminhos, "2026-10-19.json")
+    eventos = {e["tipo"]: e for e in arquivo["eventos"]}
+    # A tramitação 26 é o parecer real do relator (Luiz Lima, pela rejeição): os quatro tipos.
+    assert list(eventos) == ["situacao", "relator", "parecer", "etiquetas"]
+    assert eventos["situacao"]["de"] == "Aguardando Designação de Relator(a)"
+    assert eventos["situacao"]["para"] == item_hoje["situacao"]
+    assert eventos["relator"]["mudanca"] == "designado" and eventos["relator"]["de"] is None
+    assert eventos["relator"]["para"] == {
+        "id": 204455,
+        "nome": item_hoje["relator"]["nome"],
+        "partido_hoje": "NOVO",
+    }
+    assert eventos["etiquetas"]["ganhou"] == ["relatoria NOVO"]
+    for e in eventos.values():
+        assert [x["sequencia"] for x in e["tramitacoes"]] == [26]
+        assert e["link"].endswith(f"/{pl_4501_2023}")
+    assert capsys.readouterr().out.endswith(
+        " · mudanças: 4 eventos (1 situação, 1 relator, 1 parecer, 1 etiquetas)\n"
+    )

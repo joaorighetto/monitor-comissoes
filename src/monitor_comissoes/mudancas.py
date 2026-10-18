@@ -352,6 +352,75 @@ def _saiu(ctx: _Contexto, item: dict, estado: EstadoDeSaida) -> list[dict]:
     ]
 
 
+def _relator_do_evento(relator: dict | None) -> dict | None:
+    if relator is None:
+        return None
+    return {k: relator[k] for k in ("id", "nome", "partido_hoje")}
+
+
+def _ressalva(item: dict, ontem: bool, hoje: bool) -> dict:
+    quando = {
+        (True, False): "ontem",
+        (False, True): "hoje",
+        (True, True): "nos dois retratos",
+    }[(ontem, hoje)]
+    return {
+        "id": item["id"],
+        "identificacao": item["identificacao"],
+        "comissao": item["comissao"],
+        "link": item["link"],
+        "motivo": f"relator indeterminado {quando}",
+    }
+
+
+def _mantido(ctx: _Contexto, a: dict, h: dict) -> tuple[list[dict], list[dict]]:
+    """Os eventos e as ressalvas de um item que está nos dois retratos."""
+    referencia_h, referencia_a = _referencia_id(h), _referencia_id(a)
+    sequencia_h, sequencia_a = h["ultimo_status_sequencia"], a["ultimo_status_sequencia"]
+    mudou_a_tramitacao = referencia_h != referencia_a or sequencia_h != sequencia_a
+    # Só quem teve o último status alterado consulta tramitações: é nelas que está o parecer.
+    tramitacoes = (
+        _intervalo(ctx, referencia_h, sequencia_h, referencia_a, sequencia_a)
+        if mudou_a_tramitacao
+        else []
+    )
+    eventos: list[dict] = []
+    ressalvas: list[dict] = []
+
+    if a["situacao"] != h["situacao"]:
+        eventos.append(
+            _base("situacao", h, de=a["situacao"], para=h["situacao"], tramitacoes=tramitacoes)
+        )
+
+    indeterminado_a = a["relator_indeterminado"] is not None
+    indeterminado_h = h["relator_indeterminado"] is not None
+    if indeterminado_a or indeterminado_h:
+        ressalvas.append(_ressalva(h, indeterminado_a, indeterminado_h))
+    else:
+        antes, depois = _relator_do_evento(a["relator"]), _relator_do_evento(h["relator"])
+        if antes is None and depois is not None:
+            mudanca = "designado"
+        elif antes is not None and depois is None:
+            mudanca = "devolveu"
+        elif antes is not None and depois is not None and antes["id"] != depois["id"]:
+            mudanca = "substituido"
+        else:
+            mudanca = None
+        if mudanca is not None:
+            eventos.append(
+                _base("relator", h, mudanca=mudanca, de=antes, para=depois, tramitacoes=tramitacoes)
+            )
+
+    if any(x.codigo == CODIGO_PARECER and x.orgao == h["comissao"] for x in tramitacoes):
+        eventos.append(_base("parecer", h, tramitacoes=tramitacoes))
+
+    ganhou = [e for e in ETIQUETAS if e in h["etiquetas"] and e not in a["etiquetas"]]
+    perdeu = [e for e in ETIQUETAS if e in a["etiquetas"] and e not in h["etiquetas"]]
+    if ganhou or perdeu:
+        eventos.append(_base("etiquetas", h, ganhou=ganhou, perdeu=perdeu, tramitacoes=tramitacoes))
+    return eventos, ressalvas
+
+
 def comparar(
     comparacao: Comparacao,
     documento_hoje: dict,
@@ -393,13 +462,18 @@ def comparar(
         eventos += _entrou(ctx, de_hoje[id_])
     for id_ in sorted(anteriores.keys() - de_hoje.keys()):
         eventos += _saiu(ctx, anteriores[id_], estados_de_saida.get(id_, sem_estado))
+    ressalvas: list[dict] = []
+    for id_ in sorted(anteriores.keys() & de_hoje.keys()):
+        dos_eventos, das_ressalvas = _mantido(ctx, anteriores[id_], de_hoje[id_])
+        eventos += dos_eventos
+        ressalvas += das_ressalvas
     return montar_arquivo(
         data=hoje,
         retrato=retrato,
         retrato_anterior=comparacao.retrato_anterior,
         linha_de_base=None,
         eventos=ordenar_eventos(eventos, comissoes),
-        ressalvas=[],
+        ressalvas=ressalvas,
     )
 
 

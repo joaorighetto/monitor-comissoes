@@ -1013,3 +1013,322 @@ def test_candidato_so_indeterminado_que_sai_nao_tem_etiqueta_a_perder_e_fica_nao
     saida, _ = saiu(item_a, estado(orgao="CE", sequencia=41, na_comissao=True))
 
     assert saida["motivo"] == {"codigo": "nao_determinado", "texto": "não determinado"}
+
+
+# --- comparar: itens que continuam na lista (User Story 2) ---------------------------------------
+
+PL_COM_PARECERES = 2330962  # CCTI: pareceres do relator nas sequências 22 e 28 (reais)
+LUIZ = {"id": 204455, "nome": "Luiz Lima", "partido_hoje": "NOVO"}
+ADRIANA = {"id": 204528, "nome": "Adriana Ventura", "partido_hoje": "NOVO"}
+
+
+def com_relator(dados, referencia=1):
+    return s.relator(dados["id"], dados["nome"], dados["partido_hoje"], referencia)
+
+
+def mantidos(a, h, listas=None):
+    """Compara o mesmo item em dois dias e devolve (documento, fonte)."""
+    fonte = Fonte(listas or {})
+    documento = rodar(anterior_com([a], "2026-10-18T04:31:36+00:00"), hoje_com([h]), fonte)
+    return documento, fonte
+
+
+def dos_tipos(documento):
+    return [e["tipo"] for e in documento["eventos"]]
+
+
+def test_item_sem_nenhuma_diferenca_nao_aparece_e_nao_consulta_tramitacoes():
+    item = s.item(1, sequencia=41)
+
+    documento, fonte = mantidos(item, item)
+
+    assert documento["eventos"] == [] and documento["ressalvas"] == []
+    assert fonte.consultas == []
+    assert documento["meta"]["linha_de_base"] is None
+
+
+def test_situacao_de_para_com_o_texto_exato_e_sem_consulta_se_a_sequencia_nao_mudou():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=41, situacao="Pronta para Pauta")
+
+    documento, fonte = mantidos(a, h)
+
+    [mudanca] = so(documento, "situacao")
+    assert (mudanca["de"], mudanca["para"]) == ("Aguardando Parecer", "Pronta para Pauta")
+    assert mudanca["tramitacoes"] == [] and fonte.consultas == []
+    assert dos_tipos(documento) == ["situacao"]
+
+
+def test_situacao_com_sequencia_nova_traz_todas_as_tramitacoes_do_intervalo():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=43, situacao="Pronta para Pauta")
+    lista = {1: [t(n) for n in range(40, 46)]}
+
+    documento, fonte = mantidos(a, h, lista)
+
+    [mudanca] = so(documento, "situacao")
+    assert sequencias(mudanca) == [42, 43]  # (41, 43]: nem a 41 nem as lançadas depois do lote
+    assert fonte.consultas == [1]
+
+
+@pytest.mark.parametrize(
+    ("antes", "depois", "mudanca", "de", "para"),
+    [
+        (None, LUIZ, "designado", None, LUIZ),
+        (LUIZ, None, "devolveu", LUIZ, None),
+        (LUIZ, ADRIANA, "substituido", LUIZ, ADRIANA),
+    ],
+)
+def test_evento_de_relator(antes, depois, mudanca, de, para):
+    a = s.item(1, relator=com_relator(antes) if antes else None)
+    h = s.item(1, relator=com_relator(depois) if depois else None)
+
+    documento, _ = mantidos(a, h)
+
+    [evento_] = so(documento, "relator")
+    assert (evento_["mudanca"], evento_["de"], evento_["para"]) == (mudanca, de, para)
+    assert list(evento_["para"] or evento_["de"]) == ["id", "nome", "partido_hoje"]
+
+
+def test_mesmo_relator_nao_e_evento_mesmo_que_o_partido_de_hoje_tenha_mudado():
+    a = s.item(1, relator=com_relator(LUIZ))
+    h = s.item(1, relator=com_relator({**LUIZ, "partido_hoje": "PL"}))
+
+    documento, _ = mantidos(a, h)
+
+    assert documento["eventos"] == [] and documento["ressalvas"] == []
+
+
+def test_etiquetas_ganhou_perdeu_e_as_duas_coisas_em_ordem_fixa():
+    ganhou, _ = mantidos(
+        s.item(1, etiquetas=("autoria NOVO",)),
+        s.item(1, etiquetas=("autoria NOVO", "autor hoje no NOVO", "relatoria NOVO")),
+    )
+    perdeu, _ = mantidos(
+        s.item(1, etiquetas=("autoria NOVO", "autor hoje no NOVO")),
+        s.item(1, etiquetas=("autoria NOVO",)),
+    )
+    troca, _ = mantidos(
+        s.item(1, etiquetas=("autoria NOVO",)), s.item(1, etiquetas=("relatoria NOVO",))
+    )
+
+    assert (so(ganhou, "etiquetas")[0]["ganhou"], so(ganhou, "etiquetas")[0]["perdeu"]) == (
+        ["autor hoje no NOVO", "relatoria NOVO"],
+        [],
+    )
+    assert (so(perdeu, "etiquetas")[0]["ganhou"], so(perdeu, "etiquetas")[0]["perdeu"]) == (
+        [],
+        ["autor hoje no NOVO"],
+    )
+    assert (so(troca, "etiquetas")[0]["ganhou"], so(troca, "etiquetas")[0]["perdeu"]) == (
+        ["relatoria NOVO"],
+        ["autoria NOVO"],
+    )
+
+
+def test_item_com_varias_mudancas_tem_um_evento_por_tipo_na_ordem_dos_tipos():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer", etiquetas=("autoria NOVO",))
+    h = s.item(
+        1,
+        sequencia=43,
+        situacao="Pronta para Pauta",
+        etiquetas=("autoria NOVO", "relatoria NOVO"),
+        relator=com_relator(LUIZ),
+    )
+
+    documento, fonte = mantidos(a, h, {1: [t(n) for n in range(40, 46)]})
+
+    assert dos_tipos(documento) == ["situacao", "relator", "etiquetas"]
+    assert all(
+        sequencias(e) == [42, 43] for e in documento["eventos"]
+    )  # cada evento traz o intervalo
+    assert fonte.consultas == [1]  # uma consulta só
+
+
+def test_etiquetas_sem_mudanca_de_sequencia_nao_consultam_tramitacoes():
+    a = s.item(1, sequencia=41, etiquetas=("autoria NOVO",))
+    h = s.item(1, sequencia=41, etiquetas=("autoria NOVO", "autor hoje no NOVO"))
+
+    documento, fonte = mantidos(a, h)
+
+    [mudanca] = so(documento, "etiquetas")
+    assert mudanca["ganhou"] == ["autor hoje no NOVO"] and mudanca["tramitacoes"] == []
+    assert fonte.consultas == []
+
+
+# ---- parecer ----
+
+
+def parecer(sequencia_anterior, sequencia_de_hoje, comissao="CCTI", lista=None):
+    a = s.item(PL_COM_PARECERES, comissao=comissao, sequencia=sequencia_anterior)
+    h = s.item(PL_COM_PARECERES, comissao=comissao, sequencia=sequencia_de_hoje)
+    return mantidos(a, h, {PL_COM_PARECERES: lista or real(PL_COM_PARECERES)})[0]
+
+
+def test_dois_pareceres_reais_no_intervalo_geram_um_evento_com_todas_as_tramitacoes():
+    documento = parecer(20, 30)
+
+    [evento_] = so(documento, "parecer")
+    assert sequencias(evento_) == list(range(21, 31))  # o intervalo todo, não só os pareceres
+    assert evento_["link"].endswith(f"/{PL_COM_PARECERES}")
+    assert dos_tipos(documento) == ["parecer"]  # o resto não é um dos seis tipos: sem mais eventos
+
+
+def test_so_a_leitura_e_a_aprovacao_do_parecer_nao_geram_evento():
+    documento = parecer(28, 30)
+
+    assert documento["eventos"] == []
+
+
+def test_parecer_exige_o_orgao_da_comissao_do_item():
+    outro_orgao = [
+        x._replace(orgao="CFT") if x.codigo == "322" else x for x in real(PL_COM_PARECERES)
+    ]
+
+    assert parecer(20, 30, lista=outro_orgao)["eventos"] == []
+    assert parecer(20, 30, comissao="CE")["eventos"] == []  # item de outra comissão
+
+
+def test_parecer_fora_do_intervalo_nao_conta():
+    # Pareceres 22 e 28 são anteriores a 28 < s <= 30 e posteriores a s <= 21.
+    assert parecer(28, 30)["eventos"] == []
+    assert parecer(1, 21)["eventos"] == []  # (1, 21] não alcança a 22
+
+
+def test_apenas_a_tramitacao_322_e_parecer_nao_a_501_do_mesmo_instante():
+    so_501 = [x for x in real(PL_COM_PARECERES) if x.codigo != "322"]
+
+    assert parecer(20, 30, lista=so_501)["eventos"] == []
+
+
+# ---- ressalvas ----
+
+
+@pytest.mark.parametrize(
+    ("indeterminado_ontem", "indeterminado_hoje", "texto"),
+    [
+        (True, False, "relator indeterminado ontem"),
+        (False, True, "relator indeterminado hoje"),
+        (True, True, "relator indeterminado nos dois retratos"),
+    ],
+)
+def test_relator_indeterminado_em_um_dos_retratos_vira_ressalva_e_nao_evento_de_relator(
+    indeterminado_ontem, indeterminado_hoje, texto
+):
+    marca = {"motivo": "tipo de tramitação 9999 não reconhecido"}
+    a = s.item(
+        1,
+        relator=None if indeterminado_ontem else com_relator(LUIZ),
+        relator_indeterminado=marca if indeterminado_ontem else None,
+    )
+    h = s.item(
+        1,
+        relator=None if indeterminado_hoje else com_relator(ADRIANA),
+        relator_indeterminado=marca if indeterminado_hoje else None,
+    )
+
+    documento, _ = mantidos(a, h)
+
+    assert so(documento, "relator") == []
+    [ressalva] = documento["ressalvas"]
+    assert ressalva == {
+        "id": 1,
+        "identificacao": "PL 1/2020",
+        "comissao": "CE",
+        "link": a["link"],
+        "motivo": texto,
+    }
+
+
+def test_a_ressalva_nao_impede_os_outros_eventos_do_item():
+    marca = {"motivo": "x"}
+    a = s.item(1, situacao="Aguardando Parecer", relator_indeterminado=marca)
+    h = s.item(1, situacao="Pronta para Pauta", relator_indeterminado=marca)
+
+    documento, _ = mantidos(a, h)
+
+    assert dos_tipos(documento) == ["situacao"]
+    assert len(documento["ressalvas"]) == 1
+
+
+def test_ressalvas_saem_ordenadas_por_id():
+    marca = {"motivo": "x"}
+    itens_a = [s.item(i, relator_indeterminado=marca) for i in (30, 5, 12)]
+    itens_h = [s.item(i, relator_indeterminado=marca) for i in (12, 30, 5)]
+
+    documento = rodar(
+        anterior_com(itens_a, "2026-10-18T04:31:36+00:00"), hoje_com(itens_h), Fonte()
+    )
+
+    assert [r["id"] for r in documento["ressalvas"]] == [5, 12, 30]
+
+
+# ---- intervalo e referência (FR-014, FR-017) ----
+
+
+def test_a_resposta_com_tramitacoes_posteriores_ao_lote_nao_entra_no_intervalo():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=43, situacao="Pronta para Pauta")
+    lista = {1: [t(n) for n in range(40, 50)]}  # a API já tem até a 49
+
+    documento, _ = mantidos(a, h, lista)
+
+    assert max(sequencias(so(documento, "situacao")[0])) == 43
+
+
+def test_tramitacoes_embaralhadas_saem_em_ordem_de_sequencia():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=44, situacao="Pronta para Pauta")
+    embaralhada = [t(n) for n in (44, 42, 45, 43, 41)]
+
+    documento, _ = mantidos(a, h, {1: embaralhada})
+
+    assert sequencias(so(documento, "situacao")[0]) == [42, 43, 44]
+
+
+def test_apensado_e_principal_compartilham_uma_so_consulta():
+    principal = s.apensado(50, "PL 50/2020")
+    a = [
+        s.item(50, sequencia=41, situacao="Aguardando Parecer"),
+        s.item(51, sequencia=41, situacao="Aguardando Parecer", apensado_a=principal),
+    ]
+    h = [
+        s.item(50, sequencia=43, situacao="Pronta para Pauta"),
+        s.item(51, sequencia=43, situacao="Pronta para Pauta", apensado_a=principal),
+    ]
+    fonte = Fonte({50: [t(n) for n in range(40, 46)]})
+
+    documento = rodar(anterior_com(a, "2026-10-18T04:31:36+00:00"), hoje_com(h), fonte)
+
+    assert [(e["id"], e["tipo"]) for e in documento["eventos"]] == [
+        (50, "situacao"),
+        (51, "situacao"),
+    ]
+    assert fonte.consultas == [50]  # o apensado e a principal dividem uma só leitura
+
+
+def test_item_que_passou_a_ser_apensado_a_outra_principal_usa_a_regra_de_data():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(
+        1,
+        sequencia=87,
+        situacao="Pronta para Pauta",
+        apensado_a=s.apensado(99, "PL 99/2019"),
+    )
+    lista = {99: [t(80, "2026-10-17T10:00"), t(85, "2026-10-18T10:00"), t(87, "2026-10-18T15:00")]}
+
+    documento, fonte = mantidos(a, h, lista)
+
+    # O lote anterior é de 18/10: entram as tramitações da NOVA referência a partir dessa data.
+    assert sequencias(so(documento, "situacao")[0]) == [85, 87]
+    assert fonte.consultas == [99]
+
+
+def test_sequencia_que_regride_na_mesma_referencia_e_formato_alterado():
+    a = s.item(1, sequencia=41, situacao="Aguardando Parecer")
+    h = s.item(1, sequencia=30, situacao="Pronta para Pauta")
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        mantidos(a, h, {1: [t(n) for n in range(25, 45)]})
+
+    assert erro.value.categoria == FORMATO_ALTERADO
