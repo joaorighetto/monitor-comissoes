@@ -1427,6 +1427,37 @@ def test_tramitacoes_lancadas_depois_do_lote_nao_entram_nem_mudam_o_arquivo(tmp_
     assert max(x["sequencia"] for x in parecer["tramitacoes"]) == 26
 
 
+def test_designacao_lancada_depois_do_lote_nao_muda_o_relator_nem_os_arquivos(tmp_path, agora):
+    """O relator vale até a sequência do lote, como a situação: o que veio depois entra amanhã."""
+    resultados = []
+    for nome, depois_do_lote in (("sem", False), ("com", True)):
+        transporte = TransporteFalso()
+        if depois_do_lote:
+
+            def designar(corpo: bytes) -> bytes:
+                documento = json.loads(corpo)
+                ultima = max(t["sequencia"] for t in documento["dados"])
+                documento["dados"].append(
+                    {
+                        **documento["dados"][-1],
+                        "sequencia": ultima + 1,
+                        "codTipoTramitacao": "320",
+                        "uriUltimoRelator": "https://dadosabertos.camara.leg.br/api/v2/deputados/220533",
+                    }
+                )
+                return json.dumps(documento).encode()
+
+            transporte.transformar_json["tramitacoes/2388105"] = designar
+        caminhos = novo_ambiente(tmp_path, nome)
+        ontem_com_os_seis_tipos(caminhos, transporte, agora)
+        assert executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1))) == 0
+        resultados.append((caminhos["atual"].read_bytes(), o_dia_2(caminhos).read_bytes()))
+
+    assert resultados[0] == resultados[1]
+    [pl_4501] = [i for i in json.loads(resultados[0][0])["itens"] if i["id"] == 2388105]
+    assert pl_4501["relator"]["id"] == 204455
+
+
 def test_a_ordem_dos_itens_do_retrato_anterior_nao_muda_o_arquivo(tmp_path, agora):
     resultados = []
     for nome, embaralhar in (("ordenado", False), ("embaralhado", True)):

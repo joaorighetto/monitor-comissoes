@@ -125,10 +125,25 @@ def _tramitacoes_da_execucao(transporte: Transporte) -> Callable[[int], list[Tra
 
 
 def _ler_relatorias(
-    tramitacoes_de: Callable[[int], list[Tramitacao]], referencias: dict[int, str]
+    tramitacoes_de: Callable[[int], list[Tramitacao]],
+    referencias: dict[int, str],
+    linhas: dict[int, Proposicao],
 ) -> dict[int, ResultadoRelatoria]:
+    """O relator de cada referência no instante do lote.
+
+    Como a situação, o relator vale até a sequência do último status do lote: uma designação
+    lançada depois entra no dia seguinte. Sem esse corte, reexecutar o dia com o mesmo lote daria
+    outro arquivo, e o evento de relator sairia sem a tramitação que o causou.
+    """
     return {
-        id_referencia: relator_atual(tramitacoes_de(id_referencia), referencias[id_referencia])
+        id_referencia: relator_atual(
+            [
+                t
+                for t in tramitacoes_de(id_referencia)
+                if t.sequencia <= linhas[id_referencia].ultimo_status_sequencia
+            ],
+            referencias[id_referencia],
+        )
         for id_referencia in sorted(referencias)
     }
 
@@ -224,7 +239,7 @@ def coletar(
         candidatas, na_comissao, autores_por_id, ids_deputados, mapa_principal, linhas
     )
     tramitacoes_de = _tramitacoes_da_execucao(transporte)
-    relatorias = _ler_relatorias(tramitacoes_de, referencias)
+    relatorias = _ler_relatorias(tramitacoes_de, referencias, linhas)
     deputados_relator = _deputados_relator(transporte, relatorias, deputados, com_autoria)
 
     itens = construir_itens(

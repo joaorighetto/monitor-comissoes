@@ -496,20 +496,16 @@ def test_nas_fixtures_reais_nenhum_item_fica_com_relator_indeterminado(documento
 def test_tipo_de_relatoria_novo_numa_referencia_marca_so_o_item_e_a_coleta_termina(
     config, transporte, agora, tmp_path
 ):
-    # Derivada: a API passa a registrar um tipo de tramitação de relatoria desconhecido no PL
-    # 4501/2023, que só está na lista por relatoria (candidato sem etiqueta de autoria).
+    # Derivada: a última tramitação do PL 4501/2023 (a sequência do lote) passa a ter um tipo de
+    # relatoria desconhecido. O item só está na lista por relatoria (candidato sem etiqueta de
+    # autoria). O que vem depois da sequência do lote não conta, então o tipo novo não é anexado.
     def com_tipo_novo(corpo: bytes) -> bytes:
         documento = json.loads(corpo)
-        ultimo = max(t["sequencia"] for t in documento["dados"])
-        documento["dados"].append(
-            {
-                "sequencia": ultimo + 1,
-                "dataHora": "2026-10-17T10:00",
-                "siglaOrgao": "CE",
-                "codTipoTramitacao": "9999",
-                "descricaoTramitacao": "Relator(a) Substituído",
-                "uriUltimoRelator": None,
-            }
+        ultima = max(documento["dados"], key=lambda t: t["sequencia"])
+        ultima.update(
+            codTipoTramitacao="9999",
+            descricaoTramitacao="Relator(a) Substituído",
+            uriUltimoRelator=None,
         )
         return json.dumps(documento).encode()
 
