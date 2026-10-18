@@ -7,23 +7,38 @@ from datetime import datetime
 from pathlib import Path
 
 from .config import Config
-from .deputados import obter_deputados_novo
+from .deputados import Deputado, DeputadoHoje, obter_deputado, obter_deputados_novo
 from .erros import ESTOQUE_VAZIO, FalhaDeColeta
-from .estoque import BRASILIA, PARTIDO, TIPOS, construir_itens, ids_na_comissao, subir_ate_a_raiz
+from .estoque import (
+    BRASILIA,
+    PARTIDO,
+    TIPOS,
+    construir_itens,
+    deve_ler_tramitacoes,
+    etiquetar,
+    ids_na_comissao,
+    resolver_referencia,
+    subir_ate_a_raiz,
+)
 from .lote import (
+    Lote,
+    Proposicao,
     baixar_lote,
     contar_estoque_bruto,
     ler_apensacao,
     ler_autores,
     ler_ids_com_autor_novo,
+    ler_ids_relator_novo,
     ler_proposicoes,
     verificar_frescor,
 )
+from .relatoria import ResultadoRelatoria, relator_atual
 from .saida import gravar_atomico, montar_documento
+from .tramitacoes import obter_tramitacoes
 from .transporte import Transporte
 
 URL_BASE = "https://dadosabertos.camara.leg.br"
-VERSAO_FORMATO = 1
+VERSAO_FORMATO = 2
 
 
 @dataclass(frozen=True)
@@ -40,6 +55,86 @@ class Coletado:
     documento: dict
     estoque_bruto: int  # PL/PLP nas comissões, pelo órgão do próprio status (AGE, FR-015a)
     dados_camara_em: datetime  # UTC
+
+
+def _candidatos_a_relatoria(
+    lote: Lote, ids_deputados: set[int], comissoes: tuple[str, ...], mapa_principal: dict[int, int]
+) -> set[int]:
+    """Linhas cujo último relator é do NOVO e os apensados dessas raízes (research R3).
+
+    É só o conjunto de proposições a examinar: a etiqueta depende da confirmação pelas
+    tramitações.
+    """
+    com_relator_novo: set[int] = set()
+    for ano in lote.anos:
+        com_relator_novo |= ler_ids_relator_novo(lote.proposicoes(ano), ids_deputados, comissoes)
+    candidatos = set(com_relator_novo)
+    for id_proposicao in mapa_principal:
+        if subir_ate_a_raiz(id_proposicao, mapa_principal) in com_relator_novo:
+            candidatos.add(id_proposicao)
+    return candidatos
+
+
+def _referencias_a_ler(
+    candidatas: dict[int, Proposicao],
+    na_comissao: set[int],
+    autores_por_id: dict[int, list],
+    ids_deputados: set[int],
+    mapa_principal: dict[int, int],
+    linhas: dict[int, Proposicao],
+) -> tuple[dict[int, str], set[int]]:
+    """Referências cujas tramitações são lidas: (id da referência -> comissão do lote, ids das
+    que têm item com etiqueta de autoria).
+
+    Todo item com etiqueta de autoria (para informar o relator) e todo candidato à relatoria
+    NOVO (`deve_ler_tramitacoes`). A referência compartilhada por vários itens entra uma vez.
+    """
+    referencias: dict[int, str] = {}
+    com_autoria: set[int] = set()
+    for candidata in candidatas.values():
+        if candidata.id not in na_comissao:
+            continue
+        autores = autores_por_id.get(candidata.id, [])
+        referencia = resolver_referencia(candidata, mapa_principal, linhas).proposicao
+        if deve_ler_tramitacoes(autores, ids_deputados, referencia):
+            referencias[referencia.id] = referencia.orgao
+            if etiquetar(autores, ids_deputados):
+                com_autoria.add(referencia.id)
+    return referencias, com_autoria
+
+
+def _ler_relatorias(
+    transporte: Transporte, referencias: dict[int, str]
+) -> dict[int, ResultadoRelatoria]:
+    return {
+        id_referencia: relator_atual(
+            obter_tramitacoes(transporte, URL_BASE, id_referencia), referencias[id_referencia]
+        )
+        for id_referencia in sorted(referencias)
+    }
+
+
+def _deputados_relator(
+    transporte: Transporte,
+    relatorias: dict[int, ResultadoRelatoria],
+    deputados_novo: list[Deputado],
+    com_autoria: set[int],
+) -> dict[int, DeputadoHoje]:
+    """Nome e partido de hoje dos relatores que aparecem na lista.
+
+    O NOVO em exercício dispensa a consulta. Um relator só é consultado se a referência dele
+    tem item com etiqueta de autoria: o de um candidato refutado pelas tramitações não entra na
+    lista, e uma falha ao consultá-lo derrubaria o dia por alguém que nem aparece.
+    """
+    do_novo = {d.id: DeputadoHoje(d.id, d.nome, PARTIDO) for d in deputados_novo}
+    ids = sorted(
+        {
+            r.relator.id
+            for id_referencia, r in relatorias.items()
+            if r.relator and (r.relator.id in do_novo or id_referencia in com_autoria)
+        }
+    )
+    return {i: do_novo[i] if i in do_novo else obter_deputado(transporte, URL_BASE, i) for i in ids}
 
 
 def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado:
@@ -66,9 +161,14 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         for ano in lote.anos:
             mapa_principal.update(ler_apensacao(lote.proposicoes(ano)))
 
-        # Linhas necessárias: as proposições ligadas ao NOVO e as raízes de suas cadeias.
-        necessarias = set(ligadas_ao_novo)
-        for id_proposicao in ligadas_ao_novo:
+        # Candidatos à relatoria NOVO (REL): examinados junto com os de autoria.
+        examinar = ligadas_ao_novo | _candidatos_a_relatoria(
+            lote, ids_deputados, config.comissoes, mapa_principal
+        )
+
+        # Linhas necessárias: as proposições a examinar e as raízes de suas cadeias.
+        necessarias = set(examinar)
+        for id_proposicao in examinar:
             raiz = subir_ate_a_raiz(id_proposicao, mapa_principal)
             if raiz is not None:
                 necessarias.add(raiz)
@@ -76,7 +176,7 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         for ano in lote.anos:
             for p in ler_proposicoes(lote.proposicoes(ano), ids=necessarias):
                 linhas[p.id] = p
-        candidatas = {i: p for i, p in linhas.items() if i in ligadas_ao_novo and p.tipo in TIPOS}
+        candidatas = {i: p for i, p in linhas.items() if i in examinar and p.tipo in TIPOS}
 
         # Autores completos só das que estão na comissão (a referência é que decide).
         na_comissao = ids_na_comissao(candidatas, config.comissoes, mapa_principal, linhas)
@@ -84,6 +184,13 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         for ano in lote.anos:
             for autor in ler_autores(lote.autores(ano), ids=na_comissao):
                 autores_por_id[autor.id_proposicao].append(autor)
+
+    # Tramitações (API ao vivo): relator atual de cada referência e partido de hoje dos relatores.
+    referencias, com_autoria = _referencias_a_ler(
+        candidatas, na_comissao, autores_por_id, ids_deputados, mapa_principal, linhas
+    )
+    relatorias = _ler_relatorias(transporte, referencias)
+    deputados_relator = _deputados_relator(transporte, relatorias, deputados, com_autoria)
 
     itens = construir_itens(
         candidatas,
@@ -93,6 +200,8 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         agora,
         mapa_principal=mapa_principal,
         proposicoes=linhas,
+        relatorias=relatorias,
+        deputados_relator=deputados_relator,
     )
     if not itens:
         raise FalhaDeColeta(ESTOQUE_VAZIO, "nenhum item após os filtros; a lista não é gravada")

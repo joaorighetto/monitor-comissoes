@@ -5,21 +5,32 @@ Uso (com rede, uma vez; baixa cerca de 1 GB e descarta depois da seleção):
     uv run python tests/capturar_fixtures.py
 
 Grava em tests/fixtures/camara/: proposicoes-AAAA.csv e proposicoesAutores-AAAA.csv (2003 a
-2026), deputados-novo.json e manifesto.json. Os valores das linhas são copiados sem alteração;
-só a serialização é refeita (BOM, ';', campos entre aspas, CRLF entre linhas, como na fonte).
+2026), deputados-novo.json, tramitacoes/{id}.json, deputados/{id}.json e manifesto.json. Os
+valores das linhas são copiados sem alteração; só a serialização é refeita (BOM, ';', campos
+entre aspas, CRLF entre linhas, como na fonte). As respostas da API são gravadas byte a byte.
 """
 
 import csv
 import json
 import sys
 import tempfile
+import time
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
 BASE = "https://dadosabertos.camara.leg.br"
 ANOS = range(2003, 2027)
-ALVOS = [("PL", "1843", "2022"), ("PL", "3871", "2024"), ("PL", "4047", "2019")]
+ALVOS = [
+    ("PL", "1843", "2022"),
+    ("PL", "3871", "2024"),
+    ("PL", "4047", "2019"),
+    # REL: casos da sondagem de relatoria (PRODUCT.md §5.4)
+    ("PL", "937", "2022"),
+    ("PL", "3514", "2023"),
+    ("PL", "4501", "2023"),
+]
+TIPOS = ("PL", "PLP")
 COMISSOES = {"CE", "CREDN"}
 FILLER = 2  # linhas reais mantidas em todo arquivo de ano, para que nenhum fique vazio
 DESTINO = Path(__file__).parent / "fixtures" / "camara"
@@ -41,6 +52,22 @@ def ler(caminho: Path):
         cabecalho = next(leitor)
         yield cabecalho
         yield from leitor
+
+
+def baixar_json(url: str, tentativas: int = 3) -> bytes:
+    """Resposta da API, byte a byte, com novas tentativas e uma pausa curta entre pedidos."""
+    for numero in range(tentativas):
+        try:
+            requisicao = urllib.request.Request(url, headers={"Accept": "application/json"})
+            with urllib.request.urlopen(requisicao, timeout=60) as resp:
+                corpo = resp.read()
+            time.sleep(0.1)
+            return corpo
+        except OSError:
+            if numero == tentativas - 1:
+                raise
+            time.sleep(2 * (numero + 1))
+    raise AssertionError("tentativas deve ser maior que zero")
 
 
 def id_da_uri(uri: str) -> int | None:
@@ -105,6 +132,7 @@ def main() -> int:
         # Passada 2 (proposições): mapa de apensação, alvos e candidatos de contraste.
         principal, todos, alvo_ids = {}, set(), {}
         contraste = {}
+        na_comissao, relator_novo, tipos = set(), set(), {}
         for ano in ANOS:
             leitor = ler(tmp / f"proposicoes-{ano}.csv")
             cab = next(leitor)
@@ -117,6 +145,7 @@ def main() -> int:
                     "ano",
                     "uriPropPrincipal",
                     "ultimoStatus_siglaOrgao",
+                    "ultimoStatus_uriRelator",
                 )
             }
             for r in leitor:
@@ -124,6 +153,17 @@ def main() -> int:
                 todos.add(pid)
                 if r[c["uriPropPrincipal"]]:
                     principal[pid] = id_da_uri(r[c["uriPropPrincipal"]])
+                if r[c["ultimoStatus_siglaOrgao"]] in COMISSOES:
+                    na_comissao.add(pid)
+                    relator = id_da_uri(r[c["ultimoStatus_uriRelator"]])
+                    if relator in deputados:
+                        relator_novo.add(pid)
+                if (
+                    pid in novo
+                    or r[c["uriPropPrincipal"]]
+                    or r[c["ultimoStatus_siglaOrgao"]] in COMISSOES
+                ):
+                    tipos[pid] = r[c["siglaTipo"]]
                 chave = (r[c["siglaTipo"]], r[c["numero"]], r[c["ano"]])
                 if chave in ALVOS:
                     alvo_ids[chave] = pid
@@ -159,14 +199,33 @@ def main() -> int:
                 exemplos.setdefault("raiz_ausente", pid)
         print("exemplos reais:", exemplos, file=sys.stderr)
 
+        def referencia(pid):
+            """Raiz da cadeia de apensação, ou o próprio pid se a raiz some ou há ciclo."""
+            raiz = cadeia(pid)[-1]
+            return raiz if raiz in todos and raiz not in principal else pid
+
+        # REL: o que a coleta lista hoje (autoria) e os candidatos à relatoria NOVO: linhas
+        # nas comissões cujo último relator é deputado do NOVO e os apensados dessas raízes.
+        itens_autoria = {p for p in novo if tipos.get(p) in TIPOS and referencia(p) in na_comissao}
+        apensados_de_relator = {
+            p for p in principal if cadeia(p)[-1] in relator_novo or p in relator_novo
+        }
+        candidatos = {p for p in relator_novo | apensados_de_relator if tipos.get(p) in TIPOS}
+        referencias = {referencia(p) for p in itens_autoria | candidatos} & na_comissao
+
         escolhidos = set(contraste.values()) | set(exemplos.values())
         escolhidos |= set(alvo_ids.values())
+        escolhidos |= itens_autoria | candidatos | referencias
         for pid in list(escolhidos):
             escolhidos.update(cadeia(pid))
         manifesto["selecao"] = {
             "alvos": {f"{t} {n}/{a}": pid for (t, n, a), pid in alvo_ids.items()},
             "contraste": contraste,
             "exemplos_reais": exemplos,
+            "itens_com_etiqueta_de_autoria": sorted(itens_autoria),
+            "relator_novo_no_lote": sorted(relator_novo),
+            "apensados_de_raiz_com_relator_novo": sorted(apensados_de_relator & candidatos),
+            "referencias_com_tramitacoes": sorted(referencias | set(alvo_ids.values())),
             "total_ids_selecionados": len(escolhidos),
         }
 
@@ -183,6 +242,23 @@ def main() -> int:
             i_prop = cab.index("idProposicao")
             linhas = [r for k, r in enumerate(leitor) if k < FILLER or int(r[i_prop]) in escolhidos]
             gravar(DESTINO / f"proposicoesAutores-{ano}.csv", cab, linhas)
+
+        # REL: respostas reais da API para as referências e para os relatores designados.
+        pasta_tram = DESTINO / "tramitacoes"
+        pasta_dep = DESTINO / "deputados"
+        pasta_tram.mkdir(exist_ok=True)
+        pasta_dep.mkdir(exist_ok=True)
+        relatores = set()
+        for ref in sorted(referencias | set(alvo_ids.values())):
+            corpo = baixar_json(f"{BASE}/api/v2/proposicoes/{ref}/tramitacoes")
+            (pasta_tram / f"{ref}.json").write_bytes(corpo)
+            for t in json.loads(corpo)["dados"]:
+                if t["codTipoTramitacao"] == "320" and t["uriUltimoRelator"]:
+                    relatores.add(id_da_uri(t["uriUltimoRelator"]))
+        for dep in sorted(relatores):
+            (pasta_dep / f"{dep}.json").write_bytes(baixar_json(f"{BASE}/api/v2/deputados/{dep}"))
+        manifesto["relatores_consultados"] = sorted(relatores)
+        print(f"tramitações: {len(referencias)}; relatores: {len(relatores)}", file=sys.stderr)
 
         (DESTINO / "manifesto.json").write_text(
             json.dumps(manifesto, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

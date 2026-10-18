@@ -2,6 +2,7 @@
 
 import io
 import json
+import re
 import socket
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta, timezone
@@ -84,6 +85,8 @@ class TransporteFalso:
     transformar[nome]: função bytes -> bytes aplicada ao corpo (variantes derivadas, cortes).
     erro[nome]: FalhaDeColeta levantada ao pedir o arquivo (use "deputados" para a API).
     last_modified[nome]: sobrescreve o Last-Modified do manifesto.
+    transformar_json[chave] / erro_json[chave]: o mesmo para as respostas da API por proposição
+    ("tramitacoes/{id}") e por deputado ("deputados/{id}"), servidas de fixtures/<chave>.json.
     """
 
     def __init__(self):
@@ -98,13 +101,51 @@ class TransporteFalso:
         self.last_modified: dict[str, datetime] = {}
         self.json_deputados = (FIXTURES / "deputados-novo.json").read_bytes()
         self.total_deputados = "5"
+        self.transformar_json: dict[str, Callable[[bytes], bytes]] = {}
+        self.erro_json: dict[str, FalhaDeColeta] = {}
+        # Para testes de OUTRAS regras que mudam as comissões ou os anos lidos, e por isso
+        # pedem tramitações de referências que não estão nas fixtures reais: serve uma
+        # tramitação neutra (órgão de apoio), o que deixa o relator indeterminado.
+        self.tramitacoes_sinteticas = False
 
     def obter_json(self, url: str) -> RespostaJson:
         self.pedidos.append(url)
+        por_id = re.search(r"/api/v2/(proposicoes|deputados)/(\d+)(/tramitacoes)?$", url)
+        if por_id:
+            return self._json_por_id(por_id)
         if "deputados" in self.erro:
             raise self.erro["deputados"]
         cabecalhos = {} if self.total_deputados is None else {"x-total-count": self.total_deputados}
         return RespostaJson(corpo=self.json_deputados, cabecalhos=cabecalhos)
+
+    def _json_por_id(self, achado) -> RespostaJson:
+        recurso, numero, tramitacoes = achado.groups()
+        chave = f"{'tramitacoes' if tramitacoes else 'deputados'}/{numero}"
+        if chave in self.erro_json:
+            raise self.erro_json[chave]
+        arquivo = FIXTURES / f"{chave}.json"
+        if not arquivo.exists() and self.tramitacoes_sinteticas and tramitacoes:
+            corpo = json.dumps(
+                {
+                    "dados": [
+                        {
+                            "sequencia": 1,
+                            "dataHora": "2026-01-01T00:00",
+                            "siglaOrgao": "MESA",
+                            "codTipoTramitacao": "100",
+                            "descricaoTramitacao": "Apresentação de Proposição",
+                            "uriUltimoRelator": None,
+                        }
+                    ],
+                    "links": [],
+                }
+            ).encode()
+            return RespostaJson(corpo=corpo, cabecalhos={})
+        assert arquivo.exists(), f"fixture ausente: {arquivo.relative_to(FIXTURES)} ({recurso})"
+        corpo = arquivo.read_bytes()
+        if chave in self.transformar_json:
+            corpo = self.transformar_json[chave](corpo)
+        return RespostaJson(corpo=corpo, cabecalhos={})
 
     def baixar(self, url: str, destino: Path) -> ArquivoBaixado:
         nome = url.rsplit("/", 1)[1]

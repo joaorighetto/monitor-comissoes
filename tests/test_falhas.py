@@ -4,6 +4,7 @@ import csv
 import io
 import json
 import os
+import re
 import tempfile
 from datetime import UTC, timedelta
 from email.utils import parsedate_to_datetime
@@ -104,8 +105,15 @@ def test_arquivos_desatualizados(tmp_path, transporte, agora, capsys):
     )
 
 
-def test_exatamente_36_horas_ainda_e_aceito(tmp_path, transporte, agora, capsys):
-    transporte.last_modified["proposicoes-2021.csv"] = agora - timedelta(hours=36)
+def test_exatamente_36_horas_ainda_e_aceito(tmp_path, transporte, capsys):
+    # O arquivo mais antigo passa a ter 1 hora a menos que o mais antigo do manifesto, e o
+    # relógio é fixado em exatamente 36 horas depois dele (a dispersão fica abaixo de 6 horas).
+    manifesto = json.loads((FIXTURES / "manifesto.json").read_text(encoding="utf-8"))["arquivos"]
+    mais_antigo = min(
+        parsedate_to_datetime(a["last_modified"]).astimezone(UTC) for a in manifesto.values()
+    )
+    transporte.last_modified["proposicoes-2021.csv"] = mais_antigo - timedelta(hours=1)
+    agora = mais_antigo - timedelta(hours=1) + timedelta(hours=36)
 
     codigo, saida = rodar(tmp_path, transporte, agora)
 
@@ -236,6 +244,10 @@ def abrir_da_camara(arquivo_cortado=None):
 
     def abrir(requisicao, timeout=None):
         url = requisicao.full_url
+        por_id = re.search(r"/api/v2/(proposicoes|deputados)/(\d+)(/tramitacoes)?$", url)
+        if por_id:
+            pasta = "tramitacoes" if por_id.group(3) else "deputados"
+            return RespostaFalsa((FIXTURES / pasta / f"{por_id.group(2)}.json").read_bytes(), {})
         if "/deputados" in url:
             corpo = (FIXTURES / "deputados-novo.json").read_bytes()
             return RespostaFalsa(corpo, {"X-Total-Count": "5"})
@@ -299,3 +311,98 @@ def test_diferenca_de_6_horas_entre_os_arquivos_ainda_e_aceita(tmp_path, transpo
     codigo, _ = rodar(tmp_path, transporte, agora)
 
     assert codigo == 0
+
+
+# --- REL: tramitações e partido do relator ------------------------------------------------
+
+PL_3871_2024 = 2461936  # sempre lido (autoria); relator Thiago de Joaldo, fora do NOVO
+THIAGO_DE_JOALDO = 220560
+
+
+@pytest.mark.parametrize("trecho", ["HTTP 503", "HTTP 404"])
+def test_erro_de_rede_ou_http_nas_tramitacoes(tmp_path, transporte, agora, capsys, trecho):
+    transporte.erro_json[f"tramitacoes/{PL_3871_2024}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, f"tramitacoes: {trecho}"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "fonte_indisponivel", str(PL_3871_2024), trecho)
+
+
+def _estragar(documento_json):
+    return {
+        "lista vazia": lambda d: {"dados": [], "links": d["links"]},
+        "sem dados": lambda d: {"links": d["links"]},
+        "sequencia repetida": lambda d: d["dados"].append(dict(d["dados"][0])),
+        "pagina seguinte": lambda d: d["links"].append({"rel": "next", "href": "x"}),
+    }[documento_json]
+
+
+@pytest.mark.parametrize(
+    "defeito", ["lista vazia", "sem dados", "sequencia repetida", "pagina seguinte"]
+)
+def test_formato_inesperado_nas_tramitacoes(tmp_path, transporte, agora, capsys, defeito):
+    estragar = _estragar(defeito)
+
+    def transformar(corpo):
+        documento = json.loads(corpo)
+        resultado = estragar(documento)
+        return json.dumps(documento if resultado is None else resultado).encode()
+
+    transporte.transformar_json[f"tramitacoes/{PL_3871_2024}"] = transformar
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "formato_alterado", str(PL_3871_2024))
+
+
+def test_tramitacoes_que_nao_sao_json(tmp_path, transporte, agora, capsys):
+    transporte.transformar_json[f"tramitacoes/{PL_3871_2024}"] = lambda _: b"<html>erro</html>"
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "formato_alterado", "não é JSON")
+
+
+def test_erro_ao_obter_o_partido_do_relator_falha_a_execucao_inteira(
+    tmp_path, transporte, agora, capsys
+):
+    transporte.erro_json[f"deputados/{THIAGO_DE_JOALDO}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, "deputados: HTTP 500"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "api_deputados", str(THIAGO_DE_JOALDO), "500")
+
+
+def test_resposta_invalida_do_partido_do_relator(tmp_path, transporte, agora, capsys):
+    transporte.transformar_json[f"deputados/{THIAGO_DE_JOALDO}"] = lambda _: b'{"dados": {}}'
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(capsys, codigo, saida, "api_deputados", str(THIAGO_DE_JOALDO))
+
+
+def test_coluna_do_relator_ausente_no_lote(tmp_path, transporte, agora, capsys):
+    transporte.transformar["proposicoes-2020.csv"] = sem_coluna("ultimoStatus_uriRelator")
+
+    codigo, saida = rodar(tmp_path, transporte, agora)
+
+    verificar_falha(
+        capsys, codigo, saida, "formato_alterado", "coluna ultimoStatus_uriRelator",
+        "proposicoes-2020.csv",
+    )  # fmt: skip
+
+
+def test_falha_de_tramitacoes_sem_atual_anterior_nao_grava_nada(
+    tmp_path, transporte, agora, capsys
+):
+    transporte.erro_json[f"tramitacoes/{PL_3871_2024}"] = FalhaDeColeta(
+        FONTE_INDISPONIVEL, "tramitacoes: HTTP 503"
+    )
+
+    codigo, saida = rodar(tmp_path, transporte, agora, com_anterior=False)
+
+    verificar_falha(capsys, codigo, saida, "fonte_indisponivel", com_anterior=False)

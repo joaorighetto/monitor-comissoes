@@ -7,12 +7,16 @@ from collections.abc import Iterable
 from datetime import datetime, timedelta, timezone
 from typing import NamedTuple
 
+from .deputados import DeputadoHoje
+from .erros import INTERNA, FalhaDeColeta
 from .lote import Autor, Proposicao
+from .relatoria import ResultadoRelatoria
 
 BRASILIA = timezone(timedelta(hours=-3))  # sem horário de verão desde 2019
 PARTIDO = "NOVO"
 ETIQUETA_AUTORIA = "autoria NOVO"
 ETIQUETA_AUTOR_HOJE = "autor hoje no NOVO"
+ETIQUETA_RELATORIA = "relatoria NOVO"
 TIPOS = ("PL", "PLP")
 FORMATO_DATA = "%Y-%m-%dT%H:%M:%S"
 
@@ -25,15 +29,37 @@ def identificacao(proposicao: Proposicao) -> str:
     return f"{proposicao.tipo} {proposicao.numero}/{proposicao.ano}"
 
 
-def etiquetar(autores: Iterable[Autor], ids_deputados_novo: set[int]) -> list[str]:
-    """Etiquetas de autoria (PRODUCT.md §5.4), pelos autores da própria proposição."""
+def etiquetar(
+    autores: Iterable[Autor], ids_deputados_novo: set[int], id_relator: int | None = None
+) -> list[str]:
+    """Etiquetas (PRODUCT.md §5.4), sempre na ordem autoria, autor hoje, relatoria.
+
+    As de autoria vêm dos autores da própria proposição; a de relatoria, do relator atual da
+    referência (`id_relator`), já confirmado pelas tramitações.
+    """
     autores = list(autores)
     etiquetas = []
     if any(a.partido_na_data == PARTIDO for a in autores):
         etiquetas.append(ETIQUETA_AUTORIA)
     if any(a.id_deputado is not None and a.id_deputado in ids_deputados_novo for a in autores):
         etiquetas.append(ETIQUETA_AUTOR_HOJE)
+    if id_relator is not None and id_relator in ids_deputados_novo:
+        etiquetas.append(ETIQUETA_RELATORIA)
     return etiquetas
+
+
+def deve_ler_tramitacoes(
+    autores: Iterable[Autor], ids_deputados_novo: set[int], referencia: Proposicao
+) -> bool:
+    """Se as tramitações da referência precisam ser lidas para este item.
+
+    Todo item com etiqueta de autoria (para informar o relator) e todo candidato à relatoria
+    NOVO (o relator do último status da referência é do NOVO). É a única definição: a coleta
+    lê por ela e `construir_itens` exige a leitura por ela.
+    """
+    return bool(etiquetar(autores, ids_deputados_novo)) or (
+        referencia.id_relator in ids_deputados_novo
+    )
 
 
 class Referencia(NamedTuple):
@@ -76,12 +102,34 @@ def resolver_referencia(
     return Referencia("raiz", raiz, raiz)
 
 
+def _com_segundos(data_hora: str) -> str:
+    """A API entrega AAAA-MM-DDTHH:MM; o `atual.json` usa AAAA-MM-DDTHH:MM:SS."""
+    return data_hora if len(data_hora) == 19 else f"{data_hora}:00"
+
+
+def _relator(
+    resultado: ResultadoRelatoria, referencia_id: int, deputados: dict[int, DeputadoHoje]
+) -> dict | None:
+    if resultado.relator is None:
+        return None
+    deputado = deputados[resultado.relator.id]
+    return {
+        "id": deputado.id,
+        "nome": deputado.nome,
+        "partido_hoje": deputado.partido,
+        "designado_em": _com_segundos(resultado.relator.designado_em),
+        "fonte": link_oficial(referencia_id),
+    }
+
+
 def _item(
     candidata: Proposicao,
     autores: list[Autor],
     etiquetas: list[str],
     referencia: Referencia,
     hoje_brasilia,
+    relatoria: ResultadoRelatoria,
+    deputados_relator: dict[int, DeputadoHoje],
 ) -> dict:
     status = referencia.proposicao
     raiz = referencia.raiz
@@ -114,6 +162,10 @@ def _item(
             else None
         ),
         "principal_nao_localizada": referencia.estado == "nao_localizada",
+        "relator": _relator(relatoria, status.id, deputados_relator),
+        "relator_indeterminado": (
+            {"motivo": relatoria.indeterminado} if relatoria.indeterminado else None
+        ),
     }
 
 
@@ -141,15 +193,20 @@ def construir_itens(
     agora: datetime,
     mapa_principal: dict[int, int] | None = None,
     proposicoes: dict[int, Proposicao] | None = None,
+    relatorias: dict[int, ResultadoRelatoria] | None = None,
+    deputados_relator: dict[int, DeputadoHoje] | None = None,
 ) -> list[dict]:
     """PL/PLP na comissão com ao menos uma etiqueta, os parados há mais tempo primeiro.
 
     `mapa_principal` (id -> id da principal, só dos apensados) e `proposicoes` (as candidatas e
     as raízes de suas cadeias) permitem avaliar cada apensado pela proposição principal.
+    `relatorias` (id da referência -> relator atual) vem das tramitações; `deputados_relator`
+    (id -> nome e partido de hoje) tem todo relator que aparece em `relatorias`.
     """
     hoje = agora.astimezone(BRASILIA).date()
     mapa = mapa_principal or {}
     linhas = proposicoes if proposicoes is not None else candidatas
+    deputados_relator = deputados_relator or {}
     selecionados = []
     for candidata in candidatas.values():
         if candidata.tipo not in TIPOS:
@@ -158,13 +215,34 @@ def construir_itens(
         if referencia.proposicao.orgao not in comissoes:
             continue
         autores = autores_por_id.get(candidata.id, [])
-        etiquetas = etiquetar(autores, ids_deputados_novo)
-        if not etiquetas:
+        relatoria = ResultadoRelatoria()
+        if relatorias is not None:
+            if not deve_ler_tramitacoes(autores, ids_deputados_novo, referencia.proposicao):
+                continue  # sem autoria e sem relator do NOVO no lote: não há como entrar
+            if referencia.proposicao.id not in relatorias:
+                # Nunca tratar uma referência não lida como "sem relator": seria uma omissão
+                # silenciosa de `relatoria NOVO` (constituição, III).
+                raise FalhaDeColeta(
+                    INTERNA,
+                    f"tramitações da referência {referencia.proposicao.id} não foram lidas",
+                )
+            relatoria = relatorias[referencia.proposicao.id]
+        id_relator = relatoria.relator.id if relatoria.relator else None
+        etiquetas = etiquetar(autores, ids_deputados_novo, id_relator)
+        # Candidato à relatoria NOVO (o lote aponta relator do NOVO) que as tramitações não
+        # deixam decidir entra com a marca: nada some em silêncio (spec FR-011).
+        candidato_indeterminado = (
+            relatoria.indeterminado is not None
+            and referencia.proposicao.id_relator in ids_deputados_novo
+        )
+        if not etiquetas and not candidato_indeterminado:
             continue
         selecionados.append(
             (
                 (referencia.proposicao.ultimo_status_em, candidata.id),
-                _item(candidata, autores, etiquetas, referencia, hoje),
+                _item(
+                    candidata, autores, etiquetas, referencia, hoje, relatoria, deputados_relator
+                ),
             )
         )
     return [item for _, item in sorted(selecionados, key=lambda par: par[0])]

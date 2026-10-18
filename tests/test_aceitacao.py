@@ -37,7 +37,7 @@ def documento(config, transporte, agora, tmp_path):
 def test_pl_1843_2022_tem_autoria_novo(documento):
     item = por_identificacao(documento)["PL 1843/2022"]
 
-    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
     assert item["comissao"] == "CE"
     assert item["situacao"] == "Aguardando Parecer"
     assert item["id"] == 2331032
@@ -73,7 +73,7 @@ def test_todo_item_tem_link_oficial_etiqueta_e_comissao_da_lista(documento):
     for item in documento["itens"]:
         assert item["link"] == f"https://www.camara.leg.br/propostas-legislativas/{item['id']}"
         assert item["etiquetas"]
-        assert set(item["etiquetas"]) <= {"autoria NOVO", "autor hoje no NOVO"}
+        assert set(item["etiquetas"]) <= {"autoria NOVO", "autor hoje no NOVO", "relatoria NOVO"}
         assert item["comissao"] in ("CE", "CREDN")
         assert item["tipo"] in ("PL", "PLP")
 
@@ -99,6 +99,39 @@ def test_comando_imprime_resumo_e_sai_com_zero(transporte, agora, tmp_path, caps
     assert linha.startswith("OK: ")
     assert "CE:" in linha and "CREDN:" in linha
     assert saida.exists()
+
+
+# --- REL US1: relatoria NOVO atual (PRODUCT.md §5.4) ------------------------------------------
+
+
+def test_pl_4501_2023_entra_so_por_relatoria_novo(documento):
+    # Autoria de Duarte Jr. (PSB); o relator atual na CE é Luiz Lima, hoje do NOVO.
+    item = por_identificacao(documento)["PL 4501/2023"]
+
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["comissao"] == "CE"
+    assert item["relator"]["id"] == 204455
+    assert item["relator"]["nome"] == "Luiz Lima"
+    assert item["relator"]["partido_hoje"] == "NOVO"
+    assert item["relator"]["designado_em"] == "2025-04-09T00:00:00"
+    assert item["relator"]["fonte"].endswith("/2388105")
+    assert item["relator_indeterminado"] is None
+
+
+def test_pl_937_2022_fica_fora_porque_o_relator_do_novo_devolveu_a_materia(documento):
+    assert "PL 937/2022" not in por_identificacao(documento)
+
+
+def test_pl_3514_2023_fica_fora_porque_o_relator_do_novo_era_da_cespo(documento):
+    assert "PL 3514/2023" not in por_identificacao(documento)
+
+
+def test_pl_1843_2022_tem_autoria_e_relatoria(documento):
+    item = por_identificacao(documento)["PL 1843/2022"]
+
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
+    assert item["relator"]["nome"] == "Adriana Ventura"
+    assert item["relator"]["partido_hoje"] == "NOVO"
 
 
 # --- US2: apensados ------------------------------------------------------------------------
@@ -149,7 +182,9 @@ def test_apensado_a_uma_raiz_na_comissao_entra_com_status_da_raiz(
 
     item = por_identificacao(gerar(config, transporte, agora, tmp_path))["PL 4047/2019"]
 
-    assert item["etiquetas"] == ["autor hoje no NOVO"]
+    # Apensado herda o relator da principal: a relatora do PL 1843/2022 é do NOVO (REL, US2).
+    assert item["etiquetas"] == ["autor hoje no NOVO", "relatoria NOVO"]
+    assert item["relator"]["nome"] == "Adriana Ventura"
     assert item["apensado_a"]["identificacao"] == "PL 1843/2022"
     assert item["apensado_a"]["link"].endswith(f"/{PL_1843_2022}")
     assert item["comissao"] == "CE"
@@ -187,6 +222,7 @@ def test_ciclo_de_apensacao_termina_normalmente_com_a_marca(config, transporte, 
 
 def test_trocar_a_comissao_muda_o_resultado_sem_mexer_no_codigo(transporte, agora, tmp_path):
     # O PL 7843/2017 (autoria do NOVO) está na MESA nas fixtures reais.
+    transporte.tramitacoes_sinteticas = True  # tramitações reais só existem para a CE e a CREDN
     documento = gerar(Config(("MESA",), 2003), transporte, agora, tmp_path)
 
     identificacoes = set(por_identificacao(documento))
@@ -204,6 +240,7 @@ def test_so_a_ce_exclui_os_itens_da_credn(config, transporte, agora, tmp_path):
 
 
 def test_ano_minimo_limita_os_arquivos_pedidos(transporte, agora, tmp_path):
+    transporte.tramitacoes_sinteticas = True  # sem os anos antigos, as referências são outras
     documento = gerar(Config(("CE", "CREDN"), 2023), transporte, agora, tmp_path)
 
     pedidos = transporte.arquivos_pedidos()
@@ -287,7 +324,7 @@ def test_meta_traz_origem_e_parametros_na_ordem_do_contrato(documento):
     meta = documento["meta"]
 
     assert list(meta) == ORDEM_DO_META
-    assert meta["versao_formato"] == 1
+    assert meta["versao_formato"] == 2
     assert meta["comissoes"] == ["CE", "CREDN"]
     assert meta["ano_minimo"] == 2003
     assert meta["anos_lidos"] == [2003, 2026]
@@ -328,3 +365,231 @@ def test_invariantes_do_contrato(documento):
             assert item["apensado_a"] is None
     ordem = [(i["ultimo_status_em"], i["id"]) for i in itens]
     assert ordem == sorted(ordem)
+
+
+# --- REL US2: apensados herdam o relator da principal ---------------------------------------
+
+
+def test_apensados_reais_de_uma_raiz_com_relatora_do_novo_entram_com_o_relator_da_raiz(
+    documento,
+):
+    itens = [i for i in documento["itens"] if i["apensado_a"]]
+    raiz = por_identificacao(documento)["PL 3961/2004"]
+    apensados = [i for i in itens if i["apensado_a"]["id"] == raiz["id"]]
+
+    assert raiz["relator"]["nome"] == "Adriana Ventura"
+    assert len(apensados) > 10  # a raiz tem dezenas de apensados na CE (fixtures reais)
+    for item in apensados:
+        assert item["etiquetas"] == ["relatoria NOVO"]
+        assert item["relator"] == raiz["relator"]
+        assert item["comissao"] == raiz["comissao"]
+        assert item["situacao"] == raiz["situacao"]
+
+
+def test_a_referencia_compartilhada_e_lida_uma_vez_so(config, transporte, agora, tmp_path):
+    gerar(config, transporte, agora, tmp_path)
+
+    tramitacoes = [u for u in transporte.pedidos if u.endswith("/tramitacoes")]
+    assert len(tramitacoes) == len(set(tramitacoes))
+    deputados = [u for u in transporte.pedidos if "/api/v2/deputados/" in u]
+    assert len(deputados) == len(set(deputados))
+
+
+def test_apensado_cuja_raiz_esta_fora_da_lista_continua_fora_mesmo_com_relator(documento):
+    # PL 4047/2019: o autor é hoje do NOVO, mas a raiz da cadeia está na CFT.
+    assert "PL 4047/2019" not in por_identificacao(documento)
+
+
+# --- REL US3: relator e partido de hoje em todo item -----------------------------------------
+
+NOVO_EM_EXERCICIO_IDS = {156190, 204365, 204455, 204528, 220633}
+
+
+def test_relator_de_outro_partido_mostra_o_partido_de_hoje_sem_relatoria_novo(documento):
+    item = por_identificacao(documento)["PL 3871/2024"]
+
+    assert item["etiquetas"] == ["autor hoje no NOVO"]
+    assert item["relator"] == {
+        "id": 220560,
+        "nome": "Thiago de Joaldo",
+        "partido_hoje": "REPUBLICANOS",
+        "designado_em": "2026-04-27T17:13:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2461936",
+    }
+
+
+def test_item_so_de_autoria_tambem_traz_o_relator(documento):
+    item = por_identificacao(documento)["PL 5594/2020"]
+
+    assert "relatoria NOVO" not in item["etiquetas"]
+    assert item["relator"]["id"] == 178929
+    assert item["relator"]["partido_hoje"]
+
+
+def test_item_sem_relator_atual_traz_relator_nulo(documento):
+    # PL 648/2024 tem autoria do NOVO, mas o relator devolveu a matéria (507).
+    item = por_identificacao(documento)["PL 648/2024"]
+
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
+
+
+def test_relator_mostra_o_partido_de_hoje_e_nao_o_da_designacao(documento):
+    # O despacho da designação registra o partido da época (Luiz Lima já foi do PL); o item
+    # mostra o de hoje, que para quem está em exercício no NOVO vem da lista do dia.
+    item = por_identificacao(documento)["PL 4501/2023"]
+
+    assert item["relator"]["partido_hoje"] == "NOVO"
+    assert item["relator"]["designado_em"] == "2025-04-09T00:00:00"
+
+
+def test_fonte_do_relator_e_a_ficha_da_principal_no_apensado(documento):
+    apensados = [i for i in documento["itens"] if i["apensado_a"] and i["relator"]]
+
+    assert apensados
+    for item in apensados:
+        assert item["relator"]["fonte"] == item["apensado_a"]["link"]
+
+
+def test_relator_do_novo_dispensa_consulta_e_os_demais_sao_consultados_uma_vez(
+    config, transporte, agora, tmp_path
+):
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    consultados = {
+        int(u.rsplit("/", 1)[1]) for u in transporte.pedidos if "/api/v2/deputados/" in u
+    }
+    relatores = {i["relator"]["id"] for i in documento["itens"] if i["relator"]}
+    assert consultados == relatores - NOVO_EM_EXERCICIO_IDS
+    assert relatores & NOVO_EM_EXERCICIO_IDS  # há relatores do NOVO no resultado
+
+
+def test_nas_fixtures_reais_nenhum_item_fica_com_relator_indeterminado(documento):
+    assert [i["identificacao"] for i in documento["itens"] if i["relator_indeterminado"]] == []
+
+
+def test_tipo_de_relatoria_novo_numa_referencia_marca_so_o_item_e_a_coleta_termina(
+    config, transporte, agora, tmp_path
+):
+    # Derivada: a API passa a registrar um tipo de tramitação de relatoria desconhecido no PL
+    # 4501/2023, que só está na lista por relatoria (candidato sem etiqueta de autoria).
+    def com_tipo_novo(corpo: bytes) -> bytes:
+        documento = json.loads(corpo)
+        ultimo = max(t["sequencia"] for t in documento["dados"])
+        documento["dados"].append(
+            {
+                "sequencia": ultimo + 1,
+                "dataHora": "2026-10-17T10:00",
+                "siglaOrgao": "CE",
+                "codTipoTramitacao": "9999",
+                "descricaoTramitacao": "Relator(a) Substituído",
+                "uriUltimoRelator": None,
+            }
+        )
+        return json.dumps(documento).encode()
+
+    transporte.transformar_json["tramitacoes/2388105"] = com_tipo_novo
+    base = por_identificacao(gerar(config, TransporteFalso(), agora, tmp_path))
+
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    item = por_identificacao(documento)["PL 4501/2023"]
+    assert item["etiquetas"] == []
+    assert item["relator"] is None
+    assert "9999" in item["relator_indeterminado"]["motivo"]
+    # Os demais itens não mudam.
+    outros = {k: v for k, v in por_identificacao(documento).items() if k != "PL 4501/2023"}
+    assert outros == {k: v for k, v in base.items() if k != "PL 4501/2023"}
+    assert documento["meta"]["total_itens"] == len(base)
+
+
+# --- REL US5: repetível e auditável ----------------------------------------------------------
+
+
+def test_a_ordem_das_tramitacoes_na_resposta_nao_altera_o_resultado(config, agora, tmp_path):
+    def invertido(transporte):
+        for arquivo in (FIXTURES / "tramitacoes").glob("*.json"):
+
+            def inverter(corpo: bytes) -> bytes:
+                documento = json.loads(corpo)
+                documento["dados"].reverse()
+                return json.dumps(documento).encode()
+
+            transporte.transformar_json[f"tramitacoes/{arquivo.stem}"] = inverter
+        return transporte
+
+    normal = bytes_gerados(config, TransporteFalso(), agora, tmp_path, "a.json")
+    de_tras_para_frente = bytes_gerados(
+        config, invertido(TransporteFalso()), agora, tmp_path, "b.json"
+    )
+
+    assert normal == de_tras_para_frente
+
+
+def test_regras_de_consistencia_do_contrato_atual_json(documento):
+    novo = {d["id"] for d in documento["meta"]["deputados_novo_em_exercicio"]}
+    ordem = ["autoria NOVO", "autor hoje no NOVO", "relatoria NOVO"]
+
+    for item in documento["itens"]:
+        nome = item["identificacao"]
+        # 1. relator e relator_indeterminado nunca são ambos não nulos
+        assert not (item["relator"] and item["relator_indeterminado"]), nome
+        # 2. relatoria NOVO se e somente se o relator atual é do NOVO em exercício
+        tem_relator_novo = bool(item["relator"] and item["relator"]["id"] in novo)
+        assert ("relatoria NOVO" in item["etiquetas"]) == tem_relator_novo, nome
+        # 3. etiquetas só vazia com relator indeterminado
+        assert item["etiquetas"] or item["relator_indeterminado"], nome
+        # 4. todo relator tem a fonte (ficha da referência)
+        if item["relator"]:
+            referencia = item["apensado_a"]["link"] if item["apensado_a"] else item["link"]
+            assert item["relator"]["fonte"] == referencia, nome
+        # etiquetas em ordem fixa e sem repetição
+        assert item["etiquetas"] == [e for e in ordem if e in item["etiquetas"]], nome
+
+
+def test_total_por_comissao_inclui_os_itens_so_de_relatoria(documento):
+    meta, itens = documento["meta"], documento["itens"]
+
+    assert meta["total_itens"] == len(itens)
+    for comissao, total in meta["total_por_comissao"].items():
+        assert total == sum(1 for i in itens if i["comissao"] == comissao)
+    so_relatoria = [i for i in itens if i["etiquetas"] == ["relatoria NOVO"]]
+    assert so_relatoria  # e eles entram nos totais acima
+
+
+# --- revisão independente: só consultar o partido de quem aparece na lista (M5) ---------------
+
+
+def test_relator_de_candidato_refutado_nao_gera_consulta_de_partido(config, agora, tmp_path):
+    # Derivada: o lote ainda aponta Luiz Lima (NOVO) no PL 937/2022, mas as tramitações passam a
+    # dizer que o relator vigente é outro deputado, de outro partido, e o PL não tem autoria do
+    # NOVO. O PL não entra na lista, então o partido desse relator não precisa ser consultado.
+    usados = {
+        i["relator"]["id"] for i in gerar(config, TransporteFalso(), agora, tmp_path)["itens"]
+        if i["relator"]
+    }  # fmt: skip
+    livres = sorted(
+        int(a.stem)
+        for a in (FIXTURES / "deputados").glob("*.json")
+        if int(a.stem) not in usados | NOVO_EM_EXERCICIO_IDS
+    )
+    assert livres, "as fixtures têm deputados que nenhum item usa"
+    outro = livres[0]
+
+    def trocar_relator(corpo: bytes) -> bytes:
+        documento = json.loads(corpo)
+        documento["dados"] = [t for t in documento["dados"] if t["sequencia"] != 28]  # sem o 507
+        for t in documento["dados"]:
+            if t["sequencia"] == 23:  # a última designação de Luiz Lima
+                t["uriUltimoRelator"] = (
+                    f"https://dadosabertos.camara.leg.br/api/v2/deputados/{outro}"
+                )
+        return json.dumps(documento).encode()
+
+    transporte = TransporteFalso()
+    transporte.transformar_json["tramitacoes/2319917"] = trocar_relator
+
+    documento = gerar(config, transporte, agora, tmp_path)
+
+    assert "PL 937/2022" not in por_identificacao(documento)
+    assert not [u for u in transporte.pedidos if u.endswith(f"/deputados/{outro}")]

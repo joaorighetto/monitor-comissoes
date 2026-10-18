@@ -62,6 +62,13 @@ Diz a descrição oficial do endpoint: "por padrão, são retornadas todas as pr
 - `uriUltimoRelator` aponta para o **último relator designado**, e não para o relator atual na comissão:
   - **PL 937/2022** (id 2319917), na CE com situação "Aguardando Designação de Relator(a)": o relator Luiz Lima devolveu a matéria sem manifestação em 20/05/2026, mas `uriUltimoRelator` continua sendo ele.
   - **PL 3514/2023** (id 2373721), na CREDN com situação "Aguardando Designação de Relator(a)": `uriUltimoRelator` é Luiz Lima, que foi relator na **Comissão do Esporte** (CESPO), a comissão anterior.
+- **Fatos da API de tramitações, conferidos em 18/10/2026 em 63 histórias** (feature REL; detalhes em `specs/003-relatoria-novo-atual/research.md`):
+  - A resposta não traz `X-Total-Count` nem link de próxima página: vem inteira.
+  - A ordem é por data e hora, não por `sequencia` (aparece a 27 antes da 26 no mesmo dia). A leitura deve ordenar por `sequencia`.
+  - `uriUltimoRelator` repete o último relator designado em **toda** tramitação seguinte, também depois da devolução e em outra comissão. Só a tramitação de designação (`codTipoTramitacao` `320`) diz quem foi designado.
+  - `codTipoTramitacao` vem como texto. Encerram a relatoria `507` (Recebimento - Relator(a) Sem Manifestação) e `1250`/`1255` (Saída de Relator(a) da Comissão). Mantêm: `170`, `322`, `501`.
+  - O tipo `500` (Recebimento) serve a "Recebimento pela CE." e também a "Mantido o parecer da Relatora…": não marca sozinho a entrada na comissão.
+  - Órgãos como a `SGM` aparecem só com notificações (`1005`) e nunca recebem a matéria.
 - O despacho registra o partido do relator **na data da designação**. Por exemplo, em 09/04/2025: "Designado Relator, Dep. Luiz Lima (PL-RJ)". Depois disso, os despachos já mostram "(NOVO-RJ)".
 - `/proposicoes/{id}` → `statusProposicao` bate com `ultimoStatus_*` do arquivo em lote nos dois casos conferidos.
 

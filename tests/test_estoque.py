@@ -3,8 +3,16 @@ from datetime import datetime
 import pytest
 
 from conftest import BRASILIA
-from monitor_comissoes.estoque import construir_itens, etiquetar, resolver_referencia
+from monitor_comissoes.deputados import DeputadoHoje
+from monitor_comissoes.erros import INTERNA, FalhaDeColeta
+from monitor_comissoes.estoque import (
+    construir_itens,
+    deve_ler_tramitacoes,
+    etiquetar,
+    resolver_referencia,
+)
 from monitor_comissoes.lote import Autor, Proposicao
+from monitor_comissoes.relatoria import RelatorAtual, ResultadoRelatoria
 
 AGORA = datetime(2026, 10, 18, 9, 0, tzinfo=BRASILIA)
 COMISSOES = ("CE", "CREDN")
@@ -12,7 +20,7 @@ DEPUTADOS_NOVO = {204455, 220633}
 
 
 def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026, 10, 8, 14, 30),
-         situacao="Aguardando Parecer", principal=None):  # fmt: skip
+         situacao="Aguardando Parecer", principal=None, relator=None):  # fmt: skip
     return Proposicao(
         id=id,
         tipo=tipo,
@@ -24,6 +32,7 @@ def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026,
         ultimo_status_em=status,
         orgao=orgao,
         situacao=situacao,
+        id_relator=relator,
     )
 
 
@@ -85,7 +94,7 @@ def test_item_completo_conforme_o_contrato():
     assert list(item) == [
         "id", "tipo", "numero", "ano", "identificacao", "ementa", "data_apresentacao", "link",
         "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em", "parado_ha_dias",
-        "apensado_a", "principal_nao_localizada",
+        "apensado_a", "principal_nao_localizada", "relator", "relator_indeterminado",
     ]  # fmt: skip
     assert item["identificacao"] == "PL 1843/2022"
     assert item["link"] == "https://www.camara.leg.br/propostas-legislativas/7"
@@ -100,6 +109,8 @@ def test_item_completo_conforme_o_contrato():
     ]
     assert item["apensado_a"] is None
     assert item["principal_nao_localizada"] is False
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
 
 
 def test_so_pl_e_plp_sao_candidatas():
@@ -294,3 +305,299 @@ def test_raiz_pode_ser_de_qualquer_tipo():
     [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
 
     assert item["apensado_a"]["identificacao"] == "PEC 10/2020"
+
+
+# --- REL: relatoria NOVO -------------------------------------------------------------------
+
+LUIZ_LIMA = DeputadoHoje(204455, "Luiz Lima", "NOVO")
+THIAGO = DeputadoHoje(220560, "Thiago de Joaldo", "REPUBLICANOS")
+COM_LUIZ_LIMA = ResultadoRelatoria(RelatorAtual(204455, "2025-04-09T00:00"))
+COM_THIAGO = ResultadoRelatoria(RelatorAtual(220560, "2026-04-27T17:13"))
+SEM_RELATOR = ResultadoRelatoria()
+
+
+def itens_rel(candidatas, autores, relatorias, deputados=(LUIZ_LIMA, THIAGO), **extra):
+    return construir_itens(
+        {p.id: p for p in candidatas},
+        autores,
+        DEPUTADOS_NOVO,
+        COMISSOES,
+        AGORA,
+        relatorias=relatorias,
+        deputados_relator={d.id: d for d in deputados},
+        **extra,
+    )
+
+
+def test_relatoria_novo_pelo_id_do_relator_atual():
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=204455) == ["relatoria NOVO"]
+
+
+def test_relator_de_outro_partido_nao_recebe_etiqueta_de_relatoria():
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=220560) == []
+    assert etiquetar([], DEPUTADOS_NOVO, id_relator=None) == []
+
+
+def test_as_tres_etiquetas_em_ordem_fixa():
+    autores = [autor(partido="NOVO", dep=204455)]
+
+    assert etiquetar(autores, DEPUTADOS_NOVO, id_relator=220633) == [
+        "autoria NOVO",
+        "autor hoje no NOVO",
+        "relatoria NOVO",
+    ]
+
+
+def test_item_so_de_relatoria_entra_com_o_relator_e_a_fonte():
+    # PL 4501/2023: autoria de outro partido, relator atual na CE é Luiz Lima.
+    p = prop(id=4501, relator=204455)
+    autores = {4501: [autor(pid=4501, dep=9, partido="PSB", nome="Duarte Jr.")]}
+
+    [item] = itens_rel([p], autores, {4501: COM_LUIZ_LIMA})
+
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"] == {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/4501",
+    }
+    assert item["relator_indeterminado"] is None
+
+
+def test_candidato_sem_relator_atual_confirmado_fica_de_fora():
+    # PL 937/2022: o lote ainda aponta o relator do NOVO, mas as tramitações dizem que devolveu.
+    p = prop(id=937, relator=204455)
+
+    assert itens_rel([p], {}, {937: SEM_RELATOR}) == []
+
+
+def test_item_com_autoria_e_relator_de_outro_partido_mantem_so_a_autoria():
+    p = prop(id=3871, relator=220560)
+    autores = {3871: [autor(pid=3871, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {3871: COM_THIAGO})
+
+    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["relator"]["nome"] == "Thiago de Joaldo"
+    assert item["relator"]["partido_hoje"] == "REPUBLICANOS"
+
+
+def test_item_so_de_autoria_sem_relator_traz_relator_nulo():
+    p = prop(id=5594)
+    autores = {5594: [autor(pid=5594, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {5594: SEM_RELATOR})
+
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] is None
+
+
+def test_autoria_e_relatoria_no_mesmo_item():
+    p = prop(id=1843, relator=204455)
+    autores = {1843: [autor(pid=1843, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1843: COM_LUIZ_LIMA})
+
+    assert item["etiquetas"] == ["autoria NOVO", "relatoria NOVO"]
+
+
+def test_relatoria_nao_inclui_fora_da_comissao_da_lista():
+    p = prop(id=1, orgao="CFT", relator=204455)
+
+    assert itens_rel([p], {}, {1: COM_LUIZ_LIMA}) == []
+
+
+# --- REL US2: apensados herdam o relator da principal --------------------------------------
+
+
+def itens_apensados(candidatas, autores, relatorias, mapa, linhas=None):
+    return itens_rel(
+        candidatas,
+        autores,
+        relatorias,
+        mapa_principal=mapa,
+        proposicoes=linhas or {p.id: p for p in candidatas},
+    )
+
+
+def test_apensado_herda_o_relator_da_principal():
+    raiz = prop(id=1, relator=204455)
+    apensado = prop(id=2, orgao="CFT", principal=1, status=datetime(2013, 5, 6))
+    autores = {2: [autor(pid=2, partido="PT", dep=9)]}
+
+    [item] = itens_apensados(
+        [apensado], autores, {1: COM_LUIZ_LIMA}, {2: 1}, {1: raiz, 2: apensado}
+    )
+
+    assert item["id"] == 2
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["apensado_a"]["id"] == 1
+    assert item["relator"]["nome"] == "Luiz Lima"
+    assert item["relator"]["fonte"].endswith("/1")  # a ficha de onde o relator foi lido: a raiz
+
+
+def test_cadeia_de_dois_niveis_usa_o_relator_da_raiz():
+    c = prop(id=3, relator=204455)
+    b = prop(id=2, principal=3)
+    a = prop(id=1, principal=2)
+
+    [item] = itens_apensados(
+        [a], {}, {3: COM_LUIZ_LIMA, 2: SEM_RELATOR}, {1: 2, 2: 3}, {1: a, 2: b, 3: c}
+    )
+
+    assert item["apensado_a"]["id"] == 3
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"]["id"] == 204455
+
+
+def test_relator_do_proprio_apensado_nao_vale_se_a_raiz_nao_tem_relator_do_novo():
+    # O apensado foi relatado pelo NOVO no passado; hoje quem vale é o relator da principal.
+    raiz = prop(id=1, relator=220560)
+    apensado = prop(id=2, principal=1, relator=204455)
+    autores = {2: [autor(pid=2, partido="PT", dep=9)]}
+
+    resultado = itens_apensados(
+        [apensado], autores, {1: COM_THIAGO}, {2: 1}, {1: raiz, 2: apensado}
+    )
+
+    assert resultado == []
+
+
+def test_raiz_fora_da_lista_de_comissoes_deixa_o_apensado_de_fora_mesmo_com_relator():
+    raiz = prop(id=1, orgao="CFT", relator=204455)
+    apensado = prop(id=2, principal=1, orgao="CE")
+
+    assert itens_apensados([apensado], {}, {1: COM_LUIZ_LIMA}, {2: 1}, {1: raiz, 2: apensado}) == []
+
+
+def test_principal_nao_localizada_usa_o_relator_do_proprio_item():
+    # A raiz (id 99) não está nas linhas lidas: vale o status e a relatoria do próprio apensado.
+    apensado = prop(id=2, principal=99, relator=204455)
+
+    [item] = itens_apensados([apensado], {}, {2: COM_LUIZ_LIMA}, {2: 99})
+
+    assert item["principal_nao_localizada"] is True
+    assert item["apensado_a"] is None
+    assert item["etiquetas"] == ["relatoria NOVO"]
+    assert item["relator"]["fonte"].endswith("/2")
+
+
+def test_dois_apensados_da_mesma_raiz_compartilham_o_relator():
+    raiz = prop(id=1, relator=204455)
+    a, b = prop(id=2, principal=1), prop(id=3, principal=1)
+
+    resultado = itens_apensados([a, b], {}, {1: COM_LUIZ_LIMA}, {2: 1, 3: 1}, {1: raiz, 2: a, 3: b})
+
+    assert [i["id"] for i in resultado] == [2, 3]
+    assert {i["relator"]["id"] for i in resultado} == {204455}
+
+
+# --- REL US4: relator indeterminado --------------------------------------------------------
+
+INDETERMINADO = ResultadoRelatoria(indeterminado="tipo de tramitação 9999 não reconhecido")
+
+
+def test_candidato_indeterminado_sem_outra_etiqueta_entra_com_a_marca():
+    p = prop(id=1, relator=204455)  # o lote aponta relator do NOVO, as tramitações não decidem
+
+    [item] = itens_rel([p], {}, {1: INDETERMINADO})
+
+    assert item["etiquetas"] == []
+    assert item["relator"] is None
+    assert item["relator_indeterminado"] == {"motivo": INDETERMINADO.indeterminado}
+
+
+def test_item_de_autoria_indeterminado_mantem_a_etiqueta_de_autoria_e_leva_a_marca():
+    p = prop(id=1, relator=220560)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1: INDETERMINADO})
+
+    assert item["etiquetas"] == ["autoria NOVO"]
+    assert item["relator_indeterminado"] is not None
+
+
+def test_indeterminado_sem_candidatura_e_sem_etiqueta_fica_de_fora():
+    p = prop(id=1, relator=220560)  # relator do lote é de outro partido: não é candidato
+
+    assert itens_rel([p], {}, {1: INDETERMINADO}) == []
+
+
+def test_indeterminado_nao_da_nem_nega_a_relatoria_novo():
+    p = prop(id=1, relator=204455)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    [item] = itens_rel([p], autores, {1: INDETERMINADO})
+
+    assert "relatoria NOVO" not in item["etiquetas"]
+
+
+def test_indeterminado_de_uma_referencia_nao_afeta_os_outros_itens():
+    a, b = prop(id=1, relator=204455), prop(id=2, relator=204455)
+
+    resultado = itens_rel([a, b], {}, {1: INDETERMINADO, 2: COM_LUIZ_LIMA})
+
+    por_id = {i["id"]: i for i in resultado}
+    assert por_id[1]["relator_indeterminado"] is not None and por_id[1]["relator"] is None
+    assert (
+        por_id[2]["etiquetas"] == ["relatoria NOVO"] and por_id[2]["relator_indeterminado"] is None
+    )
+
+
+def test_apensado_de_raiz_indeterminada_tambem_leva_a_marca():
+    raiz = prop(id=1, relator=204455)
+    apensado = prop(id=2, principal=1)
+
+    [item] = itens_apensados([apensado], {}, {1: INDETERMINADO}, {2: 1}, {1: raiz, 2: apensado})
+
+    assert item["etiquetas"] == []
+    assert item["apensado_a"]["id"] == 1
+    assert item["relator_indeterminado"] is not None
+
+
+# --- revisão independente: nada de "sem relator" por referência não lida (I1) ---------------
+
+
+def test_referencia_que_deveria_ter_sido_lida_e_erro_interno_e_nao_sem_relator():
+    p = prop(id=1, relator=204455)
+    autores = {1: [autor(pid=1, partido="NOVO", dep=1)]}
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        itens_rel([p], autores, {})  # a coleta deveria ter lido a referência 1
+
+    assert erro.value.categoria == INTERNA
+    assert "referência 1" in erro.value.motivo
+
+
+def test_candidato_que_nao_precisa_ser_lido_nao_exige_relatoria():
+    # O relator do lote é de outro partido e não há autoria do NOVO: nada a ler, nada a listar.
+    p = prop(id=1, relator=220560)
+
+    assert itens_rel([p], {}, {}) == []
+
+
+def test_apensado_com_relator_proprio_do_novo_mas_raiz_de_outro_nao_exige_leitura():
+    raiz = prop(id=1, relator=220560)
+    apensado = prop(id=2, principal=1, relator=204455)
+
+    assert itens_apensados([apensado], {}, {}, {2: 1}, {1: raiz, 2: apensado}) == []
+
+
+def test_deve_ler_tramitacoes_decide_pela_autoria_ou_pelo_relator_do_lote():
+    com_autoria = [autor(partido="NOVO")]
+
+    assert deve_ler_tramitacoes(com_autoria, DEPUTADOS_NOVO, prop(relator=None))
+    assert deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=204455))
+    assert not deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=220560))
+    assert not deve_ler_tramitacoes([], DEPUTADOS_NOVO, prop(relator=None))
+
+
+def test_designado_em_com_segundos_nao_ganha_segundos_a_mais():
+    p = prop(id=1, relator=204455)
+    comsegundos = ResultadoRelatoria(RelatorAtual(204455, "2025-04-09T10:11:12"))
+
+    [item] = itens_rel([p], {1: [autor(pid=1, partido="NOVO", dep=1)]}, {1: comsegundos})
+
+    assert item["relator"]["designado_em"] == "2025-04-09T10:11:12"
