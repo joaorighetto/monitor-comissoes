@@ -6,8 +6,10 @@ from conftest import BRASILIA
 from monitor_comissoes.deputados import DeputadoHoje
 from monitor_comissoes.erros import INTERNA, FalhaDeColeta
 from monitor_comissoes.estoque import (
+    EstadoDeSaida,
     construir_itens,
     deve_ler_tramitacoes,
+    estado_de_saida,
     etiquetar,
     resolver_referencia,
 )
@@ -20,7 +22,7 @@ DEPUTADOS_NOVO = {204455, 220633}
 
 
 def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026, 10, 8, 14, 30),
-         situacao="Aguardando Parecer", principal=None, relator=None):  # fmt: skip
+         situacao="Aguardando Parecer", principal=None, relator=None, sequencia=7):  # fmt: skip
     return Proposicao(
         id=id,
         tipo=tipo,
@@ -33,6 +35,7 @@ def prop(id=1, tipo="PL", numero=10, ano=2020, orgao="CE", status=datetime(2026,
         orgao=orgao,
         situacao=situacao,
         id_relator=relator,
+        ultimo_status_sequencia=sequencia,
     )
 
 
@@ -93,13 +96,15 @@ def test_item_completo_conforme_o_contrato():
 
     assert list(item) == [
         "id", "tipo", "numero", "ano", "identificacao", "ementa", "data_apresentacao", "link",
-        "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em", "parado_ha_dias",
+        "autores", "etiquetas", "comissao", "situacao", "ultimo_status_em",
+        "ultimo_status_sequencia", "parado_ha_dias",
         "apensado_a", "principal_nao_localizada", "relator", "relator_indeterminado",
     ]  # fmt: skip
     assert item["identificacao"] == "PL 1843/2022"
     assert item["link"] == "https://www.camara.leg.br/propostas-legislativas/7"
     assert item["data_apresentacao"] == "2022-03-02T10:00:00"
     assert item["ultimo_status_em"] == "2026-10-08T14:30:00"
+    assert item["ultimo_status_sequencia"] == 7
     assert item["parado_ha_dias"] == 10
     assert item["comissao"] == "CE"
     assert item["situacao"] == "Aguardando Parecer"
@@ -181,6 +186,40 @@ def com_referencia(candidatas, autores, mapa, linhas=None, comissoes=COMISSOES):
         {p.id: p for p in candidatas}, autores, DEPUTADOS_NOVO, comissoes, AGORA,
         mapa_principal=mapa, proposicoes=todas,
     )  # fmt: skip
+
+
+def test_item_traz_a_sequencia_do_ultimo_status_da_referencia():
+    raiz = prop(id=2, status=datetime(2026, 9, 1), situacao="Pronta para Pauta", sequencia=43)
+    apensado = prop(id=1, status=datetime(2013, 5, 5), principal=2, sequencia=3)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 2}, linhas=[raiz])
+
+    # A sequência é a da raiz (de onde vêm situação e data), não a do apensado.
+    assert item["ultimo_status_sequencia"] == 43
+    assert item["situacao"] == "Pronta para Pauta"
+
+
+def test_principal_nao_localizada_usa_a_sequencia_do_proprio_item():
+    apensado = prop(id=1, principal=999, sequencia=5)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    [item] = com_referencia([apensado], autores, {1: 999})
+
+    assert item["principal_nao_localizada"] is True
+    assert item["ultimo_status_sequencia"] == 5
+
+
+@pytest.mark.parametrize("sequencia", [0, -1])
+def test_sequencia_menor_que_1_e_falha_interna(sequencia):
+    p = prop(id=1, sequencia=sequencia)
+    autores = {1: [autor(pid=1, partido="NOVO")]}
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        itens([p], autores)
+
+    assert erro.value.categoria == INTERNA
+    assert "ultimo_status_sequencia" in erro.value.motivo
 
 
 def test_sem_principal_a_referencia_e_a_propria():
@@ -601,3 +640,114 @@ def test_designado_em_com_segundos_nao_ganha_segundos_a_mais():
     [item] = itens_rel([p], {1: [autor(pid=1, partido="NOVO", dep=1)]}, {1: comsegundos})
 
     assert item["relator"]["designado_em"] == "2025-04-09T10:11:12"
+
+
+# --- estado de quem saiu da lista (MUD, research R1) --------------------------------------------
+
+from conftest import FIXTURES  # noqa: E402
+from monitor_comissoes.lote import ler_apensacao, ler_proposicoes  # noqa: E402
+
+PL_4047_2019 = 2211957  # apensado, via cadeia, ao PL 3047/2015 (id 1734799), que está na CFT
+PL_3047_2015 = 1734799
+PL_7843_2017 = 2141142  # Transformado em Norma Jurídica, na MESA
+PL_30_2015 = 267841  # Aguardando Apreciação pelo Senado Federal, na MESA
+PL_1843_2022 = 2331032  # CE, Aguardando Parecer
+
+
+def lote_real():
+    linhas, mapa = {}, {}
+    for arquivo in sorted(FIXTURES.glob("proposicoes-20*.csv")):
+        for p in ler_proposicoes(arquivo):
+            linhas[p.id] = p
+        mapa.update(ler_apensacao(arquivo))
+    return linhas, mapa
+
+
+def test_apensado_a_principal_fora_das_comissoes_traz_a_raiz_e_o_orgao_dela():
+    linhas, mapa = lote_real()
+
+    estado = estado_de_saida(PL_4047_2019, linhas, mapa, COMISSOES)
+
+    assert estado == EstadoDeSaida(
+        existe=True,
+        referencia_id=PL_3047_2015,
+        orgao="CFT",
+        situacao="Aguardando Designação de Relator(a)",
+        sequencia=87,
+        apensado_a={
+            "id": PL_3047_2015,
+            "identificacao": "PL 3047/2015",
+            "link": f"https://www.camara.leg.br/propostas-legislativas/{PL_3047_2015}",
+        },
+        na_comissao=False,
+    )
+
+
+def test_transformado_em_norma_traz_a_situacao_e_a_mesa_como_orgao():
+    linhas, mapa = lote_real()
+
+    estado = estado_de_saida(PL_7843_2017, linhas, mapa, COMISSOES)
+
+    assert (estado.existe, estado.referencia_id, estado.orgao) == (True, PL_7843_2017, "MESA")
+    assert estado.situacao == "Transformado em Norma Jurídica"
+    assert estado.sequencia == 134
+    assert estado.apensado_a is None and estado.na_comissao is False
+
+
+def test_aguardando_o_senado_traz_a_situacao_e_a_sequencia_reais():
+    linhas, mapa = lote_real()
+
+    estado = estado_de_saida(PL_30_2015, linhas, mapa, COMISSOES)
+
+    assert estado.situacao == "Aguardando Apreciação pelo Senado Federal"
+    assert (estado.sequencia, estado.na_comissao) == (259, False)
+
+
+def test_referencia_que_continua_na_comissao_tem_na_comissao_verdadeiro():
+    linhas, mapa = lote_real()
+
+    estado = estado_de_saida(PL_1843_2022, linhas, mapa, COMISSOES)
+
+    assert (estado.orgao, estado.situacao, estado.sequencia) == ("CE", "Aguardando Parecer", 42)
+    assert estado.na_comissao is True
+
+
+def test_a_lista_de_comissoes_decide_na_comissao():
+    linhas, mapa = lote_real()
+
+    assert estado_de_saida(PL_1843_2022, linhas, mapa, ("CREDN",)).na_comissao is False
+    assert estado_de_saida(PL_7843_2017, linhas, mapa, ("MESA",)).na_comissao is True
+
+
+def test_id_ausente_do_lote_nao_existe_e_nao_inventa_campos():
+    linhas, mapa = lote_real()
+
+    estado = estado_de_saida(987_654_321, linhas, mapa, COMISSOES)
+
+    assert estado == EstadoDeSaida(False, None, None, None, None, None, False)
+
+
+def test_principal_nao_localizada_usa_o_proprio_item():
+    # Derivado: o apensado aponta para uma principal que não está no lote.
+    apensado = prop(id=1, orgao="CE", situacao="Tramitando em Conjunto", principal=999, sequencia=5)
+
+    estado = estado_de_saida(1, {1: apensado}, {1: 999}, COMISSOES)
+
+    assert (estado.existe, estado.referencia_id, estado.orgao) == (True, 1, "CE")
+    assert estado.apensado_a is None  # sem raiz localizada, não há "apensado a"
+    assert (estado.sequencia, estado.na_comissao) == (5, True)
+
+
+def test_apensado_a_raiz_na_comissao_herda_orgao_situacao_e_sequencia_da_raiz():
+    raiz = prop(id=2, orgao="CREDN", situacao="Pronta para Pauta", sequencia=43)
+    apensado = prop(id=1, orgao="CE", situacao="Tramitando em Conjunto", principal=2, sequencia=3)
+
+    estado = estado_de_saida(1, {1: apensado, 2: raiz}, {1: 2}, COMISSOES)
+
+    assert (estado.referencia_id, estado.orgao, estado.situacao) == (
+        2,
+        "CREDN",
+        "Pronta para Pauta",
+    )
+    assert estado.sequencia == 43
+    assert estado.apensado_a["id"] == 2 and estado.na_comissao is True

@@ -29,6 +29,7 @@ PROPOSICOES_COLUNAS = (
     "ultimoStatus_siglaOrgao",
     "ultimoStatus_descricaoSituacao",
     "ultimoStatus_uriRelator",
+    "ultimoStatus_sequencia",
 )
 PROPOSICOES_DATAS = ("dataApresentacao", "ultimoStatus_dataHora")
 AUTORES_COLUNAS = (
@@ -57,6 +58,9 @@ class Proposicao(NamedTuple):
     orgao: str
     situacao: str
     id_relator: int | None = None  # último relator registrado no status (candidato, REL R3)
+    # Número da tramitação que deu origem ao último status (MUD, R1). O padrão 0 existe só para os
+    # construtores dos testes: `ler_proposicoes` sempre o preenche, com um inteiro maior que 0.
+    ultimo_status_sequencia: int = 0
 
 
 class Autor(NamedTuple):
@@ -109,6 +113,13 @@ def _inteiro(valor: str, coluna: str, arquivo: str) -> int:
         return int(valor)
     except ValueError:
         raise _formato_alterado(arquivo, coluna) from None
+
+
+def _sequencia(valor: str, coluna: str, arquivo: str) -> int:
+    numero = _inteiro(valor, coluna, arquivo)
+    if numero < 1:
+        raise _formato_alterado(arquivo, coluna)
+    return numero
 
 
 def _data(valor: str, coluna: str, arquivo: str) -> datetime:
@@ -221,6 +232,7 @@ def ler_proposicoes(caminho: Path, ids: set[int] | None = None) -> Iterator[Prop
             orgao=linha[8],
             situacao=linha[9],
             id_relator=_id_da_uri(relator, "ultimoStatus_uriRelator", arquivo) if relator else None,
+            ultimo_status_sequencia=_sequencia(linha[11], "ultimoStatus_sequencia", arquivo),
         )
 
 

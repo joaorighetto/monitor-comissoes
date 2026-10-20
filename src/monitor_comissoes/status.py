@@ -2,7 +2,8 @@
 
 import json
 import os
-from datetime import datetime
+from collections.abc import Sequence
+from datetime import date, datetime
 from pathlib import Path
 from typing import TypedDict
 
@@ -109,14 +110,20 @@ def montar_status(
     falha: dict | None,
     variacao_aceita: dict | None,
     retrato: dict | None,
+    data_referencia: date | None = None,
 ) -> dict:
-    """Monta o documento na ordem fixa do contrato. `verificado_em` entra pronto (sem relógio)."""
+    """Monta o documento na ordem fixa do contrato. `verificado_em` entra pronto (sem relógio).
+
+    `data_referencia` é, por padrão, o dia de `verificado_em`. A execução que grava o arquivo de
+    mudanças passa o dia da tentativa que o gravou, para os dois nunca divergirem se a execução
+    atravessar a meia-noite.
+    """
     momento = verificado_em.astimezone(BRASILIA)
     documento = {
         "versao_formato": VERSAO_FORMATO,
         "resultado": resultado,
         "verificado_em": momento.isoformat(timespec="seconds"),
-        "data_referencia": momento.date().isoformat(),
+        "data_referencia": (data_referencia or momento.date()).isoformat(),
         "tentativas": tentativas,
         "falha": None
         if falha is None
@@ -208,33 +215,43 @@ def _restaurar(destino: Path, anterior: bytes | None) -> None:
         temporario.unlink(missing_ok=True)
 
 
-def gravar_par(atual: dict, caminho_atual: Path, status: dict, caminho_status: Path) -> None:
-    """Grava `atual.json` e `status.json` juntos: os dois temporários primeiro, depois a troca.
+def gravar_todos(escritas: Sequence[tuple[str, Path]]) -> None:
+    """Grava N arquivos juntos, tudo ou nada: `escritas` é uma lista de pares (texto, destino).
 
-    Se algo falhar ao preparar qualquer um dos dois (serialização, disco), nenhum destino é
-    trocado e nenhum temporário sobra. Se a troca do segundo falhar depois da do primeiro, o
-    primeiro é restaurado ao conteúdo anterior (ou removido, se não existia). Só a morte do
-    processo entre as duas trocas deixa o primeiro trocado, e o workflow o restaura do Git.
+    Todos os temporários são preparados primeiro, e o conteúdo anterior de todos os destinos é lido
+    antes da primeira troca; só depois vêm as trocas, na ordem dada. Se algo falhar ao preparar ou
+    ao ler qualquer um (serialização já feita pelo chamador; disco), nenhum destino é trocado e
+    nenhum temporário sobra. Se a troca do k-ésimo falhar, os k-1 já trocados voltam,
+    em ordem inversa, ao conteúdo anterior (ou são removidos, se não existiam). Uma falha ao
+    restaurar um deles não impede restaurar os outros e vira nota na exceção original. Só a morte
+    do processo entre duas trocas deixa arquivos trocados, e o workflow os restaura do Git.
     """
-    textos = (serializar(atual), serializar(status))
-    destinos = (Path(caminho_atual), Path(caminho_status))
+    destinos = [Path(destino) for _, destino in escritas]
     temporarios: list[Path] = []
+    trocados: list[tuple[Path, bytes | None]] = []
     try:
-        for texto, destino in zip(textos, destinos, strict=True):
+        for (texto, _), destino in zip(escritas, destinos, strict=True):
             temporarios.append(escrever_temporario(texto, destino))
-        anterior = destinos[0].read_bytes() if destinos[0].exists() else None
-        os.replace(temporarios[0], destinos[0])
-        try:
-            os.replace(temporarios[1], destinos[1])
-        except BaseException as erro:
+        anteriores = [d.read_bytes() if d.exists() else None for d in destinos]
+        for temporario, destino, anterior in zip(temporarios, destinos, anteriores, strict=True):
             try:
-                _restaurar(destinos[0], anterior)
-            except Exception as restauracao:  # a causa original continua sendo a que sobe
-                erro.add_note(f"restauração de {destinos[0]} também falhou: {restauracao!r}")
-            raise
+                os.replace(temporario, destino)
+            except BaseException as erro:
+                for ja_trocado, conteudo in reversed(trocados):
+                    try:
+                        _restaurar(ja_trocado, conteudo)
+                    except Exception as restauracao:  # a causa original continua sendo a que sobe
+                        erro.add_note(f"restauração de {ja_trocado} também falhou: {restauracao!r}")
+                raise
+            trocados.append((destino, anterior))
     finally:
         for temporario in temporarios:
             temporario.unlink(missing_ok=True)
+
+
+def gravar_par(atual: dict, caminho_atual: Path, status: dict, caminho_status: Path) -> None:
+    """Grava `atual.json` e `status.json` juntos (o caso de dois arquivos de `gravar_todos`)."""
+    gravar_todos([(serializar(atual), caminho_atual), (serializar(status), caminho_status)])
 
 
 def mensagem_commit(status: dict) -> str:

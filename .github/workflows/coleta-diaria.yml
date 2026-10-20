@@ -55,12 +55,22 @@ jobs:
             "${argumentos[@]}"
           codigo=$?
           set -e
+          # Em falha, os dados voltam ao que o Git tem. Um `git checkout --` por caminho: um que o
+          # Git não conhece (primeiro dia, ou arquivo novo) faria o comando inteiro abortar. O que
+          # a falha deixou sem rastreio sai no clean.
           if [ "$codigo" -ne 0 ]; then
             git checkout -- data/atual.json || true
+            git checkout -- data/anterior.json || true
+            git checkout -- data/mudancas || true
+            git clean -fdq -- data/mudancas || true
           fi
           git add data/status.json
           if [ "$codigo" -eq 0 ]; then
             git add data/atual.json
+            git add data/mudancas
+            if [ -e data/anterior.json ]; then
+              git add data/anterior.json
+            fi
           fi
           git commit -m "$(.venv/bin/python -m monitor_comissoes.diaria mensagem)"
           git pull --rebase origin "$GITHUB_REF_NAME"

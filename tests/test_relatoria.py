@@ -318,3 +318,74 @@ def test_orgao_que_recebe_a_materia_continua_iniciando_uma_nova_passagem():
     voltou = depois(depois(depois(real(PL_4501_2023), "CFT", "500"), "CFT", "322"), "CE", "500")
 
     assert relator_atual(voltou, "CE").relator is None
+
+
+# --- início da passagem mais recente pela comissão (MUD, "chegou à comissão") ------------------
+
+from monitor_comissoes.relatoria import inicio_da_passagem  # noqa: E402
+
+PL_COM_IDAS_E_VOLTAS_PELA_MESA = 1212477  # CE desde 2015, com dezenas de passagens pela MESA
+
+
+@pytest.mark.parametrize(
+    ("id_proposicao", "comissao", "sequencia", "data_hora"),
+    [
+        (PL_937_2022, "CE", 15, "2022-05-04T15:15"),
+        (PL_4501_2023, "CE", 13, "2023-09-25T14:29"),
+        (PL_1843_2022, "CE", 15, "2022-07-07T18:58"),
+        (PL_3514_2023, "CREDN", 29, "2025-07-08T10:26"),
+    ],
+)
+def test_a_chegada_real_e_o_recebimento_que_inicia_a_passagem(
+    id_proposicao, comissao, sequencia, data_hora
+):
+    chegada = inicio_da_passagem(real(id_proposicao), comissao)
+
+    assert (chegada.sequencia, chegada.data_hora, chegada.orgao) == (sequencia, data_hora, comissao)
+    assert chegada.codigo == "500"
+
+
+def test_ida_e_volta_pela_mesa_nao_e_chegada_nova():
+    # Nas tramitações reais a matéria passa pela MESA mais de uma dezena de vezes ("Notificação
+    # de Apensação", "Desarquivamento a Pedido") e volta à CE sem recomeçar a passagem.
+    chegada = inicio_da_passagem(real(PL_COM_IDAS_E_VOLTAS_PELA_MESA), "CE")
+
+    assert (chegada.sequencia, chegada.data_hora) == (15, "2015-04-28T17:49")
+
+
+def test_a_comissao_que_nao_e_a_do_fim_da_linha_do_tempo_nao_tem_chegada():
+    # O PL 3514/2023 está na CREDN; para a CE não há passagem em curso.
+    assert inicio_da_passagem(real(PL_3514_2023), "CE") is None
+
+
+def test_matéria_que_saiu_e_voltou_conta_a_volta():
+    base = real(PL_4501_2023)
+    saida = Tramitacao(27, "2026-02-01T10:00", "CFT", "500", "Recebimento (derivada)", None)
+    volta = Tramitacao(28, "2026-03-01T10:00", "CE", "500", "Recebimento (derivada)", None)
+
+    chegada = inicio_da_passagem([*base, saida, volta], "CE")
+
+    assert (chegada.sequencia, chegada.data_hora) == (28, "2026-03-01T10:00")
+    # Sem a volta, a matéria está na CFT e não há passagem em curso pela CE.
+    assert inicio_da_passagem([*base, saida], "CE") is None
+
+
+def test_a_ordem_da_lista_nao_importa_para_a_chegada():
+    tramitacoes = real(PL_4501_2023)
+    embaralhadas = random.Random(7).sample(tramitacoes, len(tramitacoes))
+
+    assert inicio_da_passagem(embaralhadas, "CE") == inicio_da_passagem(tramitacoes, "CE")
+
+
+def test_sem_nenhuma_tramitacao_de_comissao_nao_ha_chegada():
+    so_mesa = [Tramitacao(1, "2026-01-01T10:00", "MESA", "110", "Distribuição", None)]
+
+    assert inicio_da_passagem(so_mesa, "CE") is None
+    assert inicio_da_passagem([], "CE") is None
+
+
+def test_inicio_da_passagem_nao_muda_o_resultado_de_relator_atual():
+    for id_proposicao, comissao in ((PL_937_2022, "CE"), (PL_4501_2023, "CE")):
+        antes = relator_atual(real(id_proposicao), comissao)
+        inicio_da_passagem(real(id_proposicao), comissao)
+        assert relator_atual(real(id_proposicao), comissao) == antes

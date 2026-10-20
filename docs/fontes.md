@@ -71,6 +71,20 @@ Diz a descrição oficial do endpoint: "por padrão, são retornadas todas as pr
   - Órgãos como a `SGM` aparecem só com notificações (`1005`) e nunca recebem a matéria.
 - O despacho registra o partido do relator **na data da designação**. Por exemplo, em 09/04/2025: "Designado Relator, Dep. Luiz Lima (PL-RJ)". Depois disso, os despachos já mostram "(NOVO-RJ)".
 - `/proposicoes/{id}` → `statusProposicao` bate com `ultimoStatus_*` do arquivo em lote nos dois casos conferidos.
+- **Fatos para a comparação diária (feature MUD), conferidos em 18/10/2026** nas 55 respostas de tramitações salvas e nas 145 linhas PL/PLP do lote salvo (detalhes em `specs/004-mudancas-desde-ontem/research.md`):
+  - Cada tramitação traz `despacho` (texto). A tramitação de arquivamento é a `502` ("Arquivamento"); nas 9 que existem nas fixtures o despacho é "Arquivado nos termos do Artigo 105 do Regimento Interno da Câmara dos Deputados." (por exemplo, proposição 2086175, sequência 42, em 31/01/2019). O desarquivamento (`640`) também cita o artigo, mas não é arquivamento.
+  - O parecer do relator é a `322` ("Parecer do(a) Relator(a)"), lançada no mesmo minuto que a `501` ("Recebimento - Relator(a)", apresentação do parecer). A `330` é a leitura e a `336`, a aprovação do parecer. A `322` aparece 71 vezes nas fixtures.
+  - Muitas mudanças de órgão para a CE são só a matéria passando pela `MESA` (por exemplo, `504` "Notificação de Apensação") e voltando, sem passagem nova: na proposição 1212477 a passagem mais recente pela CE começa na sequência 15 (2015), apesar de mais de uma dezena de idas e voltas pela Mesa.
+  - `ultimoStatus_sequencia`, no lote, é a sequência da tramitação que originou o último status: inteira e maior que zero em todas as linhas PL/PLP das fixtures, e presente nas tramitações da API (por exemplo, o PL 4501/2023, sequência 26, é o parecer do relator).
+  - A API pode estar adiante do lote (o lote é de madrugada): a lista de tramitações pode ter sequências maiores que `ultimoStatus_sequencia`.
+
+### `/api/v2/referencias/proposicoes/codSituacao` (situações)
+
+Lista oficial das situações de proposição, consultada em 18/10/2026: **99 entradas**. A feature MUD usa o texto de `ultimoStatus_descricaoSituacao` para rotular a saída de um item da lista (tabela de situações finais, `PRODUCT.md` §5.6):
+
+- `Arquivada` (cod 923); `Transformado em Norma Jurídica` (1140); `Aguardando Apreciação pelo Senado Federal` (926), `Aguardando Envio ao Senado Federal` (1293) e `Enviada ao Senado Federal` (1303); `Vetado totalmente` (937), `Recusado` (941), `Retirado pelo(a) Autor(a)` (950), `Devolvida ao(à) Autor(a)` (1120), `Transformado em nova proposição` (1230), `Perdeu a Eficácia` (1292) e `Tramitação Finalizada` (1285).
+- Nas linhas PL/PLP do lote salvo aparecem só 7 situações: Tramitando em Conjunto (66), Aguardando Parecer (38), Aguardando Apreciação pelo Senado Federal (16), Pronta para Pauta (14), Aguardando Designação de Relator(a) (6), Transformado em Norma Jurídica (4) e Aguardando Despacho do Presidente da Câmara dos Deputados (Chancela) (1). "Arquivada" não aparece em nenhuma delas.
+- Situações como `Aguardando Remessa ao Arquivo` (931) e `Aguardando Despacho de Arquivamento` (940) **não** são arquivamento concluído e não estão na tabela.
 
 ### `/api/v2/deputados`
 

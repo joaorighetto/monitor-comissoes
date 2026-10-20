@@ -7,11 +7,13 @@ from pathlib import Path
 
 import pytest
 
+from monitor_comissoes import status as status_modulo
 from monitor_comissoes.saida import serializar
 from monitor_comissoes.status import (
     base_de_comparacao,
     gravar_par,
     gravar_status,
+    gravar_todos,
     ler_status,
     mensagem_commit,
     montar_status,
@@ -396,6 +398,167 @@ def test_gravar_par_com_dupla_falha_propaga_a_causa_original_com_nota(tmp_path, 
         gravar_par({"novo": 1}, atual, sucesso(), status)
 
     assert any("restauração" in nota for nota in erro.value.__notes__)
+
+
+# (k) gravação de N arquivos (MUD) ---------------------------------------------------------------
+
+
+def quatro(tmp_path):
+    return [tmp_path / "data" / nome for nome in ("a.json", "b.json", "mudancas/c.json", "d.json")]
+
+
+def textos(destinos, rotulo):
+    return [(f"{rotulo}-{d.name}\n", d) for d in destinos]
+
+
+def conteudo(destinos):
+    return {d.name: d.read_text(encoding="utf-8") if d.exists() else None for d in destinos}
+
+
+def arquivos_da_pasta(pasta):
+    return sorted(str(p.relative_to(pasta)) for p in pasta.rglob("*") if p.is_file())
+
+
+def test_gravar_todos_substitui_todos_os_destinos_e_cria_pastas(tmp_path):
+    destinos = quatro(tmp_path)
+    destinos[0].parent.mkdir(parents=True)
+    destinos[0].write_text("velho\n", encoding="utf-8")
+
+    gravar_todos(textos(destinos, "novo"))
+
+    assert conteudo(destinos) == {d.name: f"novo-{d.name}\n" for d in destinos}
+    assert arquivos_da_pasta(tmp_path) == [
+        "data/a.json",
+        "data/b.json",
+        "data/d.json",
+        "data/mudancas/c.json",
+    ]
+
+
+@pytest.mark.parametrize("k", [1, 2, 3, 4])
+def test_gravar_todos_com_falha_ao_preparar_o_k_esimo_nao_troca_nenhum(tmp_path, monkeypatch, k):
+    destinos = quatro(tmp_path)
+    for d in destinos:
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_text(f"velho-{d.name}\n", encoding="utf-8")
+    antes = conteudo(destinos)
+    original = status_modulo.escrever_temporario
+    chamadas = []
+
+    def falso(texto, destino):
+        chamadas.append(destino)
+        if len(chamadas) == k:
+            raise OSError("disco cheio (simulado)")
+        return original(texto, destino)
+
+    monkeypatch.setattr(status_modulo, "escrever_temporario", falso)
+
+    with pytest.raises(OSError, match="disco cheio"):
+        gravar_todos(textos(destinos, "novo"))
+
+    assert conteudo(destinos) == antes
+    assert arquivos_da_pasta(tmp_path) == [
+        "data/a.json",
+        "data/b.json",
+        "data/d.json",
+        "data/mudancas/c.json",
+    ]
+
+
+@pytest.mark.parametrize("k", [2, 3, 4])
+def test_gravar_todos_com_falha_na_troca_do_k_esimo_restaura_os_anteriores_em_ordem_inversa(
+    tmp_path, monkeypatch, k
+):
+    destinos = quatro(tmp_path)
+    for d in destinos:
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_text(f"velho-{d.name}\n", encoding="utf-8")
+    antes = conteudo(destinos)
+    falhar_troca_do(monkeypatch, destinos[k - 1])
+    restauradas = []
+    original = status_modulo._restaurar
+
+    def espiao(destino, anterior):
+        restauradas.append(destino)
+        return original(destino, anterior)
+
+    monkeypatch.setattr(status_modulo, "_restaurar", espiao)
+
+    with pytest.raises(OSError, match="falha simulada"):
+        gravar_todos(textos(destinos, "novo"))
+
+    assert conteudo(destinos) == antes
+    assert restauradas == list(reversed(destinos[: k - 1]))
+    assert len(arquivos_da_pasta(tmp_path)) == 4  # nenhum temporário sobra
+
+
+@pytest.mark.parametrize("k", [2, 3, 4])
+def test_gravar_todos_com_falha_ao_ler_o_conteudo_anterior_do_k_esimo_nao_troca_nenhum(
+    tmp_path, monkeypatch, k
+):
+    destinos = quatro(tmp_path)
+    for d in destinos:
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_text(f"velho-{d.name}\n", encoding="utf-8")
+    antes = conteudo(destinos)
+    alvo = destinos[k - 1]
+    original = Path.read_bytes
+
+    def leitura_quebrada(self):
+        if self == alvo:
+            raise PermissionError("leitura negada (simulada)")
+        return original(self)
+
+    monkeypatch.setattr(Path, "read_bytes", leitura_quebrada)
+
+    with pytest.raises(PermissionError, match="leitura negada"):
+        gravar_todos(textos(destinos, "novo"))
+
+    assert conteudo(destinos) == antes
+    assert len(arquivos_da_pasta(tmp_path)) == 4  # nenhum temporário sobra
+
+
+def test_gravar_todos_remove_os_que_nao_existiam_se_uma_troca_posterior_falhar(
+    tmp_path, monkeypatch
+):
+    destinos = quatro(tmp_path)
+    destinos[0].parent.mkdir(parents=True)
+    destinos[0].write_text("velho\n", encoding="utf-8")  # só o primeiro existia
+    falhar_troca_do(monkeypatch, destinos[3])
+
+    with pytest.raises(OSError, match="falha simulada"):
+        gravar_todos(textos(destinos, "novo"))
+
+    assert destinos[0].read_text(encoding="utf-8") == "velho\n"
+    assert arquivos_da_pasta(tmp_path) == ["data/a.json"]
+
+
+def test_gravar_todos_com_falha_ao_restaurar_continua_restaurando_e_anota_a_causa(
+    tmp_path, monkeypatch
+):
+    destinos = quatro(tmp_path)
+    for d in destinos:
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_text(f"velho-{d.name}\n", encoding="utf-8")
+    falhar_troca_do(monkeypatch, destinos[3])
+    tentativas = []
+    original = status_modulo._restaurar
+
+    def primeira_quebra(destino, anterior):
+        tentativas.append(destino)
+        if len(tentativas) == 1:
+            raise OSError("restauração quebrada")
+        return original(destino, anterior)
+
+    monkeypatch.setattr(status_modulo, "_restaurar", primeira_quebra)
+
+    with pytest.raises(OSError, match="falha simulada") as erro:
+        gravar_todos(textos(destinos, "novo"))
+
+    assert tentativas == list(reversed(destinos[:3]))  # as outras duas foram tentadas
+    assert any("restauração" in nota for nota in erro.value.__notes__)
+    assert destinos[0].read_text(encoding="utf-8") == "velho-a.json\n"
+    assert destinos[1].read_text(encoding="utf-8") == "velho-b.json\n"
 
 
 # --- Aceito sem base de comparação --------------------------------------------------------------

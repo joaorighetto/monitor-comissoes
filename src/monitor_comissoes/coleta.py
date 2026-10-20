@@ -2,6 +2,7 @@
 
 import tempfile
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,7 @@ from .estoque import (
     TIPOS,
     construir_itens,
     deve_ler_tramitacoes,
+    estado_de_saida,
     etiquetar,
     ids_na_comissao,
     resolver_referencia,
@@ -32,13 +34,15 @@ from .lote import (
     ler_proposicoes,
     verificar_frescor,
 )
+from .mudancas import comparar, validar_arquivo
 from .relatoria import ResultadoRelatoria, relator_atual
+from .retratos import Comparacao
 from .saida import gravar_atomico, montar_documento
-from .tramitacoes import obter_tramitacoes
+from .tramitacoes import Tramitacao, obter_tramitacoes
 from .transporte import Transporte
 
 URL_BASE = "https://dadosabertos.camara.leg.br"
-VERSAO_FORMATO = 2
+VERSAO_FORMATO = 3
 
 
 @dataclass(frozen=True)
@@ -55,6 +59,7 @@ class Coletado:
     documento: dict
     estoque_bruto: int  # PL/PLP nas comissões, pelo órgão do próprio status (AGE, FR-015a)
     dados_camara_em: datetime  # UTC
+    mudancas: dict | None = None  # o arquivo de mudanças do dia (MUD); None sem comparação
 
 
 def _candidatos_a_relatoria(
@@ -103,12 +108,41 @@ def _referencias_a_ler(
     return referencias, com_autoria
 
 
+def _tramitacoes_da_execucao(transporte: Transporte) -> Callable[[int], list[Tramitacao]]:
+    """Lê as tramitações de cada referência uma só vez por coleta.
+
+    A relatoria (REL) e as tramitações dos eventos (MUD) usam a mesma resposta: duas leituras ao
+    vivo, em instantes diferentes, poderiam divergir dentro da mesma execução.
+    """
+    lidas: dict[int, list[Tramitacao]] = {}
+
+    def ler(id_referencia: int) -> list[Tramitacao]:
+        if id_referencia not in lidas:
+            lidas[id_referencia] = obter_tramitacoes(transporte, URL_BASE, id_referencia)
+        return lidas[id_referencia]
+
+    return ler
+
+
 def _ler_relatorias(
-    transporte: Transporte, referencias: dict[int, str]
+    tramitacoes_de: Callable[[int], list[Tramitacao]],
+    referencias: dict[int, str],
+    linhas: dict[int, Proposicao],
 ) -> dict[int, ResultadoRelatoria]:
+    """O relator de cada referência no instante do lote.
+
+    Como a situação, o relator vale até a sequência do último status do lote: uma designação
+    lançada depois entra no dia seguinte. Sem esse corte, reexecutar o dia com o mesmo lote daria
+    outro arquivo, e o evento de relator sairia sem a tramitação que o causou.
+    """
     return {
         id_referencia: relator_atual(
-            obter_tramitacoes(transporte, URL_BASE, id_referencia), referencias[id_referencia]
+            [
+                t
+                for t in tramitacoes_de(id_referencia)
+                if t.sequencia <= linhas[id_referencia].ultimo_status_sequencia
+            ],
+            referencias[id_referencia],
         )
         for id_referencia in sorted(referencias)
     }
@@ -137,8 +171,18 @@ def _deputados_relator(
     return {i: do_novo[i] if i in do_novo else obter_deputado(transporte, URL_BASE, i) for i in ids}
 
 
-def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado:
-    """Baixa, valida e filtra o lote; devolve o documento sem gravar nada."""
+def coletar(
+    config: Config,
+    transporte: Transporte,
+    agora: datetime,
+    comparacao: Comparacao | None = None,
+) -> Coletado:
+    """Baixa, valida e filtra o lote; devolve o documento sem gravar nada.
+
+    Com `comparacao` (a execução diária), devolve também o arquivo de mudanças do dia. A
+    comparação roda aqui dentro para que uma falha de rede dela entre no mesmo laço de novas
+    tentativas da coleta.
+    """
     ano_corrente = agora.astimezone(BRASILIA).year
     deputados = obter_deputados_novo(transporte, URL_BASE)
     ids_deputados = {d.id for d in deputados}
@@ -166,9 +210,14 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
             lote, ids_deputados, config.comissoes, mapa_principal
         )
 
+        # Itens do retrato anterior (MUD): suas linhas do lote dizem para onde foram os que saíram.
+        ids_anteriores: set[int] = set()
+        if comparacao is not None and comparacao.anterior is not None:
+            ids_anteriores = {i["id"] for i in comparacao.anterior.documento["itens"]}
+
         # Linhas necessárias: as proposições a examinar e as raízes de suas cadeias.
-        necessarias = set(examinar)
-        for id_proposicao in examinar:
+        necessarias = set(examinar) | ids_anteriores
+        for id_proposicao in necessarias.copy():
             raiz = subir_ate_a_raiz(id_proposicao, mapa_principal)
             if raiz is not None:
                 necessarias.add(raiz)
@@ -189,7 +238,8 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
     referencias, com_autoria = _referencias_a_ler(
         candidatas, na_comissao, autores_por_id, ids_deputados, mapa_principal, linhas
     )
-    relatorias = _ler_relatorias(transporte, referencias)
+    tramitacoes_de = _tramitacoes_da_execucao(transporte)
+    relatorias = _ler_relatorias(tramitacoes_de, referencias, linhas)
     deputados_relator = _deputados_relator(transporte, relatorias, deputados, com_autoria)
 
     itens = construir_itens(
@@ -217,7 +267,24 @@ def coletar(config: Config, transporte: Transporte, agora: datetime) -> Coletado
         "total_por_comissao": por_comissao,
         "deputados_novo_em_exercicio": [{"id": d.id, "nome": d.nome} for d in deputados],
     }
-    return Coletado(montar_documento(itens, meta), estoque_bruto, lote.last_modified_min)
+    documento = montar_documento(itens, meta)
+    mudancas = None
+    if comparacao is not None:
+        ids_de_hoje = {i["id"] for i in itens}
+        estados_de_saida = {
+            id_proposicao: estado_de_saida(id_proposicao, linhas, mapa_principal, config.comissoes)
+            for id_proposicao in ids_anteriores - ids_de_hoje
+        }
+        mudancas = comparar(
+            comparacao,
+            documento,
+            estados_de_saida,
+            tramitacoes_de,
+            config.comissoes,
+            agora.astimezone(BRASILIA).date(),
+        )
+        validar_arquivo(mudancas)
+    return Coletado(documento, estoque_bruto, lote.last_modified_min, mudancas)
 
 
 def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:

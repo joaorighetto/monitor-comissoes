@@ -18,6 +18,8 @@ Conferências feitas em 18/10/2026 contra a API real da Câmara (rede liberada),
 
 **Alternativas rejeitadas:** conferir a última `sequencia` com `ultimoStatus_sequencia` do lote. O lote é do dia anterior e a API é ao vivo, então a diferença é normal e geraria falso alarme.
 
+**Atualização (MUD, 18/10/2026):** o relator passou a valer até a sequência do último status do lote (`ultimoStatus_sequencia`), como a situação, por decisão do mantenedor, para reexecutar o dia com o mesmo lote dar o mesmo arquivo. Não é uma conferência que falha: as tramitações lançadas depois do lote são ignoradas, e entram no dia seguinte. Ver `specs/004-mudancas-desde-ontem/research.md` e PRODUCT §5.4.
+
 ## R2. Regra do relator atual (máquina de estados por passagem)
 
 **Decisão:** percorrer as tramitações em ordem de `sequencia`, com a comissão C vinda do lote (`ultimoStatus_siglaOrgao` da referência):
