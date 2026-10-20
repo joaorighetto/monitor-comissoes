@@ -218,9 +218,10 @@ def _restaurar(destino: Path, anterior: bytes | None) -> None:
 def gravar_todos(escritas: Sequence[tuple[str, Path]]) -> None:
     """Grava N arquivos juntos, tudo ou nada: `escritas` é uma lista de pares (texto, destino).
 
-    Todos os temporários são preparados primeiro; só depois vêm as trocas, na ordem dada. Se algo
-    falhar ao preparar qualquer um (serialização já feita pelo chamador; disco), nenhum destino é
-    trocado e nenhum temporário sobra. Se a troca do k-ésimo falhar, os k-1 já trocados voltam,
+    Todos os temporários são preparados primeiro, e o conteúdo anterior de todos os destinos é lido
+    antes da primeira troca; só depois vêm as trocas, na ordem dada. Se algo falhar ao preparar ou
+    ao ler qualquer um (serialização já feita pelo chamador; disco), nenhum destino é trocado e
+    nenhum temporário sobra. Se a troca do k-ésimo falhar, os k-1 já trocados voltam,
     em ordem inversa, ao conteúdo anterior (ou são removidos, se não existiam). Uma falha ao
     restaurar um deles não impede restaurar os outros e vira nota na exceção original. Só a morte
     do processo entre duas trocas deixa arquivos trocados, e o workflow os restaura do Git.
@@ -231,8 +232,8 @@ def gravar_todos(escritas: Sequence[tuple[str, Path]]) -> None:
     try:
         for (texto, _), destino in zip(escritas, destinos, strict=True):
             temporarios.append(escrever_temporario(texto, destino))
-        for temporario, destino in zip(temporarios, destinos, strict=True):
-            anterior = destino.read_bytes() if destino.exists() else None
+        anteriores = [d.read_bytes() if d.exists() else None for d in destinos]
+        for temporario, destino, anterior in zip(temporarios, destinos, anteriores, strict=True):
             try:
                 os.replace(temporario, destino)
             except BaseException as erro:

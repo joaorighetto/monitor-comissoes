@@ -492,6 +492,32 @@ def test_gravar_todos_com_falha_na_troca_do_k_esimo_restaura_os_anteriores_em_or
     assert len(arquivos_da_pasta(tmp_path)) == 4  # nenhum temporário sobra
 
 
+@pytest.mark.parametrize("k", [2, 3, 4])
+def test_gravar_todos_com_falha_ao_ler_o_conteudo_anterior_do_k_esimo_nao_troca_nenhum(
+    tmp_path, monkeypatch, k
+):
+    destinos = quatro(tmp_path)
+    for d in destinos:
+        d.parent.mkdir(parents=True, exist_ok=True)
+        d.write_text(f"velho-{d.name}\n", encoding="utf-8")
+    antes = conteudo(destinos)
+    alvo = destinos[k - 1]
+    original = Path.read_bytes
+
+    def leitura_quebrada(self):
+        if self == alvo:
+            raise PermissionError("leitura negada (simulada)")
+        return original(self)
+
+    monkeypatch.setattr(Path, "read_bytes", leitura_quebrada)
+
+    with pytest.raises(PermissionError, match="leitura negada"):
+        gravar_todos(textos(destinos, "novo"))
+
+    assert conteudo(destinos) == antes
+    assert len(arquivos_da_pasta(tmp_path)) == 4  # nenhum temporário sobra
+
+
 def test_gravar_todos_remove_os_que_nao_existiam_se_uma_troca_posterior_falhar(
     tmp_path, monkeypatch
 ):
