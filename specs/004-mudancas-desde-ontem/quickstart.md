@@ -41,20 +41,27 @@ Esperado: `IGUAL` (e `anterior.json` continua inexistente). Se o lote da Câmara
 
 ### 2.3 Dia seguinte: simular um retrato de ontem alterado
 
-Faça o `atual.json` parecer de ontem, com um item a menos e outro com situação diferente, e rode de novo:
+Faça o `atual.json` parecer de ontem, com um item a menos e outro com situação diferente, e rode de novo. O `status.json` também precisa descrever esse retrato (o mesmo `gerado_em` e `dados_camara_em` em `ultimo_retrato_bom`); sem isso a execução falha com `sem_base_de_comparacao`, porque o estoque bruto só é comparado com um retrato que o status descreve:
 
 ```bash
 python3 - <<EOF
 import json
 from datetime import date, timedelta
 ontem = date.today() - timedelta(days=1)
+gerado_em = f"{ontem}T09:00:00-03:00"
+dados_camara_em = f"{ontem}T04:30:00+00:00"
 p = "$D/atual.json"
 d = json.load(open(p))
-d["meta"]["gerado_em"] = f"{ontem}T09:00:00-03:00"
-d["meta"]["dados_camara_em"] = f"{ontem}T04:30:00+00:00"
+d["meta"]["gerado_em"] = gerado_em
+d["meta"]["dados_camara_em"] = dados_camara_em
 d["itens"].pop(0)                                       # este item vai aparecer em "entrou"
 d["itens"][0]["situacao"] = "Situação inventada"        # este vai aparecer em "situacao"
 json.dump(d, open(p, "w"), ensure_ascii=False, indent=2)
+q = "$D/status.json"
+s = json.load(open(q))
+s["ultimo_retrato_bom"]["gerado_em"] = gerado_em        # o status passa a descrever o atual alterado
+s["ultimo_retrato_bom"]["dados_camara_em"] = dados_camara_em
+json.dump(s, open(q, "w"), ensure_ascii=False, indent=2)
 EOF
 uv run python -m monitor_comissoes.diaria executar $ARGS
 python3 -c "import json,glob; d=json.load(open(glob.glob('$D/mudancas/*.json')[0])); print(d['meta']['total_por_tipo'], [ (e['tipo'], e['identificacao']) for e in d['eventos']])"
