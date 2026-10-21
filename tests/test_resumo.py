@@ -53,3 +53,21 @@ def test_destino_padrao_aponta_para_o_repositorio_do_projeto(dia):
     assert url == (
         f"https://github.com/joaorighetto/monitor-comissoes/blob/main/data/mudancas/{dia}.json"
     )
+
+
+def test_com_o_config_toml_do_repositorio_o_e_mais_n_leva_a_pagina_sem_barra_duplicada():
+    from pathlib import Path
+
+    import aviso_sinteticos as a
+    from monitor_comissoes.config import carregar_config_do_aviso
+    from monitor_comissoes.resumo import montar_normal
+
+    raiz = Path(__file__).parent.parent
+    config = carregar_config_do_aviso(raiz / "config.toml", 2026)
+
+    saida = montar_normal(a.muitos_eventos(300), a.status_ok(), config, ())
+
+    pagina = "https://joaorighetto.github.io/monitor-comissoes/"
+    assert saida.rstrip().endswith(f"veja a página\n{pagina}")
+    assert "//" not in saida.replace("https://", "")
+    assert tamanho(saida) <= LIMITE

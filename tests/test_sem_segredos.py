@@ -12,7 +12,7 @@ RAIZ = Path(__file__).parent.parent
 PASTAS = ("src", "tests", ".github", "data", "docs", "specs")
 ARQUIVOS = ("config.toml", "pyproject.toml", "CLAUDE.md", "PRODUCT.md", "ROADMAP.md", ".gitignore")
 IGNORAR = {".git", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache", ".serena"}
-SUFIXOS = {".py", ".md", ".json", ".toml", ".yml", ".yaml", ".txt", ".csv", ""}
+SUFIXOS = {".py", ".md", ".json", ".toml", ".yml", ".yaml", ".txt", ".csv", ".js", ".css", ""}
 
 TOKEN_DE_BOT = re.compile(r"(?<!\d)\d{6,}:[A-Za-z0-9_-]{30,}(?![A-Za-z0-9_-])")
 ATRIBUICAO = re.compile(r"TELEGRAM_(?:BOT_TOKEN|CHAT_ID)[ \t]*=[ \t]*[^\s\"'$]")

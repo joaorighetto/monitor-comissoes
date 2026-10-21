@@ -1,0 +1,13 @@
+{
+  "versao_formato": 1,
+  "resultado": "falha",
+  "verificado_em": "2026-10-21T03:50:00-03:00",
+  "data_referencia": "2026-10-21",
+  "tentativas": 4,
+  "falha": {
+    "categoria": "arquivos_desatualizados",
+    "motivo": "a Câmara não atualizou os arquivos"
+  },
+  "variacao_aceita": null,
+  "ultimo_retrato_bom": null
+}

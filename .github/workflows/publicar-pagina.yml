@@ -1,0 +1,52 @@
+name: Publicar página
+
+# Gera a página pública (feature PAG) dos arquivos que a coleta já commitou e a publica no GitHub
+# Pages. Roda ao fim de toda "Coleta diária", com sucesso ou falha: a coleta grava o status.json até
+# quando falha, e é ele que faz a página mostrar a faixa de erro no mesmo dia. Nada gerado é
+# commitado. Se o `gerar` falhar, o job fica vermelho e o upload e o deploy não rodam: a página
+# publicada continua a de antes.
+on:
+  workflow_run:
+    workflows: ["Coleta diária"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez, sem cancelar a que já roda. Grupo próprio: a coleta não espera a página.
+concurrency:
+  group: pagina
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    # O workflow_run vale para a coleta de qualquer branch; só a do branch padrão publica.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.head_branch == github.event.repository.default_branch }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      # Sem `ref`: o padrão do workflow_run é o último commit do branch padrão, que já inclui o
+      # commit do bot da coleta. O head_sha da coleta é o commit de antes dele (dados de ontem).
+      - uses: actions/checkout@v7
+      # O setup-uv não publica tag móvel de versão maior (v10 não existe): fixa-se a versão completa.
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - run: uv sync --locked
+      - name: Gerar a página
+        run: .venv/bin/python -m monitor_comissoes.pagina gerar --saida site
+      # Versões das ações de Pages conferidas em 2026-10-20 (releases/latest de cada repositório).
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: Endereço publicado
+        env:
+          PAGINA_URL: ${{ steps.deploy.outputs.page_url }}
+        run: echo "Página publicada em $PAGINA_URL"

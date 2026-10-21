@@ -50,3 +50,11 @@ class FalhaDeEnvio(Exception):
     Não é uma `FalhaDeColeta`: não tem categoria e nunca vai para o `status.json`. A mensagem
     nunca contém token nem chat_id.
     """
+
+
+class FalhaDePagina(Exception):
+    """Falha da geração da página pública (PAG): leitura das entradas ou gravação da saída.
+
+    Não é uma `FalhaDeColeta`: não tem categoria e nunca vai para o `status.json`. A mensagem traz
+    o nome do arquivo quando a causa é um arquivo.
+    """

@@ -1,0 +1,18 @@
+{
+  "versao_formato": 1,
+  "resultado": "falha",
+  "verificado_em": "2026-10-21T09:00:00-03:00",
+  "data_referencia": "2026-10-21",
+  "tentativas": 4,
+  "falha": {
+    "categoria": "arquivos_desatualizados",
+    "motivo": "a Câmara não atualizou os arquivos"
+  },
+  "variacao_aceita": null,
+  "ultimo_retrato_bom": {
+    "gerado_em": "2026-10-20T09:05:07-03:00",
+    "dados_camara_em": "2026-10-20T04:31:26+00:00",
+    "total_itens": 105,
+    "estoque_bruto": 1531
+  }
+}
