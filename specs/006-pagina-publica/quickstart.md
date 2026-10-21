@@ -113,16 +113,23 @@ Esperado (num dia com eventos acima do teto): a mensagem termina com "e mais N, 
 
 ## Cobertura (casos de aceitação da linha PAG do ROADMAP.md)
 
-| Caso de aceitação | Onde se confere |
+| Caso de aceitação (ROADMAP.md, linha PAG) | Onde se confere |
 |---|---|
-| Linha de atualização | Seção 3 (topo); `test_pagina_html` |
-| Faixa de erro ou de atraso | Seção 3 e 7; `test_pagina_html`, `test_pagina_js` |
-| Números | Seção 3; `test_pagina_modelo` |
-| Mudanças de 7 dias | Seção 3; `test_pagina_mudancas` |
-| Lista com chips de comissão e de motivo, ordenada por "parado há" | Seção 3; `test_pagina_html`, `test_pagina_js` |
-| Bloco de limites | `test_pagina_html` |
-| Download em JSON e CSV | Seção 4; `test_pagina_csv`, `test_pagina_cli` |
-| Funciona sem JS | Seção 3; `test_pagina_html` |
+| Linha de atualização | `test_pagina_html::test_linha_de_atualizacao`, `test_pagina_modelo::test_linha_de_atualizacao_*`; seção 3 |
+| Faixa de erro | `test_pagina_html::test_faixa_de_erro_em_texto_com_role_alert_e_lista_do_ultimo_retrato_bom`, `test_pagina_cli::test_falha_da_coleta_com_retrato_bom_gera_a_pagina_com_a_faixa`; seção 3 |
+| Faixa de atraso | `test_pagina_js::test_atrasada_so_acima_de_30_horas`, `test_verificar_atraso_mostra_a_faixa_so_quando_atrasada`, `test_pagina_html::test_faixa_de_atraso_existe_escondida_*`; seção 3 |
+| Números | `test_pagina_modelo::test_numeros_*`, `test_pagina_html::test_numeros_em_lista_de_definicoes` |
+| Mudanças de 7 dias | `test_pagina_modelo::test_sete_dias_*`, `test_pagina_mudancas` (seis tipos, teto por dia, dia sem arquivo, linha de base) |
+| Lista com chips de comissão e de motivo | `test_pagina_modelo::test_chips_*`, `test_pagina_html::test_chips_sao_botoes_*`, `test_pagina_js::test_filtrar_*`, `test_aplicar_*`, `test_clique_*` |
+| Ordenada por "parado há" | `test_pagina_modelo::test_ordem_*`, `test_pagina_html::test_a_lista_real_tem_os_105_itens_na_ordem_de_parado_ha` |
+| Bloco de limites | `test_pagina_html::test_bloco_de_limites_com_os_sete_limites_do_leitor` |
+| Download em JSON e CSV | `test_pagina_csv`, `test_pagina_cli::test_atual_json_publicado_e_identico_byte_a_byte_ao_de_entrada`, `test_itens_csv_publicado_tem_106_linhas`; seção 4 |
+| Funciona sem JS | `test_pagina_html::test_os_itens_nunca_nascem_escondidos_*`, `test_pagina_js` (o JS só acrescenta); seção 3 |
+| Falha visível: nada é escrito | `test_pagina_cli::test_entrada_ruim_falha_com_codigo_1_e_nao_cria_a_saida`, `test_falha_nao_altera_a_pagina_ja_gerada` |
+| Idempotência | `test_pagina_cli::test_duas_execucoes_dao_arquivos_identicos_byte_a_byte` |
+| Publicação no Pages | `test_workflow_pagina` (verificação textual); o deploy real é a seção 5 |
+
+**Não inclui** (busca, paginação, histórico de mais de 7 dias, página do portfólio): conferido por busca de texto em `src/monitor_comissoes/pagina/` por `busca`, `search`, `paginação`, `histórico`, `EmbedFrame` e `<input`: nenhuma ocorrência.
 
 ## Conferência no navegador (2026-10-20)
 
