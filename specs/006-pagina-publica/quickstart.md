@@ -123,3 +123,23 @@ Esperado (num dia com eventos acima do teto): a mensagem termina com "e mais N, 
 | Bloco de limites | `test_pagina_html` |
 | Download em JSON e CSV | Seção 4; `test_pagina_csv`, `test_pagina_cli` |
 | Funciona sem JS | Seção 3; `test_pagina_html` |
+
+## Conferência no navegador (2026-10-20)
+
+Feita no navegador do app (Chromium), com a página gerada do retrato real de 20/10 (`tests/fixtures/pagina/atual-real.json` e `status-ok.json`) e servida por `python -m http.server`.
+
+| O que | Resultado |
+|---|---|
+| Linha de atualização, números e 105 itens | Certos: "Dados da Câmara de 20/10 (arquivo gerado às 09h05) · verificado em 20/10 às 09h09"; 105, CE 96, CREDN 9, mudanças 6 |
+| Fonte do DS | Schibsted Grotesk e IBM Plex Mono carregadas dos arquivos locais |
+| Chips | CE: 96; CE + Relatoria NOVO: 80; CREDN + Relatoria NOVO: 4; Autoria NOVO: 20; Todas/Todos: 105. Todos bateram com a contagem feita nos dados do `atual.json`; "Mostrando N de 105 itens." acompanhou |
+| Faixa de atraso | Escondida; com `verificadoEm` de 18/10 e `PaginaMonitor.verificarAtraso(document, Date.now())`, apareceu com o texto de "Dados atrasados" |
+| Faixa de erro (`status-falha.json`) | "A atualização de 21/10 falhou (a Câmara não atualizou os arquivos). Dados de 20/10." na primeira tela de 360 × 640 (SC-003) |
+| Sem JavaScript | Não dá para desligar o JS neste navegador. Conferido o HTML bruto lido com `DOMParser` (que não executa scripts): 105 itens, nenhum `hidden`; só `#filtros` e `#faixa-atraso` nascem escondidos |
+| 360 px | Sem rolagem lateral da página; as linhas de chips rolam dentro do próprio contêiner; chips com 44 px |
+| Alvos de toque | A primeira medição achou 60 links de "apensado ao PL X" com 19 a 20 px de altura; corrigido com `min-height: var(--touch-min)` e medido de novo: nenhum link, botão ou `summary` com menos de 44 px |
+| Temas | Claro e escuro legíveis, com a faixa de erro visível nos dois |
+| Quadro incorporado | Um `<iframe>` de 360 px com a página: renderizou, 105 itens, chips funcionando (CREDN: 9), sem rolagem lateral |
+| Downloads | `atual.json` (148 573 caracteres) e `itens.csv` (BOM `EF BB BF`, 42 644 bytes) servidos nos endereços de `contracts/site.md` |
+
+**Não conferido aqui:** a abertura do `itens.csv` no Excel em português (não há Excel neste ambiente; a conferência é do mantenedor, seção 4), a página no celular real e o deploy no GitHub Pages (seção 5).

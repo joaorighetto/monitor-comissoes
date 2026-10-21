@@ -98,3 +98,11 @@ def test_a_pagina_nao_forca_rolagem_horizontal_no_corpo():
     assert "overflow-x: scroll" not in bloco
     assert not re.search(r"\bbody\s*\{[^}]*overflow-x", css())
     assert "min-width: 0" in bloco  # itens de grid que quebram texto longo
+
+
+def test_links_de_apensado_tem_area_de_toque_de_44px():
+    bloco = bloco_da_pagina()
+
+    regra = re.search(r"\.item-dados a, \.evento-apensado a \{[^}]*\}", bloco).group(0)
+
+    assert "min-height: var(--touch-min)" in regra

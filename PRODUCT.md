@@ -157,16 +157,16 @@ Texto vigente e links oficiais em [docs/fontes.md](docs/fontes.md#4-arquivamento
 De cima para baixo:
 
 1. **Linha de atualização**: "Dados da Câmara de DD/MM (arquivo gerado às HHhMM) · verificado em DD/MM às HHhMM".
-2. **Faixa de erro**, quando a última execução falhou ("A atualização de DD/MM falhou (motivo). Dados de DD/MM."). **Faixa de atraso**, calculada no navegador quando a verificação tem mais de 30 horas. O significado vem do texto, porque o DS não tem cores de status.
-3. **Números**: total de itens, total por comissão e mudanças desde o retrato anterior.
-4. **"Mudou nos últimos 7 dias"**: os eventos agrupados por dia, com link oficial.
+2. **Faixa de erro**, quando a última execução falhou ("A atualização de DD/MM falhou (motivo). Dados de DD/MM.": o primeiro DD/MM é o dia da execução que falhou; o segundo, a data dos últimos dados bons). **Faixa de atraso**, calculada no navegador quando a verificação tem mais de 30 horas. O significado vem do texto, porque o DS não tem cores de status.
+3. **Números**: total de itens, total por comissão e mudanças desde o retrato anterior. Se o arquivo de mudanças do dia do retrato não existe (antes da primeira execução com a MUD), "mudanças desde o retrato anterior" diz "sem comparação ainda", nunca zero.
+4. **"Mudou nos últimos 7 dias"**: os eventos agrupados por dia, com link oficial. São os 7 dias de calendário que terminam no dia do retrato. Dia sem arquivo diz "Sem arquivo de mudanças neste dia". Os 20 primeiros eventos de cada dia ficam abertos e o resto fica recolhido, sem perder nenhum.
 5. **Lista** com dois grupos de FilterChips:
    - Comissão: Todas · CE · CREDN.
    - Motivo: Todos · Autoria NOVO · Autor hoje no NOVO · Relatoria NOVO.
 6. **Cada item** mostra:
    - `Tipo número/ano` com link para a página oficial;
    - ementa;
-   - autores com o partido na data;
+   - autores com o partido na data (só o nome, quando o autor não tem partido, como uma comissão especial);
    - etiquetas;
    - situação;
    - relator atual com o partido de hoje;
@@ -176,6 +176,8 @@ De cima para baixo:
 8. **Baixar dados**: `atual.json` e CSV.
 
 A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens aparecem. Usa o DS do portfólio: tokens azuis, FilterChips e as regras de acessibilidade, foco e área de toque.
+
+**Publicação.** A página é gerada em Python dos arquivos versionados e publicada no GitHub Pages por um workflow próprio, disparado ao fim de toda execução da coleta (com sucesso ou falha), para a faixa de erro aparecer no mesmo dia. Nada gerado é commitado. Se a geração falhar, a página anterior continua publicada e o workflow fica vermelho.
 
 ## 7. Falhar de forma visível
 
@@ -227,7 +229,7 @@ A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens
 
 - Python 3.13 com uv.
 - Arquivos JSON versionados no Git como histórico. Sem servidor nem banco.
-- GitHub Actions como agendador e GitHub Pages para a página.
+- GitHub Actions como agendador e GitHub Pages para a página, publicada por workflow próprio ao fim da coleta (§6.2).
 - Segredos (token do bot e chat_id do Telegram) só em variáveis de ambiente e secrets do GitHub. O `.env` local fica fora do Git.
 - Todo item conferível, com link para a página oficial da proposição.
-- Visual: o Design System do portfólio (`../Portfolio/design-system`), com tokens azuis e os componentes FilterChips e, do lado do portfólio, EmbedFrame.
+- Visual: o Design System do portfólio (`../Portfolio/design-system`), com tokens azuis e os componentes FilterChips e, do lado do portfólio, EmbedFrame. Os ativos do DS (tokens, CSS dos chips e fontes) são copiados para `src/monitor_comissoes/pagina/estatico/`, porque a geração roda no GitHub Actions, onde o repositório do portfólio não existe.
