@@ -185,3 +185,14 @@ Fase 1 (T001-T005; T001, T002, T003 e T005 em paralelo; T004 depende de T002 e T
 | FR-020 | T010, T019 |
 | FR-021 | todas (fixtures, guarda de rede); T021 (sem segredos) |
 | SC-001 a SC-010 | T011 (SC-001, SC-008), T014 (SC-002, SC-009), T012 e T025 (SC-003), T017 (SC-004), T016 (SC-005), T019 (SC-006), T025 (SC-007), T026 (SC-010) |
+
+---
+
+## Phase 9: Convergence
+
+**Origem**: `/speckit-converge` de 2026-10-21, depois da implementação (T001–T027) e das duas rodadas de revisão independente. A implementação satisfaz todos os FR e SC da spec; restam estas lacunas de rastreabilidade e uma decisão do mantenedor.
+
+- [ ] T029 Resolver o bloco "Limites" contra o `PRODUCT.md` §6.2, item 7, **por decisão do mantenedor** (o `PRODUCT.md` tem mais autoridade que a spec): ou emendar o §6.2 para "os limites do §8 que valem para o leitor" (a página mostra 7; fora ficam arquivamento e volume da coleta), ou acrescentar os dois limites que faltam à página, a `LIMITES` em `src/monitor_comissoes/pagina/modelo.py` e aos testes de `tests/test_pagina_html.py`. Não decidir em silêncio. per FR-009 (partial)
+- [X] T030 Registrar na `spec.md`, em Edge Cases e no cenário 3 de US4, o dia do meio de um arquivo que cobre vários dias: texto "Sem arquivo próprio: as mudanças deste dia estão no arquivo de DD/MM", já implementado em `src/monitor_comissoes/pagina/modelo.py` (`_dias_cobertos`) e coberto por `tests/test_pagina_mudancas.py`, com base no PRODUCT.md §5.6 (arquivo do dia seguinte a uma coleta que falhou cobre o intervalo inteiro). per US4/AC3 (unrequested)
+- [X] T031 Registrar na `spec.md`, em Edge Cases e no cenário 3 de US1, o autor que não é deputado (uma comissão especial, no retrato real): `partido_na_data` vazio, e a página e o CSV mostram só o nome, sem parênteses. Já implementado em `src/monitor_comissoes/pagina/modelo.py` e `tabela.py`, e emendado no `PRODUCT.md` §6.2. per US1/AC3 (partial)
+- [X] T032 Registrar na `spec.md` (Assumptions) a justificativa do link "Ir para a lista" (`.pagina-pular`), que a spec não pede: atalho de teclado e de leitor de tela para pular o cabeçalho e as faixas, ligado à acessibilidade do DS exigida por FR-019; ou removê-lo de `src/monitor_comissoes/pagina/html.py` e do `estilo.css` se o mantenedor preferir. per FR-019 (unrequested)

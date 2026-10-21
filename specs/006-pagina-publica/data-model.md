@@ -77,7 +77,8 @@ Sete, de `D` a `D-6` (D = dia de `atual.meta.gerado_em` em Brasília).
 | Campo | Origem |
 |---|---|
 | `data` | o dia |
-| `estado` | `"eventos"` (arquivo com eventos), `"sem_mudancas"` (arquivo sem evento e sem linha de base), `"linha_de_base"`, `"sem_arquivo"` |
+| `estado` | `"eventos"` (arquivo com eventos), `"sem_mudancas"` (arquivo sem evento e sem linha de base), `"linha_de_base"`, `"sem_arquivo"`, `"coberto"` (sem arquivo próprio, mas entre o retrato anterior e o retrato de um arquivo de vários dias: os eventos dele estão nesse arquivo) |
+| `coberto_por` | `"DD/MM"` do arquivo que cobre o dia, só quando `estado = "coberto"` |
 | `intervalo` | `meta.retrato_anterior.dia` → `meta.retrato.dia`, só quando cobre mais de um dia |
 | `linha_de_base` | `meta.linha_de_base` (`motivo`, `total_itens`) |
 | `eventos` | `eventos`, na ordem do arquivo; os 20 primeiros "abertos", o resto "recolhidos" |

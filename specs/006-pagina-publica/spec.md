@@ -38,7 +38,7 @@ O chefe de gabinete abre o endereço da página no celular e vê, no topo, de qu
 
 1. **Dado** um retrato bom e um `status.json` de sucesso, **Quando** a página é gerada, **Então** a primeira linha diz "Dados da Câmara de DD/MM (arquivo gerado às HHhMM) · verificado em DD/MM às HHhMM", com datas e horas no horário de Brasília.
 2. **Dado** o mesmo retrato, **Então** os números mostram o total de itens, o total de cada comissão acompanhada e quantas mudanças houve desde o retrato anterior, e os valores batem com o `meta` do `atual.json` e com o arquivo de mudanças do dia.
-3. **Dado** o mesmo retrato, **Então** cada item da lista mostra: `Tipo número/ano` como link para a página oficial da Câmara; a ementa; os autores, cada um com o partido na data da autoria; as etiquetas; a situação; o relator atual com o partido de hoje; "nesta situação há N dias"; e "apensado ao PL X" (com link) quando for o caso.
+3. **Dado** o mesmo retrato, **Então** cada item da lista mostra: `Tipo número/ano` como link para a página oficial da Câmara; a ementa; os autores, cada um com o partido na data da autoria (só o nome, quando o autor não tem partido); as etiquetas; a situação; o relator atual com o partido de hoje; "nesta situação há N dias"; e "apensado ao PL X" (com link) quando for o caso.
 4. **Dado** um item cuja principal não foi localizada, **Então** o item mostra a marca "principal não localizada". **Dado** um item de relator indeterminado, **Então** mostra a marca "relator indeterminado". Nenhuma das duas marcas some em silêncio (PRODUCT.md, §5.2 e §5.4).
 5. **Dado** um item sem relator atual, **Então** o campo diz que não há relator atual, em vez de ficar em branco.
 6. **Dado** itens com valores diferentes de "parado há", **Então** a lista vem do mais tempo parado para o menos, e itens com o mesmo valor aparecem sempre na mesma ordem.
@@ -97,7 +97,7 @@ Numa seção "Mudou nos últimos 7 dias", o gabinete vê os eventos dos arquivos
 1. **Dado** arquivos de mudanças de vários dias, **Quando** a página é gerada, **Então** a seção mostra apenas os dias dos últimos 7 dias, com o mais recente primeiro, e cada dia lista os seus eventos.
 2. **Dado** um evento de qualquer um dos seis tipos, **Então** ele aparece com a identificação da proposição, o link oficial e o conteúdo do tipo (motivo e destino em "saiu"; "de → para" e comissão anterior em "situação"; quem saiu e quem entrou em "relator"; etiqueta ganha ou perdida em "etiquetas"; informe de parecer com o link, sem o conteúdo do parecer).
 3. **Dado** um dia com arquivo de mudanças e zero eventos, **Então** o dia aparece como "sem mudanças". **Dado** um dia com linha de base, **Então** aparece "linha de base criada com N itens" e o motivo. **Dado** um arquivo que cobre mais de um dia, **Então** a página diz as duas datas do intervalo.
-4. **Dado** que a coleta de um dia falhou e não há arquivo dele, **Então** a página não inventa eventos nem diz "sem mudanças" para esse dia.
+4. **Dado** que a coleta de um dia falhou e não há arquivo dele, **Então** a página não inventa eventos nem diz "sem mudanças" para esse dia. Se um arquivo posterior cobre esse dia (o intervalo vai do retrato anterior ao dele), a página diz em qual arquivo estão as mudanças.
 5. **Dado** um dia com muitos eventos (posse, recomposição das comissões), **Então** nenhum evento se perde: todos continuam acessíveis na página, mesmo que a parte além de um teto por dia fique recolhida (PRODUCT.md, §5.6).
 6. **Dado** que ainda não existe nenhum arquivo de mudanças (antes da primeira execução com a MUD), **Então** a seção diz que ainda não há mudanças registradas, e o resto da página funciona normalmente.
 
@@ -125,6 +125,8 @@ Quem quer conferir ou reaproveitar os dados baixa o JSON (`atual.json`) e o CSV 
 - **Retrato bom sem nenhum item.** A coleta já trata lista vazia como falha (PRODUCT.md, §7), então o `atual.json` não chega vazio à página. Se chegar (arquivo adulterado ou fora do contrato), a geração falha e a página anterior é mantida, em vez de publicar uma lista vazia (US2, cenário 6).
 - **`status.json` ausente, ilegível ou incoerente com o `atual.json`.** A geração falha, com o nome do arquivo; nunca há página com a linha de atualização inventada.
 - **Versão de formato desconhecida** em `atual.json`, `status.json` ou no arquivo de mudanças: a geração falha, com a versão encontrada, em vez de exibir campos que a página não entende.
+- **Dia do meio de um arquivo que cobre vários dias** (o arquivo do dia seguinte a uma coleta que falhou cobre o intervalo inteiro, PRODUCT.md §5.6): o dia sem arquivo próprio, entre o retrato anterior e o do arquivo, diz "Sem arquivo próprio: as mudanças deste dia estão no arquivo de DD/MM", e não "sem arquivo".
+- **Autor que não é deputado** (por exemplo, uma comissão especial, como no retrato real de 20/10/2026): `partido_na_data` vem vazio, e a página e o CSV mostram só o nome do autor, sem parênteses.
 - **Arquivo de mudanças do dia do retrato ausente** (antes da primeira execução com a MUD): "mudanças desde o retrato anterior" diz "sem comparação ainda", nunca zero.
 - **Item sem etiqueta** (candidato com relator indeterminado): aparece em "Todos" e nunca sob um chip de motivo que ele não tem.
 - **Comissão sem item** no dia: o chip dela não é mostrado, como pede o DS ("esconda o chip"); o total dela continua nos números.
@@ -219,6 +221,7 @@ Quem quer conferir ou reaproveitar os dados baixa o JSON (`atual.json`) e o CSV 
 - **Teto por dia nos eventos.** O valor do teto que recolhe o excedente de um dia com muitos eventos é definido no plano, sem remover nenhum evento.
 - **Faixa de atraso.** O limite de 30 horas é o do PRODUCT.md, §6.2, e conta a partir de `verificado_em`. Sem JS, a faixa não aparece, o que o bloco "Limites" admite.
 - **Onde fica o DS.** O DS do portfólio (`../Portfolio/design-system`) é a referência visual; como a página usa os tokens e o FilterChips sem depender do repositório Portfolio em tempo de execução é decisão do plano.
+- **Link "Ir para a lista".** O primeiro elemento da página é um atalho, visível só com o foco, que leva da entrada direto à lista, sem passar pelo cabeçalho e pelas faixas. A spec não o pede; entra por FR-019 (acessibilidade e foco) e custa uma linha de HTML.
 - **Tema.** A página segue a preferência de tema do sistema do leitor; a opção azul é a do produto (D9).
 - **Fora desta feature.** A página de projeto no portfólio, com o EmbedFrame, é feita no repositório Portfolio. Esta feature só garante que a página tem endereço estável, é legível numa moldura incorporada e tem os links de download que o EmbedFrame pede.
 - **Dependências.** Requer COL, AGE e MUD concluídas, o que já ocorre. Não depende da AVI; ela é quem passa a apontar para a página depois que `aviso.pagina_url` for preenchido.
