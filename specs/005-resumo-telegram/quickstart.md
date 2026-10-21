@@ -68,3 +68,22 @@ Em um commit, remover do `data/envio.json` o dia do tipo que se quer reenviar e 
 - O resumo mostra dados do **dia anterior**: o lote da Câmara sai por volta das 2h (PRODUCT.md, §8).
 - Se o próprio *Aviso diário* não rodar, não chega nada: a falta do resumo é o sinal.
 - Se a conexão cair depois de o Telegram aceitar a mensagem, o envio pode duplicá-la (risco aceito, plan.md).
+
+## Cobertura (casos de aceitação da linha AVI do ROADMAP.md)
+
+| Caso de aceitação | Testes |
+|---|---|
+| Uma mensagem por dia, mesmo sem mudanças | `test_resumo_normal.py::test_dia_sem_mudancas`, `test_aviso_idempotencia.py` |
+| Links oficiais em cada evento | `test_resumo_normal.py::test_todo_evento_tem_o_link_logo_abaixo`, `test_entradas.py::test_evento_sem_link_falha` |
+| Até 4.096 caracteres e teto de eventos | `test_resumo_teto.py` (inclui a propriedade com 40 combinações) |
+| "e mais N, veja a página" | `test_resumo_teto.py::test_n_do_e_mais_n_e_exatamente_o_numero_de_omitidos`, `::test_rodape_*` |
+| Falha gera mensagem de erro com a data dos últimos dados bons | `test_resumo_erro.py`, `test_aviso.py::test_status_de_falha_do_dia_gera_erro_com_o_motivo` |
+| Coleta que não rodou avisa | `test_resumo_erro.py::test_coleta_que_nao_rodou_*`, `test_aviso.py::test_status_de_outro_dia_*` |
+| Reexecução no mesmo dia não duplica | `test_aviso_idempotencia.py` |
+| Segredos fora do código | `test_telegram.py` (nada vaza), `test_sem_segredos.py`, `test_workflow_aviso.py::test_segredos_so_em_env_*` |
+| Envio com falha visível, dados intactos | `test_aviso.py::test_falha_de_envio_nao_toca_em_nenhum_arquivo_de_dados`, `test_workflow_aviso_script.py` |
+| Testes de formatação sem rede | toda a suíte (guarda `sem_rede` do `conftest.py`) |
+
+## Verificação no Windows
+
+A suíte completa tem falhas que **já existiam** antes da AVI e são de plataforma (fim de linha CRLF e separador `\` nos testes de `test_falhas.py`, `test_saida.py`, `test_status.py` e `test_workflow_script.py`), e um teste de SIGTERM que encerra o processo do pytest (`test_diaria.py::test_sigterm_no_meio_da_espera_grava_o_status_de_falha`). No Linux do CI nada disso ocorre. Conferido em 20/10/2026: antes da AVI, 34 falhas e 778 passes (com esse teste excluído); com a AVI, as mesmas 34 falhas e 1.063 passes.
