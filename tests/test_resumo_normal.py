@@ -308,3 +308,12 @@ def test_nenhuma_dessas_mensagens_comeca_com_alerta():
 
     for documento in (a.mudancas(), primeiro):
         assert not texto_normal(documento).startswith("⚠")
+
+
+def test_relator_sem_partido_nao_mostra_parenteses_vazios():
+    sem_partido = {"id": 1, "nome": "Fulano", "partido_hoje": ""}
+    evento = a.evento("relator", mudanca="designado", de=None, para=sem_partido)
+
+    texto = texto_normal(a.mudancas([evento]))
+
+    assert "designado Fulano\n" in texto and "()" not in texto

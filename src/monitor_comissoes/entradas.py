@@ -72,11 +72,23 @@ def ler_mudancas(caminho: Path, status: dict) -> dict:
             f"arquivo de mudanças {caminho}: dados_camara_em {meta['retrato']['dados_camara_em']} "
             f"difere do ultimo_retrato_bom do status.json ({retrato_bom['dados_camara_em']})"
         )
+    for posicao, evento in enumerate(documento["eventos"]):
+        apensado = evento["destino"]["apensado_a"] if evento["tipo"] == "saiu" else None
+        if apensado is not None and not (
+            isinstance(apensado.get("identificacao"), str) and apensado["identificacao"].strip()
+        ):
+            raise FalhaDeEnvio(
+                f"arquivo de mudanças {caminho}: eventos[{posicao}].destino.apensado_a sem "
+                "identificacao"
+            )
     return documento
 
 
-def ler_itens_do_atual(caminho: Path) -> list[dict]:
-    """Os itens do `atual.json`, só com o que o aviso usa (versões 2 e 3 do formato)."""
+def ler_itens_do_atual(caminho: Path, status: dict | None = None) -> list[dict]:
+    """Os itens do `atual.json`, só com o que o aviso usa (versões 2 e 3 do formato).
+
+    Com `status`, confere que o arquivo é o retrato bom que o `status.json` descreve.
+    """
     documento = _lido(caminho, "atual.json")
     meta = documento.get("meta")
     versao = meta.get("versao_formato") if isinstance(meta, dict) else None
@@ -85,6 +97,13 @@ def ler_itens_do_atual(caminho: Path) -> list[dict]:
             f"{caminho}: meta.versao_formato {versao!r} não suportada (esperada uma de "
             f"{list(VERSOES_DO_ATUAL)})"
         )
+    if status is not None and status["ultimo_retrato_bom"] is not None:
+        esperado = status["ultimo_retrato_bom"]["dados_camara_em"]
+        if meta.get("dados_camara_em") != esperado:
+            raise FalhaDeEnvio(
+                f"{caminho}: meta.dados_camara_em {meta.get('dados_camara_em')!r} difere do "
+                f"ultimo_retrato_bom do status.json ({esperado})"
+            )
     itens = documento.get("itens")
     if not isinstance(itens, list):
         raise FalhaDeEnvio(f"{caminho}: o campo itens deve ser uma lista")

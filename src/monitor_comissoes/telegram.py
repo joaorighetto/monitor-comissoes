@@ -2,9 +2,10 @@
 
 Contrato em specs/005-resumo-telegram/contracts/aviso-cli.md. O token vai na URL da Bot API; por
 isso nenhuma mensagem de erro é montada a partir da URL, e todo texto que vem de fora (descrição
-do Telegram, exceção do `urllib`) passa por `_sem_segredos` antes de entrar em uma `FalhaDeEnvio`.
+do Telegram, exceção do `urllib`) passa por `sem_segredos` antes de entrar em uma `FalhaDeEnvio`.
 """
 
+import http.client
 import json
 import time
 import urllib.error
@@ -20,11 +21,16 @@ USER_AGENT = "monitor-comissoes (github.com/joaorighetto/monitor-comissoes)"
 API = "https://api.telegram.org"
 
 
-def _sem_segredos(texto: str, token: str, chat_id: str) -> str:
-    """Troca o token e o chat_id, onde aparecerem, por `***`."""
+def sem_segredos(texto: str, token: str, chat_id: str) -> str:
+    """Troca o token e o chat_id, onde aparecerem, por `***`.
+
+    Troca também a forma escapada (`repr`) de cada um: as exceções do `http.client` citam a
+    URL entre aspas, e um segredo com caractere de controle sairia escapado.
+    """
     for segredo in (token, chat_id):
         if segredo:
-            texto = texto.replace(segredo, "***")
+            for forma in (segredo, repr(segredo)[1:-1]):
+                texto = texto.replace(forma, "***")
     return texto
 
 
@@ -48,6 +54,9 @@ class ClienteTelegram:
     ) -> None:
         if not token.strip() or not chat_id.strip():
             raise ValueError("credencial do Telegram vazia (token e chat_id são obrigatórios)")
+        if any(c.isspace() or not c.isprintable() for c in token + chat_id):
+            # Sem mostrar o valor: ele é o segredo.
+            raise ValueError("credencial do Telegram com espaço ou caractere de controle")
         self._token = token
         self._chat_id = chat_id
         self._abrir = abrir
@@ -58,7 +67,7 @@ class ClienteTelegram:
         return "ClienteTelegram(...)"
 
     def _limpo(self, texto: str) -> str:
-        return _sem_segredos(texto, self._token, self._chat_id)
+        return sem_segredos(texto, self._token, self._chat_id)
 
     def enviar(self, texto: str) -> None:
         """Envia `texto` ao grupo. Levanta `FalhaDeEnvio` (sem segredo) se não for aceito."""
@@ -97,6 +106,13 @@ class ClienteTelegram:
                 dados = resposta.read()
         except urllib.error.HTTPError as erro:
             self._falha_http(erro)
+        except http.client.IncompleteRead:
+            raise _Repetir("resposta interrompida (IncompleteRead)") from None
+        except (http.client.HTTPException, ValueError) as erro:
+            # Só o nome do tipo: o texto dessas exceções cita a URL, e com ela o token.
+            raise FalhaDeEnvio(
+                f"não foi possível montar ou fazer o pedido à Bot API ({type(erro).__name__})"
+            ) from None
         except (urllib.error.URLError, OSError) as erro:
             # `from None`: a exceção original pode repetir a URL, e com ela o token.
             raise _Repetir(self._limpo(f"erro de rede ({type(erro).__name__}: {erro})")) from None

@@ -63,6 +63,14 @@ Esperado: nenhuma segunda mensagem; o log mostra `JÁ ENVIADO: mensagem normal d
 
 Em um commit, remover do `data/envio.json` o dia do tipo que se quer reenviar e disparar o workflow.
 
+## Notas operacionais
+
+- **Job vermelho no push do registro, depois do envio:** a mensagem **já foi** ao grupo e o `data/envio.json` não chegou ao remoto. Confira o grupo antes de reexecutar; reexecutar sem registro duplica a mensagem.
+- **Secrets não configurados:** o job fica vermelho com `variável TELEGRAM_BOT_TOKEN ausente` (ou `TELEGRAM_CHAT_ID`).
+- **Aviso antes da primeira coleta com a MUD:** `FALHA [envio]: arquivo de mudanças ... não existe` (hoje `data/mudancas/` nem existe no repositório). É o comportamento correto: espere ou dispare a coleta.
+- **Coleta atrasada além das 07:17:** o aviso pode mandar "a coleta de hoje não rodou" antes de a coleta terminar; isso consome o envio de erro do dia, e uma falha real posterior no mesmo dia aparece como `JÁ ENVIADO`. A margem normal é de 3h40, então é raro; se ocorrer, apague o dia do tipo `erro` no `data/envio.json` para permitir novo aviso.
+- **Fila de concorrência:** o grupo `coleta-diaria` guarda uma execução em andamento e uma pendente; uma pendente mais velha é substituída pela mais nova. Se o aviso esperar uma coleta manual e outra execução entrar na fila, o aviso do dia pode ser descartado sem erro. Em caso de dúvida, dispare *Aviso diário* à mão.
+
 ## Limites a lembrar
 
 - O resumo mostra dados do **dia anterior**: o lote da Câmara sai por volta das 2h (PRODUCT.md, §8).

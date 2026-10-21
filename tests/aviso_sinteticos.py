@@ -179,7 +179,9 @@ def status_falha(
     )
 
 
-def atual(itens=None, *, versao: int = 3, dia: str = DIA) -> dict:
+def atual(
+    itens=None, *, versao: int = 3, dia: str = DIA, dados_camara_em: str = DADOS_CAMARA_EM
+) -> dict:
     """`atual.json` completo na versão 3 (ou só o `meta` coerente em outra versão)."""
     if itens is None:
         itens = [
@@ -202,7 +204,7 @@ def atual(itens=None, *, versao: int = 3, dia: str = DIA) -> dict:
     return s.retrato(
         itens,
         gerado_em=f"{dia}T03:40:12-03:00",
-        dados_camara_em=DADOS_CAMARA_EM,
+        dados_camara_em=dados_camara_em,
         versao=versao,
     )
 

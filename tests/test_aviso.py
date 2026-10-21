@@ -318,3 +318,37 @@ def test_o_token_nunca_aparece_na_saida_de_um_envio_bem_sucedido(tmp_path, capsy
 
     saida = capsys.readouterr()
     assert TOKEN not in saida.out + saida.err and CHAT not in saida.out + saida.err
+
+
+def test_segredo_colado_com_quebra_de_linha_funciona_e_nao_vaza(tmp_path, capsys):
+    caminhos = preparar(tmp_path, "completo")
+    cliente = ClienteFalso()
+    criar = fabrica(cliente)
+    ambiente = {"TELEGRAM_BOT_TOKEN": TOKEN + "\n", "TELEGRAM_CHAT_ID": " " + CHAT + "\r\n"}
+
+    codigo = executar_envio(caminhos, CONFIG, lambda: AGORA, ambiente, criar)
+
+    assert codigo == 0 and criar.chamadas == [(TOKEN, CHAT)]
+    saida = capsys.readouterr()
+    assert TOKEN not in saida.out + saida.err
+
+
+def test_cliente_real_com_segredo_de_controle_falha_sem_vazar(tmp_path, capsys):
+    caminhos = preparar(tmp_path, "completo")
+    ambiente = {"TELEGRAM_BOT_TOKEN": "111111:TOKEN\x00FALSO", "TELEGRAM_CHAT_ID": CHAT}
+
+    codigo = executar_envio(caminhos, CONFIG, lambda: AGORA, ambiente, ClienteTelegram)
+
+    erro = capsys.readouterr().err
+    assert codigo == 1 and "caractere de controle" in erro
+    assert "111111:TOKEN" not in erro
+
+
+def test_atual_de_outro_retrato_falha_em_vez_de_avisar_com_dados_trocados(tmp_path):
+    caminhos = preparar(tmp_path, "completo")
+    documento = a.atual()
+    documento["meta"]["dados_camara_em"] = "2026-10-19T04:31:26+00:00"
+    gravar(caminhos.atual, documento)
+
+    with pytest.raises(FalhaDeEnvio, match="dados_camara_em"):
+        montar_mensagem_do_dia(caminhos, CONFIG, AGORA.date())

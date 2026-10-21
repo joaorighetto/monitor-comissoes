@@ -24,7 +24,7 @@ Nenhuma pendência `NEEDS CLARIFICATION` restou na spec. As decisões abaixo cob
 ## R4. Seleção de eventos sob o teto: alternar entre as comissões
 
 - **Decisão (do mantenedor):** fila por comissão na ordem do arquivo (tipo, id); retirar um evento de cada comissão por vez, na ordem da configuração, enquanto o texto couber. A mensagem mostra os grupos na ordem da configuração e, dentro do grupo, a ordem do arquivo.
-- **Algoritmo:** reserva-se o espaço do cabeçalho, da linha de totais, dos avisos e do rodapé "e mais N" (com N de pior caso, com o número de dígitos do total de eventos). Cada evento candidato é medido inteiro (linha de texto + linha do link); se não couber, a seleção **para** (não pula para um evento menor, para que a ordem não se perca), e N = total − selecionados. Como o rodapé reservado usa o pior caso, o texto final nunca passa de 4.096.
+- **Algoritmo (como implementado):** a cada evento candidato, monta-se o texto **real** inteiro (cabeçalho, grupos, avisos e o rodapé "e mais N" com o N exato daquele estado) e mede-se em UTF-16; o evento só é aceito se o texto couber em 4.096. Se não couber, a seleção **para** (não pula para um evento menor, para que a ordem não se perca) e o estado anterior, já validado, é o resultado. Assim o rodapé entra na conta com os dígitos certos, e incluir o último evento (que elimina o rodapé) também é medido. O estado inicial (sem evento algum) precisa caber; senão o aviso é grande demais (`ValueError`).
 - **Alternativas:** ordem do arquivo e prioridade por tipo — rejeitadas pelo mantenedor.
 
 ## R5. Avisos com limite próprio

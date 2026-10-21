@@ -1,6 +1,6 @@
 # Feature Specification: AVI — Resumo diário no Telegram
 
-**Feature Branch**: `main` (sem branch própria; o `CLAUDE.md` proíbe criar ou trocar de branch sem pedido)
+**Feature Branch**: `feat/avi-resumo-telegram` (criada a pedido do mantenedor em 20/10/2026; o `CLAUDE.md` proíbe criar ou trocar de branch sem pedido)
 
 **Created**: 2026-10-20
 

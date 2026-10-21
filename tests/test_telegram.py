@@ -1,5 +1,6 @@
 """Cliente da Bot API (AVI): `abrir` e `dormir` falsos e respostas de fixtures/aviso/telegram/."""
 
+import http.client
 import io
 import json
 import traceback
@@ -280,3 +281,57 @@ def test_nada_vai_para_stdout_ou_stderr(capsys):
 def test_credencial_vazia_e_erro_de_programacao(token, chat):
     with pytest.raises(ValueError, match="credencial"):
         ClienteTelegram(token, chat, abrir=Rede(), dormir=lambda s: None)
+
+
+# --- revisão da rodada 1: caracteres de controle e exceções do http.client --------------------
+
+
+@pytest.mark.parametrize("sufixo", ["\n", " ", "\t", "\r\n"])
+def test_segredo_com_espaco_ou_controle_e_recusado_sem_mostrar_o_valor(sufixo):
+    with pytest.raises(ValueError, match="espaço ou caractere de controle") as erro:
+        ClienteTelegram(TOKEN + sufixo, CHAT, abrir=Rede(), dormir=lambda s: None)
+
+    assert TOKEN not in str(erro.value)
+    with pytest.raises(ValueError, match="espaço ou caractere de controle"):
+        ClienteTelegram(TOKEN, CHAT + sufixo, abrir=Rede(), dormir=lambda s: None)
+
+
+def test_invalid_url_do_http_client_nao_vaza_o_token_nem_na_forma_escapada():
+    falha = http.client.InvalidURL(f"URL can't contain control characters. {URL!r} ({CHAT!r})")
+    c, esperas = cliente(Rede(falha))
+
+    with pytest.raises(FalhaDeEnvio) as erro:
+        c.enviar("x")
+
+    saida = tudo_que_a_falha_mostra(erro.value)
+    assert TOKEN not in saida and CHAT not in saida and "InvalidURL" in saida
+    assert esperas == []
+
+
+def test_value_error_ao_montar_o_pedido_nao_vaza_o_token():
+    c, _ = cliente(Rede(ValueError(f"url invalida {URL}")))
+
+    with pytest.raises(FalhaDeEnvio) as erro:
+        c.enviar("x")
+
+    assert TOKEN not in tudo_que_a_falha_mostra(erro.value)
+
+
+def test_resposta_interrompida_repete_e_depois_envia():
+    c, esperas = cliente(Rede(http.client.IncompleteRead(b"par"), ok()))
+
+    c.enviar("x")
+
+    assert esperas == [5]
+
+
+def test_filtro_troca_o_segredo_cru_e_o_escapado():
+    from monitor_comissoes.telegram import sem_segredos
+
+    segredo = "abc\ndef"
+
+    assert (
+        sem_segredos(f"cru {segredo} escapado {segredo!r}"[:-1], segredo, "")
+        == "cru *** escapado '***"
+    )
+    assert sem_segredos("sem nada", "", "") == "sem nada"

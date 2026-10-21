@@ -1,6 +1,6 @@
 # Implementation Plan: AVI — Resumo diário no Telegram
 
-**Branch**: `main` (sem branch própria; o `CLAUDE.md` proíbe criar ou trocar de branch sem pedido) | **Date**: 2026-10-20 | **Spec**: [spec.md](spec.md)
+**Branch**: `feat/avi-resumo-telegram` (criada a pedido do mantenedor em 20/10/2026) | **Date**: 2026-10-20 | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `specs/005-resumo-telegram/spec.md`
 

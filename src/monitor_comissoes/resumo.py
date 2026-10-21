@@ -56,6 +56,8 @@ def _itens(n: int) -> str:
 
 
 def _relator(relator: dict) -> str:
+    if not relator["partido_hoje"]:
+        return relator["nome"]
     return f"{relator['nome']} ({relator['partido_hoje']})"
 
 

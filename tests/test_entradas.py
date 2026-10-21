@@ -193,3 +193,23 @@ def test_atual_ausente_ou_ilegivel_falha(tmp_path):
         ler_itens_do_atual(
             gravar(tmp_path, "atual.json", json.dumps({"meta": {"versao_formato": 3}, "itens": 1}))
         )
+
+
+def test_apensado_a_sem_identificacao_falha_com_o_evento(tmp_path):
+    evento = a.evento(
+        "saiu",
+        motivo={"codigo": "apensado_fora_da_lista", "texto": "apensado a uma proposição fora"},
+        destino={"orgao": "CFT", "situacao": "x", "apensado_a": {"id": 9}},
+    )
+    documento = a.mudancas([evento])
+
+    with pytest.raises(FalhaDeEnvio, match=r"eventos\[0\].destino.apensado_a"):
+        ler_mudancas(gravar(tmp_path, "m.json", documento), a.status_ok())
+
+
+def test_atual_confere_o_retrato_com_o_status_quando_o_status_e_dado(tmp_path):
+    caminho = gravar(tmp_path, "atual.json", a.atual())
+
+    assert ler_itens_do_atual(caminho, a.status_ok())
+    with pytest.raises(FalhaDeEnvio, match="difere do ultimo_retrato_bom"):
+        ler_itens_do_atual(caminho, a.status_ok(dados_camara_em="2026-10-20T05:00:00+00:00"))

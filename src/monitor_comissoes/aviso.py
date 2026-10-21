@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
 
-from .config import Config, carregar_config
+from .config import Config, carregar_config_do_aviso
 from .entradas import ler_itens_do_atual, ler_mudancas, ler_status_do_dia
 from .envio import gravar_registro, ja_enviado, ler_registro, mensagem_do_commit
 from .erros import FalhaDeColeta, FalhaDeEnvio
@@ -26,7 +26,7 @@ from .resumo import (
     montar_normal,
     tamanho,
 )
-from .telegram import ClienteTelegram, _sem_segredos
+from .telegram import ClienteTelegram, sem_segredos
 
 VARIAVEL_TOKEN = "TELEGRAM_BOT_TOKEN"
 VARIAVEL_CHAT = "TELEGRAM_CHAT_ID"
@@ -75,14 +75,15 @@ def montar_mensagem_do_dia(caminhos: Caminhos, config: Config, hoje: date) -> Me
         return Mensagem("erro", dia, montar_erro_da_coleta(status, hoje))
     arquivo = caminhos.mudancas / nome_do_arquivo(date.fromisoformat(status["data_referencia"]))
     mudancas = ler_mudancas(arquivo, status)
-    sem_principal = [i for i in ler_itens_do_atual(caminhos.atual) if i["principal_nao_localizada"]]
+    itens = ler_itens_do_atual(caminhos.atual, status)
+    sem_principal = [i for i in itens if i["principal_nao_localizada"]]
     avisos = blocos_de_aviso(mudancas["ressalvas"], sem_principal, config)
     return Mensagem("normal", dia, montar_normal(mudancas, status, config, avisos))
 
 
 def _exigir(ambiente: Mapping[str, str], nome: str) -> str:
-    valor = ambiente.get(nome, "")
-    if not valor.strip():
+    valor = ambiente.get(nome, "").strip()  # um segredo colado com quebra de linha no fim
+    if not valor:
         raise FalhaDeEnvio(f"variável {nome} ausente")
     return valor
 
@@ -98,7 +99,7 @@ def executar_envio(
     segredos = [ambiente.get(VARIAVEL_TOKEN, ""), ambiente.get(VARIAVEL_CHAT, "")]
 
     def limpo(texto: str) -> str:
-        return _sem_segredos(texto, segredos[0], segredos[1])
+        return sem_segredos(texto, segredos[0], segredos[1])
 
     try:
         hoje = relogio().astimezone(BRASILIA).date()
@@ -132,7 +133,7 @@ def _texto(caminhos: Caminhos, config: Config, hoje: date) -> int:
     """Mostra a mensagem do dia sem enviar, sem credencial e sem gravar nada."""
     try:
         mensagem = montar_mensagem_do_dia(caminhos, config, hoje)
-    except FalhaDeEnvio as erro:
+    except (FalhaDeEnvio, ValueError) as erro:
         print(f"FALHA [envio]: {erro}", file=sys.stderr)
         return 1
     print(f"TIPO: {mensagem.tipo}")
@@ -198,7 +199,7 @@ def main(
     )
     try:
         agora = relogio().astimezone(BRASILIA)
-        config = carregar_config(args.config, agora.year)
+        config = carregar_config_do_aviso(args.config, agora.year)
     except FalhaDeColeta as falha:
         print(f"FALHA [envio]: {falha.motivo}", file=sys.stderr)
         return 1

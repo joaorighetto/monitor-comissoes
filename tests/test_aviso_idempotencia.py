@@ -117,6 +117,10 @@ def test_o_dia_seguinte_envia_de_novo(tmp_path):
         a.status_ok(dia="2026-10-21", dados_camara_em="2026-10-21T04:31:26+00:00"),
     )
     gravar(
+        caminhos.atual,
+        a.atual(dia="2026-10-21", dados_camara_em="2026-10-21T04:31:26+00:00"),
+    )
+    gravar(
         caminhos.mudancas / "2026-10-21.json",
         a.mudancas(
             dia="2026-10-21",

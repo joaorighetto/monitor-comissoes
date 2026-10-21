@@ -30,7 +30,7 @@ Os padrões ficam ao lado do `--atual`, como na MUD, para uma execução de test
 | `TELEGRAM_BOT_TOKEN` | Token do bot (secret do GitHub no workflow; `.env` local fora do Git) |
 | `TELEGRAM_CHAT_ID` | Identificador do grupo (secret do GitHub) |
 
-Variável ausente ou vazia em `enviar`: falha `FALHA [envio]: variável TELEGRAM_BOT_TOKEN ausente`, citando o **nome** e nunca o valor. O CLI não lê `.env`; quem quiser usar um `.env` local o carrega no shell.
+Variável ausente ou vazia em `enviar`: falha `FALHA [envio]: variável TELEGRAM_BOT_TOKEN ausente`, citando o **nome** e nunca o valor. Espaços e quebras de linha nas pontas são removidos (um segredo colado com `Enter` no fim funciona); espaço ou caractere de controle no meio do valor é recusado sem mostrá-lo. O CLI não lê `.env`; quem quiser usar um `.env` local o carrega no shell.
 
 ### Saída e código de saída
 
@@ -66,7 +66,9 @@ pagina_url = ""
 repositorio = "joaorighetto/monitor-comissoes"
 ```
 
-Validação (falha `configuracao`): `pagina_url` texto, vazio ou começando com `https://`; `repositorio` texto no formato `dono/nome`; campo desconhecido em `[aviso]` falha, como em `[execucao]`.
+Validação (falha `configuracao`): `pagina_url` texto, vazio ou começando com `https://`; `repositorio` texto no formato `dono/nome` (letras, números, `_`, `.` e `-`); campo desconhecido em `[aviso]` falha, como em `[execucao]`.
+
+**A tabela só é lida pelo aviso** (`carregar_config_do_aviso`). `carregar_config`, usado pela coleta, a ignora: um erro de digitação em `[aviso]` falha o envio, nunca a coleta (FR-016, FR-026; revisão de 20/10/2026).
 
 ## Workflow `.github/workflows/aviso-diario.yml`
 

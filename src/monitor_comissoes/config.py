@@ -1,7 +1,8 @@
 """Leitura e validação de config.toml (comissões acompanhadas e ano mínimo)."""
 
+import re
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from .erros import CONFIGURACAO, FalhaDeColeta
@@ -19,6 +20,7 @@ PADROES = {nome: padrao for nome, padrao, _, _ in EXECUCAO}
 # Campos de [aviso] (AVI): texto de cada um e seu valor padrão.
 PAGINA_URL_PADRAO = ""
 REPOSITORIO_PADRAO = "joaorighetto/monitor-comissoes"
+PADRAO_REPOSITORIO = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+")
 
 
 @dataclass(frozen=True)
@@ -36,13 +38,19 @@ def _falha(motivo: str) -> FalhaDeColeta:
     return FalhaDeColeta(CONFIGURACAO, motivo)
 
 
-def carregar_config(caminho: Path, ano_corrente: int) -> Config:
+def _ler_toml(caminho: Path) -> dict:
     try:
-        dados = tomllib.loads(Path(caminho).read_text(encoding="utf-8"))
+        return tomllib.loads(Path(caminho).read_text(encoding="utf-8"))
     except OSError as erro:
         raise _falha(f"não foi possível ler {caminho}: {erro.strerror or erro}") from erro
     except (tomllib.TOMLDecodeError, UnicodeDecodeError) as erro:
         raise _falha(f"{caminho} não é um TOML válido: {erro}") from erro
+
+
+def carregar_config(caminho: Path, ano_corrente: int) -> Config:
+    """Lê o config.toml. A tabela [aviso] é ignorada aqui: um erro nela nunca pode derrubar
+    a coleta (AVI, FR-016 e FR-026); quem a lê é `carregar_config_do_aviso`."""
+    dados = _ler_toml(caminho)
 
     comissoes = dados.get("comissoes")
     if not isinstance(comissoes, list) or not comissoes:
@@ -64,9 +72,14 @@ def carregar_config(caminho: Path, ano_corrente: int) -> Config:
         )
 
     execucao = _ler_execucao(dados.get("execucao"))
-    aviso = _ler_aviso(dados.get("aviso"))
 
-    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo, **execucao, **aviso)
+    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo, **execucao)
+
+
+def carregar_config_do_aviso(caminho: Path, ano_corrente: int) -> Config:
+    """O `Config` completo, com a tabela [aviso] validada. Só o aviso diário a usa."""
+    config = carregar_config(caminho, ano_corrente)
+    return replace(config, **_ler_aviso(_ler_toml(caminho).get("aviso")))
 
 
 def _ler_execucao(tabela) -> dict[str, int]:
@@ -105,7 +118,6 @@ def _ler_aviso(tabela) -> dict[str, str]:
     if not isinstance(pagina_url, str) or (pagina_url and not pagina_url.startswith("https://")):
         raise _falha("aviso.pagina_url deve ser um texto vazio ou começar com https://")
     repositorio = tabela.get("repositorio", REPOSITORIO_PADRAO)
-    partes = repositorio.split("/") if isinstance(repositorio, str) else []
-    if len(partes) != 2 or not all(p.strip() and p == p.strip() for p in partes):
+    if not isinstance(repositorio, str) or not PADRAO_REPOSITORIO.fullmatch(repositorio):
         raise _falha("aviso.repositorio deve ser um texto no formato dono/nome")
     return {"pagina_url": pagina_url, "repositorio": repositorio}
