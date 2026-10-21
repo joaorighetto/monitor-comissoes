@@ -17,3 +17,11 @@ tentativas = 4
 espera_minutos = 30
 # Variação do estoque bruto acima da qual a execução falha, em %.
 limite_variacao_percentual = 20
+
+# Aviso diário no Telegram (feature AVI). Tabela opcional: sem ela valem estes mesmos valores.
+[aviso]
+# Endereço da página pública (feature PAG). Vazio até a PAG existir: enquanto estiver vazio, o
+# "e mais N" da mensagem aponta para o arquivo do dia no repositório.
+pagina_url = ""
+# Repositório, no formato dono/nome, usado no link do arquivo do dia.
+repositorio = "joaorighetto/monitor-comissoes"

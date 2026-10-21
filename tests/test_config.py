@@ -1,6 +1,6 @@
 import pytest
 
-from monitor_comissoes.config import Config, carregar_config
+from monitor_comissoes.config import Config, carregar_config, carregar_config_do_aviso
 from monitor_comissoes.erros import CONFIGURACAO, FalhaDeColeta
 
 
@@ -164,3 +164,91 @@ def test_os_valores_de_execucao_do_config_toml_sao_os_padroes():
         "espera_minutos": config.espera_minutos,
         "limite_variacao_percentual": config.limite_variacao_percentual,
     } == PADROES
+
+
+# --- AVI: tabela [aviso] ---------------------------------------------------------------------
+
+BASE = 'comissoes = ["CE", "CREDN"]\nano_minimo = 2003\n'
+
+
+def test_sem_a_tabela_aviso_valem_os_padroes(tmp_path):
+    config = carregar_config_do_aviso(escrever(tmp_path, BASE), 2026)
+
+    assert config.pagina_url == ""
+    assert config.repositorio == "joaorighetto/monitor-comissoes"
+
+
+def test_aviso_le_pagina_e_repositorio(tmp_path):
+    texto = (
+        BASE + '[aviso]\npagina_url = "https://exemplo.github.io/monitor"\nrepositorio = "a/b"\n'
+    )
+
+    config = carregar_config_do_aviso(escrever(tmp_path, texto), 2026)
+
+    assert config.pagina_url == "https://exemplo.github.io/monitor"
+    assert config.repositorio == "a/b"
+
+
+@pytest.mark.parametrize(
+    "linha",
+    [
+        'pagina_url = "http://exemplo.com"',
+        'pagina_url = " https://exemplo.com"',
+        "pagina_url = 3",
+        "repositorio = 3",
+        'repositorio = ""',
+        'repositorio = "semBarra"',
+        'repositorio = "a/b/c"',
+        'repositorio = "a/"',
+        'repositorio = "/b"',
+        'repositorio = "a b/c d"',
+    ],
+)
+def test_aviso_com_valor_invalido_falha(tmp_path, linha):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config_do_aviso(escrever(tmp_path, BASE + f"[aviso]\n{linha}\n"), 2026)
+
+    assert erro.value.categoria == CONFIGURACAO
+    assert "aviso." in erro.value.motivo
+
+
+def test_chave_desconhecida_em_aviso_falha(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config_do_aviso(escrever(tmp_path, BASE + "[aviso]\nchat = 1\n"), 2026)
+
+    assert "aviso.chat" in erro.value.motivo
+
+
+def test_aviso_que_nao_e_tabela_falha(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config_do_aviso(escrever(tmp_path, "aviso = 3\n" + BASE), 2026)
+
+    assert "aviso" in erro.value.motivo
+
+
+def test_os_valores_de_aviso_do_config_toml_sao_os_padroes():
+    from pathlib import Path
+
+    raiz = Path(__file__).parent.parent
+    config = carregar_config_do_aviso(raiz / "config.toml", 2026)
+
+    assert config.pagina_url == ""
+    assert config.repositorio == "joaorighetto/monitor-comissoes"
+
+
+def test_carregar_config_ignora_a_tabela_aviso_mesmo_malformada(tmp_path):
+    """Um valor errado em [aviso] não derruba a coleta (AVI, FR-016 e FR-026)."""
+    texto = BASE + '[aviso]\npagina_url = "http://errado"\nrepositorio = 3\nchat = 1\n'
+
+    config = carregar_config(escrever(tmp_path, texto), 2026)
+
+    assert config.pagina_url == "" and config.repositorio == "joaorighetto/monitor-comissoes"
+    with pytest.raises(FalhaDeColeta):
+        carregar_config_do_aviso(escrever(tmp_path, texto), 2026)
+
+
+def test_carregar_config_do_aviso_tambem_valida_o_resto(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config_do_aviso(escrever(tmp_path, "comissoes = []\nano_minimo = 2003\n"), 2026)
+
+    assert "comissoes" in erro.value.motivo

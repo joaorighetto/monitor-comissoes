@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-10-20",
+    "retrato": {
+      "dia": "2026-10-20",
+      "dados_camara_em": "2026-10-20T04:31:26+00:00"
+    },
+    "retrato_anterior": {
+      "dia": "2026-10-17",
+      "dados_camara_em": "2026-10-17T04:31:26+00:00"
+    },
+    "linha_de_base": null,
+    "total_eventos": 1,
+    "total_por_tipo": {
+      "entrou": 0,
+      "saiu": 0,
+      "situacao": 1,
+      "relator": 0,
+      "parecer": 0,
+      "etiquetas": 0
+    }
+  },
+  "eventos": [
+    {
+      "tipo": "situacao",
+      "id": 148585,
+      "identificacao": "PL 2752/2003",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/148585",
+      "de": "Aguardando Parecer",
+      "para": "Pronta para Pauta",
+      "comissao_de": "CE",
+      "tramitacoes": []
+    }
+  ],
+  "ressalvas": []
+}

@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-10-20",
+    "retrato": {
+      "dia": "2026-10-20",
+      "dados_camara_em": "2026-10-20T04:31:26+00:00"
+    },
+    "retrato_anterior": {
+      "dia": "2026-10-19",
+      "dados_camara_em": "2026-10-19T04:31:26+00:00"
+    },
+    "linha_de_base": null,
+    "total_eventos": 6,
+    "total_por_tipo": {
+      "entrou": 1,
+      "saiu": 1,
+      "situacao": 1,
+      "relator": 1,
+      "parecer": 1,
+      "etiquetas": 1
+    }
+  },
+  "eventos": [
+    {
+      "tipo": "entrou",
+      "id": 2330962,
+      "identificacao": "PL 1831/2022",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2330962",
+      "motivo": {
+        "codigo": "chegou_a_comissao",
+        "texto": "chegou à comissão"
+      },
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "tramitacoes": []
+    },
+    {
+      "tipo": "saiu",
+      "id": 2373671,
+      "identificacao": "PL 3510/2023",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2373671",
+      "motivo": {
+        "codigo": "outro_orgao",
+        "texto": "foi para outro órgão"
+      },
+      "destino": {
+        "orgao": "CFT",
+        "situacao": "Aguardando Parecer",
+        "apensado_a": null
+      },
+      "outros_fatos": [],
+      "tramitacoes": []
+    },
+    {
+      "tipo": "situacao",
+      "id": 148585,
+      "identificacao": "PL 2752/2003",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/148585",
+      "de": "Aguardando Parecer",
+      "para": "Pronta para Pauta",
+      "comissao_de": "CE",
+      "tramitacoes": []
+    },
+    {
+      "tipo": "relator",
+      "id": 2380176,
+      "identificacao": "PLP 173/2023",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2380176",
+      "mudanca": "designado",
+      "de": null,
+      "para": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO"
+      },
+      "tramitacoes": []
+    },
+    {
+      "tipo": "parecer",
+      "id": 2345296,
+      "identificacao": "PL 3075/2022",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345296",
+      "tramitacoes": []
+    },
+    {
+      "tipo": "etiquetas",
+      "id": 2345297,
+      "identificacao": "PL 3076/2022",
+      "comissao": "CREDN",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345297",
+      "ganhou": [
+        "relatoria NOVO"
+      ],
+      "perdeu": [],
+      "tramitacoes": []
+    }
+  ],
+  "ressalvas": [
+    {
+      "id": 2373671,
+      "identificacao": "PL 3510/2023",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2373671",
+      "motivo": "relator indeterminado hoje"
+    }
+  ]
+}

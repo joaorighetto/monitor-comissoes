@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "result": {
+    "message_id": 4321,
+    "date": 1792483020,
+    "chat": {"id": -1001234567890, "title": "Gabinete", "type": "supergroup"},
+    "text": "Monitor de comissões"
+  }
+}
