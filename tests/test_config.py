@@ -223,3 +223,13 @@ def test_aviso_que_nao_e_tabela_falha(tmp_path):
         carregar_config(escrever(tmp_path, "aviso = 3\n" + BASE), 2026)
 
     assert "aviso" in erro.value.motivo
+
+
+def test_os_valores_de_aviso_do_config_toml_sao_os_padroes():
+    from pathlib import Path
+
+    raiz = Path(__file__).parent.parent
+    config = carregar_config(raiz / "config.toml", 2026)
+
+    assert config.pagina_url == ""
+    assert config.repositorio == "joaorighetto/monitor-comissoes"

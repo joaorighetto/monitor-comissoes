@@ -15,7 +15,7 @@ from pathlib import Path
 
 from .config import Config, carregar_config
 from .entradas import ler_itens_do_atual, ler_mudancas, ler_status_do_dia
-from .envio import gravar_registro, ja_enviado, ler_registro
+from .envio import gravar_registro, ja_enviado, ler_registro, mensagem_do_commit
 from .erros import FalhaDeColeta, FalhaDeEnvio
 from .estoque import BRASILIA
 from .mudancas import nome_do_arquivo
@@ -140,6 +140,16 @@ def _texto(caminhos: Caminhos, config: Config, hoje: date) -> int:
     return 0
 
 
+def _mensagem_do_commit(envio: Path, antes: Path | None) -> int:
+    try:
+        anterior = ler_registro(antes) if antes else {"normal": None, "erro": None}
+        print(mensagem_do_commit(anterior, ler_registro(envio)))
+    except FalhaDeEnvio as erro:
+        print(f"FALHA [envio]: {erro}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def main(
     argv: list[str] | None = None,
     relogio: Callable[[], datetime] | None = None,
@@ -166,7 +176,16 @@ def main(
     enviar = subcomandos.add_parser("enviar", help="envia a mensagem do dia ao Telegram")
     comum(enviar)
     enviar.add_argument("--envio", type=Path, default=None, help="padrão: ao lado do --atual")
+    mensagem = subcomandos.add_parser(
+        "mensagem", help="mensagem de uma linha do commit do registro"
+    )
+    mensagem.add_argument("--envio", type=Path, default=Path("data/envio.json"))
+    mensagem.add_argument(
+        "--antes", type=Path, default=None, help="o registro de antes do envio (ausente = vazio)"
+    )
     args = parser.parse_args(argv)
+    if args.comando == "mensagem":
+        return _mensagem_do_commit(args.envio, args.antes)
 
     relogio = relogio or _agora
     ambiente = os.environ if ambiente is None else ambiente

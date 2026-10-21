@@ -1,0 +1,61 @@
+name: Aviso diário
+
+on:
+  schedule:
+    # 10:17 UTC = 07:17 de Brasília (sem horário de verão desde 2019): depois da coleta das 03:37
+    # e fora do topo da hora, quando o agendador do GitHub mais atrasa.
+    - cron: "17 10 * * *"
+  workflow_dispatch:
+
+# O mesmo grupo da coleta: o envio espera uma coleta em andamento e nunca lê o status de ontem
+# enquanto o de hoje ainda não terminou. Sem cancelar a que já roda.
+concurrency:
+  group: coleta-diaria
+  cancel-in-progress: false
+
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      # O setup-uv não publica tag móvel de versão maior (v10 não existe): fixa-se a versão completa.
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - run: uv sync --locked
+      - name: Identidade do bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Enviar e registrar
+        shell: bash
+        env:
+          # Segredos só aqui, em variáveis de ambiente: nunca interpolados no script.
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          # Falha do envio não pode impedir o registro do que já foi enviado: guarda o código,
+          # commita o registro (se mudou) e só no fim devolve o código (workflow vermelho).
+          git show HEAD:data/envio.json > "$RUNNER_TEMP/envio-antes.json" 2>/dev/null \
+            || rm -f "$RUNNER_TEMP/envio-antes.json"
+          set +e
+          .venv/bin/python -m monitor_comissoes.aviso enviar
+          codigo=$?
+          set -e
+          # Em falha, o registro volta ao que o Git tem (um caminho que o Git não conhece não pode
+          # abortar o passo).
+          if [ "$codigo" -ne 0 ]; then
+            git checkout -- data/envio.json 2>/dev/null || true
+          fi
+          if [ -n "$(git status --porcelain -- data/envio.json)" ]; then
+            git add data/envio.json
+            git commit -m "$(.venv/bin/python -m monitor_comissoes.aviso mensagem --antes "$RUNNER_TEMP/envio-antes.json")"
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            # Se alguém empurrou entre o pull e o push, uma nova tentativa custa quase nada.
+            git push origin "HEAD:${GITHUB_REF_NAME}" || {
+              git pull --rebase origin "$GITHUB_REF_NAME"
+              git push origin "HEAD:${GITHUB_REF_NAME}"
+            }
+          fi
+          exit "$codigo"

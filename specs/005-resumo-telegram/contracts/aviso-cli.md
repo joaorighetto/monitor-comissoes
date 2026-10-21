@@ -8,6 +8,7 @@
 |---|---|---|
 | `texto` | Monta a mensagem do dia e a **imprime**, sem enviar e sem tocar em `data/envio.json`. Antes do texto, uma linha `TIPO: normal` ou `TIPO: erro` | Não |
 | `enviar` | Monta a mensagem, confere o registro, envia, grava `data/envio.json` | Sim: `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` |
+| `mensagem` | Imprime a mensagem de uma linha do commit do registro (`aviso: AAAA-MM-DD · normal\|erro`), comparando `--envio` com o registro de antes (`--antes`, ausente = vazio). Falha se mais de um tipo, ou nenhum, mudou | Não |
 
 Opções comuns (todas com padrão):
 
@@ -74,7 +75,7 @@ Validação (falha `configuracao`): `pagina_url` texto, vazio ou começando com 
 - `permissions: contents: write`.
 - Mesmos pins de `actions/checkout` e `astral-sh/setup-uv` do `coleta-diaria.yml`; `uv sync --locked`.
 - Segredos em `env` do passo de envio: `TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}` e `TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}`. Nunca interpolados no script.
-- Passo "Enviar e registrar": `set +e`; roda `.venv/bin/python -m monitor_comissoes.aviso enviar`; guarda o código; se `data/envio.json` mudou, `git add` + `git commit -m "aviso: AAAA-MM-DD · normal|erro"`; `git pull --rebase` e `git push` com uma segunda tentativa; sai com o código guardado (workflow vermelho em falha de envio).
+- Passo "Enviar e registrar": guarda o `data/envio.json` de antes em `$RUNNER_TEMP`; `set +e`; roda `.venv/bin/python -m monitor_comissoes.aviso enviar`; guarda o código; se `data/envio.json` mudou, `git add` + `git commit -m "$(... aviso mensagem --antes ...)"` (`aviso: AAAA-MM-DD · normal|erro`); `git pull --rebase` e `git push` com uma segunda tentativa; sai com o código guardado (workflow vermelho em falha de envio).
 - Em falha de envio, `data/envio.json` volta ao que o Git tem (`git checkout --` com `|| true`), e nada é commitado.
 - O workflow **não** toca em `data/atual.json`, `status.json`, `anterior.json` nem `mudancas/`.
 

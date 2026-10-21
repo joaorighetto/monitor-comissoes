@@ -76,3 +76,13 @@ def gravar_registro(caminho: Path, tipo: str, dia: str) -> None:
         },
         Path(caminho),
     )
+
+
+def mensagem_do_commit(antes: dict[str, str | None], depois: dict[str, str | None]) -> str:
+    """Mensagem de uma linha do commit do registro: `aviso: DIA · tipo` do tipo que mudou."""
+    mudou = [tipo for tipo in TIPOS if depois[tipo] != antes[tipo]]
+    if len(mudou) != 1:
+        raise FalhaDeEnvio(
+            f"o registro de envio deveria ter mudado um único tipo, mudou {len(mudou)}"
+        )
+    return f"aviso: {depois[mudou[0]]} · {mudou[0]}"
