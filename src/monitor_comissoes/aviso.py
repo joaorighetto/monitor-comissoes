@@ -12,12 +12,13 @@ from datetime import date, datetime
 from pathlib import Path
 
 from .config import Config
-from .entradas import ler_mudancas, ler_status_do_dia
+from .entradas import ler_itens_do_atual, ler_mudancas, ler_status_do_dia
 from .envio import gravar_registro, ja_enviado, ler_registro
 from .erros import FalhaDeEnvio
 from .estoque import BRASILIA
 from .mudancas import nome_do_arquivo
 from .resumo import (
+    blocos_de_aviso,
     montar_coleta_nao_rodou,
     montar_erro_da_coleta,
     montar_normal,
@@ -72,7 +73,9 @@ def montar_mensagem_do_dia(caminhos: Caminhos, config: Config, hoje: date) -> Me
         return Mensagem("erro", dia, montar_erro_da_coleta(status, hoje))
     arquivo = caminhos.mudancas / nome_do_arquivo(date.fromisoformat(status["data_referencia"]))
     mudancas = ler_mudancas(arquivo, status)
-    return Mensagem("normal", dia, montar_normal(mudancas, status, config))
+    sem_principal = [i for i in ler_itens_do_atual(caminhos.atual) if i["principal_nao_localizada"]]
+    avisos = blocos_de_aviso(mudancas["ressalvas"], sem_principal, config)
+    return Mensagem("normal", dia, montar_normal(mudancas, status, config, avisos))
 
 
 def _exigir(ambiente: Mapping[str, str], nome: str) -> str:

@@ -264,3 +264,46 @@ def montar_coleta_nao_rodou(status: dict | None, hoje: date) -> str:
             _dados_bons(status),
         ]
     )
+
+
+# --- avisos (US6) ------------------------------------------------------------------------------
+
+
+def _bloco_de_aviso(titulo: str, itens: list[dict]) -> str:
+    """Um aviso: contagem inteira e lista de itens até `LIMITE_AVISO`; o resto vira `e mais M`."""
+    total = len(itens)
+    cabecalho = f"⚠ {_itens(total)} com {titulo}:"
+
+    def montar(quantos: int) -> str:
+        linhas = [cabecalho]
+        for item in itens[:quantos]:
+            linhas.extend([f"• {item['identificacao']} ({item['comissao']})", f"  {item['link']}"])
+        if quantos < total:
+            linhas.append(f"• e mais {_itens(total - quantos)}")
+        return "\n".join(linhas)
+
+    quantos = 0
+    while quantos < total and tamanho(montar(quantos + 1)) <= LIMITE_AVISO:
+        quantos += 1
+    return montar(quantos)
+
+
+def blocos_de_aviso(
+    ressalvas: list[dict], sem_principal: list[dict], config: Config
+) -> tuple[str, ...]:
+    """Os avisos do dia (FR-007): relator indeterminado e principal não localizada.
+
+    Cada família só existe com contagem maior que zero. Os itens seguem a comissão da
+    configuração e depois o `id`.
+    """
+    posicao = {c: i for i, c in enumerate(config.comissoes)}
+
+    def ordenar(itens: list[dict]) -> list[dict]:
+        return sorted(itens, key=lambda i: (posicao.get(i["comissao"], len(posicao)), i["id"]))
+
+    blocos = []
+    if ressalvas:
+        blocos.append(_bloco_de_aviso("relator indeterminado", ordenar(ressalvas)))
+    if sem_principal:
+        blocos.append(_bloco_de_aviso("principal não localizada", ordenar(sem_principal)))
+    return tuple(blocos)
