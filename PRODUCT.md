@@ -34,7 +34,7 @@ Todo dia: **o que de interesse do NOVO está nas comissões acompanhadas, com qu
 | D5 | **Um resumo diário único no Telegram, enviado sempre**, mesmo sem mudanças. Cobre entrada, saída, situação, relator, parecer e etiquetas | Assim, o silêncio nunca quer dizer "parou de funcionar". Uma mensagem por dia não vira ruído |
 | D6 | **O arquivamento não é feature.** Vira regra de domínio e motivo de saída ("arquivado, art. 105") | Desde a Resolução 33/2022, só cerca de 2 dos 54 itens estariam em risco, e o prazo de 31/01/2027 vence antes da posse. A forma de contar as legislaturas não foi confirmada |
 | D7 | **A fonte do estoque é o lote completo da Câmara, baixado todo dia** desde o ano mínimo configurável (2003). A API entra só para detalhar | A API sem datas devolve só os últimos 30 dias, limita intervalos a 3 meses e não filtra por órgão. O lote tem o último status e o partido do autor. Uma fonte única é mais fácil de conferir do que duas reconciliadas |
-| D8 | **O histórico fica no Git:** commit diário de `data/atual.json`, mesmo sem mudanças, de `data/mudancas/AAAA-MM-DD.json` e da cópia `data/anterior.json` (§5.6) | Não precisa de banco nem de servidor. O diff de cada dia é conferível, e a falta de commit denuncia que a execução não rodou |
+| D8 | **O histórico fica no Git:** commit diário de `data/atual.json`, mesmo sem mudanças, de `data/mudancas/AAAA-MM-DD.json`, da cópia `data/anterior.json` (§5.6) e do registro de envio `data/envio.json` (§6.1) | Não precisa de banco nem de servidor. O diff de cada dia é conferível, e a falta de commit denuncia que a execução não rodou |
 | D9 | **A página pública é HTML estático gerado em Python, com o Design System do portfólio** (tokens azuis, FilterChips). O portfólio a incorpora por EmbedFrame | A página funciona sem JS, como o DS exige. O EmbedFrame pede uma URL, a fonte com a data de coleta e um link de download |
 | D10 | **Nenhuma falha publica uma lista nova.** O último retrato bom é mantido e o erro é anunciado na página e no Telegram | Uma lista vazia ou parcial publicada como verdade é o pior erro possível para quem decide a partir dela |
 
@@ -146,11 +146,11 @@ Texto vigente e links oficiais em [docs/fontes.md](docs/fontes.md#4-arquivamento
 
 ### 6.1 Resumo diário (Telegram)
 
-- Uma mensagem por dia, por volta das 7h de Brasília, para um grupo do gabinete. É enviada depois da publicação da página.
+- Uma mensagem por dia, por volta das 7h de Brasília (07:17), para um grupo do gabinete. É enviada por um workflow próprio, depois da coleta (03:37) e da publicação da página, e só uma vez por dia: o registro `data/envio.json` guarda o último dia de cada tipo (normal ou erro).
 - **Sempre enviada.** Sem mudanças: "sem mudanças · N itens · dados de DD/MM".
 - Os eventos vêm agrupados por comissão, cada um com o link oficial da proposição.
-- Cabe em uma única mensagem (4.096 caracteres). O excedente é resumido como "e mais N, veja a página".
-- Em caso de falha, vai uma mensagem de erro com o motivo e a data dos últimos dados bons.
+- Cabe em uma única mensagem (4.096 caracteres). O excedente é resumido como "e mais N, veja a página"; enquanto não houver página, "veja o arquivo do dia", com o link do `data/mudancas/AAAA-MM-DD.json`. Sob o teto, os eventos entram alternando entre as comissões.
+- Em caso de falha, vai uma mensagem de erro com o motivo e a data dos últimos dados bons. Se a coleta do dia não rodou, a mensagem é "a coleta de hoje não rodou", com a data dos últimos dados bons.
 
 ### 6.2 Página pública
 
@@ -191,7 +191,7 @@ A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens
 | Lista filtrada vazia | Sempre tratada como falha |
 | Erro na API (deputados ou tramitações) | A execução inteira falha. Não há publicação parcial |
 | Falha no envio ao Telegram | A página já foi atualizada. O workflow fica vermelho e o GitHub manda e-mail ao dono |
-| A execução não roda | A página mostra "dados atrasados" depois de 30 horas. A falta do resumo diário também é um sinal |
+| A execução não roda | A página mostra "dados atrasados" depois de 30 horas, e o resumo das 7h avisa "a coleta de hoje não rodou". Se o próprio envio não rodar, a falta do resumo diário é o sinal |
 
 ## 8. Limites conhecidos
 
