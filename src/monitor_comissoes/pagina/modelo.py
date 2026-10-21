@@ -122,6 +122,46 @@ def item_da_lista(item: dict) -> ItemDaLista:
     )
 
 
+# Os chips de motivo: rótulo e identificador curto de cada etiqueta, na ordem do PRODUCT.md, §6.2.
+CHIPS_DE_MOTIVO = (
+    ("Autoria NOVO", "autoria"),
+    ("Autor hoje no NOVO", "autor-hoje"),
+    ("Relatoria NOVO", "relatoria"),
+)
+
+
+@dataclass(frozen=True)
+class Chip:
+    rotulo: str
+    valor: str  # sigla da comissão ou identificador curto do motivo; "" para Todas/Todos
+    ativo: bool
+
+
+@dataclass(frozen=True)
+class GrupoDeChips:
+    nome: str  # "comissao" ou "motivo": vai em `data-grupo`
+    rotulo: str  # o `aria-label` do grupo
+    chips: tuple[Chip, ...]
+
+
+def filtros(atual: dict, itens: list[ItemDaLista]) -> tuple[GrupoDeChips, GrupoDeChips]:
+    """Os dois grupos de chips. Categoria sem item não gera chip; Todas e Todos sempre existem."""
+    comissoes = [
+        Chip(sigla, sigla, False)
+        for sigla in atual["meta"]["comissoes"]
+        if any(i.comissao == sigla for i in itens)
+    ]
+    motivos = [
+        Chip(rotulo, valor, False)
+        for rotulo, valor in CHIPS_DE_MOTIVO
+        if any(valor in i.motivos for i in itens)
+    ]
+    return (
+        GrupoDeChips("comissao", "Filtrar por comissão", (Chip("Todas", "", True), *comissoes)),
+        GrupoDeChips("motivo", "Filtrar por motivo", (Chip("Todos", "", True), *motivos)),
+    )
+
+
 LIMITE_DE_ATRASO_HORAS = 30
 
 
@@ -162,15 +202,18 @@ class Pagina:
     faixa_erro: str | None
     faixa_atraso: FaixaDeAtraso
     numeros: Numeros
+    filtros: tuple[GrupoDeChips, GrupoDeChips]
     itens: tuple[ItemDaLista, ...]
 
 
 def montar_pagina(atual: dict, status: dict, janela: list[tuple[date, dict | None]]) -> Pagina:
     """O modelo da página a partir das entradas já conferidas por `entradas.py`."""
+    itens = tuple(item_da_lista(i) for i in ordenar(atual["itens"]))
     return Pagina(
         atualizacao=linha_de_atualizacao(atual, status),
         faixa_erro=faixa_de_erro(status),
         faixa_atraso=faixa_de_atraso(status),
         numeros=numeros(atual, janela),
-        itens=tuple(item_da_lista(i) for i in ordenar(atual["itens"])),
+        filtros=filtros(atual, list(itens)),
+        itens=itens,
     )

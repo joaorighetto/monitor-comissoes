@@ -396,3 +396,82 @@ def test_motivo_da_falha_com_html_sai_como_texto():
         "A atualização de 21/10 falhou (<script>x</script> & falhou). Dados de 20/10."
     )
     assert len(doc.achar(tag="script")) == 1
+
+
+# ---------- chips (US3) ----------
+
+
+def filtros_de(documento):
+    return documento.um(tag="div", id="filtros")
+
+
+def test_filtros_nascem_escondidos_e_com_a_regiao_que_anuncia_o_resultado():
+    doc = parse(pagina_real())
+    filtros = filtros_de(doc)
+
+    assert filtros.tem_atributo("hidden")
+    status = filtros.um(tag="p", id="filtro-status")
+    assert status.attrs["aria-live"] == "polite"
+    assert status.texto == ""
+
+
+def test_dois_grupos_de_chips_com_role_group_e_rotulo():
+    grupos = filtros_de(parse(pagina_real())).achar(tag="div", classe="pf-chips")
+
+    assert [g.attrs["role"] for g in grupos] == ["group", "group"]
+    assert [g.attrs["aria-label"] for g in grupos] == [
+        "Filtrar por comissão",
+        "Filtrar por motivo",
+    ]
+
+
+def test_chips_sao_botoes_com_aria_pressed_e_dados_do_grupo():
+    grupos = filtros_de(parse(pagina_real())).achar(tag="div", classe="pf-chips")
+
+    lidos = [
+        [
+            (b.texto, b.attrs["data-grupo"], b.attrs["data-valor"], b.attrs["aria-pressed"])
+            for b in g.achar(tag="button")
+        ]
+        for g in grupos
+    ]
+
+    assert lidos[0] == [
+        ("Todas", "comissao", "", "true"),
+        ("CE", "comissao", "CE", "false"),
+        ("CREDN", "comissao", "CREDN", "false"),
+    ]
+    assert lidos[1] == [
+        ("Todos", "motivo", "", "true"),
+        ("Autoria NOVO", "motivo", "autoria", "false"),
+        ("Autor hoje no NOVO", "motivo", "autor-hoje", "false"),
+        ("Relatoria NOVO", "motivo", "relatoria", "false"),
+    ]
+    for botao in filtros_de(parse(pagina_real())).achar(tag="button"):
+        assert botao.attrs["type"] == "button" and "pf-chip" in botao.classes
+
+
+def test_item_carrega_comissao_e_etiquetas_para_o_filtro():
+    item = p.item_completo(id=5, comissao="CREDN", etiquetas=("autoria NOVO", "relatoria NOVO"))
+    sem = p.item_completo(id=6, etiquetas=())
+    doc = parse(pagina_com(item, sem))
+
+    assert item_de(doc, id="item-5").attrs["data-comissao"] == "CREDN"
+    assert item_de(doc, id="item-5").attrs["data-etiquetas"] == "autoria relatoria"
+    assert item_de(doc, id="item-6").attrs["data-etiquetas"] == ""
+
+
+def test_os_itens_nunca_nascem_escondidos_e_so_os_filtros_e_a_faixa_tem_hidden():
+    doc = parse(pagina_real())
+
+    escondidos = [n.attrs.get("id") for n in doc.percorrer() if n.tem_atributo("hidden")]
+
+    assert escondidos == ["faixa-atraso", "filtros"]
+    assert not [i for i in doc.achar(tag="li", classe="item") if i.tem_atributo("hidden")]
+
+
+def test_comissao_sem_item_nao_aparece_nos_chips():
+    doc = parse(pagina_com(p.item_completo(id=1, comissao="CE")))
+    botoes = filtros_de(doc).achar(tag="button", data_grupo="comissao")
+
+    assert [b.texto for b in botoes] == ["Todas", "CE"]

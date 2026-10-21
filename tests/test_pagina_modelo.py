@@ -302,3 +302,63 @@ def test_faixa_de_atraso_tambem_existe_quando_a_ultima_execucao_falhou():
 
     assert pagina.faixa_atraso.verificado_em == "2026-10-21T09:00:00-03:00"
     assert "21/10 às 09h00" in pagina.faixa_atraso.texto
+
+
+# ---------- chips (US3) ----------
+
+
+def rotulos(grupo):
+    return [(c.rotulo, c.valor, c.ativo) for c in grupo.chips]
+
+
+def pagina_de(*itens, comissoes=("CE", "CREDN")):
+    atual = p.retrato_com(list(itens), comissoes=comissoes)
+    return modelo.montar_pagina(atual, p.status_ok(), [(date(2026, 10, 20), None)])
+
+
+def test_chips_do_retrato_real():
+    comissao, motivo = modelo.montar_pagina(real(), status_real(), janela_real()).filtros
+
+    assert (comissao.nome, comissao.rotulo) == ("comissao", "Filtrar por comissão")
+    assert rotulos(comissao) == [
+        ("Todas", "", True),
+        ("CE", "CE", False),
+        ("CREDN", "CREDN", False),
+    ]
+    assert (motivo.nome, motivo.rotulo) == ("motivo", "Filtrar por motivo")
+    assert rotulos(motivo) == [
+        ("Todos", "", True),
+        ("Autoria NOVO", "autoria", False),
+        ("Autor hoje no NOVO", "autor-hoje", False),
+        ("Relatoria NOVO", "relatoria", False),
+    ]
+
+
+def test_comissao_sem_item_nao_gera_chip():
+    comissao, _ = pagina_de(p.item_completo(id=1, comissao="CE")).filtros
+
+    assert [c.valor for c in comissao.chips] == ["", "CE"]
+
+
+def test_motivo_sem_item_nao_gera_chip():
+    _, motivo = pagina_de(
+        p.item_completo(id=1, etiquetas=("relatoria NOVO",)), p.item_completo(id=2, etiquetas=())
+    ).filtros
+
+    assert [c.valor for c in motivo.chips] == ["", "relatoria"]
+
+
+def test_todas_e_todos_existem_mesmo_sem_item_com_motivo():
+    _, motivo = pagina_de(p.item_completo(id=1, etiquetas=())).filtros
+
+    assert rotulos(motivo) == [("Todos", "", True)]
+
+
+def test_chips_seguem_a_ordem_das_comissoes_do_meta():
+    comissao, _ = pagina_de(
+        p.item_completo(id=1, comissao="CE"),
+        p.item_completo(id=2, comissao="CREDN"),
+        comissoes=("CREDN", "CE"),
+    ).filtros
+
+    assert [c.valor for c in comissao.chips] == ["", "CREDN", "CE"]

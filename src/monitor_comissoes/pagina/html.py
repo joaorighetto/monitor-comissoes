@@ -7,7 +7,7 @@ documento. Todo caminho próprio é relativo: a página fica em `/monitor-comiss
 
 from html import escape
 
-from .modelo import ItemDaLista, Numeros, Pagina
+from .modelo import GrupoDeChips, ItemDaLista, Numeros, Pagina
 
 TITULO = "Monitor de comissões"
 
@@ -87,11 +87,30 @@ def _item(item: ItemDaLista) -> str:
     return "\n".join(linhas)
 
 
-def _secao_lista(itens: tuple[ItemDaLista, ...]) -> str:
-    corpo = "\n".join(_item(i) for i in itens)
+def _grupo_de_chips(grupo: GrupoDeChips) -> str:
+    botoes = "\n".join(
+        f'<button class="pf-chip" type="button" aria-pressed="{str(c.ativo).lower()}" '
+        f'data-grupo="{grupo.nome}" data-valor="{esc(c.valor)}">{esc(c.rotulo)}</button>'
+        for c in grupo.chips
+    )
+    return f'<div class="pf-chips" role="group" aria-label="{esc(grupo.rotulo)}">\n{botoes}\n</div>'
+
+
+def _filtros(grupos: tuple[GrupoDeChips, GrupoDeChips]) -> str:
+    """Nascem escondidos: sem JavaScript os chips não funcionariam, então nem aparecem."""
+    corpo = "\n".join(_grupo_de_chips(g) for g in grupos)
+    return (
+        f'<div id="filtros" class="filtros" hidden>\n{corpo}\n'
+        '<p id="filtro-status" class="pf-muted" aria-live="polite"></p>\n</div>'
+    )
+
+
+def _secao_lista(pagina: Pagina) -> str:
+    corpo = "\n".join(_item(i) for i in pagina.itens)
     return (
         '<section aria-labelledby="t-lista">\n'
         '<h2 id="t-lista" class="pf-h2">Lista</h2>\n'
+        f"{_filtros(pagina.filtros)}\n"
         f'<ol id="lista" class="lista">\n{corpo}\n</ol>\n'
         "</section>"
     )
@@ -116,7 +135,7 @@ def renderizar(pagina: Pagina) -> str:
             _cabecalho(pagina),
             '<main class="pf-wrap">',
             _secao_numeros(pagina.numeros),
-            _secao_lista(pagina.itens),
+            _secao_lista(pagina),
             "</main>",
             "</body>",
             "</html>",

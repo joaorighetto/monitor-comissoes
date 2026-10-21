@@ -202,3 +202,6 @@ main > section > h2 { margin-bottom: var(--space-4); }
 @media (max-width: 479px) { .item-dados { grid-template-columns: 1fr; } .item-dados dd { margin-bottom: var(--space-2); } }
 .faixa { margin: var(--space-3) 0 0; padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--line-strong); border-left-width: 6px; border-radius: var(--radius-md); background: var(--bg-alt); color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
 .faixa[hidden] { display: none; }
+.filtros { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+.filtros[hidden] { display: none; }
+.filtros p { margin: 0; font-size: 14px; line-height: 22px; }

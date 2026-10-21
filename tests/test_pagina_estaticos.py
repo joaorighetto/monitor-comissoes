@@ -83,3 +83,18 @@ def test_os_estilos_da_pagina_so_usam_tokens_do_ds_nenhuma_cor_de_estado():
     assert not re.search(r"#[0-9a-fA-F]{3,8}\b", bloco)
     assert "rgb(" not in bloco and "hsl(" not in bloco
     assert ".faixa" in bloco
+
+
+def test_os_chips_do_ds_estao_no_css_da_pagina():
+    texto = css()
+
+    assert re.search(r"\.pf-chip\[aria-pressed=\"true\"\] \{[^}]*var\(--accent\)", texto)
+    assert re.search(r"\.pf-chip:hover[^{]*\{[^}]*var\(--accent-soft\)", texto)
+
+
+def test_a_pagina_nao_forca_rolagem_horizontal_no_corpo():
+    bloco = bloco_da_pagina()
+
+    assert "overflow-x: scroll" not in bloco
+    assert not re.search(r"\bbody\s*\{[^}]*overflow-x", css())
+    assert "min-width: 0" in bloco  # itens de grid que quebram texto longo
