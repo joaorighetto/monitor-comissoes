@@ -13,6 +13,7 @@ from pathlib import Path
 
 from .config import Config
 from .entradas import ler_mudancas, ler_status_do_dia
+from .envio import gravar_registro, ja_enviado, ler_registro
 from .erros import FalhaDeEnvio
 from .estoque import BRASILIA
 from .mudancas import nome_do_arquivo
@@ -97,16 +98,26 @@ def executar_envio(
     try:
         hoje = relogio().astimezone(BRASILIA).date()
         mensagem = montar_mensagem_do_dia(caminhos, config, hoje)
+        tipo = "normal" if mensagem.tipo == "normal" else "de erro"
+        dia = hoje.strftime("%d/%m")
+        if ja_enviado(ler_registro(caminhos.envio), mensagem.tipo, mensagem.dia):
+            print(f"JÁ ENVIADO: mensagem {tipo} de {dia}")
+            return 0
         token = _exigir(ambiente, VARIAVEL_TOKEN)
         chat_id = _exigir(ambiente, VARIAVEL_CHAT)
         criar_cliente(token, chat_id).enviar(mensagem.texto)
+        try:
+            gravar_registro(caminhos.envio, mensagem.tipo, mensagem.dia)
+        except Exception as erro:
+            raise FalhaDeEnvio(
+                f"a mensagem {tipo} de {dia} FOI enviada ao grupo, mas o registro de envio não "
+                f"pôde ser gravado ({type(erro).__name__}: {erro}); não reenvie sem conferir"
+            ) from None
     except FalhaDeEnvio as erro:
         print(f"FALHA [envio]: {limpo(str(erro))}", file=sys.stderr)
         return 1
     except Exception as erro:  # nenhuma falha pode terminar sem aviso
         print(f"FALHA [envio]: {type(erro).__name__}: {limpo(str(erro))}", file=sys.stderr)
         return 1
-    tipo = "normal" if mensagem.tipo == "normal" else "de erro"
-    dia = hoje.strftime("%d/%m")
     print(f"OK: mensagem {tipo} de {dia} enviada ({tamanho(mensagem.texto)} caracteres)")
     return 0
