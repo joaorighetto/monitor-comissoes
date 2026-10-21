@@ -3,7 +3,7 @@
 Sem relógio, sem rede e sem disco. Formato: specs/005-resumo-telegram/contracts/mensagem.md.
 """
 
-from datetime import datetime
+from datetime import date, datetime
 
 from .config import Config
 from .estoque import BRASILIA
@@ -30,3 +30,178 @@ def destino_da_pagina(config: Config, dia: str) -> tuple[str, str]:
         "veja o arquivo do dia",
         f"https://github.com/{config.repositorio}/blob/main/data/mudancas/{dia}.json",
     )
+
+
+TITULO = "Monitor de comissões"
+ROTULOS = {
+    "entrou": "Entrou",
+    "saiu": "Saiu",
+    "situacao": "Situação",
+    "relator": "Relator",
+    "parecer": "Parecer",
+    "etiquetas": "Etiquetas",
+}
+# Como a linha de totais chama cada tipo (a ordem é a de `mudancas.TIPOS`).
+NOMES_NOS_TOTAIS = {tipo: rotulo.lower() for tipo, rotulo in ROTULOS.items()}
+LINHA_DA_LINHA_DE_BASE = {
+    "primeiro retrato": "Primeiro retrato: ainda não há com o que comparar.",
+    "formato anterior incompatível": (
+        "O retrato anterior estava num formato incompatível: a comparação recomeça amanhã."
+    ),
+}
+
+
+def _itens(n: int) -> str:
+    return f"{n} item" if n == 1 else f"{n} itens"
+
+
+def _relator(relator: dict) -> str:
+    return f"{relator['nome']} ({relator['partido_hoje']})"
+
+
+def _detalhe(evento: dict) -> str:
+    """O texto depois de `IDENTIFICAÇÃO — ` (tabela de contracts/mensagem.md)."""
+    tipo = evento["tipo"]
+    if tipo == "entrou":
+        return evento["motivo"]["texto"]
+    if tipo == "saiu":
+        texto = evento["motivo"]["texto"]
+        destino = evento["destino"]
+        if destino["apensado_a"]:
+            return f"{texto} (apensado a {destino['apensado_a']['identificacao']})"
+        if evento["motivo"]["codigo"] == "outro_orgao" and destino["orgao"]:
+            return f"{texto} (destino: {destino['orgao']})"
+        if evento["motivo"]["codigo"] == "encerrado" and destino["situacao"]:
+            return f"{texto} ({destino['situacao']})"
+        return texto
+    if tipo == "situacao":
+        texto = f"{evento['de']} → {evento['para']}"
+        if evento["comissao_de"] != evento["comissao"]:
+            texto += f" (veio da {evento['comissao_de']})"
+        return texto
+    if tipo == "relator":
+        mudanca = evento["mudanca"]
+        if mudanca == "designado":
+            return f"designado {_relator(evento['para'])}"
+        if mudanca == "devolveu":
+            return f"devolveu {_relator(evento['de'])}"
+        return f"{_relator(evento['de'])} → {_relator(evento['para'])}"
+    if tipo == "parecer":
+        return "parecer do relator"
+    partes = []
+    if evento["ganhou"]:
+        partes.append("ganhou " + ", ".join(evento["ganhou"]))
+    if evento["perdeu"]:
+        partes.append("perdeu " + ", ".join(evento["perdeu"]))
+    return "; ".join(partes)
+
+
+def _linhas_do_evento(evento: dict) -> list[str]:
+    rotulo = ROTULOS[evento["tipo"]]
+    return [
+        f"• {rotulo}: {evento['identificacao']} — {_detalhe(evento)}",
+        f"  {evento['link']}",
+    ]
+
+
+def _cabecalho(documento: dict, status: dict) -> list[str]:
+    meta = documento["meta"]
+    dados = dia_mes(meta["retrato"]["dados_camara_em"])
+    base = meta["linha_de_base"]
+    if base is not None:
+        return [
+            TITULO,
+            f"linha de base criada com {_itens(base['total_itens'])} · dados de {dados}",
+            LINHA_DA_LINHA_DE_BASE[base["motivo"]],
+        ]
+    total = _itens(status["ultimo_retrato_bom"]["total_itens"])
+    if meta["total_eventos"] == 0:
+        linhas = [TITULO, f"sem mudanças · {total} · dados de {dados}"]
+    else:
+        contagens = " · ".join(
+            f"{meta['total_por_tipo'][tipo]} {nome}"
+            for tipo, nome in NOMES_NOS_TOTAIS.items()
+            if meta["total_por_tipo"][tipo] > 0
+        )
+        n = meta["total_eventos"]
+        evento = "evento" if n == 1 else "eventos"
+        linhas = [
+            f"{TITULO} · dados de {dados} · {total}",
+            f"{n} {evento}: {contagens}",
+        ]
+    anterior = meta["retrato_anterior"]
+    if anterior is not None:
+        dias = date.fromisoformat(meta["retrato"]["dia"]) - date.fromisoformat(anterior["dia"])
+        if dias.days > 1:
+            de = date.fromisoformat(anterior["dia"]).strftime("%d/%m")
+            ate = date.fromisoformat(meta["retrato"]["dia"]).strftime("%d/%m")
+            linhas.append(f"Cobre de {de} a {ate}: um dia ficou sem retrato.")
+    return linhas
+
+
+def _fila_por_comissao(eventos: list[dict], comissoes: tuple[str, ...]) -> dict[str, list[dict]]:
+    """Os eventos de cada comissão, na ordem do arquivo; as comissões na ordem da configuração."""
+    filas: dict[str, list[dict]] = {c: [] for c in comissoes}
+    for evento in eventos:
+        filas.setdefault(evento["comissao"], []).append(evento)
+    de_fora = sorted(c for c in filas if c not in comissoes)
+    return {c: filas[c] for c in (*comissoes, *de_fora)}
+
+
+def _montar_texto(
+    cabecalho: list[str],
+    filas: dict[str, list[dict]],
+    quantos: dict[str, int],
+    avisos: tuple[str, ...],
+    omitidos: int,
+    destino: tuple[str, str],
+) -> str:
+    secoes = ["\n".join(cabecalho)]
+    for comissao, fila in filas.items():
+        if quantos[comissao] == 0:
+            continue
+        linhas = [comissao]
+        for evento in fila[: quantos[comissao]]:
+            linhas.extend(_linhas_do_evento(evento))
+        secoes.append("\n".join(linhas))
+    if avisos:
+        secoes.append("\n".join(avisos))
+    if omitidos:
+        secoes.append(f"e mais {omitidos}, {destino[0]}\n{destino[1]}")
+    return "\n\n".join(secoes)
+
+
+def montar_normal(
+    mudancas: dict,
+    status: dict,
+    config: Config,
+    avisos: tuple[str, ...] = (),
+) -> str:
+    """A mensagem normal do dia: com eventos, sem mudanças ou linha de base (contracts/mensagem.md).
+
+    `avisos` são blocos já formatados; ficam depois dos grupos e antes do rodapé, e o espaço deles
+    é reservado antes dos eventos. Sob o teto, os eventos entram alternando entre as comissões,
+    na ordem do arquivo dentro de cada uma, e a seleção para no primeiro que não cabe.
+    """
+    cabecalho = _cabecalho(mudancas, status)
+    filas = _fila_por_comissao(mudancas["eventos"], config.comissoes)
+    total = sum(len(f) for f in filas.values())
+    destino = destino_da_pagina(config, mudancas["meta"]["data"])
+    quantos = dict.fromkeys(filas, 0)
+
+    def texto() -> str:
+        return _montar_texto(
+            cabecalho, filas, quantos, avisos, total - sum(quantos.values()), destino
+        )
+
+    if tamanho(texto()) > LIMITE:
+        raise ValueError("o cabeçalho e os avisos não cabem em uma mensagem (aviso grande demais)")
+    while any(quantos[c] < len(f) for c, f in filas.items()):
+        for comissao, fila in filas.items():
+            if quantos[comissao] == len(fila):
+                continue
+            quantos[comissao] += 1
+            if tamanho(texto()) > LIMITE:
+                quantos[comissao] -= 1
+                return texto()
+    return texto()
