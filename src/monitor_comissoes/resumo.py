@@ -205,3 +205,62 @@ def montar_normal(
                 quantos[comissao] -= 1
                 return texto()
     return texto()
+
+
+# --- mensagens de erro (US4) -------------------------------------------------------------------
+
+ALERTA = "⚠ ERRO"
+
+
+def _abertura_do_erro(hoje: date) -> str:
+    return f"{ALERTA} · {TITULO} · {hoje.strftime('%d/%m')}"
+
+
+def _dados_bons(status: dict | None) -> str:
+    """A última linha das mensagens de erro: o que continua publicado."""
+    retrato = None if status is None else status["ultimo_retrato_bom"]
+    if retrato is None:
+        return "Nenhuma lista nova foi publicada. Ainda não há dados bons."
+    return (
+        "Nenhuma lista nova foi publicada. Últimos dados bons: "
+        f"dados de {dia_mes(retrato['dados_camara_em'])} ({_itens(retrato['total_itens'])})."
+    )
+
+
+def _cortado(texto: str, orcamento: int) -> str:
+    """O começo de `texto` que cabe em `orcamento` unidades UTF-16, com `…` se foi cortado."""
+    if tamanho(texto) <= orcamento:
+        return texto
+    corte = texto[: max(orcamento - 1, 0)]
+    while corte and tamanho(corte) > orcamento - 1:
+        corte = corte[:-1]
+    return corte + "…"
+
+
+def montar_erro_da_coleta(status: dict, hoje: date) -> str:
+    """Mensagem de erro da coleta que falhou (FR-012): motivo, categoria e dados bons."""
+    falha = status["falha"]
+    dia = date.fromisoformat(status["data_referencia"]).strftime("%d/%m")
+    abertura = _abertura_do_erro(hoje)
+    fim = _dados_bons(status)
+    resto = f"A atualização de {dia} falhou: {{motivo}} [{falha['categoria']}]"
+    orcamento = LIMITE - tamanho("\n".join([abertura, resto.replace("{motivo}", ""), fim]))
+    motivo = _cortado(falha["motivo"], orcamento)
+    return "\n".join([abertura, resto.replace("{motivo}", motivo), fim])
+
+
+def montar_coleta_nao_rodou(status: dict | None, hoje: date) -> str:
+    """Mensagem de erro quando o `status.json` não é do dia da execução (FR-013a)."""
+    dia = hoje.strftime("%d/%m")
+    if status is None:
+        registro = "Não há registro de coleta."
+    else:
+        ultimo = date.fromisoformat(status["data_referencia"]).strftime("%d/%m")
+        registro = f"Último registro: {ultimo}, {status['resultado']}."
+    return "\n".join(
+        [
+            _abertura_do_erro(hoje),
+            f"A coleta de hoje ({dia}) não rodou. {registro}",
+            _dados_bons(status),
+        ]
+    )
