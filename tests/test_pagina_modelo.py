@@ -1,6 +1,7 @@
 """O que a página mostra (PAG, data-model.md): linha de atualização, números, ordem e itens."""
 
 import copy
+import json
 from datetime import date
 
 import pagina_sinteticos as p
@@ -362,3 +363,161 @@ def test_chips_seguem_a_ordem_das_comissoes_do_meta():
     ).filtros
 
     assert [c.valor for c in comissao.chips] == ["", "CREDN", "CE"]
+
+
+# ---------- mudanças dos últimos 7 dias (US4) ----------
+
+
+def dias_do_retrato_real(pasta="mudancas"):
+    janela = entradas.ler_janela(FIXTURES / pasta, real())
+    return modelo.dias_de_mudancas(janela)
+
+
+def test_sete_dias_do_mais_recente_ao_mais_antigo_com_o_estado_de_cada_um():
+    dias = dias_do_retrato_real()
+
+    assert [d.data.day for d in dias] == [20, 19, 18, 17, 16, 15, 14]
+    assert [d.estado for d in dias] == [
+        "eventos",
+        "sem_mudancas",
+        "linha_de_base",
+        "sem_arquivo",
+        "eventos",
+        "sem_arquivo",
+        "sem_arquivo",
+    ]
+
+
+def test_linha_de_base_traz_o_motivo_e_o_total():
+    dia = dias_do_retrato_real()[2]
+
+    assert dia.linha_de_base == ("primeiro retrato", 105)
+    assert dia.abertos == () and dia.recolhidos == ()
+
+
+def test_intervalo_so_quando_o_arquivo_cobre_mais_de_um_dia():
+    dias = dias_do_retrato_real()
+
+    assert dias[4].intervalo == ("14/10", "16/10")
+    assert dias[0].intervalo is None and dias[1].intervalo is None
+
+
+def test_os_seis_tipos_do_dia_20_com_o_texto_de_cada_um():
+    abertos = dias_do_retrato_real()[0].abertos
+
+    assert [(e.tipo, e.rotulo, e.identificacao, e.comissao) for e in abertos] == [
+        ("entrou", "Entrou", "PL 1831/2022", "CE"),
+        ("saiu", "Saiu", "PL 3510/2023", "CE"),
+        ("situacao", "Situação", "PL 2752/2003", "CE"),
+        ("relator", "Relator", "PLP 173/2023", "CE"),
+        ("parecer", "Parecer", "PL 3075/2022", "CE"),
+        ("etiquetas", "Etiquetas", "PL 3076/2022", "CREDN"),
+    ]
+    assert [e.detalhe for e in abertos] == [
+        "chegou à comissão · etiquetas: autoria NOVO",
+        "foi para outro órgão · destino: CFT (Aguardando Parecer)",
+        "Aguardando Parecer → Pronta para Pauta",
+        "designado Luiz Lima (NOVO)",
+        "parecer do relator",
+        "ganhou: relatoria NOVO",
+    ]
+    assert all(e.link.startswith("https://www.camara.leg.br/") for e in abertos)
+
+
+def test_tramitacoes_do_evento_em_ordem_com_data_e_hora():
+    abertos = dias_do_retrato_real()[0].abertos
+    parecer = next(e for e in abertos if e.tipo == "parecer")
+
+    assert [(t.quando, t.orgao, t.descricao) for t in parecer.tramitacoes] == [
+        ("19/10 10:15", "CE", "Designado Relator, Dep. Luiz Lima"),
+        ("20/10 08:00", "CE", "Parecer do Relator, Dep. Luiz Lima"),
+    ]
+    assert next(e for e in abertos if e.tipo == "entrou").tramitacoes == ()
+
+
+def test_saiu_apensado_a_uma_proposicao_fora_da_lista_traz_o_link_do_destino():
+    saiu = dias_do_retrato_real()[4].abertos[0]
+
+    assert saiu.detalhe == (
+        "apensado a uma proposição fora da lista · destino: CFT (Aguardando Parecer)"
+    )
+    assert saiu.apensado == (
+        "PL 155/2019",
+        "https://www.camara.leg.br/propostas-legislativas/2190633",
+    )
+
+
+def evento_de(tipo, **campos):
+    janela = [
+        (
+            date(2026, 10, 20),
+            p.arquivo_de_mudancas(
+                "2026-10-20", [p.evento(tipo, **campos)], dia_anterior="2026-10-19"
+            ),
+        )
+    ]
+    janela += [(date(2026, 10, 19 - i), None) for i in range(6)]
+    return modelo.dias_de_mudancas(janela)[0].abertos[0]
+
+
+def test_detalhe_de_relator_devolveu_e_substituido():
+    nome = {"id": 1, "nome": "Ana", "partido_hoje": "PT"}
+    outro = {"id": 2, "nome": "Beto", "partido_hoje": ""}
+
+    devolveu = evento_de("relator", mudanca="devolveu", de=nome, para=None)
+    substituido = evento_de("relator", mudanca="substituido", de=nome, para=outro)
+
+    assert devolveu.detalhe == "devolveu Ana (PT)"
+    assert substituido.detalhe == "substituído: Ana (PT) → Beto"
+
+
+def test_detalhe_de_situacao_com_mudanca_de_comissao():
+    mudou = evento_de(
+        "situacao", de="Aguardando Parecer", para="Aguardando Parecer", comissao_de="CREDN"
+    )
+
+    assert mudou.detalhe == "Aguardando Parecer → Aguardando Parecer · veio da CREDN"
+
+
+def test_detalhe_de_etiquetas_ganhou_e_perdeu():
+    os_dois = evento_de("etiquetas", ganhou=["relatoria NOVO"], perdeu=["autoria NOVO"])
+    so_perdeu = evento_de("etiquetas", ganhou=[], perdeu=["autoria NOVO", "relatoria NOVO"])
+
+    assert os_dois.detalhe == "ganhou: relatoria NOVO · perdeu: autoria NOVO"
+    assert so_perdeu.detalhe == "perdeu: autoria NOVO, relatoria NOVO"
+
+
+def test_detalhe_de_saiu_sem_destino_conhecido_fica_so_com_o_motivo():
+    destino = {"orgao": None, "situacao": None, "apensado_a": None}
+    saiu = evento_de("saiu", destino=destino)
+
+    assert saiu.detalhe == "foi para outro órgão"
+
+
+def test_o_teto_de_20_por_dia_abre_os_primeiros_e_recolhe_o_resto_sem_perder_nenhum():
+    dia = dias_do_retrato_real("mudancas-teto")[0]
+
+    assert modelo.TETO_EVENTOS_POR_DIA == 20
+    assert len(dia.abertos) == 20 and len(dia.recolhidos) == 5
+    arquivo = json.loads((FIXTURES / "mudancas-teto" / "2026-10-20.json").read_text("utf-8"))
+    assert [e.identificacao for e in dia.abertos + dia.recolhidos] == [
+        e["identificacao"] for e in arquivo["eventos"]
+    ]
+
+
+def test_exatamente_20_eventos_nao_recolhem_nada():
+    janela = [(date(2026, 10, 20), p.muitos_eventos(20))] + [
+        (date(2026, 10, 19 - i), None) for i in range(6)
+    ]
+
+    dia = modelo.dias_de_mudancas(janela)[0]
+
+    assert len(dia.abertos) == 20 and dia.recolhidos == ()
+
+
+def test_sem_nenhum_arquivo_a_secao_inteira_e_vazia():
+    dias = dias_do_retrato_real("nao-existe")
+
+    assert all(d.estado == "sem_arquivo" for d in dias)
+    assert modelo.sem_mudancas_registradas(dias) is True
+    assert modelo.sem_mudancas_registradas(dias_do_retrato_real()) is False

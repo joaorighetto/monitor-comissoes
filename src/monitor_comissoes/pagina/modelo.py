@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 
 from ..estoque import BRASILIA
-from ..resumo import dia_mes
+from ..resumo import ROTULOS, dia_mes
 
 # Identificador curto de cada etiqueta, usado em `data-etiquetas` e nos chips de motivo.
 MOTIVOS = {
@@ -162,6 +162,146 @@ def filtros(atual: dict, itens: list[ItemDaLista]) -> tuple[GrupoDeChips, GrupoD
     )
 
 
+TETO_EVENTOS_POR_DIA = 20  # os primeiros ficam abertos; o excedente é recolhido, nunca removido
+
+
+@dataclass(frozen=True)
+class TramitacaoDaPagina:
+    quando: str  # "DD/MM HH:MM", como a API entrega (sem fuso)
+    orgao: str
+    descricao: str
+
+
+@dataclass(frozen=True)
+class EventoDaPagina:
+    tipo: str
+    rotulo: str
+    identificacao: str
+    link: str
+    comissao: str
+    detalhe: str
+    apensado: tuple[str, str] | None  # só em `saiu`: (identificação, link) da principal
+    tramitacoes: tuple[TramitacaoDaPagina, ...]
+
+
+@dataclass(frozen=True)
+class DiaDeMudancas:
+    data: date
+    estado: str  # "eventos", "sem_mudancas", "linha_de_base" ou "sem_arquivo"
+    intervalo: tuple[str, str] | None  # ("DD/MM", "DD/MM") quando o arquivo cobre mais de um dia
+    linha_de_base: tuple[str, int] | None  # (motivo, total de itens)
+    abertos: tuple[EventoDaPagina, ...]
+    recolhidos: tuple[EventoDaPagina, ...]
+
+
+def _relator_do_evento(relator: dict) -> str:
+    return _com_partido(relator["nome"], relator["partido_hoje"])
+
+
+def _detalhe_do_evento(evento: dict) -> str:
+    tipo = evento["tipo"]
+    if tipo == "entrou":
+        partes = [evento["motivo"]["texto"]]
+        if evento["etiquetas"]:
+            partes.append("etiquetas: " + ", ".join(evento["etiquetas"]))
+        return " · ".join(partes)
+    if tipo == "saiu":
+        partes = [evento["motivo"]["texto"]]
+        destino = evento["destino"]
+        if destino["orgao"] and destino["situacao"]:
+            partes.append(f"destino: {destino['orgao']} ({destino['situacao']})")
+        elif destino["orgao"] or destino["situacao"]:
+            partes.append(f"destino: {destino['orgao'] or destino['situacao']}")
+        return " · ".join(partes)
+    if tipo == "situacao":
+        texto = f"{evento['de']} → {evento['para']}"
+        if evento["comissao_de"] != evento["comissao"]:
+            texto += f" · veio da {evento['comissao_de']}"
+        return texto
+    if tipo == "relator":
+        mudanca = evento["mudanca"]
+        if mudanca == "designado":
+            return f"designado {_relator_do_evento(evento['para'])}"
+        if mudanca == "devolveu":
+            return f"devolveu {_relator_do_evento(evento['de'])}"
+        return (
+            f"substituído: {_relator_do_evento(evento['de'])} → "
+            f"{_relator_do_evento(evento['para'])}"
+        )
+    if tipo == "parecer":
+        return "parecer do relator"
+    partes = []
+    if evento["ganhou"]:
+        partes.append("ganhou: " + ", ".join(evento["ganhou"]))
+    if evento["perdeu"]:
+        partes.append("perdeu: " + ", ".join(evento["perdeu"]))
+    return " · ".join(partes)
+
+
+def _quando(data_hora: str) -> str:
+    momento = datetime.fromisoformat(data_hora)
+    return momento.strftime("%d/%m %H:%M")
+
+
+def evento_da_pagina(evento: dict) -> EventoDaPagina:
+    apensado = None
+    if evento["tipo"] == "saiu" and evento["destino"]["apensado_a"] is not None:
+        raiz = evento["destino"]["apensado_a"]
+        apensado = (raiz["identificacao"], raiz["link"])
+    return EventoDaPagina(
+        tipo=evento["tipo"],
+        rotulo=ROTULOS[evento["tipo"]],
+        identificacao=evento["identificacao"],
+        link=evento["link"],
+        comissao=evento["comissao"],
+        detalhe=_detalhe_do_evento(evento),
+        apensado=apensado,
+        tramitacoes=tuple(
+            TramitacaoDaPagina(_quando(t["data_hora"]), t["orgao"], t["descricao"])
+            for t in evento["tramitacoes"]
+        ),
+    )
+
+
+def _dia_de_mudancas(dia: date, documento: dict | None) -> DiaDeMudancas:
+    if documento is None:
+        return DiaDeMudancas(dia, "sem_arquivo", None, None, (), ())
+    meta = documento["meta"]
+    anterior = meta["retrato_anterior"]
+    intervalo = None
+    if anterior is not None:
+        inicio = date.fromisoformat(anterior["dia"])
+        fim = date.fromisoformat(meta["retrato"]["dia"])
+        if (fim - inicio).days > 1:
+            intervalo = (inicio.strftime("%d/%m"), fim.strftime("%d/%m"))
+    base = meta["linha_de_base"]
+    if base is not None:
+        return DiaDeMudancas(
+            dia, "linha_de_base", intervalo, (base["motivo"], base["total_itens"]), (), ()
+        )
+    eventos = [evento_da_pagina(e) for e in documento["eventos"]]
+    if not eventos:
+        return DiaDeMudancas(dia, "sem_mudancas", intervalo, None, (), ())
+    return DiaDeMudancas(
+        dia,
+        "eventos",
+        intervalo,
+        None,
+        tuple(eventos[:TETO_EVENTOS_POR_DIA]),
+        tuple(eventos[TETO_EVENTOS_POR_DIA:]),
+    )
+
+
+def dias_de_mudancas(janela: list[tuple[date, dict | None]]) -> tuple[DiaDeMudancas, ...]:
+    """Os dias da janela, do mais recente ao mais antigo, já decididos para a página."""
+    return tuple(_dia_de_mudancas(dia, documento) for dia, documento in janela)
+
+
+def sem_mudancas_registradas(dias: tuple[DiaDeMudancas, ...]) -> bool:
+    """Verdadeiro se nenhum dos dias tem arquivo (antes da primeira execução com a MUD)."""
+    return all(d.estado == "sem_arquivo" for d in dias)
+
+
 LIMITE_DE_ATRASO_HORAS = 30
 
 
@@ -202,6 +342,7 @@ class Pagina:
     faixa_erro: str | None
     faixa_atraso: FaixaDeAtraso
     numeros: Numeros
+    mudancas: tuple[DiaDeMudancas, ...]
     filtros: tuple[GrupoDeChips, GrupoDeChips]
     itens: tuple[ItemDaLista, ...]
 
@@ -214,6 +355,7 @@ def montar_pagina(atual: dict, status: dict, janela: list[tuple[date, dict | Non
         faixa_erro=faixa_de_erro(status),
         faixa_atraso=faixa_de_atraso(status),
         numeros=numeros(atual, janela),
+        mudancas=dias_de_mudancas(janela),
         filtros=filtros(atual, list(itens)),
         itens=itens,
     )

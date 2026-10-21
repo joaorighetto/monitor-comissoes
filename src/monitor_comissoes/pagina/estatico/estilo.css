@@ -205,3 +205,18 @@ main > section > h2 { margin-bottom: var(--space-4); }
 .filtros { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
 .filtros[hidden] { display: none; }
 .filtros p { margin: 0; font-size: 14px; line-height: 22px; }
+.dia { padding-block: var(--space-3); border-bottom: var(--border-width) solid var(--line); }
+.dia:last-child { border-bottom: 0; }
+.dia h3 { margin: 0 0 var(--space-2); font-size: 18px; line-height: 26px; font-weight: 700; }
+.dia p { margin: 0 0 var(--space-2); }
+.eventos { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.evento { padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--line); border-radius: var(--radius-md); background: var(--bg-raised); min-width: 0; }
+.evento p { margin: 0; overflow-wrap: anywhere; }
+.evento-titulo a { display: inline-flex; align-items: center; min-height: var(--touch-min); }
+.evento-tipo { font-family: var(--font-label); font-size: 12px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-right: var(--space-2); }
+.evento-comissao { font-size: 14px; margin-left: var(--space-2); }
+details { margin-top: var(--space-2); }
+summary { display: flex; align-items: center; min-height: var(--touch-min); cursor: pointer; color: var(--link); }
+summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+.tramitacoes ul { margin: 0; padding-left: var(--space-6); font-size: 14px; line-height: 22px; }
+.mais { margin-top: var(--space-3); }

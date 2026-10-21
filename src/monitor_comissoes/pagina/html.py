@@ -7,7 +7,15 @@ documento. Todo caminho próprio é relativo: a página fica em `/monitor-comiss
 
 from html import escape
 
-from .modelo import GrupoDeChips, ItemDaLista, Numeros, Pagina
+from .modelo import (
+    DiaDeMudancas,
+    EventoDaPagina,
+    GrupoDeChips,
+    ItemDaLista,
+    Numeros,
+    Pagina,
+    sem_mudancas_registradas,
+)
 
 TITULO = "Monitor de comissões"
 
@@ -87,6 +95,80 @@ def _item(item: ItemDaLista) -> str:
     return "\n".join(linhas)
 
 
+def _tramitacoes(evento: EventoDaPagina) -> str:
+    if not evento.tramitacoes:
+        return ""
+    itens = "\n".join(
+        f"<li>{esc(t.quando)} · {esc(t.orgao)} · {esc(t.descricao)}</li>"
+        for t in evento.tramitacoes
+    )
+    return (
+        f'<details class="tramitacoes"><summary>Tramitações ({len(evento.tramitacoes)})</summary>\n'
+        f"<ul>\n{itens}\n</ul>\n</details>"
+    )
+
+
+def _evento(evento: EventoDaPagina) -> str:
+    linhas = [
+        f'<li class="evento" data-tipo="{esc(evento.tipo)}">',
+        f'<p class="evento-titulo"><span class="evento-tipo">{esc(evento.rotulo)}</span> '
+        f"{_link(evento.identificacao, evento.link)} "
+        f'<span class="evento-comissao pf-muted">{esc(evento.comissao)}</span></p>',
+        f'<p class="evento-detalhe">{esc(evento.detalhe)}</p>',
+    ]
+    if evento.apensado is not None:
+        identificacao, href = evento.apensado
+        linhas.append(f'<p class="evento-apensado">apensado a {_link(identificacao, href)}</p>')
+    detalhe = _tramitacoes(evento)
+    if detalhe:
+        linhas.append(detalhe)
+    linhas.append("</li>")
+    return "\n".join(linhas)
+
+
+def _lista_de_eventos(eventos: tuple[EventoDaPagina, ...]) -> str:
+    corpo = "\n".join(_evento(e) for e in eventos)
+    return f'<ul class="eventos">\n{corpo}\n</ul>'
+
+
+def _dia_de_mudancas(dia: DiaDeMudancas) -> str:
+    rotulo = dia.data.strftime("%d/%m")
+    linhas = [f'<article class="dia" id="dia-{dia.data.isoformat()}">', f"<h3>{rotulo}</h3>"]
+    if dia.estado == "sem_arquivo":
+        linhas.append("<p>Sem arquivo de mudanças neste dia.</p>")
+    elif dia.estado == "sem_mudancas":
+        linhas.append("<p>Sem mudanças.</p>")
+    elif dia.estado == "linha_de_base":
+        motivo, total = dia.linha_de_base
+        linhas.append(f"<p>Linha de base criada com {total} itens ({esc(motivo)}).</p>")
+    if dia.intervalo is not None:
+        inicio, fim = dia.intervalo
+        linhas.append(f'<p class="pf-muted">Cobre de {inicio} a {fim}.</p>')
+    if dia.abertos:
+        linhas.append(_lista_de_eventos(dia.abertos))
+    if dia.recolhidos:
+        n = len(dia.recolhidos)
+        titulo = f"e mais {n} evento de {rotulo}" if n == 1 else f"e mais {n} eventos de {rotulo}"
+        linhas.append(
+            f'<details class="mais"><summary>{titulo}</summary>\n'
+            f"{_lista_de_eventos(dia.recolhidos)}\n</details>"
+        )
+    linhas.append("</article>")
+    return "\n".join(linhas)
+
+
+def _secao_mudancas(dias: tuple[DiaDeMudancas, ...]) -> str:
+    if sem_mudancas_registradas(dias):
+        corpo = "<p>Ainda não há mudanças registradas.</p>"
+    else:
+        corpo = "\n".join(_dia_de_mudancas(d) for d in dias)
+    return (
+        '<section aria-labelledby="t-mudancas">\n'
+        '<h2 id="t-mudancas" class="pf-h2">Mudou nos últimos 7 dias</h2>\n'
+        f"{corpo}\n</section>"
+    )
+
+
 def _grupo_de_chips(grupo: GrupoDeChips) -> str:
     botoes = "\n".join(
         f'<button class="pf-chip" type="button" aria-pressed="{str(c.ativo).lower()}" '
@@ -135,6 +217,7 @@ def renderizar(pagina: Pagina) -> str:
             _cabecalho(pagina),
             '<main class="pf-wrap">',
             _secao_numeros(pagina.numeros),
+            _secao_mudancas(pagina.mudancas),
             _secao_lista(pagina),
             "</main>",
             "</body>",
