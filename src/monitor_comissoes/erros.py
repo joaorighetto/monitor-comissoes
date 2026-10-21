@@ -42,3 +42,11 @@ class FalhaDeColeta(Exception):
         super().__init__(f"{categoria}: {motivo}")
         self.categoria = categoria
         self.motivo = motivo
+
+
+class FalhaDeEnvio(Exception):
+    """Falha do aviso diário (AVI): leitura das entradas, registro de envio ou Bot API.
+
+    Não é uma `FalhaDeColeta`: não tem categoria e nunca vai para o `status.json`. A mensagem
+    nunca contém token nem chat_id.
+    """

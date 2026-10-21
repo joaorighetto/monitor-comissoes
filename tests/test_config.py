@@ -164,3 +164,62 @@ def test_os_valores_de_execucao_do_config_toml_sao_os_padroes():
         "espera_minutos": config.espera_minutos,
         "limite_variacao_percentual": config.limite_variacao_percentual,
     } == PADROES
+
+
+# --- AVI: tabela [aviso] ---------------------------------------------------------------------
+
+BASE = 'comissoes = ["CE", "CREDN"]\nano_minimo = 2003\n'
+
+
+def test_sem_a_tabela_aviso_valem_os_padroes(tmp_path):
+    config = carregar_config(escrever(tmp_path, BASE), 2026)
+
+    assert config.pagina_url == ""
+    assert config.repositorio == "joaorighetto/monitor-comissoes"
+
+
+def test_aviso_le_pagina_e_repositorio(tmp_path):
+    texto = (
+        BASE + '[aviso]\npagina_url = "https://exemplo.github.io/monitor"\nrepositorio = "a/b"\n'
+    )
+
+    config = carregar_config(escrever(tmp_path, texto), 2026)
+
+    assert config.pagina_url == "https://exemplo.github.io/monitor"
+    assert config.repositorio == "a/b"
+
+
+@pytest.mark.parametrize(
+    "linha",
+    [
+        'pagina_url = "http://exemplo.com"',
+        'pagina_url = " https://exemplo.com"',
+        "pagina_url = 3",
+        "repositorio = 3",
+        'repositorio = ""',
+        'repositorio = "semBarra"',
+        'repositorio = "a/b/c"',
+        'repositorio = "a/"',
+        'repositorio = "/b"',
+    ],
+)
+def test_aviso_com_valor_invalido_falha(tmp_path, linha):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, BASE + f"[aviso]\n{linha}\n"), 2026)
+
+    assert erro.value.categoria == CONFIGURACAO
+    assert "aviso." in erro.value.motivo
+
+
+def test_chave_desconhecida_em_aviso_falha(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, BASE + "[aviso]\nchat = 1\n"), 2026)
+
+    assert "aviso.chat" in erro.value.motivo
+
+
+def test_aviso_que_nao_e_tabela_falha(tmp_path):
+    with pytest.raises(FalhaDeColeta) as erro:
+        carregar_config(escrever(tmp_path, "aviso = 3\n" + BASE), 2026)
+
+    assert "aviso" in erro.value.motivo

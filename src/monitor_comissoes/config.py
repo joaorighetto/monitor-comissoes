@@ -16,6 +16,10 @@ EXECUCAO = (
 )
 PADROES = {nome: padrao for nome, padrao, _, _ in EXECUCAO}
 
+# Campos de [aviso] (AVI): texto de cada um e seu valor padrão.
+PAGINA_URL_PADRAO = ""
+REPOSITORIO_PADRAO = "joaorighetto/monitor-comissoes"
+
 
 @dataclass(frozen=True)
 class Config:
@@ -24,6 +28,8 @@ class Config:
     tentativas: int = PADROES["tentativas"]
     espera_minutos: int = PADROES["espera_minutos"]
     limite_variacao_percentual: int = PADROES["limite_variacao_percentual"]
+    pagina_url: str = PAGINA_URL_PADRAO
+    repositorio: str = REPOSITORIO_PADRAO
 
 
 def _falha(motivo: str) -> FalhaDeColeta:
@@ -58,8 +64,9 @@ def carregar_config(caminho: Path, ano_corrente: int) -> Config:
         )
 
     execucao = _ler_execucao(dados.get("execucao"))
+    aviso = _ler_aviso(dados.get("aviso"))
 
-    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo, **execucao)
+    return Config(comissoes=tuple(comissoes), ano_minimo=ano_minimo, **execucao, **aviso)
 
 
 def _ler_execucao(tabela) -> dict[str, int]:
@@ -83,3 +90,22 @@ def _ler_execucao(tabela) -> dict[str, int]:
             )
         valores[nome] = valor
     return valores
+
+
+def _ler_aviso(tabela) -> dict[str, str]:
+    """Lê a tabela opcional [aviso]; sem ela, valem os padrões."""
+    if tabela is None:
+        return {"pagina_url": PAGINA_URL_PADRAO, "repositorio": REPOSITORIO_PADRAO}
+    if not isinstance(tabela, dict):
+        raise _falha("aviso deve ser uma tabela [aviso]")
+    for chave in tabela:
+        if chave not in ("pagina_url", "repositorio"):
+            raise _falha(f"aviso.{chave} não é um campo conhecido de [aviso]")
+    pagina_url = tabela.get("pagina_url", PAGINA_URL_PADRAO)
+    if not isinstance(pagina_url, str) or (pagina_url and not pagina_url.startswith("https://")):
+        raise _falha("aviso.pagina_url deve ser um texto vazio ou começar com https://")
+    repositorio = tabela.get("repositorio", REPOSITORIO_PADRAO)
+    partes = repositorio.split("/") if isinstance(repositorio, str) else []
+    if len(partes) != 2 or not all(p.strip() and p == p.strip() for p in partes):
+        raise _falha("aviso.repositorio deve ser um texto no formato dono/nome")
+    return {"pagina_url": pagina_url, "repositorio": repositorio}
