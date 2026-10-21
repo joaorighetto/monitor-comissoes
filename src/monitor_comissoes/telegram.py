@@ -106,13 +106,16 @@ class ClienteTelegram:
                 dados = resposta.read()
         except urllib.error.HTTPError as erro:
             self._falha_http(erro)
-        except http.client.IncompleteRead:
-            raise _Repetir("resposta interrompida (IncompleteRead)") from None
-        except (http.client.HTTPException, ValueError) as erro:
-            # Só o nome do tipo: o texto dessas exceções cita a URL, e com ela o token.
+        except (http.client.InvalidURL, ValueError) as erro:
+            # Pedido que nem chega a ser feito: repetir não adianta. Só o nome do tipo: o texto
+            # dessas exceções cita a URL, e com ela o token.
             raise FalhaDeEnvio(
-                f"não foi possível montar ou fazer o pedido à Bot API ({type(erro).__name__})"
+                f"não foi possível montar o pedido à Bot API ({type(erro).__name__})"
             ) from None
+        except http.client.HTTPException as erro:
+            # RemoteDisconnected, BadStatusLine, IncompleteRead...: a conexão caiu; vale outra
+            # tentativa. Também só o nome do tipo.
+            raise _Repetir(f"conexão interrompida ({type(erro).__name__})") from None
         except (urllib.error.URLError, OSError) as erro:
             # `from None`: a exceção original pode repetir a URL, e com ela o token.
             raise _Repetir(self._limpo(f"erro de rede ({type(erro).__name__}: {erro})")) from None
@@ -122,7 +125,7 @@ class ClienteTelegram:
         codigo = erro.code
         try:
             corpo = json.loads(erro.read().decode("utf-8"))
-        except (ValueError, OSError):
+        except (ValueError, OSError, http.client.HTTPException):
             corpo = {}
         if not isinstance(corpo, dict):
             corpo = {}

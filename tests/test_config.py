@@ -237,7 +237,7 @@ def test_os_valores_de_aviso_do_config_toml_sao_os_padroes():
 
 
 def test_carregar_config_ignora_a_tabela_aviso_mesmo_malformada(tmp_path):
-    """Um erro em [aviso] nunca pode derrubar a coleta (AVI, FR-016 e FR-026)."""
+    """Um valor errado em [aviso] não derruba a coleta (AVI, FR-016 e FR-026)."""
     texto = BASE + '[aviso]\npagina_url = "http://errado"\nrepositorio = 3\nchat = 1\n'
 
     config = carregar_config(escrever(tmp_path, texto), 2026)

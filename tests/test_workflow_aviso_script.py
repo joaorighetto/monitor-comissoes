@@ -35,7 +35,9 @@ case "$3" in
         echo '{"envio": "sujo"}' > data/envio.json
         exit 1 ;;
     esac ;;
-  mensagem) echo "aviso: teste" ;;
+  mensagem)
+    [ "$FAKE_MENSAGEM" = falha ] && exit 1
+    echo "aviso: teste" ;;
 esac
 """
 
@@ -94,12 +96,13 @@ class Ambiente:
         (self.trabalho / ".git" / "info" / "exclude").write_text(".venv/\n", encoding="utf-8")
         self.log = raiz / "chamadas.log"
 
-    def rodar(self, modo: str):
+    def rodar(self, modo: str, *, mensagem: str = "ok"):
         script = self.raiz / "passo.sh"
         script.write_text(script_do_passo(), encoding="utf-8")
         ambiente = {
             **os.environ,
             "FAKE_MODO": modo,
+            "FAKE_MENSAGEM": mensagem,
             "FAKE_LOG": str(self.log),
             "GITHUB_REF_NAME": "main",
             "RUNNER_TEMP": str(self.temporario),
@@ -224,3 +227,13 @@ def test_remoto_adiantado_nao_impede_o_commit_do_registro(com_envio):
     assert com_envio.commits_no_remoto() == antes + 1
     assert com_envio.arquivos_do_ultimo_commit() == ["data/envio.json"]
     assert com_envio.no_remoto("OUTRO.md") == "chegou antes\n"
+
+
+def test_mensagem_do_commit_que_falha_aborta_o_passo_antes_do_commit(com_envio):
+    antes = com_envio.commits_no_remoto()
+
+    resultado = com_envio.rodar("ok", mensagem="falha")
+
+    assert resultado.returncode != 0
+    assert com_envio.commits_no_remoto() == antes
+    assert com_envio.mensagem_do_ultimo_commit() == "semente"

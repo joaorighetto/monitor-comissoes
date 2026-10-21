@@ -330,8 +330,6 @@ def test_filtro_troca_o_segredo_cru_e_o_escapado():
 
     segredo = "abc\ndef"
 
-    assert (
-        sem_segredos(f"cru {segredo} escapado {segredo!r}"[:-1], segredo, "")
-        == "cru *** escapado '***"
-    )
+    assert sem_segredos(f"cru {segredo}", segredo, "") == "cru ***"
+    assert sem_segredos(f"escapado {repr(segredo)[1:-1]}", segredo, "") == "escapado ***"
     assert sem_segredos("sem nada", "", "") == "sem nada"

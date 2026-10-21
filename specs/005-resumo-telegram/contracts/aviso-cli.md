@@ -68,7 +68,7 @@ repositorio = "joaorighetto/monitor-comissoes"
 
 Validação (falha `configuracao`): `pagina_url` texto, vazio ou começando com `https://`; `repositorio` texto no formato `dono/nome` (letras, números, `_`, `.` e `-`); campo desconhecido em `[aviso]` falha, como em `[execucao]`.
 
-**A tabela só é lida pelo aviso** (`carregar_config_do_aviso`). `carregar_config`, usado pela coleta, a ignora: um erro de digitação em `[aviso]` falha o envio, nunca a coleta (FR-016, FR-026; revisão de 20/10/2026).
+**A tabela só é lida pelo aviso** (`carregar_config_do_aviso`). `carregar_config`, usado pela coleta, a ignora: um valor errado em `[aviso]` falha o envio, nunca a coleta (FR-016, FR-026; revisão de 20/10/2026). Um TOML de sintaxe inválida continua falhando o arquivo inteiro: não há como isolar uma tabela de um arquivo ilegível.
 
 ## Workflow `.github/workflows/aviso-diario.yml`
 

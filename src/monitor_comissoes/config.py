@@ -48,8 +48,9 @@ def _ler_toml(caminho: Path) -> dict:
 
 
 def carregar_config(caminho: Path, ano_corrente: int) -> Config:
-    """Lê o config.toml. A tabela [aviso] é ignorada aqui: um erro nela nunca pode derrubar
-    a coleta (AVI, FR-016 e FR-026); quem a lê é `carregar_config_do_aviso`."""
+    """Lê o config.toml. A tabela [aviso] é ignorada aqui: um valor errado nela não derruba a
+    coleta (AVI, FR-016 e FR-026); quem a valida é `carregar_config_do_aviso`. Um TOML com
+    sintaxe inválida continua falhando o arquivo inteiro, como sempre."""
     dados = _ler_toml(caminho)
 
     comissoes = dados.get("comissoes")

@@ -96,7 +96,10 @@ def executar_envio(
     criar_cliente: Callable[[str, str], object],
 ) -> int:
     """Um envio. Devolve o código de saída: 0 em sucesso, 1 em qualquer falha."""
-    segredos = [ambiente.get(VARIAVEL_TOKEN, ""), ambiente.get(VARIAVEL_CHAT, "")]
+    segredos = [
+        ambiente.get(VARIAVEL_TOKEN, "").strip(),
+        ambiente.get(VARIAVEL_CHAT, "").strip(),
+    ]
 
     def limpo(texto: str) -> str:
         return sem_segredos(texto, segredos[0], segredos[1])
