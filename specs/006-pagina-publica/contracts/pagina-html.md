@@ -48,7 +48,7 @@ Em falha da última execução a linha continua dizendo de quando são os dados 
 | Erro | `status.resultado = "falha"` | `<p id="faixa-erro" role="alert" class="faixa">` (sem `hidden`) | `A atualização de 21/10 falhou (a Câmara não atualizou os arquivos). Dados de 20/10.` |
 | Atraso | sempre emitida | `<p id="faixa-atraso" role="status" class="faixa" hidden data-verificado-em="2026-10-20T09:09:05-03:00">` | `Dados atrasados: a última verificação foi em 20/10 às 09h09, há mais de 30 horas. A atualização diária pode ter parado.` |
 
-As faixas têm borda `line-strong` e um rótulo em texto (`Erro` ou `Atraso`) antes da frase: o significado nunca depende de cor (FR-012). O JS remove `hidden` da faixa de atraso quando `Date.now() - Date.parse(data-verificado-em) > 30 h`.
+As faixas têm borda `line-strong` e o significado está só na frase ("A atualização … falhou", "Dados atrasados: …"): nenhuma cor de estado, nenhum ícone, nada que dependa de cor (FR-012). O JS remove `hidden` da faixa de atraso quando `Date.now() - Date.parse(data-verificado-em) > 30 h`.
 
 ## 3. Números
 

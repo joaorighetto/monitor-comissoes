@@ -70,3 +70,16 @@ def test_o_leiame_registra_origem_e_data_da_copia():
     assert "../Portfolio/design-system" in leiame
     assert "2026-10-20" in leiame
     assert "tokens.azul.css" in leiame
+
+
+def bloco_da_pagina() -> str:
+    texto = css()
+    return texto[texto.index("a página (não vem do DS") :]
+
+
+def test_os_estilos_da_pagina_so_usam_tokens_do_ds_nenhuma_cor_de_estado():
+    bloco = bloco_da_pagina()
+
+    assert not re.search(r"#[0-9a-fA-F]{3,8}\b", bloco)
+    assert "rgb(" not in bloco and "hsl(" not in bloco
+    assert ".faixa" in bloco

@@ -22,12 +22,20 @@ def _link(texto: str, href: str) -> str:
 
 
 def _cabecalho(pagina: Pagina) -> str:
-    return (
-        '<header class="pf-wrap cabecalho">\n'
-        f'<h1>Monitor de <span class="pf-mark">comissões</span></h1>\n'
-        f'<p id="atualizacao" class="pf-muted">{esc(pagina.atualizacao)}</p>\n'
-        "</header>"
+    linhas = [
+        '<header class="pf-wrap cabecalho">',
+        '<h1>Monitor de <span class="pf-mark">comissões</span></h1>',
+        f'<p id="atualizacao" class="pf-muted">{esc(pagina.atualizacao)}</p>',
+    ]
+    if pagina.faixa_erro is not None:
+        linhas.append(f'<p id="faixa-erro" class="faixa" role="alert">{esc(pagina.faixa_erro)}</p>')
+    atraso = pagina.faixa_atraso
+    linhas.append(
+        f'<p id="faixa-atraso" class="faixa" role="status" hidden '
+        f'data-verificado-em="{esc(atraso.verificado_em)}">{esc(atraso.texto)}</p>'
     )
+    linhas.append("</header>")
+    return "\n".join(linhas)
 
 
 def _mudancas_do_numero(numeros: Numeros) -> str:

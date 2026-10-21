@@ -325,6 +325,74 @@ def test_duas_geracoes_da_mesma_entrada_dao_o_mesmo_texto():
 
 
 def test_a_pagina_nao_traz_hora_de_geracao():
-    texto = pagina_real()
+    # o instante da verificação vem do status.json (é dado, não hora de geração)
+    texto = re.sub(r'data-verificado-em="[^"]*"', "", pagina_real())
 
     assert not re.search(r"gerada em|gerado agora|\d{2}:\d{2}:\d{2}", texto)
+
+
+# ---------- faixas (US2) ----------
+
+
+def pagina_com_status(nome):
+    atual = entradas.ler_atual(FIXTURES / "atual-real.json")
+    return parse(montar(atual, entradas.ler_status_do_dia(FIXTURES / nome)))
+
+
+def test_sem_falha_nao_ha_faixa_de_erro():
+    assert parse(pagina_real()).achar(id="faixa-erro") == []
+
+
+def test_faixa_de_erro_em_texto_com_role_alert_e_lista_do_ultimo_retrato_bom():
+    doc = pagina_com_status("status-falha.json")
+
+    faixa = doc.um(tag="p", id="faixa-erro")
+
+    assert faixa.attrs["role"] == "alert"
+    assert "faixa" in faixa.classes
+    assert not faixa.tem_atributo("hidden")
+    assert faixa.texto == (
+        "A atualização de 21/10 falhou (a Câmara não atualizou os arquivos). Dados de 20/10."
+    )
+    assert len(doc.achar(tag="li", classe="item")) == 105
+    assert doc.um(tag="p", id="atualizacao").texto.endswith("verificado em 21/10 às 09h00")
+
+
+def test_faixa_de_atraso_existe_escondida_com_o_instante_e_role_status():
+    doc = parse(pagina_real())
+
+    faixa = doc.um(tag="p", id="faixa-atraso")
+
+    assert faixa.tem_atributo("hidden")
+    assert faixa.attrs["role"] == "status"
+    assert faixa.attrs["data-verificado-em"] == "2026-10-20T09:09:05-03:00"
+    assert faixa.texto == (
+        "Dados atrasados: a última verificação foi em 20/10 às 09h09, há mais de 30 horas. "
+        "A atualização diária pode ter parado."
+    )
+
+
+def test_as_faixas_ficam_no_cabecalho_depois_da_linha_de_atualizacao():
+    doc = parse(montar_falha())
+    cabecalho = doc.um(tag="header")
+    ids = [p_.attrs.get("id") for p_ in cabecalho.achar(tag="p")]
+
+    assert ids == ["atualizacao", "faixa-erro", "faixa-atraso"]
+
+
+def montar_falha():
+    atual = entradas.ler_atual(FIXTURES / "atual-real.json")
+    return montar(atual, entradas.ler_status_do_dia(FIXTURES / "status-falha.json"))
+
+
+def test_motivo_da_falha_com_html_sai_como_texto():
+    atual = entradas.ler_atual(FIXTURES / "atual-real.json")
+    status = dict(entradas.ler_status_do_dia(FIXTURES / "status-falha.json"))
+    status["falha"] = {"categoria": "interna", "motivo": "<script>x</script> & falhou"}
+
+    doc = parse(montar(atual, status))
+
+    assert doc.um(tag="p", id="faixa-erro").texto == (
+        "A atualização de 21/10 falhou (<script>x</script> & falhou). Dados de 20/10."
+    )
+    assert len(doc.achar(tag="script")) == 1

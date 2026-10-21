@@ -255,3 +255,50 @@ def test_todos_os_itens_reais_viram_item_da_lista():
 
     assert len(itens) == 105
     assert all(i.link.startswith("https://www.camara.leg.br/") for i in itens)
+
+
+# ---------- faixas ----------
+
+
+def test_sem_falha_nao_ha_faixa_de_erro():
+    pagina = modelo.montar_pagina(real(), status_real(), janela_real())
+
+    assert pagina.faixa_erro is None
+
+
+def test_faixa_de_erro_diz_o_dia_que_falhou_o_motivo_e_os_dados_bons():
+    status = entradas.ler_status_do_dia(FIXTURES / "status-falha.json")
+
+    pagina = modelo.montar_pagina(real(), status, janela_real())
+
+    assert pagina.faixa_erro == (
+        "A atualização de 21/10 falhou (a Câmara não atualizou os arquivos). Dados de 20/10."
+    )
+
+
+def test_faixa_de_erro_usa_o_dia_de_brasilia_dos_dados_bons():
+    status = copy.deepcopy(entradas.ler_status_do_dia(FIXTURES / "status-falha.json"))
+    status["ultimo_retrato_bom"]["dados_camara_em"] = "2026-10-20T01:30:00+00:00"
+    atual = copy.deepcopy(real())
+    atual["meta"]["dados_camara_em"] = "2026-10-20T01:30:00+00:00"
+
+    assert modelo.montar_pagina(atual, status, janela_real()).faixa_erro.endswith("Dados de 19/10.")
+
+
+def test_faixa_de_atraso_sempre_existe_com_o_instante_e_o_texto():
+    pagina = modelo.montar_pagina(real(), status_real(), janela_real())
+
+    assert pagina.faixa_atraso.verificado_em == "2026-10-20T09:09:05-03:00"
+    assert pagina.faixa_atraso.texto == (
+        "Dados atrasados: a última verificação foi em 20/10 às 09h09, há mais de 30 horas. "
+        "A atualização diária pode ter parado."
+    )
+
+
+def test_faixa_de_atraso_tambem_existe_quando_a_ultima_execucao_falhou():
+    status = entradas.ler_status_do_dia(FIXTURES / "status-falha.json")
+
+    pagina = modelo.montar_pagina(real(), status, janela_real())
+
+    assert pagina.faixa_atraso.verificado_em == "2026-10-21T09:00:00-03:00"
+    assert "21/10 às 09h00" in pagina.faixa_atraso.texto

@@ -122,11 +122,45 @@ def item_da_lista(item: dict) -> ItemDaLista:
     )
 
 
+LIMITE_DE_ATRASO_HORAS = 30
+
+
+def faixa_de_erro(status: dict) -> str | None:
+    """O texto da faixa de erro quando a última execução falhou (PRODUCT.md, §6.2)."""
+    if status["resultado"] != "falha":
+        return None
+    dia = date.fromisoformat(status["data_referencia"]).strftime("%d/%m")
+    dados = dia_mes(status["ultimo_retrato_bom"]["dados_camara_em"])
+    return f"A atualização de {dia} falhou ({status['falha']['motivo']}). Dados de {dados}."
+
+
+@dataclass(frozen=True)
+class FaixaDeAtraso:
+    """Sempre emitida e escondida; só o navegador a mostra, com o relógio do leitor."""
+
+    verificado_em: str
+    texto: str
+
+
+def faixa_de_atraso(status: dict) -> FaixaDeAtraso:
+    verificado = status["verificado_em"]
+    return FaixaDeAtraso(
+        verificado_em=verificado,
+        texto=(
+            f"Dados atrasados: a última verificação foi em {dia_mes(verificado)} às "
+            f"{hora_minuto(verificado)}, há mais de {LIMITE_DE_ATRASO_HORAS} horas. "
+            "A atualização diária pode ter parado."
+        ),
+    )
+
+
 @dataclass(frozen=True)
 class Pagina:
     """Tudo o que `html.renderizar` precisa, já decidido."""
 
     atualizacao: str
+    faixa_erro: str | None
+    faixa_atraso: FaixaDeAtraso
     numeros: Numeros
     itens: tuple[ItemDaLista, ...]
 
@@ -135,6 +169,8 @@ def montar_pagina(atual: dict, status: dict, janela: list[tuple[date, dict | Non
     """O modelo da página a partir das entradas já conferidas por `entradas.py`."""
     return Pagina(
         atualizacao=linha_de_atualizacao(atual, status),
+        faixa_erro=faixa_de_erro(status),
+        faixa_atraso=faixa_de_atraso(status),
         numeros=numeros(atual, janela),
         itens=tuple(item_da_lista(i) for i in ordenar(atual["itens"])),
     )
