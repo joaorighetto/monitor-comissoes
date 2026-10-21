@@ -56,3 +56,11 @@ def test_as_restricoes_tecnicas_registram_o_workflow_e_a_copia_do_ds():
     assert "publicada por workflow próprio ao fim da coleta (§6.2)" in restricoes
     assert "src/monitor_comissoes/pagina/estatico/" in restricoes
     assert "onde o repositório do portfólio não existe" in restricoes
+
+
+def test_o_bloco_de_limites_traz_os_limites_do_leitor_e_diz_o_que_ficou_fora():
+    pagina = secao("### 6.2 Página pública", "## 7. Falhar de forma visível")
+
+    assert "os limites da seção 8 que valem para quem lê a lista" in pagina
+    assert "relógio do aparelho" in pagina
+    assert "Ficam fora o arquivamento e o volume da coleta" in pagina

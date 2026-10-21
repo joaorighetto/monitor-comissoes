@@ -172,7 +172,7 @@ De cima para baixo:
    - relator atual com o partido de hoje;
    - "nesta situação há N dias";
    - "apensado ao PL X", quando for o caso.
-7. **Bloco "Limites"**, com o conteúdo da seção 8.
+7. **Bloco "Limites"**, com os limites da seção 8 que valem para quem lê a lista: os dados são do dia anterior; o motivo de entrada tem janela de um dia; só a última tramitação de cada retrato vem do lote; "hoje no NOVO" quer dizer em exercício; o partido na autoria é o que a Câmara registra; a página não é publicação oficial. Acrescenta-se o limite da faixa de atraso, que é calculada no navegador, com o relógio do aparelho, e não aparece sem JavaScript. Ficam fora o arquivamento e o volume da coleta, que não afetam a leitura da lista.
 8. **Baixar dados**: `atual.json` e CSV.
 
 A página funciona sem JavaScript: os chips só filtram, e sem JS todos os itens aparecem. Usa o DS do portfólio: tokens azuis, FilterChips e as regras de acessibilidade, foco e área de toque.
