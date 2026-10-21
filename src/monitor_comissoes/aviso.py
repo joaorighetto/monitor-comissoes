@@ -5,16 +5,18 @@ specs/005-resumo-telegram/contracts/aviso-cli.md). Só lê os arquivos que a col
 deles é alterado por este módulo.
 """
 
+import argparse
+import os
 import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
 
-from .config import Config
+from .config import Config, carregar_config
 from .entradas import ler_itens_do_atual, ler_mudancas, ler_status_do_dia
 from .envio import gravar_registro, ja_enviado, ler_registro
-from .erros import FalhaDeEnvio
+from .erros import FalhaDeColeta, FalhaDeEnvio
 from .estoque import BRASILIA
 from .mudancas import nome_do_arquivo
 from .resumo import (
@@ -24,7 +26,7 @@ from .resumo import (
     montar_normal,
     tamanho,
 )
-from .telegram import _sem_segredos
+from .telegram import ClienteTelegram, _sem_segredos
 
 VARIAVEL_TOKEN = "TELEGRAM_BOT_TOKEN"
 VARIAVEL_CHAT = "TELEGRAM_CHAT_ID"
@@ -124,3 +126,78 @@ def executar_envio(
         return 1
     print(f"OK: mensagem {tipo} de {dia} enviada ({tamanho(mensagem.texto)} caracteres)")
     return 0
+
+
+def _texto(caminhos: Caminhos, config: Config, hoje: date) -> int:
+    """Mostra a mensagem do dia sem enviar, sem credencial e sem gravar nada."""
+    try:
+        mensagem = montar_mensagem_do_dia(caminhos, config, hoje)
+    except FalhaDeEnvio as erro:
+        print(f"FALHA [envio]: {erro}", file=sys.stderr)
+        return 1
+    print(f"TIPO: {mensagem.tipo}")
+    print(mensagem.texto)
+    return 0
+
+
+def main(
+    argv: list[str] | None = None,
+    relogio: Callable[[], datetime] | None = None,
+    ambiente: Mapping[str, str] | None = None,
+    criar_cliente: Callable[[str, str], object] | None = None,
+) -> int:
+    parser = argparse.ArgumentParser(prog="monitor_comissoes.aviso", description=__doc__)
+    subcomandos = parser.add_subparsers(dest="comando", required=True)
+
+    def comum(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--config", type=Path, default=Path("config.toml"))
+        p.add_argument("--atual", type=Path, default=Path("data/atual.json"))
+        p.add_argument("--status", type=Path, default=None, help="padrão: ao lado do --atual")
+        p.add_argument("--mudancas", type=Path, default=None, help="padrão: ao lado do --atual")
+
+    texto = subcomandos.add_parser("texto", help="mostra a mensagem do dia, sem enviar")
+    comum(texto)
+    texto.add_argument(
+        "--hoje",
+        type=date.fromisoformat,
+        default=None,
+        help="AAAA-MM-DD: vê a mensagem de um dia salvo (padrão: hoje em Brasília)",
+    )
+    enviar = subcomandos.add_parser("enviar", help="envia a mensagem do dia ao Telegram")
+    comum(enviar)
+    enviar.add_argument("--envio", type=Path, default=None, help="padrão: ao lado do --atual")
+    args = parser.parse_args(argv)
+
+    relogio = relogio or _agora
+    ambiente = os.environ if ambiente is None else ambiente
+    criar_cliente = criar_cliente or ClienteTelegram
+    caminhos = Caminhos.ao_lado_de(
+        args.atual,
+        status=args.status,
+        mudancas=args.mudancas,
+        envio=getattr(args, "envio", None),
+    )
+    try:
+        agora = relogio().astimezone(BRASILIA)
+        config = carregar_config(args.config, agora.year)
+    except FalhaDeColeta as falha:
+        print(f"FALHA [envio]: {falha.motivo}", file=sys.stderr)
+        return 1
+    if args.comando == "texto":
+        return _texto(caminhos, config, args.hoje or agora.date())
+    return executar_envio(caminhos, config, relogio, ambiente, criar_cliente)
+
+
+def _agora() -> datetime:
+    return datetime.now(BRASILIA)
+
+
+def _saida_em_utf8() -> None:
+    """A mensagem tem `→`, `•` e `⚠`: em consoles que não são UTF-8 (Windows) o print falharia."""
+    for fluxo in (sys.stdout, sys.stderr):
+        fluxo.reconfigure(encoding="utf-8")
+
+
+if __name__ == "__main__":
+    _saida_em_utf8()
+    raise SystemExit(main())
