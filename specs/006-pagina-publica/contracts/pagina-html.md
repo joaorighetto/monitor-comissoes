@@ -131,7 +131,7 @@ As faixas têm borda `line-strong` e o significado está só na frase ("A atuali
 
 - `Relator`: `Nome (PARTIDO)`; se `relator` é `null`, `sem relator atual`. Se `relator_indeterminado` não é nulo, a marca `relator indeterminado` aparece além do campo.
 - `Parado há`: `nesta situação há N dias` (singular `1 dia`).
-- `Autores`: na ordem de `autores[].ordem`, cada um `Nome (PARTIDO na data)`.
+- `Autores`: na ordem de `autores[].ordem`, cada um `Nome (PARTIDO na data)`; só `Nome` quando o autor não tem partido na data (no retrato real, o autor de um item é uma comissão especial).
 - Item sem etiqueta: `data-etiquetas=""` e nenhum `p.item-etiquetas`.
 
 ## 6. Limites

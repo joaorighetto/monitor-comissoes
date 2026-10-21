@@ -32,7 +32,7 @@ Os nomes `atual.json` e `itens.csv` são estáveis: o EmbedFrame do portfólio e
 | 5 | `situação` | `situacao` | texto |
 | 6 | `parado há (dias)` | `parado_ha_dias` | inteiro |
 | 7 | `etiquetas` | `etiquetas` | rótulos unidos por ` \| ` |
-| 8 | `autores` | `autores` | `Nome (PARTIDO)` unidos por ` \| `, na ordem de `ordem` |
+| 8 | `autores` | `autores` | `Nome (PARTIDO)` unidos por ` \| `, na ordem de `ordem`; só `Nome` quando o autor não tem partido na data (uma comissão especial, por exemplo) |
 | 9 | `relator atual` | `relator` | `Nome (PARTIDO)`; vazio se não há relator |
 | 10 | `apensado a` | `apensado_a.identificacao` | texto; vazio se não é apensado |
 | 11 | `marcas` | `principal_nao_localizada`, `relator_indeterminado` | `principal não localizada`, `relator indeterminado`, unidos por ` \| `; vazio se nenhuma |

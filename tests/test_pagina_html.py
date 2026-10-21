@@ -475,3 +475,63 @@ def test_comissao_sem_item_nao_aparece_nos_chips():
     botoes = filtros_de(doc).achar(tag="button", data_grupo="comissao")
 
     assert [b.texto for b in botoes] == ["Todas", "CE"]
+
+
+# ---------- limites e download (US5) ----------
+
+LIMITES = (
+    "dia anterior",
+    "janela de um dia",
+    "última tramitação",
+    "em exercício",
+    "partido na autoria",
+    "publicação oficial",
+    "relógio do aparelho",
+)
+
+
+def test_bloco_de_limites_com_os_sete_limites_do_leitor():
+    doc = parse(pagina_real())
+    secao = doc.um(tag="section", aria_labelledby="t-limites")
+
+    itens = [li.texto for li in secao.achar(tag="li")]
+
+    assert secao.um(tag="h2", id="t-limites").texto == "Limites"
+    assert len(itens) == 7
+    for trecho in LIMITES:
+        assert sum(trecho in texto for texto in itens) == 1, trecho
+
+
+def test_limites_nao_trazem_arquivamento_nem_volume_da_coleta():
+    secao = parse(pagina_real()).um(tag="section", aria_labelledby="t-limites")
+
+    assert "arquivamento" not in secao.texto.lower()
+    assert "1 GB" not in secao.texto and "48 arquivos" not in secao.texto
+
+
+def test_baixar_dados_tem_os_dois_links_e_a_linha_de_fonte():
+    secao = parse(pagina_real()).um(tag="section", aria_labelledby="t-baixar")
+
+    links = secao.achar(tag="a")
+
+    assert secao.um(tag="h2", id="t-baixar").texto == "Baixar dados"
+    assert [(a.attrs["href"], a.texto, a.tem_atributo("download")) for a in links] == [
+        ("atual.json", "Baixar atual.json", True),
+        ("itens.csv", "Baixar itens.csv", True),
+    ]
+    assert all("pf-btn" in a.classes and "pf-btn--link" in a.classes for a in links)
+    assert secao.um(tag="p", classe="fonte").texto == "Fonte: Câmara dos Deputados · dados de 20/10"
+
+
+def test_a_ordem_final_das_secoes():
+    doc = parse(pagina_real())
+
+    ids = [h.attrs["id"] for h in doc.achar(tag="h2")]
+
+    assert ids == ["t-numeros", "t-mudancas", "t-lista", "t-limites", "t-baixar"]
+
+
+def test_a_fonte_diz_a_data_dos_dados_mesmo_com_a_coleta_em_falha():
+    doc = pagina_com_status("status-falha.json")
+
+    assert doc.um(tag="p", classe="fonte").texto.endswith("dados de 20/10")

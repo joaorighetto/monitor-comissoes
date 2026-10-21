@@ -84,7 +84,7 @@ class ItemDaLista:
     marcas: tuple[str, ...]
 
 
-def _com_partido(nome: str, partido: str | None) -> str:
+def com_partido(nome: str, partido: str | None) -> str:
     return f"{nome} ({partido})" if partido else nome
 
 
@@ -109,13 +109,13 @@ def item_da_lista(item: dict) -> ItemDaLista:
         comissao=item["comissao"],
         situacao=item["situacao"],
         parado=_parado(item["parado_ha_dias"]),
-        autores=tuple(_com_partido(a["nome"], a["partido_na_data"]) for a in autores),
+        autores=tuple(com_partido(a["nome"], a["partido_na_data"]) for a in autores),
         etiquetas=tuple(item["etiquetas"]),
         motivos=tuple(MOTIVOS[e] for e in item["etiquetas"] if e in MOTIVOS),
         relator=(
             SEM_RELATOR
             if relator is None
-            else _com_partido(relator["nome"], relator["partido_hoje"])
+            else com_partido(relator["nome"], relator["partido_hoje"])
         ),
         apensado=None if apensado is None else (apensado["identificacao"], apensado["link"]),
         marcas=tuple(marcas),
@@ -195,7 +195,7 @@ class DiaDeMudancas:
 
 
 def _relator_do_evento(relator: dict) -> str:
-    return _com_partido(relator["nome"], relator["partido_hoje"])
+    return com_partido(relator["nome"], relator["partido_hoje"])
 
 
 def _detalhe_do_evento(evento: dict) -> str:
@@ -334,6 +334,26 @@ def faixa_de_atraso(status: dict) -> FaixaDeAtraso:
     )
 
 
+# Os limites do PRODUCT.md, §8, que valem para o leitor da página. Os de arquivamento e de volume
+# da coleta não afetam quem lê a lista e ficam de fora.
+LIMITES = (
+    "Os dados são do dia anterior: o lote da Câmara é gerado por volta das 2h de Brasília, então o "
+    "que acontece num dia aparece no dia seguinte.",
+    "O motivo de entrada tem janela de um dia: um item que chegou à comissão na madrugada do dia "
+    "do lote anterior pode aparecer como “ganhou etiqueta” em vez de “chegou à comissão”.",
+    "Só a última tramitação de cada retrato vem do lote; as tramitações intermediárias vêm da API "
+    "e apenas para os itens da lista.",
+    "“Hoje no NOVO” quer dizer em exercício: um deputado licenciado ou afastado perde as etiquetas "
+    "“autor hoje no NOVO” e “relatoria NOVO” enquanto estiver fora.",
+    "O partido na autoria é o que a Câmara registra, com sobreposições curtas nas trocas de "
+    "partido.",
+    "Esta página não é publicação oficial: cada item tem link para a página oficial da Câmara, "
+    "que é onde vale conferir.",
+    "O aviso de dados atrasados é calculado no navegador, com o relógio do aparelho, e não "
+    "aparece sem JavaScript.",
+)
+
+
 @dataclass(frozen=True)
 class Pagina:
     """Tudo o que `html.renderizar` precisa, já decidido."""
@@ -345,6 +365,7 @@ class Pagina:
     mudancas: tuple[DiaDeMudancas, ...]
     filtros: tuple[GrupoDeChips, GrupoDeChips]
     itens: tuple[ItemDaLista, ...]
+    dados_de: str  # DD/MM, a data dos dados da Câmara, para a linha de fonte
 
 
 def montar_pagina(atual: dict, status: dict, janela: list[tuple[date, dict | None]]) -> Pagina:
@@ -358,4 +379,5 @@ def montar_pagina(atual: dict, status: dict, janela: list[tuple[date, dict | Non
         mudancas=dias_de_mudancas(janela),
         filtros=filtros(atual, list(itens)),
         itens=itens,
+        dados_de=dia_mes(atual["meta"]["dados_camara_em"]),
     )

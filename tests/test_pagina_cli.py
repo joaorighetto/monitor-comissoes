@@ -1,5 +1,7 @@
 """O comando `gerar` ponta a ponta (PAG, contracts/pagina-cli.md)."""
 
+import csv
+import io
 import json
 import shutil
 
@@ -219,3 +221,63 @@ def test_argumento_invalido_sai_com_2(capsys):
     with pytest.raises(SystemExit) as sem_comando:
         cli.main([])
     assert sem_comando.value.code == 2
+
+
+# ---------- arquivos publicados (US5) ----------
+
+ARQUIVOS_DO_SITE = {
+    "index.html",
+    "estilo.css",
+    "pagina.js",
+    "atual.json",
+    "itens.csv",
+    "fontes/ibm-plex-mono-latin-400-normal.woff2",
+    "fontes/ibm-plex-mono-latin-500-normal.woff2",
+    "fontes/ibm-plex-mono-latin-600-normal.woff2",
+    "fontes/schibsted-grotesk-latin-wght-normal.woff2",
+}
+
+
+def test_gerar_grava_exatamente_os_arquivos_do_contrato(tmp_path):
+    saida = tmp_path / "site"
+    gerar(saida)
+
+    assert set(arquivos_de(saida)) == ARQUIVOS_DO_SITE
+
+
+def test_atual_json_publicado_e_identico_byte_a_byte_ao_de_entrada(tmp_path):
+    saida = tmp_path / "site"
+    gerar(saida)
+
+    assert (saida / "atual.json").read_bytes() == ATUAL.read_bytes()
+
+
+def test_itens_csv_publicado_tem_106_linhas(tmp_path):
+    saida = tmp_path / "site"
+    gerar(saida)
+
+    texto = (saida / "itens.csv").read_bytes().decode("utf-8-sig")
+    linhas = list(csv.reader(io.StringIO(texto, newline=""), delimiter=";"))
+
+    assert len(linhas) == 106  # 105 itens e o cabeçalho; algumas ementas têm quebra de linha
+
+
+def test_em_falha_da_coleta_os_downloads_sao_os_do_ultimo_retrato_bom(tmp_path):
+    saida = tmp_path / "site"
+    gerar(saida, status=FIXTURES / "status-falha.json")
+
+    assert (saida / "atual.json").read_bytes() == ATUAL.read_bytes()
+    doc = parse((saida / "index.html").read_text(encoding="utf-8"))
+    assert doc.um(tag="p", classe="fonte").texto.endswith("dados de 20/10")
+
+
+def test_nenhum_arquivo_gerado_traz_segredo_do_telegram(tmp_path):
+    saida = tmp_path / "site"
+    gerar(saida)
+
+    for nome, conteudo in arquivos_de(saida).items():
+        if nome.endswith(".woff2"):
+            continue
+        texto = conteudo.decode("utf-8", errors="ignore")
+        for proibido in ("TELEGRAM", "BOT_TOKEN", "chat_id", "api.telegram.org"):
+            assert proibido not in texto, (nome, proibido)

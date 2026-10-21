@@ -21,7 +21,8 @@ def gerar(args: argparse.Namespace) -> int:
     janela = entradas.ler_janela(args.mudancas or args.atual.parent / "mudancas", atual)
 
     pagina = modelo.montar_pagina(atual, status, janela)
-    arquivos = site.montar(pagina)
+    itens = modelo.ordenar(atual["itens"])
+    arquivos = site.montar(pagina, args.atual.read_bytes(), itens)
     site.gravar(arquivos, args.saida)
 
     dias = sum(1 for _, documento in janela if documento is not None)

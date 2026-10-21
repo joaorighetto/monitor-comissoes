@@ -49,7 +49,7 @@ Um por item de `atual.itens`, na ordem `(-parado_ha_dias, id)`.
 | `id` | `id` | desempate da ordem; âncora `item-{id}` |
 | `identificacao`, `link` | `identificacao`, `link` | título e link oficial |
 | `ementa` | `ementa` | texto |
-| `autores` | `autores[].nome`, `.partido_na_data` | "Nome (PARTIDO)" |
+| `autores` | `autores[].nome`, `.partido_na_data` | "Nome (PARTIDO)"; "Nome" se o partido na data é vazio (autor que não é deputado) |
 | `etiquetas` | `etiquetas` | rótulos; atributo `data-etiquetas` com os identificadores curtos |
 | `comissao` | `comissao` | atributo `data-comissao` e texto |
 | `situacao` | `situacao` | texto |

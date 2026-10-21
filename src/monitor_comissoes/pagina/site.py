@@ -8,7 +8,7 @@ import os
 from pathlib import Path, PurePosixPath
 
 from ..erros import FalhaDePagina
-from . import html
+from . import html, tabela
 from .modelo import Pagina
 
 ESTATICO = Path(__file__).parent / "estatico"
@@ -26,10 +26,16 @@ def copiar_estaticos() -> dict[str, bytes]:
     return arquivos
 
 
-def montar(pagina: Pagina) -> dict[str, bytes]:
-    """Todos os arquivos do site, na memória: `{caminho relativo: bytes}`."""
+def montar(pagina: Pagina, atual: bytes, itens: list[dict]) -> dict[str, bytes]:
+    """Todos os arquivos do site, na memória: `{caminho relativo: bytes}`.
+
+    `atual` são os bytes do `atual.json` como estão no disco (a cópia é byte a byte) e `itens` os
+    itens do retrato, na ordem da lista, para o CSV.
+    """
     arquivos = copiar_estaticos()
     arquivos["index.html"] = html.renderizar(pagina).encode("utf-8")
+    arquivos["atual.json"] = atual
+    arquivos["itens.csv"] = tabela.renderizar(itens)
     return arquivos
 
 

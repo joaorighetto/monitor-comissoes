@@ -8,6 +8,7 @@ documento. Todo caminho próprio é relativo: a página fica em `/monitor-comiss
 from html import escape
 
 from .modelo import (
+    LIMITES,
     DiaDeMudancas,
     EventoDaPagina,
     GrupoDeChips,
@@ -198,6 +199,28 @@ def _secao_lista(pagina: Pagina) -> str:
     )
 
 
+def _secao_limites() -> str:
+    itens = "\n".join(f"<li>{esc(limite)}</li>" for limite in LIMITES)
+    return (
+        '<section aria-labelledby="t-limites">\n'
+        '<h2 id="t-limites" class="pf-h2">Limites</h2>\n'
+        f'<ul class="limites">\n{itens}\n</ul>\n</section>'
+    )
+
+
+def _secao_baixar(pagina: Pagina) -> str:
+    return (
+        '<section aria-labelledby="t-baixar">\n'
+        '<h2 id="t-baixar" class="pf-h2">Baixar dados</h2>\n'
+        '<p class="acoes">'
+        '<a class="pf-btn pf-btn--link" href="atual.json" download>Baixar atual.json</a> '
+        '<a class="pf-btn pf-btn--link" href="itens.csv" download>Baixar itens.csv</a></p>\n'
+        '<p class="fonte pf-muted">'
+        f"Fonte: Câmara dos Deputados · dados de {esc(pagina.dados_de)}</p>\n"
+        "</section>"
+    )
+
+
 def renderizar(pagina: Pagina) -> str:
     """O `index.html` completo."""
     return "\n".join(
@@ -219,6 +242,8 @@ def renderizar(pagina: Pagina) -> str:
             _secao_numeros(pagina.numeros),
             _secao_mudancas(pagina.mudancas),
             _secao_lista(pagina),
+            _secao_limites(),
+            _secao_baixar(pagina),
             "</main>",
             "</body>",
             "</html>",
