@@ -102,3 +102,47 @@ def test_estaticos_trazem_o_css_e_as_quatro_fontes():
     assert len(fontes) == 4 and all(n.endswith(".woff2") for n in fontes)
     assert "LEIAME.md" not in estaticos
     assert all(isinstance(v, bytes) and v for v in estaticos.values())
+
+
+# ---------- ativos estáticos ausentes (revisão) ----------
+
+
+def estaticos_em(tmp_path, monkeypatch, *, css=True, js=True, fontes=4):
+    pasta = tmp_path / "estatico"
+    (pasta / "fontes").mkdir(parents=True)
+    if css:
+        (pasta / "estilo.css").write_bytes(b"css")
+    if js:
+        (pasta / "pagina.js").write_bytes(b"js")
+    for i in range(fontes):
+        (pasta / "fontes" / f"f{i}.woff2").write_bytes(b"fonte")
+    monkeypatch.setattr(site, "ESTATICO", pasta)
+
+
+def test_estaticos_completos_de_uma_pasta_trocada(tmp_path, monkeypatch):
+    estaticos_em(tmp_path, monkeypatch)
+
+    assert set(site.copiar_estaticos()) == {
+        "estilo.css",
+        "pagina.js",
+        *(f"fontes/f{i}.woff2" for i in range(4)),
+    }
+
+
+@pytest.mark.parametrize(
+    ("faltando", "trecho"),
+    [({"css": False}, "estilo.css"), ({"js": False}, "pagina.js"), ({"fontes": 3}, "fontes")],
+)
+def test_ativo_estatico_ausente_e_falha_nunca_pagina_sem_estilo(
+    tmp_path, monkeypatch, faltando, trecho
+):
+    estaticos_em(tmp_path, monkeypatch, **faltando)
+
+    with pytest.raises(FalhaDePagina) as erro:
+        site.copiar_estaticos()
+
+    assert trecho in str(erro.value)
+
+
+def test_estaticos_trazem_o_javascript_da_pagina():
+    assert site.copiar_estaticos()["pagina.js"].startswith(b"/* Monitor de comiss")

@@ -212,3 +212,13 @@ def test_texto_da_camara_nos_eventos_sai_escapado():
 
     assert detalhe.texto == f"{perigoso} · etiquetas: <b>autoria NOVO</b>"
     assert len(doc.achar(tag="script")) == 1 and doc.achar(tag="b") == []
+
+
+def test_dia_do_meio_de_um_arquivo_de_varios_dias_diz_onde_estao_as_mudancas():
+    doc = pagina()
+
+    assert dia_de(doc, "2026-10-15").um(tag="p").texto == (
+        "Sem arquivo próprio: as mudanças deste dia estão no arquivo de 16/10."
+    )
+    assert dia_de(doc, "2026-10-14").um(tag="p").texto == "Sem arquivo de mudanças neste dia."
+    assert dia_de(doc, "2026-10-17").um(tag="p").texto == "Sem arquivo de mudanças neste dia."

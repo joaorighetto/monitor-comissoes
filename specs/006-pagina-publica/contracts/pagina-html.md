@@ -71,6 +71,7 @@ As faixas têm borda `line-strong` e o significado está só na frase ("A atuali
   <p>Sem mudanças.</p>
   <p>Linha de base criada com 105 itens (primeiro retrato).</p>
   <p>Sem arquivo de mudanças neste dia.</p>
+  <p>Sem arquivo próprio: as mudanças deste dia estão no arquivo de 16/10.</p>   <!-- dia do meio de um arquivo que cobre vários -->
   <p class="pf-muted">Cobre de 18/10 a 20/10.</p>   <!-- só se o arquivo cobre mais de um dia -->
   <ul class="eventos"> <li class="evento" data-tipo="entrou">…</li> … </ul>
   <details class="mais"><summary>e mais 12 eventos de 20/10</summary><ul class="eventos">…</ul></details>

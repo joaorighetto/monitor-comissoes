@@ -383,7 +383,7 @@ def test_sete_dias_do_mais_recente_ao_mais_antigo_com_o_estado_de_cada_um():
         "linha_de_base",
         "sem_arquivo",
         "eventos",
-        "sem_arquivo",
+        "coberto",
         "sem_arquivo",
     ]
 
@@ -521,3 +521,18 @@ def test_sem_nenhum_arquivo_a_secao_inteira_e_vazia():
     assert all(d.estado == "sem_arquivo" for d in dias)
     assert modelo.sem_mudancas_registradas(dias) is True
     assert modelo.sem_mudancas_registradas(dias_do_retrato_real()) is False
+
+
+def test_dia_do_meio_de_um_arquivo_de_varios_dias_aponta_para_o_arquivo_que_o_cobre():
+    dias = dias_do_retrato_real()
+
+    assert dias[5].estado == "coberto" and dias[5].coberto_por == "16/10"
+    # o 14/10 é o dia do retrato anterior (tem o seu próprio arquivo, que não existe): não é coberto
+    assert dias[6].estado == "sem_arquivo" and dias[6].coberto_por is None
+    assert dias[3].estado == "sem_arquivo"  # 17/10: nenhum arquivo o cobre
+
+
+def test_dia_coberto_nao_conta_como_arquivo_existente():
+    janela = [(date(2026, 10, 20 - i), None) for i in range(7)]
+
+    assert modelo.sem_mudancas_registradas(modelo.dias_de_mudancas(janela)) is True

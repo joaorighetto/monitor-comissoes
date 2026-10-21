@@ -2,6 +2,8 @@
 
 O site inteiro é montado na memória como `{caminho relativo: bytes}`. A gravação prepara todos os
 arquivos como temporários e só então os troca: um erro na preparação não deixa nenhum arquivo novo.
+Um erro durante a troca (raro: disco cheio, permissão) pode deixar parte dos arquivos novos e parte
+dos antigos na pasta; no workflow isso não chega ao leitor, porque a falha impede o upload.
 """
 
 import os
@@ -16,12 +18,28 @@ ESTATICO = Path(__file__).parent / "estatico"
 PUBLICADOS = ("estilo.css", "pagina.js")
 
 
+FONTES_ESPERADAS = 4  # Schibsted Grotesk (variável) e IBM Plex Mono 400, 500 e 600
+
+
 def copiar_estaticos() -> dict[str, bytes]:
-    """O CSS, o JS e as fontes do DS, lidos de `estatico/`."""
-    arquivos = {
-        nome: (ESTATICO / nome).read_bytes() for nome in PUBLICADOS if (ESTATICO / nome).exists()
-    }
-    for fonte in sorted((ESTATICO / "fontes").glob("*.woff2")):
+    """O CSS, o JS e as fontes do DS, lidos de `estatico/`.
+
+    Falta de um arquivo publicado ou de alguma fonte é falha: uma página sem estilo ou sem fonte
+    nunca pode ser publicada como se estivesse completa (constituição, III).
+    """
+    arquivos = {}
+    for nome in PUBLICADOS:
+        caminho = ESTATICO / nome
+        if not caminho.is_file():
+            raise FalhaDePagina(f"arquivo estático {caminho} não existe")
+        arquivos[nome] = caminho.read_bytes()
+    fontes = sorted((ESTATICO / "fontes").glob("*.woff2"))
+    if len(fontes) != FONTES_ESPERADAS:
+        raise FalhaDePagina(
+            f"{ESTATICO / 'fontes'}: esperadas {FONTES_ESPERADAS} fontes .woff2, "
+            f"encontradas {len(fontes)}"
+        )
+    for fonte in fontes:
         arquivos[f"fontes/{fonte.name}"] = fonte.read_bytes()
     return arquivos
 

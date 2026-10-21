@@ -106,3 +106,10 @@ def test_links_de_apensado_tem_area_de_toque_de_44px():
     regra = re.search(r"\.item-dados a, \.evento-apensado a \{[^}]*\}", bloco).group(0)
 
     assert "min-height: var(--touch-min)" in regra
+
+
+def test_o_valor_dos_numeros_quebra_so_entre_palavras():
+    regra = re.search(r"\.numeros dd \{[^}]*\}", bloco_da_pagina()).group(0)
+
+    assert "overflow-wrap: break-word" in regra
+    assert "anywhere" not in regra

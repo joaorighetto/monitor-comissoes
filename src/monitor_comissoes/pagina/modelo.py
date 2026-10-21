@@ -4,8 +4,8 @@ Recebe os documentos já conferidos por `entradas.py` e decide ordem, números e
 campo. Nenhuma regra de domínio é recalculada: "parado há", etiquetas e relator vêm como estão.
 """
 
-from dataclasses import dataclass
-from datetime import date, datetime
+from dataclasses import dataclass, replace
+from datetime import date, datetime, timedelta
 
 from ..estoque import BRASILIA
 from ..resumo import ROTULOS, dia_mes
@@ -187,11 +187,15 @@ class EventoDaPagina:
 @dataclass(frozen=True)
 class DiaDeMudancas:
     data: date
-    estado: str  # "eventos", "sem_mudancas", "linha_de_base" ou "sem_arquivo"
+    # "eventos", "sem_mudancas", "linha_de_base", "sem_arquivo" ou "coberto" (sem arquivo próprio,
+    # mas dentro do intervalo de um arquivo posterior: os eventos dele estão no arquivo de
+    # `coberto_por`)
+    estado: str
     intervalo: tuple[str, str] | None  # ("DD/MM", "DD/MM") quando o arquivo cobre mais de um dia
     linha_de_base: tuple[str, int] | None  # (motivo, total de itens)
     abertos: tuple[EventoDaPagina, ...]
     recolhidos: tuple[EventoDaPagina, ...]
+    coberto_por: str | None = None  # "DD/MM" do arquivo que cobre o dia, se estado == "coberto"
 
 
 def _relator_do_evento(relator: dict) -> str:
@@ -292,9 +296,33 @@ def _dia_de_mudancas(dia: date, documento: dict | None) -> DiaDeMudancas:
     )
 
 
+def _dias_cobertos(janela: list[tuple[date, dict | None]]) -> dict[date, str]:
+    """Os dias estritamente entre o retrato anterior e o retrato de um arquivo de vários dias.
+
+    O arquivo do dia seguinte a uma coleta que falhou cobre o intervalo inteiro (PRODUCT.md, §5.6);
+    os dias do meio não têm arquivo próprio, e a página diz onde estão os eventos deles.
+    """
+    cobertos: dict[date, str] = {}
+    for _, documento in janela:
+        if documento is None or documento["meta"]["retrato_anterior"] is None:
+            continue
+        inicio = date.fromisoformat(documento["meta"]["retrato_anterior"]["dia"])
+        fim = date.fromisoformat(documento["meta"]["retrato"]["dia"])
+        for passo in range(1, (fim - inicio).days):
+            cobertos[inicio + timedelta(days=passo)] = fim.strftime("%d/%m")
+    return cobertos
+
+
 def dias_de_mudancas(janela: list[tuple[date, dict | None]]) -> tuple[DiaDeMudancas, ...]:
     """Os dias da janela, do mais recente ao mais antigo, já decididos para a página."""
-    return tuple(_dia_de_mudancas(dia, documento) for dia, documento in janela)
+    cobertos = _dias_cobertos(janela)
+    dias = []
+    for dia, documento in janela:
+        decidido = _dia_de_mudancas(dia, documento)
+        if decidido.estado == "sem_arquivo" and dia in cobertos:
+            decidido = replace(decidido, estado="coberto", coberto_por=cobertos[dia])
+        dias.append(decidido)
+    return tuple(dias)
 
 
 def sem_mudancas_registradas(dias: tuple[DiaDeMudancas, ...]) -> bool:

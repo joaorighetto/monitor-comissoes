@@ -137,6 +137,11 @@ def _dia_de_mudancas(dia: DiaDeMudancas) -> str:
     linhas = [f'<article class="dia" id="dia-{dia.data.isoformat()}">', f"<h3>{rotulo}</h3>"]
     if dia.estado == "sem_arquivo":
         linhas.append("<p>Sem arquivo de mudanças neste dia.</p>")
+    elif dia.estado == "coberto":
+        linhas.append(
+            "<p>Sem arquivo próprio: as mudanças deste dia estão no arquivo de "
+            f"{esc(dia.coberto_por)}.</p>"
+        )
     elif dia.estado == "sem_mudancas":
         linhas.append("<p>Sem mudanças.</p>")
     elif dia.estado == "linha_de_base":

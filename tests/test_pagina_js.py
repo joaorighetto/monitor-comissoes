@@ -193,12 +193,12 @@ def test_com_uma_unica_proposicao_o_texto_fica_no_singular():
     assert resultado == "Mostrando 1 de 1 item."
 
 
-def test_iniciar_libera_os_filtros_sem_esconder_nenhum_item():
+def test_iniciar_libera_os_filtros_sem_esconder_nem_anunciar_nada():
     resultado = com_dom(
         "m.iniciar(doc); return [filtros.hidden, itens.map((i) => i.hidden), status.textContent];"
     )
 
-    assert resultado == [False, [False] * 5, "Mostrando 5 de 5 itens."]
+    assert resultado == [False, [False] * 5, ""]
 
 
 def test_clique_no_chip_filtra_pelo_grupo_dele_e_mantem_o_outro():

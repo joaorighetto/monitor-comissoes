@@ -75,7 +75,8 @@
     }
   }
 
-  /* Libera os filtros (que nascem escondidos) e liga os cliques dos chips. */
+  /* Libera os filtros (que nascem escondidos) e liga os cliques dos chips. Não escreve na região
+     aria-live ao carregar: o anúncio de "Mostrando N de M" só vem depois de uma escolha. */
   function iniciar(documento) {
     var filtros = documento.getElementById("filtros");
     if (!filtros) {
@@ -91,7 +92,6 @@
       escolha[chip.dataset.grupo] = chip.dataset.valor;
       aplicar(documento, escolha.comissao, escolha.motivo);
     });
-    aplicar(documento, escolha.comissao, escolha.motivo);
   }
 
   var PaginaMonitor = {
