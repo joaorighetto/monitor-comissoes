@@ -20,8 +20,10 @@ limite_variacao_percentual = 20
 
 # Aviso diário no Telegram (feature AVI). Tabela opcional: sem ela valem estes mesmos valores.
 [aviso]
-# Endereço da página pública (feature PAG). Vazio até a PAG existir: enquanto estiver vazio, o
-# "e mais N" da mensagem aponta para o arquivo do dia no repositório.
-pagina_url = ""
+# Endereço da página pública (feature PAG), publicada pelo workflow "Publicar página" no GitHub
+# Pages. É o endereço previsto para o repositório; confirme-o no primeiro deploy (o passo final do
+# workflow imprime o endereço real). Se ficar vazio, o "e mais N" da mensagem aponta para o
+# arquivo do dia no repositório.
+pagina_url = "https://joaorighetto.github.io/monitor-comissoes/"
 # Repositório, no formato dono/nome, usado no link do arquivo do dia.
 repositorio = "joaorighetto/monitor-comissoes"
