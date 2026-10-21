@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "versao_formato": 3,
+    "gerado_em": "2026-10-20T03:40:12-03:00",
+    "dados_camara_em": "2026-10-20T04:31:26+00:00",
+    "comissoes": [
+      "CE",
+      "CREDN"
+    ],
+    "ano_minimo": 2003,
+    "anos_lidos": [
+      2003,
+      2026
+    ],
+    "total_itens": 4,
+    "total_por_comissao": {
+      "CE": 3,
+      "CREDN": 1
+    },
+    "deputados_novo_em_exercicio": [
+      {
+        "id": 204455,
+        "nome": "Luiz Lima"
+      },
+      {
+        "id": 204528,
+        "nome": "Adriana Ventura"
+      }
+    ]
+  },
+  "itens": [
+    {
+      "id": 2330962,
+      "tipo": "PL",
+      "numero": 1831,
+      "ano": 2022,
+      "identificacao": "PL 1831/2022",
+      "ementa": "Ementa do PL 1831/2022.",
+      "data_apresentacao": "2020-12-18T13:51:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2330962",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-28T00:00:00",
+      "ultimo_status_sequencia": 41,
+      "parado_ha_dias": 1300,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2373671,
+      "tipo": "PL",
+      "numero": 3510,
+      "ano": 2023,
+      "identificacao": "PL 3510/2023",
+      "ementa": "Ementa do PL 3510/2023.",
+      "data_apresentacao": "2020-12-18T13:51:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2373671",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-28T00:00:00",
+      "ultimo_status_sequencia": 41,
+      "parado_ha_dias": 1300,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 148585,
+      "tipo": "PL",
+      "numero": 2752,
+      "ano": 2003,
+      "identificacao": "PL 2752/2003",
+      "ementa": "Ementa do PL 2752/2003.",
+      "data_apresentacao": "2020-12-18T13:51:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/148585",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-28T00:00:00",
+      "ultimo_status_sequencia": 41,
+      "parado_ha_dias": 1300,
+      "apensado_a": null,
+      "principal_nao_localizada": true,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345297,
+      "tipo": "PL",
+      "numero": 3076,
+      "ano": 2022,
+      "identificacao": "PL 3076/2022",
+      "ementa": "Ementa do PL 3076/2022.",
+      "data_apresentacao": "2020-12-18T13:51:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345297",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-28T00:00:00",
+      "ultimo_status_sequencia": 41,
+      "parado_ha_dias": 1300,
+      "apensado_a": null,
+      "principal_nao_localizada": true,
+      "relator": null,
+      "relator_indeterminado": null
+    }
+  ]
+}
