@@ -51,6 +51,11 @@ def retrato_real() -> dict:
     return json.loads((FIXTURES / "atual-real.json").read_text(encoding="utf-8"))
 
 
+def status_real() -> dict:
+    """O `status.json` real de 20/10/2026, coerente com `retrato_real()`."""
+    return json.loads((FIXTURES / "status-ok.json").read_text(encoding="utf-8"))
+
+
 def item_completo(id: int = 1, **campos) -> dict:
     """Um item completo (versão 3); `campos` sobrescreve qualquer campo do contrato."""
     do_construtor = {n: campos.pop(n) for n in list(campos) if n in _CAMPOS_DO_CONSTRUTOR}
