@@ -1,0 +1,4407 @@
+{
+  "meta": {
+    "versao_formato": 3,
+    "gerado_em": "2026-10-20T22:16:35-03:00",
+    "dados_camara_em": "2026-10-20T04:31:26+00:00",
+    "comissoes": [
+      "CE",
+      "CREDN"
+    ],
+    "ano_minimo": 2003,
+    "anos_lidos": [
+      2003,
+      2026
+    ],
+    "total_itens": 105,
+    "total_por_comissao": {
+      "CE": 96,
+      "CREDN": 9
+    },
+    "deputados_novo_em_exercicio": [
+      {
+        "id": 156190,
+        "nome": "Marcel van Hattem"
+      },
+      {
+        "id": 204365,
+        "nome": "Gilson Marques"
+      },
+      {
+        "id": 204455,
+        "nome": "Luiz Lima"
+      },
+      {
+        "id": 204528,
+        "nome": "Adriana Ventura"
+      },
+      {
+        "id": 220633,
+        "nome": "Ricardo Salles"
+      }
+    ]
+  },
+  "itens": [
+    {
+      "id": 2267727,
+      "tipo": "PL",
+      "numero": 5594,
+      "ano": 2020,
+      "identificacao": "PL 5594/2020",
+      "ementa": "Altera a Lei nº 13.979, de 6 de fevereiro de 2020, que dispõe sobre as medidas para enfrentamento da emergência de saúde pública de importância internacional decorrente do coronavírus responsável pelo surto de 2019, para considerar as atividades educacionais como essenciais.",
+      "data_apresentacao": "2020-12-18T13:51:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2267727",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Paula Belmonte",
+          "id_deputado": 204377,
+          "partido_na_data": "CIDADANIA",
+          "ordem": 2
+        },
+        {
+          "nome": "Aline Sleutjes",
+          "id_deputado": 204400,
+          "partido_na_data": "PSL",
+          "ordem": 3
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-28T00:00:00",
+      "ultimo_status_sequencia": 80,
+      "parado_ha_dias": 1302,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178929,
+        "nome": "Diego Garcia",
+        "partido_hoje": "UNIÃO",
+        "designado_em": "2023-03-15T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2267727"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345307,
+      "tipo": "PL",
+      "numero": 3084,
+      "ano": 2022,
+      "identificacao": "PL 3084/2022",
+      "ementa": "Altera a Lei nº 14.113, de 25 de dezembro de 2020, a fim contabilizar a remuneração dos professores de escolas conveniadas nos 70% do FUNDEB destinados à remuneração dos profissionais da educação básica.",
+      "data_apresentacao": "2022-12-22T16:23:33",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345307",
+      "autores": [
+        {
+          "nome": "Tiago Mitraud",
+          "id_deputado": 204519,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-30T00:00:00",
+      "ultimo_status_sequencia": 31,
+      "parado_ha_dias": 1300,
+      "apensado_a": {
+        "id": 2190633,
+        "identificacao": "PL 155/2019",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2190633"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178946,
+        "nome": "Soraya Santos",
+        "partido_hoje": "PL",
+        "designado_em": "2023-03-30T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2190633"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345308,
+      "tipo": "PL",
+      "numero": 3085,
+      "ano": 2022,
+      "identificacao": "PL 3085/2022",
+      "ementa": "Altera a Lei nº 14.113, de 25 de dezembro de 2020, a fim de contabilizar as matrículas da rede conveniada com o Poder Público no Ensino Fundamental e Ensino Médio na distribuição dos recursos do FUNDEB.",
+      "data_apresentacao": "2022-12-22T16:23:35",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345308",
+      "autores": [
+        {
+          "nome": "Tiago Mitraud",
+          "id_deputado": 204519,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-03-30T00:00:00",
+      "ultimo_status_sequencia": 31,
+      "parado_ha_dias": 1300,
+      "apensado_a": {
+        "id": 2190633,
+        "identificacao": "PL 155/2019",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2190633"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178946,
+        "nome": "Soraya Santos",
+        "partido_hoje": "PL",
+        "designado_em": "2023-03-30T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2190633"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2214154,
+      "tipo": "PL",
+      "numero": 4342,
+      "ano": 2019,
+      "identificacao": "PL 4342/2019",
+      "ementa": "Altera a Lei n.º 12.351, de 22 de dezembro de 2010, para destinar percentual dos recursos do Fundo Social para o desenvolvimento de programas e projetos na área do Esporte.",
+      "data_apresentacao": "2019-08-07T20:18:29",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2214154",
+      "autores": [
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "PSL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-05-11T13:50:00",
+      "ultimo_status_sequencia": 41,
+      "parado_ha_dias": 1258,
+      "apensado_a": {
+        "id": 2183535,
+        "identificacao": "PL 10786/2018",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2183535"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 74090,
+        "nome": "Átila Lins",
+        "partido_hoje": "PSD",
+        "designado_em": "2023-04-28T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2183535"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345297,
+      "tipo": "PL",
+      "numero": 3076,
+      "ano": 2022,
+      "identificacao": "PL 3076/2022",
+      "ementa": "Altera a Lei nº 4.375, de 17 de agosto de 1964, a fim de excepcionar a obrigatoriedade do alistamento militar aos estudantes e trabalhadores.",
+      "data_apresentacao": "2022-12-22T16:23:23",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345297",
+      "autores": [
+        {
+          "nome": "Tiago Mitraud",
+          "id_deputado": 204519,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2023-05-17T21:41:00",
+      "ultimo_status_sequencia": 51,
+      "parado_ha_dias": 1252,
+      "apensado_a": {
+        "id": 1555282,
+        "identificacao": "PL 2279/2015",
+        "link": "https://www.camara.leg.br/propostas-legislativas/1555282"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204473,
+        "nome": "General Girão",
+        "partido_hoje": "PL",
+        "designado_em": "2023-05-03T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/1555282"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 148585,
+      "tipo": "PL",
+      "numero": 2752,
+      "ano": 2003,
+      "identificacao": "PL 2752/2003",
+      "ementa": "Estabelece o uso do Fundo de Garantia por Tempo de Serviço - FGTS, para financiamento e investimento em educação de ensino médio, profissionalizantes e ensino superior e dá outras providências.",
+      "data_apresentacao": "2003-12-11T16:05:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/148585",
+      "autores": [
+        {
+          "nome": "Salvador Zimbaldi",
+          "id_deputado": 73559,
+          "partido_na_data": "PTB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 148752,
+      "tipo": "PL",
+      "numero": 2765,
+      "ano": 2003,
+      "identificacao": "PL 2765/2003",
+      "ementa": "Autoriza a movimentação do saldo das contas vinculadas ao FGTS para pagamento de mensalidades em instituições particulares de ensino superior e dá outras providências.",
+      "data_apresentacao": "2003-12-11T18:46:51",
+      "link": "https://www.camara.leg.br/propostas-legislativas/148752",
+      "autores": [
+        {
+          "nome": "Milton Monti",
+          "id_deputado": 74787,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 153847,
+      "tipo": "PL",
+      "numero": 2979,
+      "ano": 2004,
+      "identificacao": "PL 2979/2004",
+      "ementa": "Dispõe sobre a movimentação da conta vinculada do trabalhador no FGTS para garantir financiamento estudantil público de curso de ensino superior.",
+      "data_apresentacao": "2004-02-12T13:25:25",
+      "link": "https://www.camara.leg.br/propostas-legislativas/153847",
+      "autores": [
+        {
+          "nome": "Nelson Bornier",
+          "id_deputado": 73416,
+          "partido_na_data": "PMDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 159220,
+      "tipo": "PL",
+      "numero": 3286,
+      "ano": 2004,
+      "identificacao": "PL 3286/2004",
+      "ementa": "Acrescenta dispositivos ao art. 20 da Lei  nº 8.036, 11 de maio de 1990, para permitir a movimentação da conta vinculada do FGTS para o pagamento de mensalidade em curso de nível superior e profissionalizante.",
+      "data_apresentacao": "2004-03-31T18:30:25",
+      "link": "https://www.camara.leg.br/propostas-legislativas/159220",
+      "autores": [
+        {
+          "nome": "José Roberto Arruda",
+          "id_deputado": 74287,
+          "partido_na_data": "PFL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 260688,
+      "tipo": "PL",
+      "numero": 3961,
+      "ano": 2004,
+      "identificacao": "PL 3961/2004",
+      "ementa": "Permite a utilização dos recursos do Fundo de Garantia do Tempo de Serviço (FGTS) para pagamento de parcelas de anuidade escolar do trabalhador ou de seus filhos dependentes, de até 24 (vinte e quatro) anos de idade.",
+      "data_apresentacao": "2004-07-08T19:07:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/260688",
+      "autores": [
+        {
+          "nome": "Senado Federal - Eduardo Azeredo",
+          "id_deputado": null,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 270095,
+      "tipo": "PL",
+      "numero": 4454,
+      "ano": 2004,
+      "identificacao": "PL 4454/2004",
+      "ementa": "Acresce os incisos XIII, XIV e XV, ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, e dá outras providências.",
+      "data_apresentacao": "2004-11-17T17:11:03",
+      "link": "https://www.camara.leg.br/propostas-legislativas/270095",
+      "autores": [
+        {
+          "nome": "Enio Bacci",
+          "id_deputado": 73893,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 278213,
+      "tipo": "PL",
+      "numero": 4897,
+      "ano": 2005,
+      "identificacao": "PL 4897/2005",
+      "ementa": "Permite o saque do FGTS para pagamento de anuidades escolares.",
+      "data_apresentacao": "2005-03-14T16:08:45",
+      "link": "https://www.camara.leg.br/propostas-legislativas/278213",
+      "autores": [
+        {
+          "nome": "Roberto Magalhães",
+          "id_deputado": 74433,
+          "partido_na_data": "PFL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 288140,
+      "tipo": "PL",
+      "numero": 5371,
+      "ano": 2005,
+      "identificacao": "PL 5371/2005",
+      "ementa": "Acrescenta dispositivo à Lei nº 8.036, de 11 de maio de 1990, para incentivar a formação em nível superior de pessoas de baixa renda.",
+      "data_apresentacao": "2005-06-02T19:22:43",
+      "link": "https://www.camara.leg.br/propostas-legislativas/288140",
+      "autores": [
+        {
+          "nome": "Ivo José",
+          "id_deputado": 74153,
+          "partido_na_data": "PT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 309988,
+      "tipo": "PL",
+      "numero": 6382,
+      "ano": 2005,
+      "identificacao": "PL 6382/2005",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do trabalhador junto ao FGTS para o pagamento de prestações ou amortização de saldo devedor de financiamento concedido aos estudantes de ensino superior, nas condições em que especifica.",
+      "data_apresentacao": "2005-12-13T19:36:17",
+      "link": "https://www.camara.leg.br/propostas-legislativas/309988",
+      "autores": [
+        {
+          "nome": "Eunício Oliveira",
+          "id_deputado": 74454,
+          "partido_na_data": "PMDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 310448,
+      "tipo": "PL",
+      "numero": 6436,
+      "ano": 2005,
+      "identificacao": "PL 6436/2005",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, a fim de permitir a movimentação da conta vinculada do trabalhador no FGTS para o pagamento de mensalidade escolar de curso de ensino superior.",
+      "data_apresentacao": "2005-12-15T11:17:04",
+      "link": "https://www.camara.leg.br/propostas-legislativas/310448",
+      "autores": [
+        {
+          "nome": "Medeiros",
+          "id_deputado": 74786,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 313077,
+      "tipo": "PL",
+      "numero": 6580,
+      "ano": 2006,
+      "identificacao": "PL 6580/2006",
+      "ementa": "Acrescenta incisos e parágrafos ao art. 20 da Lei  nº 8.036, de 11 de maio de 1990.",
+      "data_apresentacao": "2006-01-31T20:50:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/313077",
+      "autores": [
+        {
+          "nome": "Pompeo de Mattos",
+          "id_deputado": 73486,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 322666,
+      "tipo": "PL",
+      "numero": 6961,
+      "ano": 2006,
+      "identificacao": "PL 6961/2006",
+      "ementa": "Acrescenta inciso ao caput do art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do Fundo de Garantia do Tempo de Serviço - FGTS para a amortização ou liquidação do saldo devedor de financiamento no âmbito do Crédito Educativo e do FIES.",
+      "data_apresentacao": "2006-05-02T16:43:48",
+      "link": "https://www.camara.leg.br/propostas-legislativas/322666",
+      "autores": [
+        {
+          "nome": "Beto Albuquerque",
+          "id_deputado": 73478,
+          "partido_na_data": "PSB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 330029,
+      "tipo": "PL",
+      "numero": 7312,
+      "ano": 2006,
+      "identificacao": "PL 7312/2006",
+      "ementa": "Acrescenta inciso ao caput do art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do FGTS na hipótese de realização de treinamento ou qualificação profissional custeados total ou parcialmente pelo empregado.",
+      "data_apresentacao": "2006-07-11T16:16:11",
+      "link": "https://www.camara.leg.br/propostas-legislativas/330029",
+      "autores": [
+        {
+          "nome": "Antonio Carlos Mendes Thame",
+          "id_deputado": 73584,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 336936,
+      "tipo": "PL",
+      "numero": 7595,
+      "ano": 2006,
+      "identificacao": "PL 7595/2006",
+      "ementa": "Acrescenta, onde couber, inciso ao artigo 20 da Lei  nº 8.036, de 11 de maio de 1990 e dá providências correlatas.",
+      "data_apresentacao": "2006-11-28T17:45:43",
+      "link": "https://www.camara.leg.br/propostas-legislativas/336936",
+      "autores": [
+        {
+          "nome": "Corauci Sobrinho",
+          "id_deputado": 73442,
+          "partido_na_data": "PFL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 340510,
+      "tipo": "PL",
+      "numero": 110,
+      "ano": 2007,
+      "identificacao": "PL 110/2007",
+      "ementa": "Acrescenta dispositivo à Lei nº 8.036, de 11 de maio de 1990, para incentivar a formação em nível superior de pessoas de baixa renda.",
+      "data_apresentacao": "2007-02-12T17:32:14",
+      "link": "https://www.camara.leg.br/propostas-legislativas/340510",
+      "autores": [
+        {
+          "nome": "Antônio Roberto",
+          "id_deputado": 141390,
+          "partido_na_data": "PV",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 342863,
+      "tipo": "PL",
+      "numero": 253,
+      "ano": 2007,
+      "identificacao": "PL 253/2007",
+      "ementa": "Acrescenta incisos ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, possibilitando a movimentação da conta vinculada no Fundo de Garantia do Tempo de Serviço - FGTS para pagamento das mensalidades em instituições de ensino superior, e dá outras providências.",
+      "data_apresentacao": "2007-02-28T17:13:55",
+      "link": "https://www.camara.leg.br/propostas-legislativas/342863",
+      "autores": [
+        {
+          "nome": "Manuela D'ávila",
+          "id_deputado": 141492,
+          "partido_na_data": "PCdoB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 357719,
+      "tipo": "PL",
+      "numero": 1447,
+      "ano": 2007,
+      "identificacao": "PL 1447/2007",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei n° 8.036, de 11 de maio de 1990, que \"dispõe sobre o Fundo de Garantia do Tempo de Serviço, e dá outras providências\", para incluir possibilidade de movimentação da conta vinculada para pagamento de obrigação no âmbito do Fundo de Financiamento ao Estudante do Ensino Superior - FIES.",
+      "data_apresentacao": "2007-06-28T16:33:09",
+      "link": "https://www.camara.leg.br/propostas-legislativas/357719",
+      "autores": [
+        {
+          "nome": "Cleber Verde",
+          "id_deputado": 141408,
+          "partido_na_data": "PTB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 470644,
+      "tipo": "PL",
+      "numero": 7010,
+      "ano": 2010,
+      "identificacao": "PL 7010/2010",
+      "ementa": "Permite utilização do Fundo de Garantia do Tempo de Serviço (FGTS) para custear estudo em instituições particulares.",
+      "data_apresentacao": "2010-03-23T17:04:02",
+      "link": "https://www.camara.leg.br/propostas-legislativas/470644",
+      "autores": [
+        {
+          "nome": "Rogério Marinho",
+          "id_deputado": 141535,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 497335,
+      "tipo": "PL",
+      "numero": 912,
+      "ano": 2011,
+      "identificacao": "PL 912/2011",
+      "ementa": "Permite a utilização dos recursos do Fundo de Garantia do Tempo de Serviço (FGTS) para pagamento de parcelas de anuidade escolar do trabalhador ou de seus filhos dependentes em escolas particulares, de até 21 (vinte e um) anos de idade, integralmente, e acima de 21 (vinte e um) anos de idade até 24 (vinte e quatro) anos de idade, parcialmente.",
+      "data_apresentacao": "2011-04-06T14:58:19",
+      "link": "https://www.camara.leg.br/propostas-legislativas/497335",
+      "autores": [
+        {
+          "nome": "Audifax",
+          "id_deputado": 160680,
+          "partido_na_data": "PSB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 515022,
+      "tipo": "PL",
+      "numero": 1987,
+      "ano": 2011,
+      "identificacao": "PL 1987/2011",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, a fim de permitir a movimentação da conta vinculada do trabalhador no Fundo de Garantia do Tempo de Serviço para o pagamento de despesas com curso superior e pós-graduação.",
+      "data_apresentacao": "2011-08-10T18:01:46",
+      "link": "https://www.camara.leg.br/propostas-legislativas/515022",
+      "autores": [
+        {
+          "nome": "Jhonatan de Jesus",
+          "id_deputado": 160531,
+          "partido_na_data": "PRB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 522024,
+      "tipo": "PL",
+      "numero": 2422,
+      "ano": 2011,
+      "identificacao": "PL 2422/2011",
+      "ementa": "Acrescenta o inciso XVIII ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a utilização de recursos da conta vinculada do Fundo de Garantia do Tempo de Serviço - FGTS para pagamento de matrícula e mensalidades em instituições de ensino superior.",
+      "data_apresentacao": "2011-09-28T18:44:31",
+      "link": "https://www.camara.leg.br/propostas-legislativas/522024",
+      "autores": [
+        {
+          "nome": "Edmar Arruda",
+          "id_deputado": 160578,
+          "partido_na_data": "PSC",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 547787,
+      "tipo": "PL",
+      "numero": 4050,
+      "ano": 2012,
+      "identificacao": "PL 4050/2012",
+      "ementa": "Altera dispositivo na Lei nº 8.036, de 11 de maio de 1990, e dá outras providências.",
+      "data_apresentacao": "2012-06-12T19:17:06",
+      "link": "https://www.camara.leg.br/propostas-legislativas/547787",
+      "autores": [
+        {
+          "nome": "Ronaldo Benedet",
+          "id_deputado": 160515,
+          "partido_na_data": "PMDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 621560,
+      "tipo": "PL",
+      "numero": 7877,
+      "ano": 2014,
+      "identificacao": "PL 7877/2014",
+      "ementa": "Altera o artigo 20 da Lei nº 8.036, de 11 de maio de 1990.",
+      "data_apresentacao": "2014-08-06T16:44:07",
+      "link": "https://www.camara.leg.br/propostas-legislativas/621560",
+      "autores": [
+        {
+          "nome": "Márcio Marinho",
+          "id_deputado": 150418,
+          "partido_na_data": "PRB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 946171,
+      "tipo": "PL",
+      "numero": 251,
+      "ano": 2015,
+      "identificacao": "PL 251/2015",
+      "ementa": "Altera a Lei nº 11.738, de 16 de julho de 2008, que regulamentou o piso salarial profissional nacional para os profissionais do magistério público da educação básica, previsto na alínea \"e\" do inciso III do art. 60 do Ato das Disposições Constitucionais Transitórias, para viabilizar que todos os Estados e Municípios, que não tenham disponibilidade orçamentária para cumprir o valor fixado, recebam, da União, os recursos necessários à complementação da integralização do aludido piso salarial profissional nacional.",
+      "data_apresentacao": "2015-02-09T18:35:51",
+      "link": "https://www.camara.leg.br/propostas-legislativas/946171",
+      "autores": [
+        {
+          "nome": "Pompeo de Mattos",
+          "id_deputado": 73486,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 43,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/946171"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 1212766,
+      "tipo": "PL",
+      "numero": 1204,
+      "ano": 2015,
+      "identificacao": "PL 1204/2015",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do Fundo de Garantia do Tempo de Serviço - FGTS para pagamento de parcelas das taxas e mensalidades do ensino superior.",
+      "data_apresentacao": "2015-04-17T10:53:19",
+      "link": "https://www.camara.leg.br/propostas-legislativas/1212766",
+      "autores": [
+        {
+          "nome": "Daniel Vilela",
+          "id_deputado": 144523,
+          "partido_na_data": "PMDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 1302336,
+      "tipo": "PL",
+      "numero": 1816,
+      "ano": 2015,
+      "identificacao": "PL 1816/2015",
+      "ementa": "Acrescenta inciso XVIII ao art. 20 da Lei nº 8.036, de 11 de maio de 1990, para prever a movimentação do saldo da conta individual do Fundo de Garantia do Tempo de Serviço - FGTS - para amortização ou quitação do financiamento do FIES.",
+      "data_apresentacao": "2015-06-09T15:15:44",
+      "link": "https://www.camara.leg.br/propostas-legislativas/1302336",
+      "autores": [
+        {
+          "nome": "Leandre",
+          "id_deputado": 178832,
+          "partido_na_data": "PV",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 1505884,
+      "tipo": "PL",
+      "numero": 1986,
+      "ano": 2015,
+      "identificacao": "PL 1986/2015",
+      "ementa": "Altera a Lei nº 8.036, de 11 de maio de 1990, para incluir dentre as hipóteses de movimentação da conta vinculada do FGTS do Trabalhador ou qualquer de seus dependentes para amortizar ou quitar o pagamento das mensalidades em Instituições Educacionais de Ensino Superior.",
+      "data_apresentacao": "2015-06-18T13:42:26",
+      "link": "https://www.camara.leg.br/propostas-legislativas/1505884",
+      "autores": [
+        {
+          "nome": "Ana Perugini",
+          "id_deputado": 178973,
+          "partido_na_data": "PT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 1594871,
+      "tipo": "PL",
+      "numero": 2502,
+      "ano": 2015,
+      "identificacao": "PL 2502/2015",
+      "ementa": "Altera o art. 4º da Lei nº 11.738, de 16 de julho de 2008, que regulamenta a alínea \"e\" do inciso III do caput do art. 60 do Ato das Disposições Constitucionais Transitórias, para instituir o piso salarial profissional nacional para os profissionais do magistério da educação básica pública.",
+      "data_apresentacao": "2015-08-05T09:20:39",
+      "link": "https://www.camara.leg.br/propostas-legislativas/1594871",
+      "autores": [
+        {
+          "nome": "Comissão Especial destinada a analisar e apresentar propostas com relação à partilha de recursos públicos e respectivas obrigações da União, dos Estados, dos Municípios e do Distrito Federal (Pacto Federativo)",
+          "id_deputado": null,
+          "partido_na_data": "",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 43,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 946171,
+        "identificacao": "PL 251/2015",
+        "link": "https://www.camara.leg.br/propostas-legislativas/946171"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/946171"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 1635190,
+      "tipo": "PL",
+      "numero": 2636,
+      "ano": 2015,
+      "identificacao": "PL 2636/2015",
+      "ementa": "Altera as leis nºs. 11.494, de 20 de junho de 2007, que regulamenta o Fundo de Manutenção e Desenvolvimento da Educação Básica e de Valorização dos Profissionais da Educação (FUNDEB), e 11.738, de 16 de julho de 2008, que institui o piso salarial profissional nacional para os profissionais do magistério público da educação básica, para dispor sobre a responsabilidade da União na remuneração docente.",
+      "data_apresentacao": "2015-08-13T12:47:25",
+      "link": "https://www.camara.leg.br/propostas-legislativas/1635190",
+      "autores": [
+        {
+          "nome": "Fernando Coelho Filho",
+          "id_deputado": 141431,
+          "partido_na_data": "PSB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 43,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 946171,
+        "identificacao": "PL 251/2015",
+        "link": "https://www.camara.leg.br/propostas-legislativas/946171"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/946171"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2055975,
+      "tipo": "PL",
+      "numero": 3706,
+      "ano": 2015,
+      "identificacao": "PL 3706/2015",
+      "ementa": "Dispõe sobre a movimentação da conta vinculada no Fundo de Garantia do Tempo de Serviço - FGTS pelo trabalhador para custear suas despesas com especialização em nível de mestrado ou doutorado.",
+      "data_apresentacao": "2015-11-19T15:29:06",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2055975",
+      "autores": [
+        {
+          "nome": "Osmar Terra",
+          "id_deputado": 73692,
+          "partido_na_data": "PMDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2056684,
+      "tipo": "PL",
+      "numero": 3758,
+      "ano": 2015,
+      "identificacao": "PL 3758/2015",
+      "ementa": "Institui Sistema Nacional de Educação a Distância.",
+      "data_apresentacao": "2015-11-25T17:07:18",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2056684",
+      "autores": [
+        {
+          "nome": "Reginaldo Lopes",
+          "id_deputado": 74161,
+          "partido_na_data": "PT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 60,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2056684"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2081636,
+      "tipo": "PL",
+      "numero": 4935,
+      "ano": 2016,
+      "identificacao": "PL 4935/2016",
+      "ementa": "Altera o art. 20 da Lei nº 8.036, de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço, e dá outras providências, para permitir a utilização do fundo para o pagamento de curso de ensino superior ou técnico profissionalizante do trabalhador, de seu cônjuge e de seus dependentes.",
+      "data_apresentacao": "2016-04-07T10:22:06",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2081636",
+      "autores": [
+        {
+          "nome": "Major Olimpio",
+          "id_deputado": 178826,
+          "partido_na_data": "SD",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2091881,
+      "tipo": "PL",
+      "numero": 5829,
+      "ano": 2016,
+      "identificacao": "PL 5829/2016",
+      "ementa": "Permite a movimentação da conta vinculada do Fundo de Garantia de Tempo de Serviço (FGTS), para o pagamento de curso de educação superior ou profissional do trabalhador e de seus dependentes.",
+      "data_apresentacao": "2016-07-13T19:27:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2091881",
+      "autores": [
+        {
+          "nome": "Giuseppe Vecci",
+          "id_deputado": 178878,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2137635,
+      "tipo": "PL",
+      "numero": 7643,
+      "ano": 2017,
+      "identificacao": "PL 7643/2017",
+      "ementa": "Institui o Programa Nacional de Apoio à Manutenção de Crianças Carentes em Creches (PROCRECHE) e o Fundo Nacional de Apoio à Manutenção de Crianças Carentes em Creches (FUNCRECHE), e dá outras providências.",
+      "data_apresentacao": "2017-05-16T16:39:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2137635",
+      "autores": [
+        {
+          "nome": "Pedro Cunha Lima",
+          "id_deputado": 178912,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        },
+        {
+          "nome": "Daniel Coelho",
+          "id_deputado": 178916,
+          "partido_na_data": "PSDB",
+          "ordem": 2
+        },
+        {
+          "nome": "Pedro Vilela",
+          "id_deputado": 178844,
+          "partido_na_data": "PSDB",
+          "ordem": 3
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 67,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2137635"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2171988,
+      "tipo": "PL",
+      "numero": 10031,
+      "ano": 2018,
+      "identificacao": "PL 10031/2018",
+      "ementa": "Acrescenta incisos ao art. 20 da Lei n.º 8.036, de 11 de maio de 1990, possibilitando a movimentação da conta vinculada no Fundo de Garantia do Tempo de Serviço - FGTS para pagamento das mensalidades em instituições de ensino superior, e dá outras providências.",
+      "data_apresentacao": "2018-04-12T14:11:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2171988",
+      "autores": [
+        {
+          "nome": "Jerônimo Goergen",
+          "id_deputado": 160570,
+          "partido_na_data": "PP",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2176093,
+      "tipo": "PL",
+      "numero": 10277,
+      "ano": 2018,
+      "identificacao": "PL 10277/2018",
+      "ementa": "Acrescenta inciso ao \"caput\" do art. 20 da Lei nº 8.036, de 1990, para permitir a movimentação da conta vinculada do trabalhador no FGTS para pagamento de encargos educacionais de cursos superiores.",
+      "data_apresentacao": "2018-05-22T17:19:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2176093",
+      "autores": [
+        {
+          "nome": "Cabuçu Borges",
+          "id_deputado": 105112,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2191698,
+      "tipo": "PL",
+      "numero": 652,
+      "ano": 2019,
+      "identificacao": "PL 652/2019",
+      "ementa": "Permite a movimentação da conta vinculada do trabalhador no FGTS para pagamento de encargos educacionais de cursos de formação técnica e tecnológica, cursos superiores e/ou de pós-graduação.",
+      "data_apresentacao": "2019-02-12T17:24:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2191698",
+      "autores": [
+        {
+          "nome": "João Roma",
+          "id_deputado": 204576,
+          "partido_na_data": "PRB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2194880,
+      "tipo": "PL",
+      "numero": 1647,
+      "ano": 2019,
+      "identificacao": "PL 1647/2019",
+      "ementa": "Altera o Art. 20, da Lei nº 8.036, de 11 de maio de 1990, para autorizar o uso dos recursos depositados em conta do FGTS no pagamento de despesas com educação própria ou de dependentes.",
+      "data_apresentacao": "2019-03-20T19:21:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2194880",
+      "autores": [
+        {
+          "nome": "Domingos Neto",
+          "id_deputado": 143632,
+          "partido_na_data": "PSD",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2199486,
+      "tipo": "PL",
+      "numero": 2551,
+      "ano": 2019,
+      "identificacao": "PL 2551/2019",
+      "ementa": "Acrescenta inciso ao caput do art. 20 da Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do trabalhador no Fundo de Garantia do Tempo de Serviço para pagamento de mensalidades e outras despesas exigidas à frequência em curso de ensino superior.",
+      "data_apresentacao": "2019-04-25T15:19:41",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2199486",
+      "autores": [
+        {
+          "nome": "André Ferreira",
+          "id_deputado": 204423,
+          "partido_na_data": "PSC",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2209101,
+      "tipo": "PL",
+      "numero": 3696,
+      "ano": 2019,
+      "identificacao": "PL 3696/2019",
+      "ementa": "Altera a Lei nº 8.036, de 11 de maio de 1990, para permitir a movimentação da conta vinculada do trabalhador no Fundo de Garantia do Tempo de Serviço (FGTS) para o pagamento de despesas do titular ou de qualquer de seus descendentes, ascendentes, parentes colaterais até o 2º grau ou dependentes com educação nos ensinos infantil, fundamental, médio, profissional e superior.",
+      "data_apresentacao": "2019-06-25T14:57:31",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2209101",
+      "autores": [
+        {
+          "nome": "Lafayette de Andrada",
+          "id_deputado": 98057,
+          "partido_na_data": "PRB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2223728,
+      "tipo": "PL",
+      "numero": 5362,
+      "ano": 2019,
+      "identificacao": "PL 5362/2019",
+      "ementa": "Altera a Lei 8.036, de 11 de maio de 1990 que dispõe sobre o Fundo de Garantia do Tempo de Serviço, e dá outras providências.",
+      "data_apresentacao": "2019-10-03T11:43:07",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2223728",
+      "autores": [
+        {
+          "nome": "Delegado Marcelo Freitas",
+          "id_deputado": 204512,
+          "partido_na_data": "PSL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2255228,
+      "tipo": "PL",
+      "numero": 1886,
+      "ano": 2020,
+      "identificacao": "PL 1886/2020",
+      "ementa": "Institui o Certificado de Recebíveis Educacionais (CRE) em decorrência do estado de calamidade pública pela pandemia da Covid-19.",
+      "data_apresentacao": "2020-05-27T18:02:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2255228",
+      "autores": [
+        {
+          "nome": "Senado Federal - Jorginho Mello",
+          "id_deputado": null,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 27,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2255228"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2262069,
+      "tipo": "PL",
+      "numero": 4457,
+      "ano": 2020,
+      "identificacao": "PL 4457/2020",
+      "ementa": "Altera a Lei nº 8.036, de 11 de maio de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço, para permitir o saque para pagamento de despensas educacionais do titular e dependentes, bem como de reforma necessária de imóvel.\"",
+      "data_apresentacao": "2020-09-03T12:57:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2262069",
+      "autores": [
+        {
+          "nome": "Luiz Carlos Motta",
+          "id_deputado": 204485,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2264140,
+      "tipo": "PL",
+      "numero": 4860,
+      "ano": 2020,
+      "identificacao": "PL 4860/2020",
+      "ementa": "Altera o art. 20 da Lei nº 8.036, de 11 de maio de 1990, a fim de permitir a movimentação da conta vinculada no FGTS pelo trabalhador para a amortização ou quitação de dívidas com educação escolar própria ou de dependente econômico.",
+      "data_apresentacao": "2020-10-07T16:05:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2264140",
+      "autores": [
+        {
+          "nome": "Deuzinho Filho",
+          "id_deputado": 213856,
+          "partido_na_data": "REPUBLIC",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2296970,
+      "tipo": "PL",
+      "numero": 3027,
+      "ano": 2021,
+      "identificacao": "PL 3027/2021",
+      "ementa": "Altera o art. 20 da Lei nº 8.036, de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço, e dá outras providências, para permitir a movimentação da conta vinculada do trabalhador no FGTS para o pagamento de curso de ensino superior ou técnico profissionalizante do trabalhador, de seu cônjuge e de seus dependentes.",
+      "data_apresentacao": "2021-08-31T16:36:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2296970",
+      "autores": [
+        {
+          "nome": "Bozzella",
+          "id_deputado": 204502,
+          "partido_na_data": "PSL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2313946,
+      "tipo": "PL",
+      "numero": 107,
+      "ano": 2022,
+      "identificacao": "PL 107/2022",
+      "ementa": "Altera a Lei nº 8.036, de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço, e dá outras providências, para permitir a utilização do FGTS para pagamento de mensalidade escolar do ensino superior do trabalhador, de seu cônjuge e de seus dependentes.",
+      "data_apresentacao": "2022-02-02T18:56:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2313946",
+      "autores": [
+        {
+          "nome": "Pastor Gil",
+          "id_deputado": 204570,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2314257,
+      "tipo": "PL",
+      "numero": 187,
+      "ano": 2022,
+      "identificacao": "PL 187/2022",
+      "ementa": "Altera a Lei nº 8.036, de 11 de maio de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço, para possibilitar a movimentação de recursos do Fundo para fins de pagamento de saldo devedor de financiamento concedido no âmbito do Fundo de Financiamento Estudantil",
+      "data_apresentacao": "2022-02-09T15:19:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2314257",
+      "autores": [
+        {
+          "nome": "Geninho Zuliani",
+          "id_deputado": 204527,
+          "partido_na_data": "DEM",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2318387,
+      "tipo": "PL",
+      "numero": 655,
+      "ano": 2022,
+      "identificacao": "PL 655/2022",
+      "ementa": "Altera a Lei nº 8.036, de 11 de maio de 1990, que dispõe sobre o Fundo de Garantia do Tempo de Serviço – FGTS, para permitir o saque para pagamento de despesas educacionais do titular e de seus dependentes.",
+      "data_apresentacao": "2022-03-22T12:30:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2318387",
+      "autores": [
+        {
+          "nome": "Carlos Henrique Gaguim",
+          "id_deputado": 178993,
+          "partido_na_data": "REPUBLIC",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2320217,
+      "tipo": "PL",
+      "numero": 978,
+      "ano": 2022,
+      "identificacao": "PL 978/2022",
+      "ementa": "Altera o art. 20 da Lei nº 8.036, de 11 de maio de 1990, para possibilitar ao trabalhador movimentar sua conta vinculada no Fundo de Garantia do Tempo de Serviço (FGTS) para custear despesas com educação.",
+      "data_apresentacao": "2022-04-20T11:04:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2320217",
+      "autores": [
+        {
+          "nome": "Lucas Redecker",
+          "id_deputado": 204404,
+          "partido_na_data": "PSDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2322381,
+      "tipo": "PL",
+      "numero": 1168,
+      "ano": 2022,
+      "identificacao": "PL 1168/2022",
+      "ementa": "Acrescenta inciso ao art. 20 da Lei nº 8.036, de 11 maio de 1990, para permitir a movimentação do saldo da conta vinculada para o pagamento de despesas com creches de dependentes do titular.",
+      "data_apresentacao": "2022-05-10T14:28:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2322381",
+      "autores": [
+        {
+          "nome": "Carlos Henrique Gaguim",
+          "id_deputado": 178993,
+          "partido_na_data": "UNIÃO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2325916,
+      "tipo": "PL",
+      "numero": 1478,
+      "ano": 2022,
+      "identificacao": "PL 1478/2022",
+      "ementa": "Autoriza o saque das contas vinculadas do FGTS para pagamento mensal ou quitação de financiamento estudantil junto ao FIES ou entidades privadas.",
+      "data_apresentacao": "2022-06-02T13:33:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2325916",
+      "autores": [
+        {
+          "nome": "André Janones",
+          "id_deputado": 204515,
+          "partido_na_data": "AVANTE",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 186,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 260688,
+        "identificacao": "PL 3961/2004",
+        "link": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/260688"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2330962,
+      "tipo": "PL",
+      "numero": 1831,
+      "ano": 2022,
+      "identificacao": "PL 1831/2022",
+      "ementa": "Estabelece que cinquenta por cento das receitas patrimoniais decorrente de royalties e da exploração das patentes de propriedade das Instituições Federais de Ensino Superior sejam destinadas para ações de pesquisa e em investimentos na própria instituição detentora da patente.",
+      "data_apresentacao": "2022-06-30T12:00:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2330962",
+      "autores": [
+        {
+          "nome": "Zé Vitor",
+          "id_deputado": 204517,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 40,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2330962"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345296,
+      "tipo": "PL",
+      "numero": 3075,
+      "ano": 2022,
+      "identificacao": "PL 3075/2022",
+      "ementa": "Acrescenta dispositivos à Lei nº 13.415, de 2017, fixando parâmetros para a expansão da Política de Fomento à Implementação de Escolas de Ensino Médio em Tempo Integral.",
+      "data_apresentacao": "2022-12-22T16:23:22",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345296",
+      "autores": [
+        {
+          "nome": "Tiago Mitraud",
+          "id_deputado": 204519,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 21,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2345296"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2373671,
+      "tipo": "PL",
+      "numero": 3510,
+      "ano": 2023,
+      "identificacao": "PL 3510/2023",
+      "ementa": "Altera a Lei nº 10.861, de 2004, que institui o Sistema Nacional de Avaliação da Educação Superior – Sinaes, para dispor sobre a avaliação externa dos polos descentralizados de oferta de cursos superiores na modalidade a distância.",
+      "data_apresentacao": "2023-07-11T18:01:09",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2373671",
+      "autores": [
+        {
+          "nome": "Idilvan Alencar",
+          "id_deputado": 204533,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 60,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 2056684,
+        "identificacao": "PL 3758/2015",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2056684"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2056684"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2380176,
+      "tipo": "PLP",
+      "numero": 173,
+      "ano": 2023,
+      "identificacao": "PLP 173/2023",
+      "ementa": "Autoriza o saque das contas vinculadas do FGTS para pagamento mensal ou quitação de financiamento estudantil junto ao FIES ou entidades privadas.",
+      "data_apresentacao": "2023-08-16T16:38:25",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2380176",
+      "autores": [
+        {
+          "nome": "André Janones",
+          "id_deputado": 204515,
+          "partido_na_data": "AVANTE",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 20,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2380176"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2412556,
+      "tipo": "PL",
+      "numero": 5983,
+      "ano": 2023,
+      "identificacao": "PL 5983/2023",
+      "ementa": "Altera a Lei 9.394, de 20 de dezembro de 1996, para dispor sobre o ensino de arte no âmbito da educação básica.",
+      "data_apresentacao": "2023-12-12T17:43:21",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2412556",
+      "autores": [
+        {
+          "nome": "Chico Alencar",
+          "id_deputado": 74171,
+          "partido_na_data": "PSOL",
+          "ordem": 1
+        },
+        {
+          "nome": "Professora Luciene Cavalcante",
+          "id_deputado": 221338,
+          "partido_na_data": "PSOL",
+          "ordem": 2
+        },
+        {
+          "nome": "Talíria Petrone",
+          "id_deputado": 204464,
+          "partido_na_data": "PSOL",
+          "ordem": 3
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 19,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2412556"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2421346,
+      "tipo": "PL",
+      "numero": 797,
+      "ano": 2024,
+      "identificacao": "PL 797/2024",
+      "ementa": "Cria a Política Nacional de Ampliação da Oferta de creches (PNAOC) e dá outras providências",
+      "data_apresentacao": "2024-03-15T11:40:52",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2421346",
+      "autores": [
+        {
+          "nome": "Sonize Barbosa",
+          "id_deputado": 220575,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 67,
+      "parado_ha_dias": 559,
+      "apensado_a": {
+        "id": 2137635,
+        "identificacao": "PL 7643/2017",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2137635"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2137635"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2424530,
+      "tipo": "PL",
+      "numero": 1076,
+      "ano": 2024,
+      "identificacao": "PL 1076/2024",
+      "ementa": "Altera dispositivos da Lei nº 12.933, de 26 de dezembro de 2013, que dispõem sobre o benefício do pagamento de meia-entrada para estudantes, idosos, pessoas com deficiências e jovens de 15 a 29 anos comprovadamente carentes em espetáculos artístico-culturais e esportivos; e da Lei 12.852, de 5 de agosto de 2013, que institui o Estatuto da Juventude.",
+      "data_apresentacao": "2024-04-03T13:02:38",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2424530",
+      "autores": [
+        {
+          "nome": "Túlio Gadêlha",
+          "id_deputado": 157130,
+          "partido_na_data": "REDE",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-04-09T00:00:00",
+      "ultimo_status_sequencia": 20,
+      "parado_ha_dias": 559,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2424530"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2372012,
+      "tipo": "PL",
+      "numero": 3313,
+      "ano": 2023,
+      "identificacao": "PL 3313/2023",
+      "ementa": "Altera a Lei nº 12.711, de 2012, para garantir o acesso do estudante que concluir o ensino médio por meio de exame supletivo público na reserva de vagas para ingresso nos cursos de graduação ofertados pelas instituições federais de educação superior vinculadas ao Ministério da Educação e cursos das instituições federais de ensino técnico de nível médio.",
+      "data_apresentacao": "2023-06-30T14:33:14",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2372012",
+      "autores": [
+        {
+          "nome": "Geraldo Mendes",
+          "id_deputado": 220702,
+          "partido_na_data": "UNIÃO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-05-07T09:40:00",
+      "ultimo_status_sequencia": 28,
+      "parado_ha_dias": 531,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2372012"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2301276,
+      "tipo": "PL",
+      "numero": 3405,
+      "ano": 2021,
+      "identificacao": "PL 3405/2021",
+      "ementa": "Adiciona Parágrafo Único ao inciso II do art. 44 da lei 9.394 de 20 de dezembro de 1996 (Lei de Diretrizes e Bases da Educação Nacional) para autorizar ingresso em instituição de ensino superior a estudante de alto desempenho que não tenha concluído ensino médio",
+      "data_apresentacao": "2021-10-01T17:23:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2301276",
+      "autores": [
+        {
+          "nome": "Lucas Gonzalez",
+          "id_deputado": 204523,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-06-09T00:00:00",
+      "ultimo_status_sequencia": 45,
+      "parado_ha_dias": 498,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178929,
+        "nome": "Diego Garcia",
+        "partido_hoje": "UNIÃO",
+        "designado_em": "2023-09-12T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2301276"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2507228,
+      "tipo": "PL",
+      "numero": 2225,
+      "ano": 2025,
+      "identificacao": "PL 2225/2025",
+      "ementa": "Dispõe sobre a criação da Política Nacional de Formação e Capacitação de Professores da Educação Básica em Inteligência Artificial como Assistente Pedagógico para o Desenvolvimento do Ensino e Aprendizagem e dá outras providências.",
+      "data_apresentacao": "2025-05-09T15:53:44",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2507228",
+      "autores": [
+        {
+          "nome": "Helio Lopes",
+          "id_deputado": 204444,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-07-02T00:00:00",
+      "ultimo_status_sequencia": 18,
+      "parado_ha_dias": 475,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-06-16T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2507228"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2458210,
+      "tipo": "PL",
+      "numero": 3549,
+      "ano": 2024,
+      "identificacao": "PL 3549/2024",
+      "ementa": "Institui o Dia Nacional de Conscientização sobre a Dupla Excepcionalidade.",
+      "data_apresentacao": "2024-09-12T15:19:40",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2458210",
+      "autores": [
+        {
+          "nome": "Lucyana Genésio",
+          "id_deputado": 229082,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-07-08T00:00:00",
+      "ultimo_status_sequencia": 22,
+      "parado_ha_dias": 469,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-07-08T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2458210"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2400886,
+      "tipo": "PL",
+      "numero": 5297,
+      "ano": 2023,
+      "identificacao": "PL 5297/2023",
+      "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, para obrigar a disponibilização de informações acerca das faltas ao trabalho dos profissionais da educação.",
+      "data_apresentacao": "2023-11-01T10:30:06",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2400886",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-09-10T14:27:00",
+      "ultimo_status_sequencia": 23,
+      "parado_ha_dias": 405,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 160604,
+        "nome": "Pedro Uczai",
+        "partido_hoje": "PT",
+        "designado_em": "2025-09-10T14:27:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2400886"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2483186,
+      "tipo": "PL",
+      "numero": 330,
+      "ano": 2025,
+      "identificacao": "PL 330/2025",
+      "ementa": "Dispõe sobre a restrição do pagamento de benefícios assistenciais e previdenciários a estrangeiros, altera a lei nº 8.742, de 7 de dezembro de 1993, lei nº 14.601, de 19 de junho de 2023 e dá outras providências.",
+      "data_apresentacao": "2025-02-06T17:22:19",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2483186",
+      "autores": [
+        {
+          "nome": "Gilson Marques",
+          "id_deputado": 204365,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Designação de Relator(a)",
+      "ultimo_status_em": "2025-09-26T17:50:28",
+      "ultimo_status_sequencia": 15,
+      "parado_ha_dias": 389,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2376099,
+      "tipo": "PL",
+      "numero": 3766,
+      "ano": 2023,
+      "identificacao": "PL 3766/2023",
+      "ementa": "Institui o Programa Nacional de Apoio à Educação Básica (PNAEB).",
+      "data_apresentacao": "2023-08-07T16:58:01",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2376099",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-10-08T09:30:00",
+      "ultimo_status_sequencia": 38,
+      "parado_ha_dias": 377,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 74270,
+        "nome": "Gilberto Nascimento",
+        "partido_hoje": "PODE",
+        "designado_em": "2023-08-31T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2376099"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2482752,
+      "tipo": "PL",
+      "numero": 238,
+      "ano": 2025,
+      "identificacao": "PL 238/2025",
+      "ementa": "Altera a Lei nº 13.445, de 24 de maio de 2017, para estabelecer que somente poderá ser autorizada a residência para o imigrante após 2 (dois) anos da concessão do visto temporário, e dá outras providências.",
+      "data_apresentacao": "2025-02-04T15:16:33",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2482752",
+      "autores": [
+        {
+          "nome": "Giovani Cherini",
+          "id_deputado": 160673,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-08T20:19:00",
+      "ultimo_status_sequencia": 17,
+      "parado_ha_dias": 377,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 156190,
+        "nome": "Marcel van Hattem",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-09-25T18:51:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2482752"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2331032,
+      "tipo": "PL",
+      "numero": 1843,
+      "ano": 2022,
+      "identificacao": "PL 1843/2022",
+      "ementa": "Altera a Lei nº. 11.788, de 25 de setembro de 2008, para dispor sobre a duração do estágio, sobre a possibilidade de estágio remoto, e sobre os concedentes de estágio, e dá outras providências.",
+      "data_apresentacao": "2022-06-30T18:00:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2331032",
+      "autores": [
+        {
+          "nome": "Lucas Gonzalez",
+          "id_deputado": 204523,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-16T00:00:00",
+      "ultimo_status_sequencia": 42,
+      "parado_ha_dias": 369,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2331032"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2342042,
+      "tipo": "PLP",
+      "numero": 153,
+      "ano": 2022,
+      "identificacao": "PLP 153/2022",
+      "ementa": "Altera a Lei Complementar nº 187, de 16 de dezembro de 2021 e institui critérios para a oferta de bolsas de estudos na educação básica em contrapartida à imunidade tributária concedida a entidades beneficentes.",
+      "data_apresentacao": "2022-12-13T11:40:29",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2342042",
+      "autores": [
+        {
+          "nome": "Kim Kataguiri",
+          "id_deputado": 204536,
+          "partido_na_data": "UNIÃO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-21T00:00:00",
+      "ultimo_status_sequencia": 36,
+      "parado_ha_dias": 364,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2342042"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2344835,
+      "tipo": "PLP",
+      "numero": 162,
+      "ano": 2022,
+      "identificacao": "PLP 162/2022",
+      "ementa": "Altera a Lei Complementar nº 187, de 16 de dezembro de 2021 para dispor sobre o regramento da certificação das Entidades Beneficentes de Assistência Social que aderiram ao PROUNI.",
+      "data_apresentacao": "2022-12-20T18:04:57",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2344835",
+      "autores": [
+        {
+          "nome": "Professor Israel Batista",
+          "id_deputado": 204383,
+          "partido_na_data": "PSB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-21T00:00:00",
+      "ultimo_status_sequencia": 36,
+      "parado_ha_dias": 364,
+      "apensado_a": {
+        "id": 2342042,
+        "identificacao": "PLP 153/2022",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2342042"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2342042"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2430304,
+      "tipo": "PL",
+      "numero": 1461,
+      "ano": 2024,
+      "identificacao": "PL 1461/2024",
+      "ementa": "Dispõe sobre a atualização do Vocabulário Comum, a organização do Vocabulário Onomástico e a republicação do Pequeno Vocabulário da Língua Portuguesa, e determina a denúncia do Acordo Ortográfico da Língua Portuguesa, de 1990.",
+      "data_apresentacao": "2024-04-25T19:11:18",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2430304",
+      "autores": [
+        {
+          "nome": "Dr. Jaziel",
+          "id_deputado": 204481,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-10-21T19:22:00",
+      "ultimo_status_sequencia": 20,
+      "parado_ha_dias": 364,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-07-08T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2430304"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2539046,
+      "tipo": "PL",
+      "numero": 3650,
+      "ano": 2025,
+      "identificacao": "PL 3650/2025",
+      "ementa": "Dispõe sobre medidas de atenção individualizada para a promoção do efetivo direito à educação de qualidade para pessoas com necessidades educacionais especiais.",
+      "data_apresentacao": "2025-07-29T15:16:48",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2539046",
+      "autores": [
+        {
+          "nome": "Nikolas Ferreira",
+          "id_deputado": 209787,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-27T21:57:00",
+      "ultimo_status_sequencia": 17,
+      "parado_ha_dias": 358,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-10-13T16:49:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2539046"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2554678,
+      "tipo": "PL",
+      "numero": 4316,
+      "ano": 2025,
+      "identificacao": "PL 4316/2025",
+      "ementa": "Dispõe sobre parcerias do Sistema Único de Saúde com estabelecimentos de ensino técnico e superior de profissões de saúde credenciados pelo Ministério da Educação, para a oferta de acolhimento assistencial multidisciplinar em municípios com população superior a 200 mil habitantes.",
+      "data_apresentacao": "2025-08-28T17:00:37",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2554678",
+      "autores": [
+        {
+          "nome": "Pinheirinho",
+          "id_deputado": 204524,
+          "partido_na_data": "PP",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-10-27T21:57:00",
+      "ultimo_status_sequencia": 17,
+      "parado_ha_dias": 358,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-10-13T15:39:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2554678"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2430777,
+      "tipo": "PL",
+      "numero": 1524,
+      "ano": 2024,
+      "identificacao": "PL 1524/2024",
+      "ementa": "Institui a Política Nacional de Avaliação e Exames da Educação Básica.",
+      "data_apresentacao": "2024-05-03T09:49:51",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2430777",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Mendonça Filho",
+          "id_deputado": 74428,
+          "partido_na_data": "UNIÃO",
+          "ordem": 2
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-10-28T13:48:00",
+      "ultimo_status_sequencia": 23,
+      "parado_ha_dias": 357,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 209787,
+        "nome": "Nikolas Ferreira",
+        "partido_hoje": "PL",
+        "designado_em": "2024-11-14T16:14:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2430777"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2388105,
+      "tipo": "PL",
+      "numero": 4501,
+      "ano": 2023,
+      "identificacao": "PL 4501/2023",
+      "ementa": "Dispõe sobre a garantia de um percentual de vagas destinadas aos professores recém-formados nas redes de ensino público e privado.",
+      "data_apresentacao": "2023-09-14T20:43:23",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2388105",
+      "autores": [
+        {
+          "nome": "Duarte Jr.",
+          "id_deputado": 220686,
+          "partido_na_data": "PSB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-11-25T16:28:00",
+      "ultimo_status_sequencia": 26,
+      "parado_ha_dias": 329,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2388105"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2405112,
+      "tipo": "PL",
+      "numero": 5607,
+      "ano": 2023,
+      "identificacao": "PL 5607/2023",
+      "ementa": "Altera o §4º do art. 1º da Lei nº 11.079, de 30 de dezembro de 2004, para acrescentar o inciso IV, proibindo a contratação de parceria público-privada para prestação de serviços, obras públicas, fornecimento e instalação de bens de garantia ao direito fundamental à educação.",
+      "data_apresentacao": "2023-11-21T17:04:44",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2405112",
+      "autores": [
+        {
+          "nome": "Professora Luciene Cavalcante",
+          "id_deputado": 221338,
+          "partido_na_data": "PSOL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-03T09:36:00",
+      "ultimo_status_sequencia": 29,
+      "parado_ha_dias": 321,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-11T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2405112"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2308179,
+      "tipo": "PL",
+      "numero": 4126,
+      "ano": 2021,
+      "identificacao": "PL 4126/2021",
+      "ementa": "Inclui dispositivo no art. 8º da Lei nº 9.394,\nde 20 de dezembro de 1996, que \nestabelece as diretrizes e bases da \neducação nacional, para equiparar as \ninstituições credenciadas pelo poder \npúblico que tenham como proposta\n pedagógica a formação por alternância às \ninstituições oficiais dos sistemas de ensino.",
+      "data_apresentacao": "2021-11-23T11:58:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2308179",
+      "autores": [
+        {
+          "nome": "Leonardo Monteiro",
+          "id_deputado": 74156,
+          "partido_na_data": "PT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-09T20:52:00",
+      "ultimo_status_sequencia": 35,
+      "parado_ha_dias": 315,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2308179"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2482580,
+      "tipo": "PL",
+      "numero": 163,
+      "ano": 2025,
+      "identificacao": "PL 163/2025",
+      "ementa": "Altera a Lei nº 14.818, de 16 de janeiro de 2024, que institui incentivo financeiro-educacional, na modalidade de poupança, aos estudantes matriculados no ensino médio público, para estabelecer incentivos ao bom desempenho acadêmico dos estudantes.",
+      "data_apresentacao": "2025-02-03T17:57:26",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2482580",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Ricardo Salles",
+          "id_deputado": 220633,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-11T00:00:00",
+      "ultimo_status_sequencia": 21,
+      "parado_ha_dias": 313,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 209787,
+        "nome": "Nikolas Ferreira",
+        "partido_hoje": "PL",
+        "designado_em": "2025-04-14T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2482580"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 495615,
+      "tipo": "PL",
+      "numero": 791,
+      "ano": 2011,
+      "identificacao": "PL 791/2011",
+      "ementa": "Altera o inciso III do art. 44 da Lei nº 9.394, de 20 de dezembro de 1996, que estabelece as diretrizes e bases da educação nacional, para definir validade legal de diploma de pós-graduação para o exercício profissional.",
+      "data_apresentacao": "2011-03-22T17:34:07",
+      "link": "https://www.camara.leg.br/propostas-legislativas/495615",
+      "autores": [
+        {
+          "nome": "Jovair Arantes",
+          "id_deputado": 73666,
+          "partido_na_data": "PTB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-17T00:00:00",
+      "ultimo_status_sequencia": 90,
+      "parado_ha_dias": 307,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/495615"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 532993,
+      "tipo": "PL",
+      "numero": 3028,
+      "ano": 2011,
+      "identificacao": "PL 3028/2011",
+      "ementa": "Altera o inciso III do art. 44 da Lei nº 9.394, de 20 de dezembro de 1996, que estabelece as diretrizes e bases da educação nacional, para definir validade legal de diploma de pós-graduação para o exercício profissional.",
+      "data_apresentacao": "2011-12-21T15:27:18",
+      "link": "https://www.camara.leg.br/propostas-legislativas/532993",
+      "autores": [
+        {
+          "nome": "Aguinaldo Ribeiro",
+          "id_deputado": 160527,
+          "partido_na_data": "PP",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-17T00:00:00",
+      "ultimo_status_sequencia": 90,
+      "parado_ha_dias": 307,
+      "apensado_a": {
+        "id": 495615,
+        "identificacao": "PL 791/2011",
+        "link": "https://www.camara.leg.br/propostas-legislativas/495615"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/495615"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2188819,
+      "tipo": "PL",
+      "numero": 11161,
+      "ano": 2018,
+      "identificacao": "PL 11161/2018",
+      "ementa": "Acrescenta § 2º ao art. 44 da Lei nº 9.394, de 20 de dezembro de 1996, que \"estabelece as diretrizes e bases da educação nacional\", para atribuir aos conselhos de fiscalização do exercício profissional a prerrogativa de avaliar a compatibilidade entre o conteúdo programático de cursos de pós-graduação e as profissões por eles abrangidas, bem como para apurar a respectiva qualidade.",
+      "data_apresentacao": "2018-12-11T13:03:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2188819",
+      "autores": [
+        {
+          "nome": "Carlos Henrique Gaguim",
+          "id_deputado": 178993,
+          "partido_na_data": "DEM",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2025-12-17T00:00:00",
+      "ultimo_status_sequencia": 90,
+      "parado_ha_dias": 307,
+      "apensado_a": {
+        "id": 495615,
+        "identificacao": "PL 791/2011",
+        "link": "https://www.camara.leg.br/propostas-legislativas/495615"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/495615"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2539237,
+      "tipo": "PL",
+      "numero": 3676,
+      "ano": 2025,
+      "identificacao": "PL 3676/2025",
+      "ementa": "Altera o Código Penal, aprovado pelo Decreto-Lei nº 2.848, de 7 de dezembro de 1940, cria o tipo penal autônomo de alta traição à Pátria, insere dispositivos e dá outras providências.",
+      "data_apresentacao": "2025-08-01T18:39:19",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2539237",
+      "autores": [
+        {
+          "nome": "Lindbergh Farias",
+          "id_deputado": 74858,
+          "partido_na_data": "PT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2025-12-19T19:19:00",
+      "ultimo_status_sequencia": 15,
+      "parado_ha_dias": 305,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 156190,
+        "nome": "Marcel van Hattem",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-12-19T19:19:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2539237"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2598492,
+      "tipo": "PL",
+      "numero": 6539,
+      "ano": 2025,
+      "identificacao": "PL 6539/2025",
+      "ementa": "Submete ao Congresso Nacional a demarcação de terras tradicionalmente ocupadas pelos índios",
+      "data_apresentacao": "2025-12-18T11:42:58",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2598492",
+      "autores": [
+        {
+          "nome": "Alceu Moreira",
+          "id_deputado": 160559,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-03-03T21:52:00",
+      "ultimo_status_sequencia": 17,
+      "parado_ha_dias": 231,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 220633,
+        "nome": "Ricardo Salles",
+        "partido_hoje": "NOVO",
+        "designado_em": "2026-02-19T20:02:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2598492"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2419872,
+      "tipo": "PL",
+      "numero": 648,
+      "ano": 2024,
+      "identificacao": "PL 648/2024",
+      "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, que estabelece as diretrizes e bases da educação nacional, para reforçar incentivos ao melhor desempenho dos profissionais da educação.",
+      "data_apresentacao": "2024-03-07T21:04:56",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2419872",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Gilson Marques",
+          "id_deputado": 204365,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        },
+        {
+          "nome": "Marcel van Hattem",
+          "id_deputado": 156190,
+          "partido_na_data": "NOVO",
+          "ordem": 3
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Designação de Relator(a)",
+      "ultimo_status_em": "2026-03-19T16:14:00",
+      "ultimo_status_sequencia": 45,
+      "parado_ha_dias": 215,
+      "apensado_a": {
+        "id": 2319916,
+        "identificacao": "PL 936/2022",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2319916"
+      },
+      "principal_nao_localizada": false,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2459367,
+      "tipo": "PL",
+      "numero": 3735,
+      "ano": 2024,
+      "identificacao": "PL 3735/2024",
+      "ementa": "Dispõe sobre a política nacional de apoio aos entes subnacionais, que criem programas referentes aos jogos olímpicos e paralímpicos nas escolas de seus respectivos sistemas de ensino.",
+      "data_apresentacao": "2024-09-27T09:05:02",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2459367",
+      "autores": [
+        {
+          "nome": "Augusto Puppio",
+          "id_deputado": 220577,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-03-20T14:18:00",
+      "ultimo_status_sequencia": 62,
+      "parado_ha_dias": 214,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2026-03-20T14:18:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2459367"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2564786,
+      "tipo": "PL",
+      "numero": 4781,
+      "ano": 2025,
+      "identificacao": "PL 4781/2025",
+      "ementa": "Altera a Lei nº 7.395, de 31 de outubro de 1985, para assegurar a pluralidade e a proteção da diversidade de pensamento no âmbito das entidades estudantis e das instituições de ensino superior.",
+      "data_apresentacao": "2025-09-25T16:58:51",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2564786",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Designação de Relator(a)",
+      "ultimo_status_em": "2026-04-07T14:05:00",
+      "ultimo_status_sequencia": 19,
+      "parado_ha_dias": 196,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": null,
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2464076,
+      "tipo": "PL",
+      "numero": 4061,
+      "ano": 2024,
+      "identificacao": "PL 4061/2024",
+      "ementa": "Acrescenta o § 8º ao art. 201 da Lei nº 14.597, de 14 de junho de 2023, para proibir o ingresso em território nacional de torcedores estrangeiros envolvidos em tumultos ou atos de violência no Brasil.",
+      "data_apresentacao": "2024-10-23T18:21:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2464076",
+      "autores": [
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-04-08T21:11:00",
+      "ultimo_status_sequencia": 34,
+      "parado_ha_dias": 195,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 220568,
+        "nome": "Gustavo Gayer",
+        "partido_hoje": "PL",
+        "designado_em": "2026-03-18T20:55:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2464076"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2479072,
+      "tipo": "PL",
+      "numero": 4832,
+      "ano": 2024,
+      "identificacao": "PL 4832/2024",
+      "ementa": "Estabelece diretrizes para o reforço à diplomacia climática brasileira, promovendo a liderança do país em fóruns internacionais relacionados às mudanças climáticas e incentivando parcerias estratégicas para o desenvolvimento sustentável.",
+      "data_apresentacao": "2024-12-11T16:23:39",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2479072",
+      "autores": [
+        {
+          "nome": "Max Lemos",
+          "id_deputado": 220607,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-04-08T21:11:00",
+      "ultimo_status_sequencia": 17,
+      "parado_ha_dias": 195,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 220633,
+        "nome": "Ricardo Salles",
+        "partido_hoje": "NOVO",
+        "designado_em": "2026-03-18T21:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2479072"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2257023,
+      "tipo": "PL",
+      "numero": 3701,
+      "ano": 2020,
+      "identificacao": "PL 3701/2020",
+      "ementa": "Altera a Lei nº 13.267, de 6 de abril de 2016, que \"Disciplina a criação e a organização das associações denominadas empresas juniores, com funcionamento perante instituições de ensino superior\", para incluir a educação profissional técnica de ensino médio nas suas disposições",
+      "data_apresentacao": "2020-07-08T13:44:00",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2257023",
+      "autores": [
+        {
+          "nome": "Paulo Ganime",
+          "id_deputado": 204461,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2026-04-15T10:00:00",
+      "ultimo_status_sequencia": 67,
+      "parado_ha_dias": 188,
+      "apensado_a": {
+        "id": 2086175,
+        "identificacao": "PL 5432/2016",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2086175"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204557,
+        "nome": "Sidney Leite",
+        "partido_hoje": "PSD",
+        "designado_em": "2025-05-13T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2086175"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2601286,
+      "tipo": "PL",
+      "numero": 387,
+      "ano": 2026,
+      "identificacao": "PL 387/2026",
+      "ementa": "Veda os supersalários em âmbito nacional, regulando a aplicação do limite máximo remuneratório mensal de agentes políticos e públicos de que tratam o inciso XI do caput e os §§ 9º e 11 do art. 37 da Constituição Federal, acrescenta dispositivos no Decreto-Lei nº 2.848, de 7 de dezembro de 1940 (Código Penal) e na Lei nº 8.429, de 2 de junho de 1992 (Lei de Improbidade Administrativa), estabelecendo critérios objetivos para caracterização de parcelas indenizatórias e veda pagamentos que não correspondam a ressarcimento efetivo de despesa.",
+      "data_apresentacao": "2026-02-06T18:22:08",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2601286",
+      "autores": [
+        {
+          "nome": "Gilson Marques",
+          "id_deputado": 204365,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Ricardo Salles",
+          "id_deputado": 220633,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        },
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "NOVO",
+          "ordem": 3
+        },
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 4
+        },
+        {
+          "nome": "Marcel van Hattem",
+          "id_deputado": 156190,
+          "partido_na_data": "NOVO",
+          "ordem": 5
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-04-15T21:49:00",
+      "ultimo_status_sequencia": 15,
+      "parado_ha_dias": 188,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178871,
+        "nome": "Evair Vieira de Melo",
+        "partido_hoje": "REPUBLICANOS",
+        "designado_em": "2026-04-15T21:49:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2601286"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2461936,
+      "tipo": "PL",
+      "numero": 3871,
+      "ano": 2024,
+      "identificacao": "PL 3871/2024",
+      "ementa": "Dispõe sobre a vedação de concessão de assistência estudantil do Pnaes para estudantes que não concluírem o curso superior em instituições federais de ensino superior (Ifes) em tempo que supere a 25% do prazo ideal de integralização do currículo.",
+      "data_apresentacao": "2024-10-09T15:41:20",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2461936",
+      "autores": [
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-04-27T17:13:00",
+      "ultimo_status_sequencia": 28,
+      "parado_ha_dias": 176,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 220560,
+        "nome": "Thiago de Joaldo",
+        "partido_hoje": "REPUBLICANOS",
+        "designado_em": "2026-04-27T17:13:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2461936"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2599591,
+      "tipo": "PL",
+      "numero": 6987,
+      "ano": 2025,
+      "identificacao": "PL 6987/2025",
+      "ementa": "Altera a Lei n° 9.394, de 20 de dezembro de 1996, para dispor sobre a integralização da carga horária de estudantes atletas por meio de Educação a Distância (EaD).",
+      "data_apresentacao": "2025-12-22T20:23:04",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2599591",
+      "autores": [
+        {
+          "nome": "Duda Ramos",
+          "id_deputado": 220540,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-04-28T23:24:00",
+      "ultimo_status_sequencia": 29,
+      "parado_ha_dias": 175,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2026-04-14T15:07:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2599591"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2450079,
+      "tipo": "PL",
+      "numero": 2960,
+      "ano": 2024,
+      "identificacao": "PL 2960/2024",
+      "ementa": "Acrescenta o Artigo 22-A na Lei nº 9.394, de 20 de dezembro de 1996, para incluir a “Educação para Carreira” como componente da Educação Profissional e Tecnológica.",
+      "data_apresentacao": "2024-07-18T17:40:06",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2450079",
+      "autores": [
+        {
+          "nome": "Carla Zambelli",
+          "id_deputado": 204507,
+          "partido_na_data": "PL",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-05-06T13:49:00",
+      "ultimo_status_sequencia": 23,
+      "parado_ha_dias": 167,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-04-09T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2450079"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2495687,
+      "tipo": "PL",
+      "numero": 1577,
+      "ano": 2025,
+      "identificacao": "PL 1577/2025",
+      "ementa": "Dispõe sobre a inclusão obrigatória de atividades de esporte adaptado na grade curricular das escolas públicas que atendem estudantes com deficiência e dá outras providências.",
+      "data_apresentacao": "2025-04-08T19:39:17",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2495687",
+      "autores": [
+        {
+          "nome": "Max Lemos",
+          "id_deputado": 220607,
+          "partido_na_data": "PDT",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-05-13T11:55:00",
+      "ultimo_status_sequencia": 26,
+      "parado_ha_dias": 160,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-06-13T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2495687"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2535732,
+      "tipo": "PL",
+      "numero": 3384,
+      "ano": 2025,
+      "identificacao": "PL 3384/2025",
+      "ementa": "Institui o Programa Nacional de Incentivo ao Esporte Adaptado nas Escolas Públicas (PRONIEAP), destinado à inclusão e desenvolvimento esportivo de estudantes com deficiência em todo o território nacional.",
+      "data_apresentacao": "2025-07-14T19:25:17",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2535732",
+      "autores": [
+        {
+          "nome": "Marx Beltrão",
+          "id_deputado": 178843,
+          "partido_na_data": "PP",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-05-13T11:55:00",
+      "ultimo_status_sequencia": 26,
+      "parado_ha_dias": 160,
+      "apensado_a": {
+        "id": 2495687,
+        "identificacao": "PL 1577/2025",
+        "link": "https://www.camara.leg.br/propostas-legislativas/2495687"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-06-13T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2495687"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2510978,
+      "tipo": "PLP",
+      "numero": 118,
+      "ano": 2025,
+      "identificacao": "PLP 118/2025",
+      "ementa": "Admite a educação domiciliar na educação básica e autoriza, nos termos do parágrafo único do art. 22 da Constituição, sua regulamentação, em lei, pelos Estados e pelo Distrito Federal.",
+      "data_apresentacao": "2025-05-20T10:01:21",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2510978",
+      "autores": [
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        },
+        {
+          "nome": "Gilson Marques",
+          "id_deputado": 204365,
+          "partido_na_data": "NOVO",
+          "ordem": 3
+        },
+        {
+          "nome": "Ricardo Salles",
+          "id_deputado": 220633,
+          "partido_na_data": "NOVO",
+          "ordem": 4
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2026-06-03T13:05:00",
+      "ultimo_status_sequencia": 23,
+      "parado_ha_dias": 139,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 178929,
+        "nome": "Diego Garcia",
+        "partido_hoje": "UNIÃO",
+        "designado_em": "2026-05-06T13:28:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2510978"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2345309,
+      "tipo": "PL",
+      "numero": 3086,
+      "ano": 2022,
+      "identificacao": "PL 3086/2022",
+      "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, a fim de considerar os gastos com uniforme escolar, alimentação escolar, atendimento médico e psicológico e oferta de equipamentos necessários ou facilitadores da aprendizagem, como manutenção e desenvolvimento do ensino.",
+      "data_apresentacao": "2022-12-22T16:23:36",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2345309",
+      "autores": [
+        {
+          "nome": "Tiago Mitraud",
+          "id_deputado": 204519,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-06-18T14:34:55",
+      "ultimo_status_sequencia": 64,
+      "parado_ha_dias": 124,
+      "apensado_a": {
+        "id": 1212477,
+        "identificacao": "PL 1166/2015",
+        "link": "https://www.camara.leg.br/propostas-legislativas/1212477"
+      },
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 160592,
+        "nome": "Zeca Dirceu",
+        "partido_hoje": "PT",
+        "designado_em": "2023-03-15T00:00:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/1212477"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2347202,
+      "tipo": "PL",
+      "numero": 342,
+      "ano": 2023,
+      "identificacao": "PL 342/2023",
+      "ementa": "Cria o prêmio “Mérito esportivo nas escolas”, a ser concedido aos dois melhores atletas matriculados no ensino fundamental ou no ensino médio de cada escola pública.",
+      "data_apresentacao": "2023-02-07T15:55:21",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2347202",
+      "autores": [
+        {
+          "nome": "Hercílio Coelho Diniz",
+          "id_deputado": 204539,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2026-07-08T10:00:00",
+      "ultimo_status_sequencia": 36,
+      "parado_ha_dias": 104,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204455,
+        "nome": "Luiz Lima",
+        "partido_hoje": "NOVO",
+        "designado_em": "2026-05-06T19:06:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2347202"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2623539,
+      "tipo": "PL",
+      "numero": 2313,
+      "ano": 2026,
+      "identificacao": "PL 2313/2026",
+      "ementa": "Altera a Lei nº 14.818, de 16 de janeiro de 2024, para adequar a execução orçamentária e financeira do Programa Pé-de-Meia.",
+      "data_apresentacao": "2026-05-12T08:22:30",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2623539",
+      "autores": [
+        {
+          "nome": "Marcel van Hattem",
+          "id_deputado": 156190,
+          "partido_na_data": "NOVO",
+          "ordem": 1
+        },
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "NOVO",
+          "ordem": 2
+        },
+        {
+          "nome": "Adriana Ventura",
+          "id_deputado": 204528,
+          "partido_na_data": "NOVO",
+          "ordem": 3
+        },
+        {
+          "nome": "Gilson Marques",
+          "id_deputado": 204365,
+          "partido_na_data": "NOVO",
+          "ordem": 4
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-07-15T16:57:00",
+      "ultimo_status_sequencia": 16,
+      "parado_ha_dias": 97,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204535,
+        "nome": "Sâmia Bomfim",
+        "partido_hoje": "PSOL",
+        "designado_em": "2026-06-30T14:48:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2623539"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2550693,
+      "tipo": "PL",
+      "numero": 4127,
+      "ano": 2025,
+      "identificacao": "PL 4127/2025",
+      "ementa": "Institui percentual mínimo de vagas de estágio, em órgãos e entidades da Administração Pública direta e indireta da União, dos Estados, do Distrito Federal e dos Municípios, destinadas a estudantes de cursos com foco em gestão e planejamento transversal, e estabelece diretrizes para formação prática aplicada, sem prejuízo dos controles estatais, nos termos da Lei nº 11.788, de 25 de setembro de 2008.",
+      "data_apresentacao": "2025-08-20T14:56:31",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2550693",
+      "autores": [
+        {
+          "nome": "Duda Ramos",
+          "id_deputado": 220540,
+          "partido_na_data": "MDB",
+          "ordem": 1
+        }
+      ],
+      "etiquetas": [
+        "relatoria NOVO"
+      ],
+      "comissao": "CE",
+      "situacao": "Pronta para Pauta",
+      "ultimo_status_em": "2026-09-15T00:00:00",
+      "ultimo_status_sequencia": 20,
+      "parado_ha_dias": 35,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 204528,
+        "nome": "Adriana Ventura",
+        "partido_hoje": "NOVO",
+        "designado_em": "2025-11-17T16:24:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2550693"
+      },
+      "relator_indeterminado": null
+    },
+    {
+      "id": 2394641,
+      "tipo": "PL",
+      "numero": 4894,
+      "ano": 2023,
+      "identificacao": "PL 4894/2023",
+      "ementa": "Dispõe sobre sanções políticas e econômicas relacionadas ao Hamas e ao Hezbollah, os classifica como grupos terroristas, e criminaliza manifestações de apoio a esses grupos.",
+      "data_apresentacao": "2023-10-09T17:16:57",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2394641",
+      "autores": [
+        {
+          "nome": "Abilio Brunini",
+          "id_deputado": 220593,
+          "partido_na_data": "PL",
+          "ordem": 1
+        },
+        {
+          "nome": "Pr. Marco Feliciano",
+          "id_deputado": 160601,
+          "partido_na_data": "PL",
+          "ordem": 2
+        },
+        {
+          "nome": "Jefferson Campos",
+          "id_deputado": 74273,
+          "partido_na_data": "PL",
+          "ordem": 3
+        },
+        {
+          "nome": "Mauricio Marcon",
+          "id_deputado": 220550,
+          "partido_na_data": "PODE",
+          "ordem": 4
+        },
+        {
+          "nome": "Roberta Roma",
+          "id_deputado": 220693,
+          "partido_na_data": "PL",
+          "ordem": 5
+        },
+        {
+          "nome": "Carlos Jordy",
+          "id_deputado": 204460,
+          "partido_na_data": "PL",
+          "ordem": 6
+        },
+        {
+          "nome": "Coronel Assis",
+          "id_deputado": 220594,
+          "partido_na_data": "UNIÃO",
+          "ordem": 7
+        },
+        {
+          "nome": "Sargento Gonçalves",
+          "id_deputado": 220621,
+          "partido_na_data": "PL",
+          "ordem": 8
+        },
+        {
+          "nome": "Pedro Lupion",
+          "id_deputado": 204395,
+          "partido_na_data": "PP",
+          "ordem": 9
+        },
+        {
+          "nome": "Capitão Alberto Neto",
+          "id_deputado": 204572,
+          "partido_na_data": "PL",
+          "ordem": 10
+        },
+        {
+          "nome": "Rodrigo Valadares",
+          "id_deputado": 165470,
+          "partido_na_data": "UNIÃO",
+          "ordem": 11
+        },
+        {
+          "nome": "Luiz Philippe de Orleans e Bragança",
+          "id_deputado": 204526,
+          "partido_na_data": "PL",
+          "ordem": 12
+        },
+        {
+          "nome": "Sargento Fahur",
+          "id_deputado": 204387,
+          "partido_na_data": "PSD",
+          "ordem": 13
+        },
+        {
+          "nome": "Zé Trovão",
+          "id_deputado": 220558,
+          "partido_na_data": "PL",
+          "ordem": 14
+        },
+        {
+          "nome": "Mendonça Filho",
+          "id_deputado": 74428,
+          "partido_na_data": "UNIÃO",
+          "ordem": 15
+        },
+        {
+          "nome": "Filipe Martins",
+          "id_deputado": 220545,
+          "partido_na_data": "PL",
+          "ordem": 16
+        },
+        {
+          "nome": "Silvia Waiãpi",
+          "id_deputado": 220579,
+          "partido_na_data": "PL",
+          "ordem": 17
+        },
+        {
+          "nome": "Nikolas Ferreira",
+          "id_deputado": 209787,
+          "partido_na_data": "PL",
+          "ordem": 18
+        },
+        {
+          "nome": "Paulo Freire Costa",
+          "id_deputado": 160558,
+          "partido_na_data": "PL",
+          "ordem": 19
+        },
+        {
+          "nome": "General Girão",
+          "id_deputado": 204473,
+          "partido_na_data": "PL",
+          "ordem": 20
+        },
+        {
+          "nome": "Magda Mofatto",
+          "id_deputado": 166402,
+          "partido_na_data": "PATRIOTA",
+          "ordem": 21
+        },
+        {
+          "nome": "Delegado Paulo Bilynskyj",
+          "id_deputado": 220654,
+          "partido_na_data": "PL",
+          "ordem": 22
+        },
+        {
+          "nome": "Delegado Caveira",
+          "id_deputado": 220673,
+          "partido_na_data": "PL",
+          "ordem": 23
+        },
+        {
+          "nome": "Alfredo Gaspar",
+          "id_deputado": 220576,
+          "partido_na_data": "UNIÃO",
+          "ordem": 24
+        },
+        {
+          "nome": "Gustavo Gayer",
+          "id_deputado": 220568,
+          "partido_na_data": "PL",
+          "ordem": 25
+        },
+        {
+          "nome": "Bibo Nunes",
+          "id_deputado": 204388,
+          "partido_na_data": "PL",
+          "ordem": 26
+        },
+        {
+          "nome": "Greyce Elias",
+          "id_deputado": 198197,
+          "partido_na_data": "AVANTE",
+          "ordem": 27
+        },
+        {
+          "nome": "Rodolfo Nogueira",
+          "id_deputado": 220546,
+          "partido_na_data": "PL",
+          "ordem": 28
+        },
+        {
+          "nome": "Lincoln Portela",
+          "id_deputado": 74585,
+          "partido_na_data": "PL",
+          "ordem": 29
+        },
+        {
+          "nome": "Coronel Ulysses",
+          "id_deputado": 220590,
+          "partido_na_data": "UNIÃO",
+          "ordem": 30
+        },
+        {
+          "nome": "Joaquim Passarinho",
+          "id_deputado": 178910,
+          "partido_na_data": "PL",
+          "ordem": 31
+        },
+        {
+          "nome": "Marcel van Hattem",
+          "id_deputado": 156190,
+          "partido_na_data": "NOVO",
+          "ordem": 32
+        },
+        {
+          "nome": "Dr. Fernando Máximo",
+          "id_deputado": 220610,
+          "partido_na_data": "UNIÃO",
+          "ordem": 33
+        },
+        {
+          "nome": "Cabo Gilberto Silva",
+          "id_deputado": 220574,
+          "partido_na_data": "PL",
+          "ordem": 34
+        },
+        {
+          "nome": "Cristiane Lopes",
+          "id_deputado": 220608,
+          "partido_na_data": "UNIÃO",
+          "ordem": 35
+        },
+        {
+          "nome": "Luiz Lima",
+          "id_deputado": 204455,
+          "partido_na_data": "PL",
+          "ordem": 36
+        },
+        {
+          "nome": "Priscila Costa",
+          "id_deputado": 226075,
+          "partido_na_data": "PL",
+          "ordem": 37
+        }
+      ],
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "comissao": "CREDN",
+      "situacao": "Aguardando Parecer",
+      "ultimo_status_em": "2026-10-14T02:05:38",
+      "ultimo_status_sequencia": 28,
+      "parado_ha_dias": 6,
+      "apensado_a": null,
+      "principal_nao_localizada": false,
+      "relator": {
+        "id": 213762,
+        "nome": "Carla Dickson",
+        "partido_hoje": "PL",
+        "designado_em": "2026-10-14T02:05:00",
+        "fonte": "https://www.camara.leg.br/propostas-legislativas/2394641"
+      },
+      "relator_indeterminado": null
+    }
+  ]
+}
