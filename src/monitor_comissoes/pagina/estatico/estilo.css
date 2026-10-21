@@ -1,0 +1,175 @@
+/* Monitor de comissões · estilo da página pública.
+   Cópia do Design System do portfólio (../Portfolio/design-system), opção Azul institucional,
+   feita em 2026-10-20: tokens de export/tokens.azul.css e os trechos usados de
+   components/bundle.css (base, .pf-wrap, tipografia, .pf-btn--link, FilterChips).
+   Mudança feita na cópia: o caminho das fontes saiu da raiz do domínio (/fonts/) para a pasta relativa fontes/, porque a
+   página fica em /monitor-comissoes/ e não na raiz do domínio. Para recopiar, veja LEIAME.md. */
+
+/* Portfólio João Marcos · tokens (Azul institucional)
+   Gerado de tokens.json do Design System. Não edite à mão: mude o tokens.json e gere de novo.
+   Tema: claro por padrão; escuro por preferência do sistema; data-theme="light|dark" no <html> força. */
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("fontes/schibsted-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("fontes/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("fontes/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("fontes/ibm-plex-mono-latin-600-normal.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-alt: #f3f6f9;
+  --bg-raised: #ffffff;
+  --ink: #0e1726;
+  --ink-muted: #4b5768;
+  --ink-disabled: #97a2b0;
+  --line: #e1e7ee;
+  --line-strong: #7d8a9b;
+  --disabled-bg: #eef1f5;
+  --accent: #1d4fb8;
+  --accent-strong: #163d8f;
+  --accent-soft: #eaf0fb;
+  --accent-highlight: #1d4fb824;
+  --accent-glow: #1d4fb81f;
+  --on-accent: #ffffff;
+  --band-bg: #0a0f14;
+  --band-ink: #e6ecf2;
+  --band-muted: #9aa8b7;
+  --band-line: #1c2733;
+  --band-dot: #ffffff1a;
+  --band-accent: #9dbcff;
+  --link: var(--accent-strong);
+  --focus-ring: var(--accent-strong);
+  --shadow-nav: 0 1px 0 #e1e7ee, 0 8px 24px -16px rgba(14,23,38,0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0b1117;
+    --bg-alt: #111a22;
+    --bg-raised: #0f171f;
+    --ink: #e6ecf2;
+    --ink-muted: #9aa8b7;
+    --ink-disabled: #566476;
+    --line: #223040;
+    --line-strong: #66768a;
+    --disabled-bg: #16202a;
+    --accent: #86abff;
+    --accent-strong: #b3caff;
+    --accent-soft: #14223a;
+    --accent-highlight: #86abff33;
+    --accent-glow: #86abff1a;
+    --on-accent: #0b1117;
+    --band-bg: #05080c;
+    --band-ink: #e6ecf2;
+    --band-muted: #9aa8b7;
+    --band-line: #1c2733;
+    --band-dot: #ffffff14;
+    --band-accent: #9dbcff;
+    --link: var(--accent-strong);
+    --focus-ring: var(--accent-strong);
+    --shadow-nav: 0 1px 0 #223040;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1117;
+  --bg-alt: #111a22;
+  --bg-raised: #0f171f;
+  --ink: #e6ecf2;
+  --ink-muted: #9aa8b7;
+  --ink-disabled: #566476;
+  --line: #223040;
+  --line-strong: #66768a;
+  --disabled-bg: #16202a;
+  --accent: #86abff;
+  --accent-strong: #b3caff;
+  --accent-soft: #14223a;
+  --accent-highlight: #86abff33;
+  --accent-glow: #86abff1a;
+  --on-accent: #0b1117;
+  --band-bg: #05080c;
+  --band-ink: #e6ecf2;
+  --band-muted: #9aa8b7;
+  --band-line: #1c2733;
+  --band-dot: #ffffff14;
+  --band-accent: #9dbcff;
+  --link: var(--accent-strong);
+  --focus-ring: var(--accent-strong);
+  --shadow-nav: 0 1px 0 #223040;
+}
+
+:root {
+  --font-text: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-label: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --container-max: 1120px;
+  --prose-max: 680px;
+  --hero-max: 880px;
+  --nav-height: 64px;
+  --touch-min: 44px;
+  --border-width: 1px;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 600ms;
+  --duration-marquee: 48s;
+  --shadow-none: none;
+}
+/* ---------- componentes do DS usados ---------- */
+.pf-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 48px; padding: 0 var(--space-6); border-radius: var(--radius-pill); border: var(--border-width) solid transparent; font: inherit; font-size: 16px; line-height: 1; font-weight: 600; text-decoration: none; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-quart), border-color var(--duration-fast) var(--ease-quart), color var(--duration-fast) var(--ease-quart), transform var(--duration-fast) var(--ease-quart); -webkit-tap-highlight-color: transparent; }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-text); font-size: 16px; line-height: 26px; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.pf-wrap { width: 100%; max-width: calc(var(--container-max) + 2 * var(--space-6)); margin-inline: auto; padding-inline: var(--space-4); }
+@media (min-width: 768px) { .pf-wrap { padding-inline: var(--space-6); } }
+.pf-label { font-family: var(--font-label); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.pf-muted { color: var(--ink-muted); }
+.pf-h2 { margin: 0; font-weight: 800; letter-spacing: -0.02em; font-size: 28px; line-height: 34px; text-wrap: balance; }
+.pf-h3 { margin: 0; font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.01em; }
+.pf-mark { color: var(--ink); background: linear-gradient(transparent 12%, var(--accent-highlight) 12%, var(--accent-highlight) 92%, transparent 92%); padding-inline: 0.12em; margin-inline: -0.06em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.pf-btn:focus-visible, .pf-btn[data-state="focus"] { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.pf-btn--link { min-height: 44px; padding: 0 2px; border-radius: 4px; background: none; color: var(--link); text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.pf-btn--link:hover, .pf-btn--link[data-state="hover"] { text-decoration-color: currentColor; }
+.pf-btn--link:disabled, .pf-btn--link[aria-disabled="true"] { color: var(--ink-disabled); text-decoration-color: transparent; }
+.pf-chips { display: flex; gap: var(--space-2); overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: none; }
+.pf-chips::-webkit-scrollbar { display: none; }
+.pf-chip { flex: none; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-4); border-radius: var(--radius-pill); border: var(--border-width) solid var(--line-strong); background: var(--bg-raised); color: var(--ink); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-quart), border-color var(--duration-fast) var(--ease-quart), color var(--duration-fast) var(--ease-quart); }
+.pf-chip:hover, .pf-chip[data-state="hover"] { border-color: var(--accent); background: var(--accent-soft); }
+.pf-chip:focus-visible, .pf-chip[data-state="focus"] { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.pf-chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.pf-chip[aria-pressed="true"]:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.pf-chip__count { font-family: var(--font-label); font-size: 12px; letter-spacing: 0.04em; opacity: 0.85; }
+.pf-chip:disabled { cursor: not-allowed; background: var(--disabled-bg); border-color: var(--disabled-bg); color: var(--ink-disabled); }
+.pf-btn--sm { min-height: 44px; padding: 0 var(--space-4); font-size: 15px; }

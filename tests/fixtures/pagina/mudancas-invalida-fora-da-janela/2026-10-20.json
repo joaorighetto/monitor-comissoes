@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-10-20",
+    "retrato": {
+      "dia": "2026-10-20",
+      "dados_camara_em": "2026-10-20T04:31:26+00:00"
+    },
+    "retrato_anterior": {
+      "dia": "2026-10-19",
+      "dados_camara_em": "2026-10-19T04:31:26+00:00"
+    },
+    "linha_de_base": null,
+    "total_eventos": 1,
+    "total_por_tipo": {
+      "entrou": 1,
+      "saiu": 0,
+      "situacao": 0,
+      "relator": 0,
+      "parecer": 0,
+      "etiquetas": 0
+    }
+  },
+  "eventos": [
+    {
+      "tipo": "entrou",
+      "id": 2330962,
+      "identificacao": "PL 1831/2022",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2330962",
+      "motivo": {
+        "codigo": "chegou_a_comissao",
+        "texto": "chegou à comissão"
+      },
+      "etiquetas": [
+        "autoria NOVO"
+      ],
+      "tramitacoes": []
+    }
+  ],
+  "ressalvas": []
+}
