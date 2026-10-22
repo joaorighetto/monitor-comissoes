@@ -1,14 +1,14 @@
 {
   "versao_formato": 1,
   "resultado": "ok",
-  "verificado_em": "2026-10-21T09:23:02-03:00",
-  "data_referencia": "2026-10-21",
+  "verificado_em": "2026-10-22T09:24:56-03:00",
+  "data_referencia": "2026-10-22",
   "tentativas": 1,
   "falha": null,
   "variacao_aceita": null,
   "ultimo_retrato_bom": {
-    "gerado_em": "2026-10-21T09:19:30-03:00",
-    "dados_camara_em": "2026-10-21T04:31:29+00:00",
+    "gerado_em": "2026-10-22T09:21:02-03:00",
+    "dados_camara_em": "2026-10-22T04:31:31+00:00",
     "total_itens": 105,
     "estoque_bruto": 1531
   }
