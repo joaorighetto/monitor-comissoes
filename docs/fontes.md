@@ -161,3 +161,49 @@ Regra de transição (Res. 33/2022, art. 3º): "Finda a 56ª legislatura, arquiv
 - A 57ª legislatura termina em 31/01/2027, e a 58ª começa em 1º/02/2027.
 - Estimativa, contando as legislaturas completas posteriores à de apresentação: **95 PL/PLP do estoque da CE e da CREDN** têm 3 ou mais legislaturas completas ao fim da 57ª, todos apresentados antes de 01/02/2015. **Apenas 2 dos 56 itens do filtro NOVO** estão nesse grupo: PL 3961/2004 e PL 791/2011.
 - **Não foi confirmado** como a Câmara conta "tramitado por 3 legislaturas completas". A dúvida é se conta ou não a legislatura de apresentação e como trata períodos em que a proposição ficou arquivada. A estimativa acima é uma hipótese.
+
+## 5. Pautas, resultados e prazos de emendas (sondagem de 23/10/2026)
+
+Consultas à API v2 entre 22 e 23/10/2026. Janela: de 23/10/2025 a 22/10/2026, CE (órgão 2009) e CREDN (órgão 2018). Os scripts e o JSON bruto ficaram fora do repositório; os números servem para dimensionar o produto, não como dado publicado.
+
+### Endpoints
+
+- `/orgaos/{id}/eventos?dataInicio=&dataFim=&itens=100`: os eventos do órgão no período, com `X-Total-Count` e paginação. Nenhum mês passou de 100 eventos. O tipo do evento vem em `descricaoTipo` ("Reunião Deliberativa", "Audiência Pública", "Seminário"…), e a situação em `situacao` ("Convocada", "Encerrada (Final)", "Encerrada (Termo)", "Cancelada").
+- `/eventos/{id}/pauta`: os itens da pauta, com `ordem`, `regime`, `titulo`, `relator` (com `siglaPartido`), `proposicao_`, `proposicaoRelacionada_` e `situacaoItem`.
+  - Quando o item é o parecer (PRL), o projeto vem em `proposicaoRelacionada_`.
+  - `situacaoItem` é texto livre ("Retirado de pauta, por acordo, a pedido do governo.", "Aprovado o Parecer…").
+  - A API não informa quando a pauta foi publicada. Em 23/10/2026 já aparecia a reunião da CE de 28/10, convocada, com 20 itens (um só caso).
+- Tramitação `350` ("Abertura de Prazo"): despacho "Prazo para Emendas ao Projeto (5 sessões a partir de DD/MM/AAAA)" ou "… ao Substitutivo …". Tramitação `600` ("Encerramento de Prazo"): encerra prazo de emendas e **também prazo de vista** ("Prazo de Vista Encerrado", 40 casos na janela).
+
+### Números
+
+| | CE | CREDN |
+|---|---:|---:|
+| Reuniões deliberativas convocadas | 23 | 24 |
+| Realizadas | 20 | 22 |
+| Semanas com reunião (de 52) | 19 | 20 |
+| Itens em pauta (realizadas) | 474 | 291 |
+| PL / PLP | 388 / 1 | 113 / 9 |
+| REQ | 82 | 128 |
+| MSC / PDL / PEC | 0 / 0 / 2 | 38 / 2 / 0 |
+
+- **Dia da semana:** 37 das 42 reuniões realizadas foram numa quarta, e as outras 5 numa terça. Houve 5 cancelamentos.
+- **REQ por assunto:**
+  - audiência pública ou seminário: 76;
+  - informação ou convocação de ministro: 72;
+  - moção: 30;
+  - visita ou diligência: 20.
+
+  Foram aprovados em 90% das vezes.
+- **Resultado de PL/PLP pautado (511 vezes):** aprovado 37%, retirado de pauta 31%, não apreciado 15%, sem registro 8% e vista 7%. Das retiradas, 86 foram por acordo, 49 a pedido do relator e 23 por ausência do relator. De 287 PL/PLP distintos, 121 foram pautados mais de uma vez (até 5).
+- **Ligação com o NOVO:** 5 dos 287 PL/PLP pautados (relator do NOVO na pauta, ou autor que hoje está no NOVO). É um piso, porque a autoria pelo partido na data não foi conferida. Só 7 dos 287 estavam no inventário de 22/10/2026.
+- **Prazos de emendas** (piso: só os PL/PLP que chegaram à pauta):
+  - 170 aberturas (CE 151, CREDN 19): 101 ao substitutivo e 69 ao projeto;
+  - duração de 7 a 111 dias corridos (mediana 16);
+  - só 3 receberam emenda;
+  - em 10 houve outra tramitação entre a abertura e o encerramento;
+  - da abertura do prazo ao substitutivo até a primeira pauta: mediana de 26 dias (p25 20, p75 41); para o prazo ao projeto, 79 dias.
+- **Cadência:**
+  - um resumo diário teria novidade (reunião realizada ou prazo aberto na véspera) em 77 dos 365 dias (21%);
+  - 21 das 53 semanas não tiveram reunião nem abertura de prazo (recesso e período eleitoral).
+- **Ritmo do inventário:** nos 52 processos do inventário de 22/10/2026, só 26 tiveram alguma tramitação substantiva em 12 meses, em 55 dias distintos.
