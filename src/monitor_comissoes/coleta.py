@@ -22,6 +22,7 @@ from .estoque import (
     resolver_referencia,
     subir_ate_a_raiz,
 )
+from .indice import construir_indice
 from .lote import (
     Lote,
     Proposicao,
@@ -60,6 +61,7 @@ class Coletado:
     estoque_bruto: int  # PL/PLP nas comissões, pelo órgão do próprio status (AGE, FR-015a)
     dados_camara_em: datetime  # UTC
     mudancas: dict | None = None  # o arquivo de mudanças do dia (MUD); None sem comparação
+    indice: dict | None = None  # o índice de autoria do lote (PAU); só a execução diária o grava
 
 
 def _candidatos_a_relatoria(
@@ -194,6 +196,7 @@ def coletar(
             contar_estoque_bruto(lote.proposicoes(ano), TIPOS, config.comissoes)
             for ano in lote.anos
         )
+        indice = construir_indice(lote, agora)
 
         # Quais proposições têm autor do NOVO (na data) ou autor deputado do NOVO hoje.
         ligadas_ao_novo: set[int] = set()
@@ -284,7 +287,7 @@ def coletar(
             agora.astimezone(BRASILIA).date(),
         )
         validar_arquivo(mudancas)
-    return Coletado(documento, estoque_bruto, lote.last_modified_min, mudancas)
+    return Coletado(documento, estoque_bruto, lote.last_modified_min, mudancas, indice)
 
 
 def executar(config: Config, transporte: Transporte, agora: datetime, saida: Path) -> Resultado:

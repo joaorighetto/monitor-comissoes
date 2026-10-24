@@ -34,6 +34,11 @@ REPETIVEIS = (
     API_DEPUTADOS,
 )
 
+# Entrada local inválida da checagem da pauta (PAU): índice de autoria, inventário ou arquivo de
+# pauta ausente ou fora do formato. Fica fora de CATEGORIAS e de REPETIVEIS: não é falha da coleta
+# e nunca vai para o `status.json`.
+ENTRADA_INVALIDA = "entrada_invalida"
+
 
 class FalhaDeColeta(Exception):
     """Falha que interrompe a execução sem gravar nada."""
