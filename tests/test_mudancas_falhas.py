@@ -34,6 +34,13 @@ from test_diaria import (
 
 # No lote como "Transformado em Norma Jurídica", sequência 134; sem fixture de tramitações.
 PL_SAIU = 2141142
+ORDEM_DAS_TROCAS = [
+    "anterior.json",
+    "2026-10-19.json",
+    "indice-autoria.json",
+    "atual.json",
+    "status.json",
+]
 
 
 @pytest.fixture
@@ -46,6 +53,7 @@ def foto(caminhos) -> dict[str, bytes | None]:
     arquivos = {
         "atual": caminhos["atual"],
         "anterior": caminhos["anterior"],
+        "indice": caminhos["indice"],
     }
     resultado = {nome: c.read_bytes() if c.exists() else None for nome, c in arquivos.items()}
     pasta = caminhos["mudancas"]
@@ -254,7 +262,7 @@ def test_atual_de_dia_anterior_em_formato_antigo_nao_falha_vira_linha_de_base(
 # --- gravação: tudo ou nada nos quatro arquivos ---
 
 
-@pytest.mark.parametrize("k", [1, 2, 3, 4])
+@pytest.mark.parametrize("k", [1, 2, 3, 4, 5])
 def test_falha_ao_preparar_o_k_esimo_arquivo_nao_troca_nenhum(
     caminhos, agora, capsys, monkeypatch, k
 ):
@@ -275,17 +283,18 @@ def test_falha_ao_preparar_o_k_esimo_arquivo_nao_troca_nenhum(
 
     codigo = executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1)))
 
-    # Com rotação são quatro arquivos: anterior, mudanças, atual e status (nessa ordem).
-    assert chamadas[:4] == ["anterior.json", "2026-10-19.json", "atual.json", "status.json"][:k]
+    # Com rotação são cinco arquivos: anterior, mudanças, índice de autoria (PAU), atual e
+    # status (nessa ordem).
+    assert chamadas[:5] == ORDEM_DAS_TROCAS[:k]
     erro = capsys.readouterr().err
     assert codigo == 1 and "disco cheio" in erro
-    assert foto(caminhos) == antes  # nenhum dos quatro mudou, e nenhum temporário sobrou
+    assert foto(caminhos) == antes  # nenhum dos cinco mudou, e nenhum temporário sobrou
     assert not list(caminhos["atual"].parent.rglob("*.tmp"))
     assert ler(caminhos["status"])["resultado"] == "falha"
 
 
-@pytest.mark.parametrize("quem", ["anterior.json", "2026-10-19.json", "atual.json", "status.json"])
-def test_falha_na_troca_de_um_dos_quatro_restaura_os_ja_trocados(
+@pytest.mark.parametrize("quem", ORDEM_DAS_TROCAS)
+def test_falha_na_troca_de_um_dos_cinco_restaura_os_ja_trocados(
     caminhos, agora, capsys, monkeypatch, quem
 ):
     transporte = TransporteFalso()
@@ -303,8 +312,8 @@ def test_falha_na_troca_de_um_dos_quatro_restaura_os_ja_trocados(
 
     codigo = executar_main(caminhos, transporte, Relogio(agora + timedelta(days=1)))
 
-    # As trocas vão na ordem anterior, mudanças, atual e status: o que já tinha sido trocado volta
-    # ao que era, e o que ainda não tinha sido trocado nunca foi tocado.
+    # As trocas vão na ordem anterior, mudanças, índice, atual e status: o que já tinha sido
+    # trocado volta ao que era, e o que ainda não tinha sido trocado nunca foi tocado.
     assert codigo == 1
     assert foto(caminhos) == antes
     assert not list(caminhos["atual"].parent.rglob("*.tmp"))

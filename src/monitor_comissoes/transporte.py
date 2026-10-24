@@ -38,6 +38,14 @@ class Transporte(Protocol):
     def baixar(self, url: str, destino: Path) -> ArquivoBaixado: ...
 
 
+class RecursoInexistente(FalhaDeColeta):
+    """HTTP 404: o recurso pedido não existe na API. Não é repetido.
+
+    Mesma categoria de qualquer erro HTTP (`fonte_indisponivel`); quem precisa distinguir o "não
+    existe" de uma falha da fonte (a busca de uma reunião que sumiu da agenda) captura esta classe.
+    """
+
+
 class _Repetivel(Exception):
     """Falha que vale uma nova tentativa; leva a falha final caso as tentativas acabem."""
 
@@ -119,7 +127,8 @@ class TransporteHttp:
         try:
             return self.abrir(requisicao, timeout=self.timeout)
         except urllib.error.HTTPError as erro:
-            falha = FalhaDeColeta(FONTE_INDISPONIVEL, f"{_nome(url)}: HTTP {erro.code}")
+            classe = RecursoInexistente if erro.code == 404 else FalhaDeColeta
+            falha = classe(FONTE_INDISPONIVEL, f"{_nome(url)}: HTTP {erro.code}")
             if erro.code >= 500 or erro.code == 429:
                 raise _Repetivel(falha) from erro
             raise falha from erro

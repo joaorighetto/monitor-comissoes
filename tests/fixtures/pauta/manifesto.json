@@ -1,0 +1,119 @@
+{
+  "arquivos": {
+    "orgaos/CE.json": {
+      "endpoint": "/orgaos?sigla=CE&itens=10",
+      "capturado_em": "2026-10-24T18:46:03+00:00",
+      "x_total_count": "1"
+    },
+    "orgaos/CREDN.json": {
+      "endpoint": "/orgaos?sigla=CREDN&itens=10",
+      "capturado_em": "2026-10-24T18:46:03+00:00",
+      "x_total_count": "1"
+    },
+    "eventos/2009-2026-10-17-2026-10-31.json": {
+      "endpoint": "/orgaos/2009/eventos?dataInicio=2026-10-17&dataFim=2026-10-31&itens=100",
+      "capturado_em": "2026-10-24T18:46:03+00:00",
+      "x_total_count": "2"
+    },
+    "eventos/2009-2026-04-08-2026-04-22.json": {
+      "endpoint": "/orgaos/2009/eventos?dataInicio=2026-04-08&dataFim=2026-04-22&itens=100",
+      "capturado_em": "2026-10-24T18:46:04+00:00",
+      "x_total_count": "4"
+    },
+    "eventos/2018-2026-04-08-2026-04-22.json": {
+      "endpoint": "/orgaos/2018/eventos?dataInicio=2026-04-08&dataFim=2026-04-22&itens=100",
+      "capturado_em": "2026-10-24T18:46:04+00:00",
+      "x_total_count": "3"
+    },
+    "eventos/2009-2025-11-26-2025-12-10.json": {
+      "endpoint": "/orgaos/2009/eventos?dataInicio=2025-11-26&dataFim=2025-12-10&itens=100",
+      "capturado_em": "2026-10-24T18:46:05+00:00",
+      "x_total_count": "16"
+    },
+    "eventos/2018-2025-11-26-2025-12-10.json": {
+      "endpoint": "/orgaos/2018/eventos?dataInicio=2025-11-26&dataFim=2025-12-10&itens=100",
+      "capturado_em": "2026-10-24T18:46:05+00:00",
+      "x_total_count": "8"
+    },
+    "eventos/81555.json": {
+      "endpoint": "/eventos/81555",
+      "capturado_em": "2026-10-24T18:46:05+00:00",
+      "x_total_count": "1"
+    },
+    "eventos/83091.json": {
+      "endpoint": "/eventos/83091",
+      "capturado_em": "2026-10-24T18:46:05+00:00",
+      "x_total_count": "1"
+    },
+    "pautas/80265.json": {
+      "endpoint": "/eventos/80265/pauta",
+      "capturado_em": "2026-10-24T18:46:06+00:00",
+      "x_total_count": "33"
+    },
+    "pautas/80344.json": {
+      "endpoint": "/eventos/80344/pauta",
+      "capturado_em": "2026-10-24T18:46:06+00:00",
+      "x_total_count": "38"
+    },
+    "pautas/80375.json": {
+      "endpoint": "/eventos/80375/pauta",
+      "capturado_em": "2026-10-24T18:46:06+00:00",
+      "x_total_count": "26"
+    },
+    "pautas/80376.json": {
+      "endpoint": "/eventos/80376/pauta",
+      "capturado_em": "2026-10-24T18:46:07+00:00",
+      "x_total_count": "8"
+    },
+    "pautas/80560.json": {
+      "endpoint": "/eventos/80560/pauta",
+      "capturado_em": "2026-10-24T18:46:08+00:00",
+      "x_total_count": "34"
+    },
+    "pautas/80594.json": {
+      "endpoint": "/eventos/80594/pauta",
+      "capturado_em": "2026-10-24T18:46:08+00:00",
+      "x_total_count": "9"
+    },
+    "pautas/80712.json": {
+      "endpoint": "/eventos/80712/pauta",
+      "capturado_em": "2026-10-24T18:46:08+00:00",
+      "x_total_count": "19"
+    },
+    "pautas/80732.json": {
+      "endpoint": "/eventos/80732/pauta",
+      "capturado_em": "2026-10-24T18:46:08+00:00",
+      "x_total_count": "23"
+    },
+    "pautas/81366.json": {
+      "endpoint": "/eventos/81366/pauta",
+      "capturado_em": "2026-10-24T18:46:09+00:00",
+      "x_total_count": "25"
+    },
+    "pautas/81483.json": {
+      "endpoint": "/eventos/81483/pauta",
+      "capturado_em": "2026-10-24T18:46:09+00:00",
+      "x_total_count": "16"
+    },
+    "pautas/81555.json": {
+      "endpoint": "/eventos/81555/pauta",
+      "capturado_em": "2026-10-24T18:46:09+00:00",
+      "x_total_count": "30"
+    },
+    "pautas/81609.json": {
+      "endpoint": "/eventos/81609/pauta",
+      "capturado_em": "2026-10-24T18:46:10+00:00",
+      "x_total_count": "19"
+    },
+    "pautas/81862.json": {
+      "endpoint": "/eventos/81862/pauta",
+      "capturado_em": "2026-10-24T18:46:10+00:00",
+      "x_total_count": "21"
+    },
+    "pautas/83091.json": {
+      "endpoint": "/eventos/83091/pauta",
+      "capturado_em": "2026-10-24T18:46:10+00:00",
+      "x_total_count": "20"
+    }
+  }
+}

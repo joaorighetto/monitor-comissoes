@@ -1,4 +1,4 @@
-"""Execução diária (AGE): coleta, grava `atual.json` e `status.json`.
+"""Execução diária (AGE): coleta, grava `atual.json`, `status.json` e o índice de autoria (PAU).
 
 `python -m monitor_comissoes.diaria executar|mensagem` (contrato em specs/002-.../contracts/cli.md).
 O comando da COL (`python -m monitor_comissoes`) não muda.
@@ -17,6 +17,7 @@ from .coleta import coletar
 from .config import carregar_config
 from .erros import INTERNA, REPETIVEIS, FalhaDeColeta
 from .estoque import BRASILIA
+from .indice import serializar_indice
 from .mudancas import nome_do_arquivo, resumo
 from .plausibilidade import percentual_texto, verificar
 from .retratos import preparar
@@ -93,6 +94,7 @@ def executar_diaria(
     transporte: Transporte,
     relogio: Callable[[], datetime],
     dormir: Callable[[float], None],
+    indice: Path = Path("cache/indice-autoria.json"),
 ) -> int:
     """Uma execução diária. Devolve o código de saída: 0 em sucesso, 1 em qualquer falha."""
     tentativas = 0
@@ -162,6 +164,7 @@ def executar_diaria(
                 Path(mudancas)
                 / nome_do_arquivo(date.fromisoformat(coletado.mudancas["meta"]["data"])),
             ),
+            (serializar_indice(coletado.indice), indice),
             (serializar(coletado.documento), atual),
             (serializar(documento_status), status),
         ]
@@ -223,6 +226,12 @@ def main(
         "--mudancas", type=Path, default=None, help="padrão: a pasta mudancas ao lado do --atual"
     )
     executar.add_argument("--aceitar-variacao", action="store_true")
+    executar.add_argument(
+        "--indice",
+        type=Path,
+        default=Path("cache/indice-autoria.json"),
+        help="índice de autoria lido pela checagem da pauta (fora do Git)",
+    )
     mensagem = subcomandos.add_parser("mensagem", help="mensagem de uma linha do commit")
     mensagem.add_argument("--status", type=Path, default=Path("data/status.json"))
     args = parser.parse_args(argv)
@@ -246,6 +255,7 @@ def main(
             transporte or TransporteHttp(),
             relogio or _agora,
             dormir or time.sleep,
+            args.indice,
         )
     finally:
         if anterior is not None:

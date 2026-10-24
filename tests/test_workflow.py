@@ -185,8 +185,9 @@ def test_a_confirmacao_so_chega_a_coleta_no_disparo_manual():
 def test_a_entrada_nao_e_interpolada_dentro_do_script():
     conteudo = texto()
     inicio = conteudo.index("run: |\n          # Falha da coleta")
+    fim = conteudo.find("\n      - ", inicio)  # o script vai até o passo seguinte, se houver
 
-    assert "${{" not in conteudo[inicio:]
+    assert "${{" not in conteudo[inicio : fim if fim != -1 else None]
 
 
 # --- US5 ------------------------------------------------------------------------------------------
@@ -201,3 +202,19 @@ def test_gitignore_ignora_temporarios_em_qualquer_pasta_de_dados():
 
     # Os temporários de `gravar_todos` ficam ao lado de cada destino, inclusive em data/mudancas/.
     assert "data/**/*.tmp" in linhas
+
+
+# --- PAU ------------------------------------------------------------------------------------------
+
+
+def test_salva_o_indice_de_autoria_no_cache_so_depois_da_coleta_com_sucesso():
+    conteudo = texto()
+    inicio = conteudo.index("uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9")
+    passo = conteudo[conteudo.rindex("- ", 0, inicio) :]
+
+    assert conteudo.index("- name: Coleta e commit") < inicio
+    assert "if: success()" in passo
+    assert blocos(passo, "with")[0] == [
+        "path: cache/indice-autoria.json",
+        "key: indice-autoria-${{ github.run_id }}-${{ github.run_attempt }}",
+    ]
