@@ -8,6 +8,7 @@ gravados.
 
 import argparse
 import sys
+from collections.abc import Callable
 from datetime import date, datetime
 from pathlib import Path
 
@@ -151,16 +152,18 @@ def _registrar_falha(categoria: str, motivo: str, args, agora: datetime) -> int:
     return 1
 
 
-def checar(args, transporte: Transporte, agora: datetime) -> int:
+def checar(args, transporte: Transporte, relogio: Callable[[], datetime]) -> int:
+    """`relogio` dá o momento da checagem (no início) e o `verificado_em` do status (no fim)."""
+    agora = relogio()
     try:
         arquivo, linha_de_base, contagem = _checar(args, transporte, agora)
         checada_em = arquivo["checagem"]["checada_em"]
-        status = montar_status_pauta("ok", agora, None, checada_em)
+        status = montar_status_pauta("ok", relogio(), None, checada_em)
         gravar(arquivo, args.pautas / f"{arquivo['meta']['data']}.json", status, args.status)
     except FalhaDeColeta as falha:
-        return _registrar_falha(falha.categoria, falha.motivo, args, agora)
+        return _registrar_falha(falha.categoria, falha.motivo, args, relogio())
     except Exception as erro:  # nenhuma falha pode terminar sem aviso nem status
-        return _registrar_falha(INTERNA, f"{type(erro).__name__}: {erro}", args, agora)
+        return _registrar_falha(INTERNA, f"{type(erro).__name__}: {erro}", args, relogio())
 
     total = sum(contagem["por_comissao"].values())
     comissoes = ", ".join(f"{sigla}: {n}" for sigla, n in contagem["por_comissao"].items())
@@ -194,7 +197,14 @@ def mensagem(caminho_status: Path, pautas: Path) -> str:
         raise ValueError(falha.motivo) from falha
     reunioes = _plural(len(arquivo["checagem"]["reunioes"]), "reunião", "reuniões")
     novas = sum(1 for a in arquivo["alteracoes"] if a["detectada_em"] == checada_em)
-    if arquivo["meta"]["linha_de_base"] is not None and not arquivo["alteracoes"]:
+    # A checagem é a própria linha de base quando toda reunião foi vista pela primeira vez nela;
+    # nas checagens seguintes do mesmo dia, as reuniões da linha de base têm "vista desde" anterior.
+    reunioes_do_dia = arquivo["checagem"]["reunioes"]
+    if (
+        arquivo["meta"]["linha_de_base"] is not None
+        and not arquivo["alteracoes"]
+        and all(r["vista_desde"] == checada_em for r in reunioes_do_dia)
+    ):
         return f"{inicio} · ok · {reunioes} · linha de base"
     return f"{inicio} · ok · {reunioes} · {_plural(novas, 'alteração', 'alterações')}"
 
@@ -224,4 +234,5 @@ def main(
             print(f"FALHA [{INTERNA}]: {erro}", file=sys.stderr)
             return 1
         return 0
-    return checar(args, transporte or TransporteHttp(), agora or datetime.now(BRASILIA))
+    relogio = (lambda: agora) if agora is not None else (lambda: datetime.now(BRASILIA))
+    return checar(args, transporte or TransporteHttp(), relogio)

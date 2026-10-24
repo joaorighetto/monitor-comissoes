@@ -312,3 +312,33 @@ def test_reuniao_que_sumiu_e_nao_existe_mais_e_buscada_uma_vez(ambiente, capsys)
     assert [r["id"] for r in arquivo["checagem"]["reunioes"]] == [83091]
     assert [a["tipo"] for a in arquivo["alteracoes"]] == ["retirada_da_agenda"]
     assert transporte.pedidos_por_chave().count("eventos/99999") == 1
+
+
+def test_segunda_checagem_do_dia_da_linha_de_base_nao_repete_linha_de_base(ambiente, capsys):
+    assert checar(MANHA) == 0
+    assert checar(TARDE) == 0
+    capsys.readouterr()
+
+    assert main(["mensagem"]) == 0
+
+    assert capsys.readouterr().out == "pauta: 2026-10-24 15:17 · ok · 1 reunião · 0 alterações\n"
+
+
+def test_verificado_em_e_o_fim_da_execucao(ambiente, capsys, monkeypatch):
+    # Sem relógio injetado, a checagem usa o início e o status, o fim da execução.
+    import monitor_comissoes.pauta.cli as cli
+
+    momentos = iter([MANHA, MANHA + timedelta(seconds=40)])
+
+    class Relogio(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return next(momentos)
+
+    monkeypatch.setattr(cli, "datetime", Relogio)
+
+    assert main(["checar"], transporte=transporte_do_dia()) == 0
+
+    status = ler(ambiente / "data" / "status-pauta.json")
+    assert status["verificado_em"] == "2026-10-24T05:49:52-03:00"
+    assert status["ultima_checagem_boa"] == "2026-10-24T05:49:12-03:00"
