@@ -6,7 +6,8 @@ Contrato do resultado: specs/007-pauta-reunioes/contracts/pauta-json.md (`checag
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-from ..estoque import link_oficial
+from ..estoque import ETIQUETA_AUTOR_HOJE, ETIQUETA_AUTORIA, link_oficial
+from .etiquetas import apensados_do_novo, etiquetas
 from .regras import (
     REUNIAO_DELIBERATIVA,
     chave,
@@ -64,34 +65,52 @@ def _relator(relator: dict | None) -> dict | None:
     return {"id": relator["id"], "nome": relator["nome"], "partido": relator.get("siglaPartido")}
 
 
-def _item(item: dict, proposicao: dict) -> dict:
+def _item(item: dict, proposicao: dict, contexto: Contexto) -> dict:
     eh_req = proposicao["siglaTipo"] == "REQ"
+    relator = _relator(item["relator"])
+    nomes, nao_verificada = etiquetas(
+        proposicao["id"], relator, contexto.proposicoes_indice, contexto.ids_novo
+    )
     return {
         "ordem": item["ordem"],
         "titulo": item["titulo"],
         "regime": item.get("regime"),
         "proposicao": _proposicao(proposicao),
         "relacionada": _resumo(item["proposicaoRelacionada_"]) if eh_req else None,
-        "relator": _relator(item["relator"]),
-        "etiquetas": [],
-        "autoria_nao_verificada": False,
-        "leva_apensado_do_novo": [],
+        "relator": relator,
+        "etiquetas": nomes,
+        "autoria_nao_verificada": nao_verificada,
+        "leva_apensado_do_novo": apensados_do_novo(proposicao["id"], contexto.inventario),
         "resultado": None,
     }
 
 
+def _do_novo(item: dict) -> bool:
+    """Grupo do NOVO: etiqueta ou apensado do NOVO. "Autoria não verificada" não conta."""
+    return bool(item["etiquetas"] or item["leva_apensado_do_novo"])
+
+
+def _req_listado(item: dict) -> bool:
+    """REQ com autoria ou sem autoria verificada. A relatoria NOVO sozinha não lista o REQ."""
+    autoria = {ETIQUETA_AUTORIA, ETIQUETA_AUTOR_HOJE} & set(item["etiquetas"])
+    return bool(autoria) or item["autoria_nao_verificada"]
+
+
 def _reuniao(evento: dict, comissao: str, itens_da_pauta: list[dict], contexto: Contexto) -> dict:
     itens_da_pauta = sorted(itens_da_pauta, key=lambda i: i["ordem"])
-    listados, requerimentos, outros = [], 0, 0
+    listados, requerimentos_listados, requerimentos, outros = [], [], 0, 0
     pauta = []
     for item in itens_da_pauta:
         proposicao = proposicao_do_item(item)
         tipo = proposicao["siglaTipo"] if proposicao is not None else None
         classe = grupo(tipo)
         if classe == "listado":
-            listados.append(_item(item, proposicao))
+            listados.append(_item(item, proposicao, contexto))
         elif classe == "req":
             requerimentos += 1
+            requerimento = _item(item, proposicao, contexto)
+            if _req_listado(requerimento):
+                requerimentos_listados.append(requerimento)
         else:
             outros += 1
         pauta.append(
@@ -110,8 +129,8 @@ def _reuniao(evento: dict, comissao: str, itens_da_pauta: list[dict], contexto: 
         "situacao_camara": evento["situacao"],
         "link": f"{LINK_EVENTO}{evento['id']}",
         "vista_desde": contexto.checada_em,
-        "itens": listados,
-        "requerimentos": {"total": requerimentos, "listados": []},
+        "itens": sorted(listados, key=lambda i: (not _do_novo(i), i["ordem"])),
+        "requerimentos": {"total": requerimentos, "listados": requerimentos_listados},
         "outros": {"total": outros},
         "pauta": pauta,
     }

@@ -116,14 +116,16 @@ def test_item_listado_tem_os_campos_do_contrato():
 def test_req_17_so_contado_e_o_pl_1778_nao_vira_item():
     eventos = {"CE": (2009, eventos_salvos("2009-2026-04-08-2026-04-22"))}
     reunioes = montar_reunioes(
-        eventos, {81366: itens_reais(81366), 81555: itens_reais(81555)}, contexto(date(2026, 4, 15))
+        eventos,
+        {81366: itens_reais(81366), 81555: itens_reais(81555)},
+        contexto(date(2026, 4, 15), indice_de(itens_reais(81555))),
     )
 
     reuniao = next(r for r in reunioes if r["id"] == 81555)
 
     assert 2247358 not in {i["proposicao"]["id"] for i in reuniao["itens"]}
     assert "p:2615445" in {p["chave"] for p in reuniao["pauta"]}
-    assert reuniao["requerimentos"]["listados"] == []  # índice vazio ainda sem etiquetas
+    assert reuniao["requerimentos"]["listados"] == []  # nenhum REQ com autoria do NOVO
 
 
 def test_soma_de_listados_req_e_outros_e_o_total_da_pauta():
@@ -243,3 +245,133 @@ def test_outros_tipos_de_evento_ficam_de_fora(tipo):
         )
         == []
     )
+
+
+# --- US2: etiquetas e grupo do NOVO ------------------------------------------------------------
+
+DIA_81555 = date(2026, 4, 15)
+REQ_17, PL_1778, PL_5432, PL_3464, PL_778 = 2615445, 2247358, 2086175, 2537283, 2481268
+
+
+def indice_de(itens, **autorias):
+    """Índice com todas as proposições dos itens em `[0, []]`, salvo `autorias` (id → entrada)."""
+    from monitor_comissoes.pauta.regras import proposicao_do_item
+
+    proposicoes = {}
+    for item in itens:
+        proposicao = proposicao_do_item(item)
+        if proposicao is not None:
+            proposicoes[str(proposicao["id"])] = [0, []]
+    proposicoes.update({chave.removeprefix("p"): valor for chave, valor in autorias.items()})
+    return proposicoes
+
+
+def inventario_salvo():
+    return json.loads((PAUTA / "atual.json").read_text(encoding="utf-8"))["itens"]
+
+
+def reuniao_81555(proposicoes, ids_novo=(204455, 204528), inventario=None):
+    eventos = {"CE": (2009, eventos_salvos("2009-2026-04-08-2026-04-22"))}
+    ctx = contexto(
+        DIA_81555,
+        proposicoes,
+        ids_novo,
+        inventario_salvo() if inventario is None else inventario,
+    )
+    reunioes = montar_reunioes(eventos, {81366: itens_reais(81366), 81555: itens_reais(81555)}, ctx)
+    return next(r for r in reunioes if r["id"] == 81555)
+
+
+def test_grupo_do_novo_primeiro_e_a_ordem_dentro_de_cada_grupo():
+    reuniao = reuniao_81555(indice_de(itens_reais(81555)))
+
+    ordens = [i["ordem"] for i in reuniao["itens"]]
+    assert ordens[:2] == [10, 28]  # PL 5432/2016 (leva apensado) e PL 3464/2025 (relatoria)
+    assert ordens[2:] == sorted(ordens[2:])
+    pl_5432 = reuniao["itens"][0]
+    assert pl_5432["etiquetas"] == []
+    assert [a["id"] for a in pl_5432["leva_apensado_do_novo"]] == [2257023]
+    assert reuniao["itens"][1]["etiquetas"] == ["relatoria NOVO"]
+
+
+def test_autoria_novo_e_autor_hoje_vindos_do_indice():
+    proposicoes = indice_de(itens_reais(81555), p2481268=[1, [204528, 3]])
+
+    item = next(i for i in reuniao_81555(proposicoes)["itens"] if i["proposicao"]["id"] == PL_778)
+
+    assert item["etiquetas"] == ["autoria NOVO", "autor hoje no NOVO"]
+    assert item["autoria_nao_verificada"] is False
+
+
+def test_autoria_nao_verificada_nao_poe_no_grupo_do_novo():
+    proposicoes = indice_de(itens_reais(81555))
+    del proposicoes[str(PL_778)]
+
+    reuniao = reuniao_81555(proposicoes)
+
+    item = next(i for i in reuniao["itens"] if i["proposicao"]["id"] == PL_778)
+    assert item["autoria_nao_verificada"] is True
+    assert item["etiquetas"] == []
+    assert [i["ordem"] for i in reuniao["itens"]][:2] == [10, 28]
+
+
+def test_req_listado_com_autoria_e_relacionada_preenchida():
+    proposicoes = indice_de(itens_reais(81555), p2615445=[1, []])
+
+    reuniao = reuniao_81555(proposicoes)
+
+    [req] = reuniao["requerimentos"]["listados"]
+    assert req["proposicao"]["identificacao"] == "REQ 17/2026"
+    assert req["etiquetas"] == ["autoria NOVO"]
+    assert req["relacionada"] == {
+        "id": PL_1778,
+        "identificacao": "PL 1778/2020",
+        "link": f"https://www.camara.leg.br/propostas-legislativas/{PL_1778}",
+    }
+    assert reuniao["requerimentos"]["total"] == 5
+    assert PL_1778 not in {i["proposicao"]["id"] for i in reuniao["itens"]}
+
+
+def test_req_com_autor_hoje_no_novo_e_listado():
+    proposicoes = indice_de(itens_reais(81555), p2613776=[0, [204455]])
+
+    [req] = reuniao_81555(proposicoes)["requerimentos"]["listados"]
+
+    assert req["etiquetas"] == ["autor hoje no NOVO"]
+
+
+def test_req_so_com_relatoria_novo_nao_e_listado():
+    # O relator do REQ 17/2026 é a deputada 220629; aqui ela conta como do NOVO.
+    reuniao = reuniao_81555(indice_de(itens_reais(81555)), ids_novo=(204455, 220629))
+
+    assert reuniao["requerimentos"]["listados"] == []
+    assert reuniao["requerimentos"]["total"] == 5
+
+
+def test_req_fora_do_indice_e_listado_como_autoria_nao_verificada():
+    proposicoes = indice_de(itens_reais(81555))
+    del proposicoes[str(REQ_17)]
+
+    [req] = reuniao_81555(proposicoes)["requerimentos"]["listados"]
+
+    assert req["autoria_nao_verificada"] is True
+    assert req["etiquetas"] == []
+
+
+def test_req_listados_na_ordem_da_pauta():
+    proposicoes = indice_de(itens_reais(81555), p2615445=[1, []], p2613778=[1, []])
+
+    listados = reuniao_81555(proposicoes)["requerimentos"]["listados"]
+
+    assert [r["ordem"] for r in listados] == [2, 5]
+
+
+def test_etiqueta_nao_inclui_nem_exclui_item():
+    sem = reuniao_81555(indice_de(itens_reais(81555)), ids_novo=(), inventario=[])
+    com = reuniao_81555(indice_de(itens_reais(81555), p2615445=[1, [204528]]))
+
+    for reuniao in (sem, com):
+        assert len(reuniao["itens"]) == 25
+        assert reuniao["requerimentos"]["total"] == 5
+        assert reuniao["outros"]["total"] == 0
+        assert len(reuniao["pauta"]) == 30
