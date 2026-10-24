@@ -332,3 +332,13 @@ def arquivo_do_dia(
         },
         "alteracoes": copy.deepcopy(list(alteracoes)),
     }
+
+
+def itens_reais(id_evento):
+    """Os itens da pauta salva de `id_evento`, no formato da API."""
+    return json.loads((PAUTA / "pautas" / f"{id_evento}.json").read_text(encoding="utf-8"))["dados"]
+
+
+def item_real(id_evento, ordem):
+    """O item de `ordem` da pauta salva de `id_evento`."""
+    return next(item for item in itens_reais(id_evento) if item["ordem"] == ordem)
