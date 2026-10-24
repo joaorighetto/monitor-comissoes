@@ -11,7 +11,7 @@ from monitor_comissoes.erros import (
     FORMATO_ALTERADO,
     FalhaDeColeta,
 )
-from monitor_comissoes.transporte import TransporteHttp
+from monitor_comissoes.transporte import RecursoInexistente, TransporteHttp
 
 URL = "https://exemplo.invalido/arquivos/x.csv"
 LAST_MODIFIED = "Sat, 17 Oct 2026 04:33:58 GMT"
@@ -162,3 +162,47 @@ def test_obter_json_repete_falhas_temporarias():
 
     assert transporte.obter_json(URL).corpo == b"{}"
     assert esperas == [2]
+
+
+def test_obter_json_404_e_recurso_inexistente_sem_nova_tentativa():
+    transporte, abrir, esperas = montar(http_erro(404))
+
+    with pytest.raises(RecursoInexistente) as erro:
+        transporte.obter_json(URL)
+
+    assert isinstance(erro.value, FalhaDeColeta)
+    assert erro.value.categoria == FONTE_INDISPONIVEL
+    assert "HTTP 404" in erro.value.motivo
+    assert len(abrir.chamadas) == 1
+    assert esperas == []
+
+
+@pytest.mark.parametrize("codigo", [500, 429])
+def test_obter_json_500_e_429_continuam_repetidos(codigo):
+    transporte, abrir, esperas = montar(http_erro(codigo))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        transporte.obter_json(URL)
+
+    assert not isinstance(erro.value, RecursoInexistente)
+    assert len(abrir.chamadas) == 3
+    assert esperas == [2, 4]
+
+
+def test_obter_json_400_continua_falha_comum():
+    transporte, abrir, _ = montar(http_erro(400))
+
+    with pytest.raises(FalhaDeColeta) as erro:
+        transporte.obter_json(URL)
+
+    assert type(erro.value) is FalhaDeColeta
+    assert erro.value.categoria == FONTE_INDISPONIVEL
+    assert len(abrir.chamadas) == 1
+
+
+def test_entrada_invalida_fica_fora_das_categorias_da_coleta():
+    from monitor_comissoes.erros import CATEGORIAS, ENTRADA_INVALIDA, REPETIVEIS
+
+    assert ENTRADA_INVALIDA == "entrada_invalida"
+    assert ENTRADA_INVALIDA not in CATEGORIAS
+    assert ENTRADA_INVALIDA not in REPETIVEIS

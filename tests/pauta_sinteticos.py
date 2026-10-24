@@ -5,6 +5,7 @@ seguem as chaves das respostas salvas (conferidas em test_pauta_sinteticos.py); 
 campo por vez. Nada aqui usa a rede.
 """
 
+import copy
 import json
 import re
 import urllib.error
@@ -254,3 +255,80 @@ def deputados_novo(ids):
     for deputado in dados:
         deputado["uriPartido"] = f"{API}/partidos/37901"
     return {"dados": dados, "links": []}
+
+
+EVENTO_LINK = "https://www.camara.leg.br/evento-legislativo/"
+PROPOSICAO_LINK = "https://www.camara.leg.br/propostas-legislativas/"
+
+
+def reuniao_gravada(
+    id,
+    inicio="2026-10-28T10:00",
+    situacao="convocada",
+    chaves=(),
+    *,
+    comissao="CE",
+    vista_desde="2026-10-23T22:47:30-03:00",
+):
+    """Uma reunião como fica em `checagem.reunioes` do arquivo do dia (contracts/pauta-json.md).
+
+    `chaves`: as chaves da pauta, `p:{id}` ou `t:{titulo}`, na ordem da pauta.
+    """
+    pauta_gravada = []
+    for ordem, chave_item in enumerate(chaves, start=1):
+        if chave_item.startswith("p:"):
+            id_proposicao = int(chave_item[2:])
+            proposicao = {
+                "id": id_proposicao,
+                "identificacao": f"PL {id_proposicao}/2020",
+                "link": f"{PROPOSICAO_LINK}{id_proposicao}",
+            }
+            titulo = proposicao["identificacao"]
+        else:
+            proposicao, titulo = None, chave_item[2:]
+        pauta_gravada.append(
+            {"chave": chave_item, "ordem": ordem, "titulo": titulo, "proposicao": proposicao}
+        )
+    return {
+        "id": id,
+        "comissao": comissao,
+        "inicio": inicio,
+        "situacao": situacao,
+        "situacao_camara": {"convocada": "Convocada", "cancelada": "Cancelada"}.get(
+            situacao, "Encerrada (Final)"
+        ),
+        "link": f"{EVENTO_LINK}{id}",
+        "vista_desde": vista_desde,
+        "itens": [],
+        "requerimentos": {"total": 0, "listados": []},
+        "outros": {"total": 0},
+        "pauta": pauta_gravada,
+    }
+
+
+def arquivo_do_dia(
+    data="2026-10-24",
+    reunioes=(),
+    alteracoes=(),
+    *,
+    checada_em="2026-10-24T05:49:12-03:00",
+    linha_de_base=None,
+):
+    """O arquivo `data/pautas/AAAA-MM-DD.json` completo (contracts/pauta-json.md)."""
+    return {
+        "meta": {
+            "versao_formato": 1,
+            "data": data,
+            "comissoes": ["CE", "CREDN"],
+            "linha_de_base": linha_de_base,
+        },
+        "checagem": {
+            "checada_em": checada_em,
+            "janela": {"inicio": "2026-10-17", "fim": "2026-10-31"},
+            "lote": {"dados_camara_em": "2026-10-24T04:31:37+00:00"},
+            "inventario": {"gerado_em": "2026-10-24T08:34:13-03:00"},
+            "deputados_novo_em_exercicio": [{"id": 204455, "nome": "Luiz Lima"}],
+            "reunioes": copy.deepcopy(list(reunioes)),
+        },
+        "alteracoes": copy.deepcopy(list(alteracoes)),
+    }

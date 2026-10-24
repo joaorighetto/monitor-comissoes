@@ -15,7 +15,8 @@ from monitor_comissoes.config import Config
 from monitor_comissoes.diaria import main
 from monitor_comissoes.erros import FONTE_INDISPONIVEL, REPETIVEIS, FalhaDeColeta
 from monitor_comissoes.estoque import BRASILIA as FUSO
-from monitor_comissoes.lote import contar_estoque_bruto
+from monitor_comissoes.indice import construir_indice, serializar_indice
+from monitor_comissoes.lote import Lote, contar_estoque_bruto
 from monitor_comissoes.saida import serializar
 
 CONFIG_BASE = 'comissoes = ["CE", "CREDN"]\nano_minimo = 2003\n'
@@ -64,6 +65,7 @@ def caminhos(tmp_path):
         "status": tmp_path / "data" / "status.json",
         "anterior": tmp_path / "data" / "anterior.json",
         "mudancas": tmp_path / "data" / "mudancas",
+        "indice": tmp_path / "cache" / "indice-autoria.json",
     }
 
 
@@ -80,6 +82,9 @@ def executar_main(caminhos, transporte, relogio, dormir=None, *, aceitar=False):
         str(caminhos["anterior"]),
         "--mudancas",
         str(caminhos["mudancas"]),
+        "--indice",
+        # Nunca o padrão relativo (`cache/` na pasta de trabalho): ao lado da pasta `data`.
+        str(caminhos.get("indice", caminhos["atual"].parent.parent / "cache" / "indice.json")),
     ]
     if aceitar:
         argumentos.append("--aceitar-variacao")
@@ -135,6 +140,39 @@ def test_sucesso_imprime_a_linha_de_resumo(caminhos, transporte, agora, capsys):
     )
 
 
+def test_sucesso_grava_o_indice_de_autoria_do_mesmo_lote(caminhos, transporte, agora):
+    coletado = coletar(Config(("CE", "CREDN"), 2003), transporte, agora)
+    lote = Lote(FIXTURES, tuple(range(2003, 2027)), coletado.dados_camara_em, agora)
+
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 0
+
+    texto = caminhos["indice"].read_text(encoding="utf-8")
+    assert texto == serializar_indice(construir_indice(lote, agora))
+    assert texto == serializar_indice(coletado.indice)
+    indice = json.loads(texto)
+    meta = ler(caminhos["atual"])["meta"]
+    assert indice["gerado_em"] == meta["gerado_em"]
+    assert indice["dados_camara_em"] == meta["dados_camara_em"]
+    assert indice["anos_lidos"] == meta["anos_lidos"]
+
+
+def test_falha_no_primeiro_dia_nao_cria_o_indice(caminhos, agora, capsys):
+    transporte = TransporteFalso()
+    falha_fonte(transporte, agora)
+
+    assert executar_main(caminhos, transporte, Relogio(agora)) == 1
+
+    assert not caminhos["indice"].parent.exists()
+
+
+def test_a_coleta_da_col_nao_grava_o_indice(transporte, agora, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    executar(Config(("CE", "CREDN"), 2003), transporte, agora, tmp_path / "saida" / "atual.json")
+
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["saida"]
+
+
 def test_primeiro_dia_cria_a_pasta_data_e_os_arquivos(caminhos, transporte, agora):
     assert not caminhos["atual"].parent.exists()
 
@@ -177,6 +215,7 @@ def test_mesmo_relogio_gera_arquivos_identicos_byte_a_byte(tmp_path, transporte,
             "status": pasta / "data" / "status.json",
             "anterior": pasta / "data" / "anterior.json",
             "mudancas": pasta / "data" / "mudancas",
+            "indice": pasta / "cache" / "indice-autoria.json",
         }
         assert executar_main(caminhos, transporte, Relogio(agora)) == 0
         [mudancas] = caminhos["mudancas"].iterdir()
@@ -186,6 +225,7 @@ def test_mesmo_relogio_gera_arquivos_identicos_byte_a_byte(tmp_path, transporte,
                 caminhos["status"].read_bytes(),
                 mudancas.name,
                 mudancas.read_bytes(),
+                caminhos["indice"].read_bytes(),
             )
         )
 
@@ -251,6 +291,7 @@ def dia1(caminhos, agora):
     assert executar_main(caminhos, TransporteFalso(), Relogio(agora)) == 0
     return {
         "atual": caminhos["atual"].read_bytes(),
+        "indice": caminhos["indice"].read_bytes(),
         "status": ler(caminhos["status"]),
         "agora2": agora + timedelta(hours=2),
     }
@@ -300,6 +341,8 @@ def conferir_falha_com_dados_bons_intactos(caminhos, dia1, capsys, codigo, categ
     assert erro.startswith(f"FALHA [{categoria}]: "), erro
     assert trecho in erro, erro
     assert caminhos["atual"].read_bytes() == dia1["atual"]  # idêntico byte a byte
+    assert caminhos["indice"].read_bytes() == dia1["indice"]  # PAU: o índice anterior fica
+    assert [p.name for p in caminhos["indice"].parent.iterdir()] == ["indice-autoria.json"]
     status_novo = ler(caminhos["status"])
     assert status_novo["resultado"] == "falha"
     assert status_novo["falha"]["categoria"] == categoria
@@ -427,7 +470,7 @@ def falhar_na_preparacao(monkeypatch, numero_da_chamada):
     monkeypatch.setattr(status, "escrever_temporario", falso)
 
 
-@pytest.mark.parametrize("quem", [1, 2], ids=["atual", "status"])
+@pytest.mark.parametrize("quem", [1, 2, 3, 4], ids=["mudancas", "indice", "atual", "status"])
 def test_falha_ao_preparar_um_dos_arquivos_nao_troca_nenhum(
     caminhos, dia1, capsys, monkeypatch, quem
 ):
@@ -592,6 +635,8 @@ def conferir_sem_base(caminhos, dia1, capsys, codigo, estoque_de_hoje):
     assert erro.startswith("FALHA [sem_base_de_comparacao]: "), erro
     assert f"estoque bruto de hoje: {estoque_de_hoje}" in erro
     assert caminhos["atual"].read_bytes() == dia1["atual"]  # idêntico byte a byte
+    assert caminhos["indice"].read_bytes() == dia1["indice"]  # PAU: o índice anterior fica
+    assert [p.name for p in caminhos["indice"].parent.iterdir()] == ["indice-autoria.json"]
     status_novo = ler(caminhos["status"])
     assert status_novo["resultado"] == "falha"
     assert status_novo["falha"]["categoria"] == "sem_base_de_comparacao"
@@ -1203,8 +1248,11 @@ def test_falha_da_coleta_nao_cria_arquivo_de_mudancas(caminhos, transporte, agor
 
 
 def test_sem_as_opcoes_o_anterior_e_as_mudancas_ficam_ao_lado_do_atual(
-    caminhos, transporte, agora, tmp_path
+    caminhos, transporte, agora, tmp_path, monkeypatch
 ):
+    trabalho = tmp_path / "trabalho"
+    trabalho.mkdir()
+    monkeypatch.chdir(trabalho)
     argumentos = [
         "executar",
         "--config",
@@ -1218,7 +1266,10 @@ def test_sem_as_opcoes_o_anterior_e_as_mudancas_ficam_ao_lado_do_atual(
 
     assert codigo == 0
     assert (tmp_path / "data" / "mudancas" / "2026-10-18.json").exists()
-    assert not (Path.cwd() / "data" / "mudancas" / "2026-10-18.json").exists()
+    assert not (trabalho / "data" / "mudancas" / "2026-10-18.json").exists()
+    # PAU: o índice de autoria tem padrão relativo à pasta de trabalho (a raiz do repositório no
+    # workflow), fora da pasta de dados.
+    assert (trabalho / "cache" / "indice-autoria.json").exists()
 
 
 def test_um_item_que_entrou_e_um_que_saiu_viram_eventos_no_arquivo_do_dia(
@@ -1316,6 +1367,7 @@ def novo_ambiente(tmp_path, nome):
         "status": pasta / "data" / "status.json",
         "anterior": pasta / "data" / "anterior.json",
         "mudancas": pasta / "data" / "mudancas",
+        "indice": pasta / "cache" / "indice-autoria.json",
     }
 
 
