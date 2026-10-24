@@ -172,12 +172,14 @@ def recuperar_sumidas(
     buscar_evento: Callable[[int], dict | None],
     hoje: date,
 ) -> dict[str, tuple[int, list[dict]]]:
-    """Devolve à lista a reunião convocada na última checagem que sumiu dela, mas cujo detalhe
-    (`/eventos/{id}`) ainda é reunião deliberativa da comissão na janela.
+    """Devolve à lista a reunião da última checagem que sumiu dela, mas cujo detalhe
+    (`/eventos/{id}`) ainda é reunião deliberativa da comissão na janela, qualquer que seja a
+    situação (FR-002: realizada e cancelada continuam no arquivo).
 
     A lista e o detalhe às vezes divergem (R2); sem isto, a reunião sairia do arquivo sem aviso
-    (princípio III). A pauta dela é buscada como a das outras. `buscar_evento` devolve o evento
-    ou None em 404; um erro da busca propaga e falha a checagem.
+    (princípio III). A pauta dela é buscada como a das outras. Uma reunião não convocada que já
+    ficou para trás da janela não é buscada: só a convocada precisa do detalhe (`comparar`).
+    `buscar_evento` devolve o evento ou None em 404; um erro da busca propaga e falha a checagem.
     """
     inicio, fim = janela(hoje)
     selecionados = {
@@ -189,10 +191,11 @@ def recuperar_sumidas(
     }
     for reuniao in anterior:
         comissao = reuniao["comissao"]
+        ficou_para_tras = date.fromisoformat(reuniao["inicio"][:10]) < inicio
         if (
-            reuniao["situacao"] != "convocada"
-            or comissao not in recuperados
+            comissao not in recuperados
             or (comissao, reuniao["id"]) in selecionados
+            or (reuniao["situacao"] != "convocada" and ficou_para_tras)
         ):
             continue
         evento = buscar_evento(reuniao["id"])
@@ -311,7 +314,8 @@ def _sumiu(
         detalhe = f"agora: {evento['descricaoTipo']} ({', '.join(siglas)})"
         return [_alteracao("retirada_da_agenda", anterior, detectada_em, detalhe=detalhe)]
     # Ainda é reunião deliberativa da comissão, na janela: a lista e o detalhe divergiram (R2).
-    # Pela CLI isto não acontece: `recuperar_sumidas` já devolveu a reunião à lista.
+    # Pela CLI, `recuperar_sumidas` já devolveu a reunião à lista; isto só acontece quando a
+    # comissão saiu da configuração, e trocar a configuração não é alteração da pauta.
     return []
 
 

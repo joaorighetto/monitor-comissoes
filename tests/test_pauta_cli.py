@@ -272,3 +272,43 @@ def test_reuniao_que_sumiu_e_mudou_para_fora_da_janela_nao_volta(ambiente, capsy
     [alteracao] = arquivo["alteracoes"]
     assert (alteracao["tipo"], alteracao["para"]) == ("data_hora", "2026-11-05T10:00")
     assert transporte.pedidos_por_chave().count("eventos/99999") == 1
+
+
+def test_reuniao_recuperada_continua_no_arquivo_depois_de_realizada(ambiente, capsys):
+    # Checagem N: recuperada ainda convocada; N+1: o detalhe já diz "Encerrada (Final)"; N+2: a
+    # anterior não está mais convocada, e a reunião continua no arquivo com o resultado (FR-002).
+    _anterior_com_a_reuniao_99999(ambiente)
+    convocada = transporte_do_dia()
+    convocada.respostas["eventos/99999"] = detalhe_evento(99999, "2026-10-28T10:00")
+    convocada.respostas["pautas/99999"] = pauta([item_pauta(1, proposicao=(10, "PL 10/2020"))])
+    assert checar(MANHA, convocada) == 0
+
+    noite = datetime(2026, 10, 24, 22, 47, 30, tzinfo=BRASILIA)
+    for agora in (TARDE, noite):
+        encerrada = transporte_do_dia()
+        encerrada.respostas["eventos/99999"] = detalhe_evento(
+            99999, "2026-10-28T10:00", situacao="Encerrada (Final)"
+        )
+        encerrada.respostas["pautas/99999"] = pauta(
+            [item_pauta(1, proposicao=(10, "PL 10/2020"), situacao_item="Aprovado o Parecer.")]
+        )
+        assert checar(agora, encerrada) == 0
+
+        arquivo = ler(ambiente / "data" / "pautas" / "2026-10-24.json")
+        reunioes = {r["id"]: r for r in arquivo["checagem"]["reunioes"]}
+        assert reunioes[99999]["situacao"] == "realizada"
+        assert reunioes[99999]["itens"][0]["resultado"]["rotulo"] == "aprovado"
+        assert arquivo["alteracoes"] == []
+
+
+def test_reuniao_que_sumiu_e_nao_existe_mais_e_buscada_uma_vez(ambiente, capsys):
+    _anterior_com_a_reuniao_99999(ambiente)
+    transporte = transporte_do_dia()
+    transporte.erro["eventos/99999"] = falha_http(f"{API}/eventos/99999", 404)
+
+    assert checar(TARDE, transporte) == 0
+
+    arquivo = ler(ambiente / "data" / "pautas" / "2026-10-24.json")
+    assert [r["id"] for r in arquivo["checagem"]["reunioes"]] == [83091]
+    assert [a["tipo"] for a in arquivo["alteracoes"]] == ["retirada_da_agenda"]
+    assert transporte.pedidos_por_chave().count("eventos/99999") == 1

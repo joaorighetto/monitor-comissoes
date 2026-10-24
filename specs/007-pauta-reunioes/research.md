@@ -97,8 +97,9 @@ vira "outra" com o texto original (spec, Edge Cases).
     também vale "retirada da agenda", com o tipo e os órgãos atuais no detalhe: ela saiu da agenda
     deliberativa. Falhar nesse caso travaria todas as checagens seguintes, porque a última checagem
     boa nunca mudaria.
-  - **Sumiu da lista, mas o detalhe mantém** (deliberativa da comissão, na janela): a lista e o
-    detalhe divergiram (R2). A reunião volta à checagem montada pelo detalhe, com a pauta buscada
+  - **Sumiu da lista, mas o detalhe mantém** (deliberativa da comissão, na janela, em qualquer
+    situação, como pede a FR-002): a lista e o detalhe divergiram (R2). A reunião volta à checagem
+    montada pelo detalhe, com a pauta buscada
     pelo id, e é comparada como as outras; sem isso, ela sairia do arquivo sem aviso (princípio
     III). Decidido pelo mantenedor na revisão.
 - **Registro único:** a última checagem registrada é a do arquivo de pauta mais recente (do mesmo

@@ -231,3 +231,8 @@ US5:     T019 ∥ T020
   "aprovado"), e a grafia "Requerimento de Retirado de Pauta" entra na exceção. PRODUCT §5.9,
   cenário 2 da User Story 3 da spec e R5 do research atualizados. Nenhum item das fixtures
   muda de rótulo; a contagem de 12 meses do §5.9 não foi refeita (exige rede).
+- **Revisão, rodada 2:** `recuperar_sumidas` passa a recuperar a reunião em qualquer situação
+  (só a convocada fazia isso, e a recuperada sumia do arquivo na checagem seguinte à de ficar
+  realizada ou cancelada, contra a FR-002); a não convocada que já ficou para trás da janela não
+  é buscada. `REQUERIMENTO_APROVADO` ganhou `` ("Desaprovado…" não conta). Testes diretos de
+  `recuperar_sumidas` e, pela CLI, da reunião realizada recuperada e do 404 buscado uma vez.

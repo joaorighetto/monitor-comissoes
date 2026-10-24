@@ -6,8 +6,8 @@ from datetime import date
 import pytest
 
 from monitor_comissoes.erros import FONTE_INDISPONIVEL, FalhaDeColeta
-from monitor_comissoes.pauta.checagem import comparar
-from pauta_sinteticos import detalhe_evento, reuniao_gravada
+from monitor_comissoes.pauta.checagem import comparar, recuperar_sumidas
+from pauta_sinteticos import detalhe_evento, evento, reuniao_gravada
 
 AGORA = "2026-10-24T15:17:02-03:00"
 JANELA = (date(2026, 10, 17), date(2026, 10, 31))
@@ -431,3 +431,55 @@ def test_montar_arquivo_nao_altera_as_entradas():
     checar(manha, [reuniao_gravada(1, chaves=("p:11",))], TARDE)
 
     assert manha == copia
+
+
+# --- reunião que sumiu só da lista (recuperar_sumidas) -----------------------------------------
+
+
+def _eventos_da_ce(*eventos):
+    return {"CE": (2009, list(eventos)), "CREDN": (2018, [])}
+
+
+@pytest.mark.parametrize("situacao", ["convocada", "realizada", "cancelada"])
+def test_recupera_pelo_detalhe_em_qualquer_situacao_sem_alterar_a_entrada(situacao):
+    anterior = [reuniao_gravada(1, situacao=situacao, chaves=("p:10",))]
+    entrada = _eventos_da_ce(evento(2, "2026-10-29T10:00"))
+    copia = copy.deepcopy(entrada)
+    situacao_camara = {"convocada": "Convocada", "realizada": "Encerrada", "cancelada": "Cancelada"}
+    encontrado = detalhe(1, "2026-10-28T10:00", situacao=situacao_camara[situacao])
+
+    saida = recuperar_sumidas(anterior, entrada, buscar({1: encontrado}), date(2026, 10, 24))
+
+    assert [e["id"] for e in saida["CE"][1]] == [2, 1]
+    assert saida["CREDN"] == (2018, [])
+    assert entrada == copia
+
+
+def test_nao_recupera_404_outra_comissao_nem_fora_da_janela():
+    anterior = [
+        reuniao_gravada(1, chaves=("p:10",)),
+        reuniao_gravada(2, chaves=("p:10",)),
+        reuniao_gravada(3, chaves=("p:10",)),
+    ]
+    eventos = {
+        1: None,
+        2: detalhe(2, "2026-10-28T10:00", orgao=2018),
+        3: detalhe(3, "2026-11-05T10:00"),
+    }
+
+    saida = recuperar_sumidas(anterior, _eventos_da_ce(), buscar(eventos), date(2026, 10, 24))
+
+    assert saida["CE"][1] == []
+
+
+def test_nao_busca_quem_esta_na_lista_nem_a_realizada_que_ficou_para_tras():
+    anterior = [
+        reuniao_gravada(1, chaves=("p:10",)),
+        reuniao_gravada(2, "2026-10-16T10:00", situacao="realizada", chaves=("p:10",)),
+        reuniao_gravada(3, chaves=("p:10",), comissao="CDH"),  # comissão fora da configuração
+    ]
+    entrada = _eventos_da_ce(evento(1, "2026-10-28T10:00"))
+
+    saida = recuperar_sumidas(anterior, entrada, nunca_buscar, date(2026, 10, 24))
+
+    assert [e["id"] for e in saida["CE"][1]] == [1]

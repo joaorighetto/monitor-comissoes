@@ -69,7 +69,7 @@ REGRAS_DO_RESULTADO = (
 )
 RETIRADO = re.compile(r"retirad[oa] de pauta")
 # O requerimento de retirada aprovado tira o item da pauta (emenda ao §5.9).
-REQUERIMENTO_APROVADO = re.compile(r"aprovad[oa] (?:o )?requerimento de retirad[oa] de pauta")
+REQUERIMENTO_APROVADO = re.compile(r"\baprovad[oa] (?:o )?requerimento de retirad[oa] de pauta")
 
 
 def resultado(texto: str | None) -> dict:
