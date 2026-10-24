@@ -13,10 +13,15 @@ from pauta_sinteticos import (
     API,
     PAUTA,
     TransportePauta,
+    arquivo_do_dia,
+    detalhe_evento,
     falha_http,
     indice,
+    item_pauta,
     itens_reais,
     lista_eventos,
+    pauta,
+    reuniao_gravada,
 )
 
 BRASILIA = timezone(timedelta(hours=-3))
@@ -216,3 +221,54 @@ def test_dia_do_arquivo_e_o_de_brasilia(ambiente):
     assert checar(noite) == 0
 
     assert [p.name for p in (ambiente / "data" / "pautas").iterdir()] == ["2026-10-24.json"]
+
+
+def _anterior_com_a_reuniao_99999(raiz):
+    anterior = arquivo_do_dia(
+        "2026-10-23",
+        [reuniao_gravada(99999, "2026-10-28T10:00", chaves=("p:10",))],
+        checada_em="2026-10-23T22:47:30-03:00",
+        linha_de_base={"motivo": "primeira checagem"},
+    )
+    pasta = raiz / "data" / "pautas"
+    pasta.mkdir(parents=True)
+    (pasta / "2026-10-23.json").write_text(serializar(anterior), encoding="utf-8")
+
+
+@pytest.mark.parametrize(("situacao", "tipos"), [("Convocada", []), ("Cancelada", ["cancelada"])])
+def test_reuniao_que_sumiu_da_lista_mas_o_detalhe_mantem_continua_no_arquivo(
+    ambiente, capsys, situacao, tipos
+):
+    # A lista e o detalhe divergem às vezes (R2): a reunião 99999 não está na lista da CE, mas o
+    # detalhe ainda diz que é reunião deliberativa da CE na janela. Ela continua no arquivo.
+    _anterior_com_a_reuniao_99999(ambiente)
+    transporte = transporte_do_dia()
+    transporte.respostas["eventos/99999"] = detalhe_evento(
+        99999, "2026-10-28T10:00", situacao=situacao
+    )
+    transporte.respostas["pautas/99999"] = pauta([item_pauta(1, proposicao=(10, "PL 10/2020"))])
+
+    assert checar(TARDE, transporte) == 0
+
+    arquivo = ler(ambiente / "data" / "pautas" / "2026-10-24.json")
+    reunioes = {r["id"]: r for r in arquivo["checagem"]["reunioes"]}
+    assert set(reunioes) == {83091, 99999}
+    assert reunioes[99999]["vista_desde"] == "2026-10-23T22:47:30-03:00"
+    assert [i["proposicao"]["id"] for i in reunioes[99999]["itens"]] == [10]
+    assert [a["tipo"] for a in arquivo["alteracoes"]] == tipos
+    assert transporte.pedidos_por_chave().count("eventos/99999") == 1
+    assert "2 reuniões (CE: 2, CREDN: 0)" in capsys.readouterr().out
+
+
+def test_reuniao_que_sumiu_e_mudou_para_fora_da_janela_nao_volta(ambiente, capsys):
+    _anterior_com_a_reuniao_99999(ambiente)
+    transporte = transporte_do_dia()
+    transporte.respostas["eventos/99999"] = detalhe_evento(99999, "2026-11-05T10:00")
+
+    assert checar(TARDE, transporte) == 0
+
+    arquivo = ler(ambiente / "data" / "pautas" / "2026-10-24.json")
+    assert [r["id"] for r in arquivo["checagem"]["reunioes"]] == [83091]
+    [alteracao] = arquivo["alteracoes"]
+    assert (alteracao["tipo"], alteracao["para"]) == ("data_hora", "2026-11-05T10:00")
+    assert transporte.pedidos_por_chave().count("eventos/99999") == 1

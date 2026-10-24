@@ -88,12 +88,17 @@ vira "outra" com o texto original (spec, Edge Cases).
   - Ainda na janela e agora `realizada` ou `outra`: nenhuma alteração. Durante e depois da
     reunião, a lista pode mudar a hora para o início real (R2) e receber itens "sobre a mesa"; isso
     não é pauta alterada (FR-015).
-  - **Sumiu da janela:** busca em `/api/v2/eventos/{id}` (R7). Data fora da janela → "data ou hora
-    mudou" (com a data nova); `Cancelada` → "reunião cancelada"; 404 → "reunião retirada da
+  - **Sumiu da janela:** busca em `/api/v2/eventos/{id}` (R7). `Cancelada` → "reunião cancelada";
+    data fora da janela → "data ou hora mudou" (com a data nova), salvo quando a data é a mesma (a
+    reunião só ficou para trás da janela: nenhuma alteração); 404 → "reunião retirada da
     agenda". Se o evento existe, na janela, mas deixou de ser "Reunião Deliberativa" da comissão,
     também vale "retirada da agenda", com o tipo e os órgãos atuais no detalhe: ela saiu da agenda
     deliberativa. Falhar nesse caso travaria todas as checagens seguintes, porque a última checagem
     boa nunca mudaria.
+  - **Sumiu da lista, mas o detalhe mantém** (deliberativa da comissão, na janela): a lista e o
+    detalhe divergiram (R2). A reunião volta à checagem montada pelo detalhe, com a pauta buscada
+    pelo id, e é comparada como as outras; sem isso, ela sairia do arquivo sem aviso (princípio
+    III). Decidido pelo mantenedor na revisão.
 - **Registro único:** a última checagem registrada é a do arquivo de pauta mais recente (do mesmo
   dia ou anterior). Como cada checagem compara com a anterior gravada, uma alteração detectada já
   está na checagem gravada e não aparece de novo. Duas checagens sobre a mesma fonte não acrescentam

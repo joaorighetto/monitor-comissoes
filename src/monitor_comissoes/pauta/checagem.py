@@ -166,6 +166,42 @@ def selecionar(
     return escolhidos
 
 
+def recuperar_sumidas(
+    anterior: list[dict],
+    eventos_por_comissao: dict[str, tuple[int, list[dict]]],
+    buscar_evento: Callable[[int], dict | None],
+    hoje: date,
+) -> dict[str, tuple[int, list[dict]]]:
+    """Devolve à lista a reunião convocada na última checagem que sumiu dela, mas cujo detalhe
+    (`/eventos/{id}`) ainda é reunião deliberativa da comissão na janela.
+
+    A lista e o detalhe às vezes divergem (R2); sem isto, a reunião sairia do arquivo sem aviso
+    (princípio III). A pauta dela é buscada como a das outras. `buscar_evento` devolve o evento
+    ou None em 404; um erro da busca propaga e falha a checagem.
+    """
+    inicio, fim = janela(hoje)
+    selecionados = {
+        (comissao, evento["id"]) for comissao, evento in selecionar(eventos_por_comissao, hoje)
+    }
+    recuperados = {
+        comissao: (id_orgao, list(eventos))
+        for comissao, (id_orgao, eventos) in eventos_por_comissao.items()
+    }
+    for reuniao in anterior:
+        comissao = reuniao["comissao"]
+        if (
+            reuniao["situacao"] != "convocada"
+            or comissao not in recuperados
+            or (comissao, reuniao["id"]) in selecionados
+        ):
+            continue
+        evento = buscar_evento(reuniao["id"])
+        id_orgao, eventos = recuperados[comissao]
+        if evento is not None and eh_reuniao_da_comissao(evento, id_orgao, inicio, fim):
+            eventos.append(evento)
+    return recuperados
+
+
 def montar_reunioes(
     eventos_por_comissao: dict[str, tuple[int, list[dict]]],
     pautas: dict[int, list[dict]],
@@ -275,7 +311,7 @@ def _sumiu(
         detalhe = f"agora: {evento['descricaoTipo']} ({', '.join(siglas)})"
         return [_alteracao("retirada_da_agenda", anterior, detectada_em, detalhe=detalhe)]
     # Ainda é reunião deliberativa da comissão, na janela: a lista e o detalhe divergiram (R2).
-    # Sem indício de mudança, nada é registrado.
+    # Pela CLI isto não acontece: `recuperar_sumidas` já devolveu a reunião à lista.
     return []
 
 

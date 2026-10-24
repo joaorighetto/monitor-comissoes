@@ -34,6 +34,7 @@ from .checagem import (
     montar_arquivo,
     montar_checagem,
     montar_reunioes,
+    recuperar_sumidas,
     selecionar,
 )
 
@@ -76,6 +77,17 @@ def _checar(args, transporte: Transporte, agora: datetime) -> tuple[dict, bool, 
     for sigla in config.comissoes:
         id_orgao = obter_orgao(transporte, sigla)
         eventos_por_comissao[sigla] = (id_orgao, obter_eventos(transporte, id_orgao, inicio, fim))
+    buscados: dict[int, dict | None] = {}
+
+    def buscar_evento(id_evento: int) -> dict | None:
+        if id_evento not in buscados:
+            buscados[id_evento] = obter_evento(transporte, id_evento)
+        return buscados[id_evento]
+
+    if anterior is not None:
+        eventos_por_comissao = recuperar_sumidas(
+            anterior["checagem"]["reunioes"], eventos_por_comissao, buscar_evento, hoje
+        )
     ids = sorted({evento["id"] for _, evento in selecionar(eventos_por_comissao, hoje)})
     pautas = {id_evento: obter_pauta(transporte, id_evento) for id_evento in ids}
 
@@ -92,7 +104,7 @@ def _checar(args, transporte: Transporte, agora: datetime) -> tuple[dict, bool, 
         novas = comparar(
             anterior["checagem"]["reunioes"],
             reunioes,
-            lambda id_evento: obter_evento(transporte, id_evento),
+            buscar_evento,
             checada_em,
             (inicio, fim),
         )

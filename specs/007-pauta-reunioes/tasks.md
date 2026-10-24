@@ -222,3 +222,7 @@ US5:     T019 ∥ T020
   contava a reunião cancelada e a convocada; nas realizadas são 7.
 - **Revisão, rodada 1 (validação):** cada órgão do evento passa a exigir `sigla` (texto); sem
   ela, uma reunião que sumiu seria dada como "retirada da agenda" por engano.
+- **Revisão, rodada 1 (R6, reunião que sumiu só da lista):** decisão do mantenedor: a reunião
+  convocada que some da lista, mas cujo detalhe ainda é reunião deliberativa da comissão na
+  janela, volta à checagem montada pelo detalhe (`recuperar_sumidas` em `checagem.py`), com a
+  pauta buscada pelo id. Antes ela saía do arquivo sem aviso. O R6 do research foi atualizado.
