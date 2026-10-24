@@ -197,14 +197,9 @@ def mensagem(caminho_status: Path, pautas: Path) -> str:
         raise ValueError(falha.motivo) from falha
     reunioes = _plural(len(arquivo["checagem"]["reunioes"]), "reunião", "reuniões")
     novas = sum(1 for a in arquivo["alteracoes"] if a["detectada_em"] == checada_em)
-    # A checagem é a própria linha de base quando toda reunião foi vista pela primeira vez nela;
-    # nas checagens seguintes do mesmo dia, as reuniões da linha de base têm "vista desde" anterior.
-    reunioes_do_dia = arquivo["checagem"]["reunioes"]
-    if (
-        arquivo["meta"]["linha_de_base"] is not None
-        and not arquivo["alteracoes"]
-        and all(r["vista_desde"] == checada_em for r in reunioes_do_dia)
-    ):
+    # Só a checagem que criou a linha de base a anuncia; as seguintes do dia contam alterações.
+    linha_de_base = arquivo["meta"]["linha_de_base"]
+    if linha_de_base is not None and linha_de_base.get("checada_em") == checada_em:
         return f"{inicio} · ok · {reunioes} · linha de base"
     return f"{inicio} · ok · {reunioes} · {_plural(novas, 'alteração', 'alterações')}"
 

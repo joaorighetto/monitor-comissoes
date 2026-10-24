@@ -106,7 +106,10 @@ def test_checar_grava_o_arquivo_do_dia_e_o_status(ambiente, capsys):
     )
     assert saida.err == ""
     arquivo = ler(ambiente / "data" / "pautas" / "2026-10-24.json")
-    assert arquivo["meta"]["linha_de_base"] == {"motivo": "primeira checagem"}
+    assert arquivo["meta"]["linha_de_base"] == {
+        "motivo": "primeira checagem",
+        "checada_em": "2026-10-24T05:49:12-03:00",
+    }
     assert arquivo["checagem"]["checada_em"] == "2026-10-24T05:49:12-03:00"
     [reuniao] = arquivo["checagem"]["reunioes"]
     assert reuniao["id"] == 83091 and len(reuniao["itens"]) == 19
@@ -342,3 +345,23 @@ def test_verificado_em_e_o_fim_da_execucao(ambiente, capsys, monkeypatch):
     status = ler(ambiente / "data" / "status-pauta.json")
     assert status["verificado_em"] == "2026-10-24T05:49:52-03:00"
     assert status["ultima_checagem_boa"] == "2026-10-24T05:49:12-03:00"
+
+
+def test_dia_sem_reuniao_a_segunda_checagem_nao_repete_linha_de_base(ambiente, capsys):
+    def sem_reunioes():
+        transporte = transporte_do_dia()
+        transporte.respostas["eventos/2009-2026-10-17-2026-10-31"] = lista_eventos([])
+        transporte.cabecalhos["eventos/2009-2026-10-17-2026-10-31"] = {"x-total-count": "0"}
+        return transporte
+
+    assert checar(MANHA, sem_reunioes()) == 0
+    assert main(["mensagem"]) == 0
+    assert capsys.readouterr().out.splitlines()[-1] == (
+        "pauta: 2026-10-24 05:49 · ok · 0 reuniões · linha de base"
+    )
+
+    assert checar(TARDE, sem_reunioes()) == 0
+    assert main(["mensagem"]) == 0
+    assert capsys.readouterr().out.splitlines()[-1] == (
+        "pauta: 2026-10-24 15:17 · ok · 0 reuniões · 0 alterações"
+    )

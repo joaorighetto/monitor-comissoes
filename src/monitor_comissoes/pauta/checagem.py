@@ -400,7 +400,7 @@ def montar_arquivo(
     """
     vistas = {}
     alteracoes = list(alteracoes_novas)
-    linha_de_base = LINHA_DE_BASE
+    linha_de_base = {**LINHA_DE_BASE, "checada_em": checagem["checada_em"]}
     if anterior is not None:
         vistas = {
             (r["id"], r["comissao"]): r["vista_desde"] for r in anterior["checagem"]["reunioes"]

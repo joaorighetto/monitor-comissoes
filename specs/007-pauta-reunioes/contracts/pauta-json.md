@@ -95,8 +95,8 @@ Versão de formato 1. UTF-8, `ensure_ascii=False`, indentação de 2 espaços, `
 ## Campos
 
 - `meta.data`: dia da checagem em Brasília; é o nome do arquivo.
-- `meta.linha_de_base`: `null`, ou `{"motivo": "primeira checagem"}` quando não havia checagem
-  anterior em nenhum arquivo. Fica no arquivo do dia mesmo depois de outras checagens do dia.
+- `meta.linha_de_base`: `null`, ou `{"motivo": "primeira checagem", "checada_em": "<momento da
+  checagem que criou a linha de base>"}` quando não havia checagem anterior em nenhum arquivo. Fica no arquivo do dia mesmo depois de outras checagens do dia.
 - `checagem`: só a **última** checagem do dia. Cada checagem nova do dia a substitui.
 - `checagem.janela`: datas inclusivas, D−7 e D+7.
 - `checagem.lote.dados_camara_em`: do índice de autoria usado (R8).

@@ -303,7 +303,7 @@ def test_primeira_checagem_e_linha_de_base_sem_alteracoes():
         "versao_formato": 1,
         "data": "2026-10-24",
         "comissoes": ["CE", "CREDN"],
-        "linha_de_base": {"motivo": "primeira checagem"},
+        "linha_de_base": {"motivo": "primeira checagem", "checada_em": MANHA},
     }
     assert list(arquivo["checagem"]) == [
         "checada_em",
@@ -325,7 +325,7 @@ def test_mesmo_dia_acumula_e_herda_a_linha_de_base():
     tarde = checar(manha, [reuniao_gravada(1, chaves=("p:10", "p:11"))], TARDE)
     noite = checar(tarde, [reuniao_gravada(1, chaves=("p:11",))], NOITE)
 
-    assert noite["meta"]["linha_de_base"] == {"motivo": "primeira checagem"}
+    assert noite["meta"]["linha_de_base"] == {"motivo": "primeira checagem", "checada_em": MANHA}
     assert [(a["detectada_em"], a["tipo"]) for a in noite["alteracoes"]] == [
         (TARDE, "item_entrou"),
         (NOITE, "item_saiu"),

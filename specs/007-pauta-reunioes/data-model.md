@@ -147,7 +147,9 @@ motivo e a `ultima_checagem_boa` de antes; o código de saída é 1.
 
 ### Linha de base
 
-- Sem nenhum arquivo em `data/pautas/`: `meta.linha_de_base = {"motivo": "primeira checagem"}`.
+- Sem nenhum arquivo em `data/pautas/`: `meta.linha_de_base = {"motivo": "primeira checagem",
+  "checada_em": ...}`, com o momento da checagem que criou a linha de base (mantido nas checagens
+  seguintes do mesmo dia).
 - Um arquivo do dia que nasceu como linha de base continua marcado assim nas checagens seguintes do
   mesmo dia, que registram alterações normalmente.
 - Arquivo anterior ilegível, fora do contrato ou de versão desconhecida **não** vira linha de base:

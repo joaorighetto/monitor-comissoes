@@ -241,3 +241,8 @@ US5:     T019 ∥ T020
 
 - [X] T024 Em `src/monitor_comissoes/pauta/cli.py`, gravar `verificado_em` do `status-pauta.json` com o momento do fim da execução quando o relógio não é injetado (com `agora` injetado, continua igual a `agora`), com teste em `tests/test_pauta_cli.py`, per contrato status-pauta-json.md / FR-023 (partial)
 - [X] T025 Em `src/monitor_comissoes/pauta/cli.py`, `mensagem` diz "linha de base" só quando a checagem do status é a própria linha de base (`checagem.checada_em` igual ao `checada_em` mais antigo do dia, sem alterações); nas checagens seguintes do mesmo dia, "0 alterações", com teste em `tests/test_pauta_cli.py`, per contrato pauta-cli.md (partial)
+
+**Nota (code review do PR, CodeRabbit):** a T025 inferia a linha de base pelo "vista desde" das
+reuniões, o que falha em dia sem reunião. `meta.linha_de_base` passa a guardar `checada_em` (o
+momento da checagem que a criou), e `mensagem` compara com ele. Contrato `pauta-json.md` e
+data-model atualizados (campo acrescentado; nenhum consumidor do formato existe ainda).
