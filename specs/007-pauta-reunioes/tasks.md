@@ -149,7 +149,7 @@
 ## Fase 10: Fechamento
 
 - [X] T022 [P] Conferir que `src/monitor_comissoes/pauta/` não importa nada de `pagina/`, `aviso.py`, `resumo.py` nem `envio.py` e que nenhum arquivo de PRZ, SEM ou PGP foi criado (escopo, princípio VII); registrar no fim deste arquivo, em "Notas da implementação", qualquer desvio do plano.
-- [ ] T023 Rodar a verificação completa `uv run ruff check . && uv run ruff format --check . && uv run pytest` e guardar a saída para o relatório. O status da PAU no `ROADMAP.md` continua `em andamento` até o OK do mantenedor e o merge.
+- [X] T023 Rodar a verificação completa `uv run ruff check . && uv run ruff format --check . && uv run pytest` e guardar a saída para o relatório. O status da PAU no `ROADMAP.md` continua `em andamento` até o OK do mantenedor e o merge.
 
 ---
 
