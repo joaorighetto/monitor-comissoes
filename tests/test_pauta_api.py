@@ -148,6 +148,7 @@ def _sem(dicionario, campo):
         (lambda e: _sem(e, "descricaoTipo"), "descricaoTipo"),
         (lambda e: {**e, "orgaos": {}}, "orgaos"),
         (lambda e: {**e, "orgaos": [{"sigla": "CE"}]}, "orgaos"),
+        (lambda e: {**e, "orgaos": [{"id": 2009}]}, "orgaos"),
     ],
 )
 def test_evento_fora_do_formato(alterar, campo):

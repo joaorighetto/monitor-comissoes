@@ -258,15 +258,19 @@ def _sumiu(
     """A reunião convocada que não está mais na lista, decidida pelo evento buscado por id (R6)."""
     if evento is None:
         return [_alteracao("retirada_da_agenda", anterior, detectada_em)]
+    if situacao(evento["situacao"]) == "cancelada":
+        return [_alteracao("cancelada", anterior, detectada_em)]
     inicio, fim = janela_atual
     novo_inicio = evento["dataHoraInicio"]
     if not inicio <= date.fromisoformat(novo_inicio[:10]) <= fim:
+        if novo_inicio[:10] == anterior["inicio"][:10]:
+            # A data não mudou: a reunião só ficou para trás da janela (por exemplo, deixada
+            # "Convocada" depois de realizada, ou dias sem checagem boa). Não é alteração.
+            return []
         return [
             _alteracao("data_hora", anterior, detectada_em, de=anterior["inicio"], para=novo_inicio)
         ]
-    if situacao(evento["situacao"]) == "cancelada":
-        return [_alteracao("cancelada", anterior, detectada_em)]
-    siglas = [orgao.get("sigla") or str(orgao["id"]) for orgao in evento["orgaos"]]
+    siglas = [orgao["sigla"] for orgao in evento["orgaos"]]
     if evento["descricaoTipo"] != REUNIAO_DELIBERATIVA or anterior["comissao"] not in siglas:
         detalhe = f"agora: {evento['descricaoTipo']} ({', '.join(siglas)})"
         return [_alteracao("retirada_da_agenda", anterior, detectada_em, detalhe=detalhe)]

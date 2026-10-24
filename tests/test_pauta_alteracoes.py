@@ -165,6 +165,24 @@ def test_sumiu_e_mudou_para_fora_da_janela():
     assert (alteracao["de"], alteracao["para"]) == ("2026-10-28T10:00", "2026-11-05T10:00")
 
 
+@pytest.mark.parametrize("situacao", ["Convocada", "Encerrada (Final)"])
+@pytest.mark.parametrize("inicio", ["2026-10-16T10:00", "2026-10-16T10:11"])
+def test_sumiu_so_porque_a_data_ficou_para_tras_nao_da_alteracao(situacao, inicio):
+    # Reunião de 16/10 que estava convocada na última checagem boa (por exemplo, a Câmara a
+    # deixou "Convocada" depois de realizada, ou a pauta ficou dias sem checagem boa): a janela
+    # de 24/10 começa em 17/10. A data não mudou; a reunião só envelheceu.
+    antes = reuniao_gravada(1, "2026-10-16T10:00", chaves=("p:10",))
+
+    assert _comparar([antes], [], buscar({1: detalhe(1, inicio, situacao=situacao)})) == []
+
+
+def test_sumiu_cancelada_fora_da_janela_e_cancelada():
+    antes = reuniao_gravada(1, "2026-10-16T10:00", chaves=("p:10",))
+    cancelada = detalhe(1, "2026-10-16T10:00", situacao="Cancelada")
+
+    assert tipos(_comparar([antes], [], buscar({1: cancelada}))) == [("cancelada", None)]
+
+
 def test_sumiu_e_foi_cancelada():
     antes = reuniao_gravada(1, chaves=("p:10",))
     cancelada = detalhe(1, "2026-10-28T10:00", situacao="Cancelada")

@@ -56,7 +56,8 @@ def identificacao(proposicao: dict) -> str:
     return f"{proposicao['siglaTipo']} {int(proposicao['numero'])}/{int(proposicao['ano'])}"
 
 
-EXPRESSAO_EXCLUIDA = "requerimento de retirada de pauta"
+# Com a variação "Requerimento de Retirado de Pauta", que aparece em texto real (80344, ordem 16).
+EXPRESSAO_EXCLUIDA = re.compile(r"requerimento de retirad[oa] de pauta")
 REGRAS_DO_RESULTADO = (
     ("vista", re.compile(r"\bvista\b")),
     ("aprovado", re.compile(r"\baprovad[oa]\b")),
@@ -78,7 +79,7 @@ def resultado(texto: str | None) -> dict:
     if texto is None or not texto.strip():
         return {"rotulo": "sem registro", "texto": texto}
     minusculo = texto.lower()
-    if RETIRADO.search(minusculo.replace(EXPRESSAO_EXCLUIDA, "")):
+    if RETIRADO.search(EXPRESSAO_EXCLUIDA.sub("", minusculo)):
         return {"rotulo": "retirado de pauta", "texto": texto}
     for rotulo, padrao in REGRAS_DO_RESULTADO:
         if padrao.search(minusculo):

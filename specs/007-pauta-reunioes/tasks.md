@@ -210,3 +210,15 @@ US5:     T019 ∥ T020
 - **T022:** `src/monitor_comissoes/pauta/` só importa `coleta`, `config`, `deputados`, `erros`,
   `estoque`, `indice`, `retratos`, `saida`, `status` e `transporte`; nenhum arquivo de PRZ, SEM
   ou PGP foi criado.
+- **Revisão, rodada 1 (R6, reunião que sumiu):** a regra "data fora da janela → data ou hora
+  mudou" registrava a alteração também quando a data **não** mudou e a reunião só tinha ficado
+  para trás da janela (deixada "Convocada" depois de realizada, ou dias sem checagem boa), com
+  `de` igual a `para`. Agora: `Cancelada` decide primeiro (também fora da janela); fora da
+  janela com a mesma data, nenhuma alteração; com outra data, "data ou hora mudou".
+- **Revisão, rodada 1 (R5, §5.9):** a exceção "Requerimento de Retirada de Pauta" passa a
+  cobrir a grafia "Requerimento de Retirado de Pauta", que aparece no texto real do PL
+  4242/2021 (80344, ordem 16) e o fazia sair "retirado de pauta" em vez de "aprovado". O README
+  das fixtures foi recontado: retirado 41, aprovado 83; a linha "sem registro" dizia 49 porque
+  contava a reunião cancelada e a convocada; nas realizadas são 7.
+- **Revisão, rodada 1 (validação):** cada órgão do evento passa a exigir `sigla` (texto); sem
+  ela, uma reunião que sumiu seria dada como "retirada da agenda" por engano.

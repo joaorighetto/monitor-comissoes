@@ -33,6 +33,8 @@ def texto_real(evento, ordem):
         (81862, 5, "rejeitado"),  # "… Rejeitado o Parecer do Relator…"
         (81862, 12, "rejeitado"),
         (80344, 6, "não apreciado"),  # "Não deliberado."
+        # "… Requerimento de Retirado de Pauta … Aprovado o Parecer da Relatora…" (grafia da Câmara)
+        (80344, 16, "aprovado"),
         (80344, 5, "outro"),  # votação do Requerimento de Retirada de Pauta, sem quórum
         (81609, 19, "outro"),  # "Iniciada a Discussão. Discutiu a Matéria…"
     ],

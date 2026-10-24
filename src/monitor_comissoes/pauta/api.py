@@ -73,7 +73,8 @@ def _validar_evento(evento, url: str) -> dict:
         _exigir(isinstance(evento.get(campo), str), url, campo, evento.get(campo))
     orgaos = evento.get("orgaos")
     valido = isinstance(orgaos, list) and all(
-        isinstance(o, dict) and _inteiro(o.get("id")) for o in orgaos
+        isinstance(o, dict) and _inteiro(o.get("id")) and isinstance(o.get("sigla"), str)
+        for o in orgaos
     )
     _exigir(valido, url, "orgaos", orgaos)
     return evento

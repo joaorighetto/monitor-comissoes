@@ -53,12 +53,12 @@ Contagem sobre os itens de tipo listado (PL, PLP, PEC, MSC, PDL) das reuniões r
 
 | Rótulo | Itens | Exemplo |
 |---|---|---|
-| retirado de pauta | 42 | 81555, PL 5432/2016 |
+| retirado de pauta | 41 | 81555, PL 5432/2016 |
 | vista | 14 | 80375, MSC 516/2018 |
-| aprovado | 82 | 80265, PL 3205/2021 |
+| aprovado | 83 | 80265, PL 3205/2021 |
 | rejeitado | 2 | 81862, PL 26/2025 |
 | não apreciado | 58 | 80344, PL 4216/2024 |
-| sem registro | 49 | 80594, PLP 258/2019 |
+| sem registro | 7 | 80594, PLP 258/2019 |
 | outro | 2 | 80344, PL 1655/2022; 81609, PL 622/2026 |
 
 Todos os rótulos têm caso real.
