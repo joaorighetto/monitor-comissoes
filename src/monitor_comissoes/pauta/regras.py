@@ -68,18 +68,22 @@ REGRAS_DO_RESULTADO = (
     ),
 )
 RETIRADO = re.compile(r"retirad[oa] de pauta")
+# O requerimento de retirada aprovado tira o item da pauta (emenda ao §5.9).
+REQUERIMENTO_APROVADO = re.compile(r"aprovad[oa] (?:o )?requerimento de retirad[oa] de pauta")
 
 
 def resultado(texto: str | None) -> dict:
     """O rótulo do §5.9 e o texto original (R5). As regras valem na ordem; a primeira decide.
 
     "Retirado de pauta" não conta dentro de "Requerimento de Retirada de Pauta": só essas
-    ocorrências saem da busca, e não o texto inteiro.
+    ocorrências saem da busca, e não o texto inteiro. Mas o requerimento aprovado tira o item.
     """
     if texto is None or not texto.strip():
         return {"rotulo": "sem registro", "texto": texto}
     minusculo = texto.lower()
-    if RETIRADO.search(EXPRESSAO_EXCLUIDA.sub("", minusculo)):
+    if REQUERIMENTO_APROVADO.search(minusculo) or RETIRADO.search(
+        EXPRESSAO_EXCLUIDA.sub("", minusculo)
+    ):
         return {"rotulo": "retirado de pauta", "texto": texto}
     for rotulo, padrao in REGRAS_DO_RESULTADO:
         if padrao.search(minusculo):

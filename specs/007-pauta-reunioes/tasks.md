@@ -226,3 +226,8 @@ US5:     T019 ∥ T020
   convocada que some da lista, mas cujo detalhe ainda é reunião deliberativa da comissão na
   janela, volta à checagem montada pelo detalhe (`recuperar_sumidas` em `checagem.py`), com a
   pauta buscada pelo id. Antes ela saía do arquivo sem aviso. O R6 do research foi atualizado.
+- **Revisão, rodada 1 (emenda ao §5.9, aprovada pelo mantenedor):** "Aprovado o Requerimento
+  de Retirada de Pauta" passa a dar "retirado de pauta" (antes, pela ordem das regras, dava
+  "aprovado"), e a grafia "Requerimento de Retirado de Pauta" entra na exceção. PRODUCT §5.9,
+  cenário 2 da User Story 3 da spec e R5 do research atualizados. Nenhum item das fixtures
+  muda de rótulo; a contagem de 12 meses do §5.9 não foi refeita (exige rede).

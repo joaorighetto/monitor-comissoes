@@ -58,9 +58,11 @@ vira "outra" com o texto original (spec, Edge Cases).
 ## R5. Resultado (§5.9)
 
 - **Decisão:** sobre o texto em minúsculas, sem alterar acentos:
-  1. "retirado de pauta": `retirad[oa] de pauta` em alguma ocorrência que **não** faz parte de
-     "requerimento de retirada de pauta" (as ocorrências da expressão excluída são removidas antes
-     da busca, e não o texto inteiro);
+  1. "retirado de pauta": `aprovad[oa] (o )?requerimento de retirad[oa] de pauta` (o requerimento
+     foi aprovado, então o item saiu), ou `retirad[oa] de pauta` em alguma ocorrência que **não**
+     faz parte de `requerimento de retirad[oa] de pauta` (as ocorrências da expressão excluída são
+     removidas antes da busca, e não o texto inteiro; "Retirado" cobre a grafia do texto real do
+     PL 4242/2021). Emenda ao §5.9 aprovada pelo mantenedor na revisão;
   2. "vista": a palavra `vista` (`\bvista\b`);
   3. "aprovado": `\baprovad[oa]\b`;
   4. "rejeitado": `\brejeitad[oa]\b`;

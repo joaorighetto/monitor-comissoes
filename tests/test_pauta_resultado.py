@@ -59,7 +59,16 @@ def test_textos_reais(evento, ordem, rotulo):
         ("Item prejudicado pelo encerramento da reunião.", "não apreciado"),
         ("RETIRADO DE PAUTA.", "retirado de pauta"),
         ("Retirada de pauta a matéria.", "retirado de pauta"),
-        ("Aprovado o Requerimento de Retirada de Pauta.", "aprovado"),
+        ("Aprovado o Requerimento de Retirada de Pauta.", "retirado de pauta"),
+        (
+            "Aprovada a Inversão de Pauta. Aprovado Requerimento de Retirada de Pauta.",
+            "retirado de pauta",
+        ),
+        ("Rejeitado o Requerimento de Retirada de Pauta. Aprovado o Parecer.", "aprovado"),
+        (
+            "Retirado o Requerimento de Retirada de Pauta pelo Autor. Aprovado o Parecer.",
+            "aprovado",
+        ),
         ("Revista a redação.", "outro"),  # "vista" só como palavra
         ("Desaprovado o trecho.", "outro"),  # "aprovado" só como palavra
         ("Lido o Parecer.", "outro"),

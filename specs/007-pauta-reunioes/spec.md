@@ -83,7 +83,7 @@ Depois de uma reunião, o gabinete quer ver, para cada item listado, o resultado
 **Acceptance Scenarios**:
 
 1. **Dado** um item com `situacaoItem` "Retirado de pauta, por acordo, a pedido do governo.", **Quando** a checagem roda, **Então** o resultado é "retirado de pauta", com o texto original.
-2. **Dado** um item cujo texto menciona "Requerimento de Retirada de Pauta" e depois a aprovação do parecer, **Quando** a checagem roda, **Então** o resultado **não** é "retirado de pauta"; segue para as regras seguintes e, nesse caso, é "aprovado".
+2. **Dado** um item cujo texto menciona "Requerimento de Retirada de Pauta" e depois a aprovação do parecer, **Quando** a checagem roda, **Então** o resultado **não** é "retirado de pauta"; segue para as regras seguintes e, nesse caso, é "aprovado". Vale o mesmo para a grafia "Requerimento de Retirado de Pauta". Já um texto que diz que o próprio requerimento foi aprovado ("Aprovado o Requerimento de Retirada de Pauta") dá "retirado de pauta" (emenda ao §5.9 na revisão).
 3. **Dado** um item cujo texto menciona vista e também aprovação, **Quando** a checagem roda, **Então** o resultado é "vista" (regra 2 antes da regra 3).
 4. **Dado** um item com texto "Aprovado o Parecer" ou "Aprovada", **Quando** a checagem roda, **Então** o resultado é "aprovado"; com "Rejeitado" ou "Rejeitada", "rejeitado".
 5. **Dado** um item com texto que diz adiado, não apreciado, não deliberado ou que a reunião foi encerrada antes do item, **Quando** a checagem roda, **Então** o resultado é "não apreciado".

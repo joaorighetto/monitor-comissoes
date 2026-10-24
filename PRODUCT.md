@@ -186,7 +186,7 @@ O primeiro rótulo que casar vale:
 
 | Ordem | Rótulo | Quando |
 |---|---|---|
-| 1 | retirado de pauta | O texto diz "Retirado de pauta" ou "Retirada de pauta", **exceto** em "Requerimento de Retirada de Pauta" |
+| 1 | retirado de pauta | O texto diz "Retirado de pauta" ou "Retirada de pauta", **exceto** em "Requerimento de Retirada de Pauta" (também na grafia "Requerimento de Retirado de Pauta"); **ou** diz que esse requerimento foi aprovado ("Aprovado o Requerimento de Retirada de Pauta") |
 | 2 | vista | O texto menciona vista |
 | 3 | aprovado | "Aprovado" ou "Aprovada" |
 | 4 | rejeitado | "Rejeitado" ou "Rejeitada" |
