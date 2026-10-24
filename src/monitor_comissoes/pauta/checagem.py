@@ -14,6 +14,7 @@ from .regras import (
     grupo,
     identificacao,
     proposicao_do_item,
+    resultado,
     situacao,
 )
 
@@ -65,7 +66,7 @@ def _relator(relator: dict | None) -> dict | None:
     return {"id": relator["id"], "nome": relator["nome"], "partido": relator.get("siglaPartido")}
 
 
-def _item(item: dict, proposicao: dict, contexto: Contexto) -> dict:
+def _item(item: dict, proposicao: dict, realizada: bool, contexto: Contexto) -> dict:
     eh_req = proposicao["siglaTipo"] == "REQ"
     relator = _relator(item["relator"])
     nomes, nao_verificada = etiquetas(
@@ -81,7 +82,7 @@ def _item(item: dict, proposicao: dict, contexto: Contexto) -> dict:
         "etiquetas": nomes,
         "autoria_nao_verificada": nao_verificada,
         "leva_apensado_do_novo": apensados_do_novo(proposicao["id"], contexto.inventario),
-        "resultado": None,
+        "resultado": resultado(item["situacaoItem"]) if realizada else None,
     }
 
 
@@ -98,6 +99,7 @@ def _req_listado(item: dict) -> bool:
 
 def _reuniao(evento: dict, comissao: str, itens_da_pauta: list[dict], contexto: Contexto) -> dict:
     itens_da_pauta = sorted(itens_da_pauta, key=lambda i: i["ordem"])
+    realizada = situacao(evento["situacao"]) == "realizada"
     listados, requerimentos_listados, requerimentos, outros = [], [], 0, 0
     pauta = []
     for item in itens_da_pauta:
@@ -105,10 +107,10 @@ def _reuniao(evento: dict, comissao: str, itens_da_pauta: list[dict], contexto: 
         tipo = proposicao["siglaTipo"] if proposicao is not None else None
         classe = grupo(tipo)
         if classe == "listado":
-            listados.append(_item(item, proposicao, contexto))
+            listados.append(_item(item, proposicao, realizada, contexto))
         elif classe == "req":
             requerimentos += 1
-            requerimento = _item(item, proposicao, contexto)
+            requerimento = _item(item, proposicao, realizada, contexto)
             if _req_listado(requerimento):
                 requerimentos_listados.append(requerimento)
         else:

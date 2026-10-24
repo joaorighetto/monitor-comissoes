@@ -375,3 +375,43 @@ def test_etiqueta_nao_inclui_nem_exclui_item():
         assert reuniao["requerimentos"]["total"] == 5
         assert reuniao["outros"]["total"] == 0
         assert len(reuniao["pauta"]) == 30
+
+
+# --- US3: resultado só em reunião realizada ----------------------------------------------------
+
+
+def test_em_reuniao_realizada_todo_item_listado_tem_resultado():
+    proposicoes = indice_de(itens_reais(81555), p2615445=[1, []])
+
+    reuniao = reuniao_81555(proposicoes)
+
+    assert reuniao["situacao"] == "realizada"
+    for item in reuniao["itens"] + reuniao["requerimentos"]["listados"]:
+        assert item["resultado"]["texto"] == next(
+            i["situacaoItem"] for i in itens_reais(81555) if i["ordem"] == item["ordem"]
+        )
+    pl_5432 = next(i for i in reuniao["itens"] if i["proposicao"]["id"] == PL_5432)
+    assert pl_5432["resultado"]["rotulo"] == "retirado de pauta"
+    [req] = reuniao["requerimentos"]["listados"]
+    assert req["resultado"] == {"rotulo": "aprovado", "texto": "Aprovado o Requerimento."}
+
+
+def test_reuniao_termo_sem_texto_e_sem_registro():
+    eventos = {"CREDN": (2018, eventos_salvos("2018-2025-11-26-2025-12-10"))}
+    pautas = {n: itens_reais(n) for n in (80375, 80376, 80594, 80712)}
+
+    reunioes = montar_reunioes(eventos, pautas, contexto(date(2025, 12, 3)))
+
+    termo = next(r for r in reunioes if r["id"] == 80594)
+    assert termo["situacao_camara"] == "Encerrada (Termo)"
+    assert {i["resultado"]["rotulo"] for i in termo["itens"]} == {"sem registro"}
+
+
+@pytest.mark.parametrize("texto_situacao", ["Convocada", "Cancelada", "Em Andamento"])
+def test_fora_de_reuniao_realizada_o_resultado_e_nulo(texto_situacao):
+    itens = [item_pauta(1, proposicao=(7, "PL 7/2020"), situacao_item="Aprovado o Parecer.")]
+    reuniao_evento = evento(1, "2026-10-24T10:00", situacao=texto_situacao)
+
+    [reuniao] = montar_reunioes({"CE": (2009, [reuniao_evento])}, {1: itens}, contexto())
+
+    assert reuniao["itens"][0]["resultado"] is None

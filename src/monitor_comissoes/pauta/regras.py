@@ -4,6 +4,8 @@ Nada aqui lê rede ou disco. As regras vêm do PRODUCT.md (§5.8 e §5.9) e do r
 (R3 a R6).
 """
 
+import re
+
 REUNIAO_DELIBERATIVA = "Reunião Deliberativa"
 TIPOS_LISTADOS = ("PL", "PLP", "PEC", "MSC", "PDL")
 REQUERIMENTO = "REQ"
@@ -52,3 +54,33 @@ def chave(item: dict) -> str:
 def identificacao(proposicao: dict) -> str:
     """`Tipo número/ano`. A relacionada traz número e ano como texto (R4)."""
     return f"{proposicao['siglaTipo']} {int(proposicao['numero'])}/{int(proposicao['ano'])}"
+
+
+EXPRESSAO_EXCLUIDA = "requerimento de retirada de pauta"
+REGRAS_DO_RESULTADO = (
+    ("vista", re.compile(r"\bvista\b")),
+    ("aprovado", re.compile(r"\baprovad[oa]\b")),
+    ("rejeitado", re.compile(r"\brejeitad[oa]\b")),
+    (
+        "não apreciado",
+        re.compile(r"adiad|não apreciad|não deliberad|encerrada a reunião|encerramento da reunião"),
+    ),
+)
+RETIRADO = re.compile(r"retirad[oa] de pauta")
+
+
+def resultado(texto: str | None) -> dict:
+    """O rótulo do §5.9 e o texto original (R5). As regras valem na ordem; a primeira decide.
+
+    "Retirado de pauta" não conta dentro de "Requerimento de Retirada de Pauta": só essas
+    ocorrências saem da busca, e não o texto inteiro.
+    """
+    if texto is None or not texto.strip():
+        return {"rotulo": "sem registro", "texto": texto}
+    minusculo = texto.lower()
+    if RETIRADO.search(minusculo.replace(EXPRESSAO_EXCLUIDA, "")):
+        return {"rotulo": "retirado de pauta", "texto": texto}
+    for rotulo, padrao in REGRAS_DO_RESULTADO:
+        if padrao.search(minusculo):
+            return {"rotulo": rotulo, "texto": texto}
+    return {"rotulo": "outro", "texto": texto}
