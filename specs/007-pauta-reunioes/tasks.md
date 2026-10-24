@@ -125,8 +125,8 @@
 
 **Teste independente**: verificação textual dos workflows.
 
-- [ ] T019 [P] [US5] Em `tests/test_workflow_pauta.py` (no padrão de `tests/test_workflow_aviso.py`) escrever os testes de `.github/workflows/checagem-pauta.yml`: os três crons do contrato e nenhum outro; a checagem da manhã termina antes de `17 10 * * *` (cron do aviso) com folga de ao menos 60 minutos; uma checagem depois das 14h de Brasília e outra depois das 22h; `workflow_dispatch` sem entradas; sem `push` nem `pull_request`; `concurrency` `pauta` sem cancelar e **diferente** de `coleta-diaria`; `permissions: contents: write` só; `timeout-minutes`; mesmo SHA do setup-uv dos outros workflows; `actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` com `path: cache/indice-autoria.json` e `restore-keys: indice-autoria-`; o passo roda `.venv/bin/python -m monitor_comissoes.pauta checar`, guarda o código, em falha faz `git checkout -- data/pautas` e `git clean -fdq -- data/pautas`, faz `git add` só de `data/status-pauta.json` e (em sucesso) `data/pautas`, commita com `pauta mensagem`, `git pull --rebase`, push com uma nova tentativa e devolve o código. Depois criar o workflow.
-- [ ] T020 [P] [US5] Em `tests/test_workflow.py` acrescentar: o workflow da coleta tem, **depois** do passo "Coleta e commit", um passo `actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` com `if: success()`, `path: cache/indice-autoria.json` e `key: indice-autoria-${{ github.run_id }}-${{ github.run_attempt }}`; os demais testes do workflow continuam passando sem alteração. Depois acrescentar o passo em `.github/workflows/coleta-diaria.yml`.
+- [X] T019 [P] [US5] Em `tests/test_workflow_pauta.py` (no padrão de `tests/test_workflow_aviso.py`) escrever os testes de `.github/workflows/checagem-pauta.yml`: os três crons do contrato e nenhum outro; a checagem da manhã termina antes de `17 10 * * *` (cron do aviso) com folga de ao menos 60 minutos; uma checagem depois das 14h de Brasília e outra depois das 22h; `workflow_dispatch` sem entradas; sem `push` nem `pull_request`; `concurrency` `pauta` sem cancelar e **diferente** de `coleta-diaria`; `permissions: contents: write` só; `timeout-minutes`; mesmo SHA do setup-uv dos outros workflows; `actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` com `path: cache/indice-autoria.json` e `restore-keys: indice-autoria-`; o passo roda `.venv/bin/python -m monitor_comissoes.pauta checar`, guarda o código, em falha faz `git checkout -- data/pautas` e `git clean -fdq -- data/pautas`, faz `git add` só de `data/status-pauta.json` e (em sucesso) `data/pautas`, commita com `pauta mensagem`, `git pull --rebase`, push com uma nova tentativa e devolve o código. Depois criar o workflow.
+- [X] T020 [P] [US5] Em `tests/test_workflow.py` acrescentar: o workflow da coleta tem, **depois** do passo "Coleta e commit", um passo `actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9` com `if: success()`, `path: cache/indice-autoria.json` e `key: indice-autoria-${{ github.run_id }}-${{ github.run_attempt }}`; os demais testes do workflow continuam passando sem alteração. Depois acrescentar o passo em `.github/workflows/coleta-diaria.yml`.
 
 **Checkpoint**: US5 verde.
 
@@ -196,4 +196,7 @@ US5:     T019 ∥ T020
 
 ## Notas da implementação (desvios registrados)
 
-_(preenchido durante a implementação)_
+- **T020:** `test_a_entrada_nao_e_interpolada_dentro_do_script` (em `tests/test_workflow.py`)
+  conferia a ausência de `${{` do script da coleta até o fim do arquivo. O passo novo de
+  `actions/cache/save` precisa de `${{ github.run_id }}` na chave, então o teste passou a olhar
+  só até o passo seguinte. A intenção (nenhuma interpolação dentro do script) não mudou.

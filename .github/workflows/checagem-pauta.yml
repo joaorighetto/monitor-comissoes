@@ -1,0 +1,69 @@
+name: Checagem da pauta
+
+on:
+  schedule:
+    # Horários de Brasília (UTC−3, sem horário de verão desde 2019), fora do topo da hora, quando
+    # o agendador do GitHub mais atrasa:
+    # 08:47 UTC = 05:47, com folga antes do aviso das 07:17;
+    - cron: "47 8 * * *"
+    # 18:17 UTC = 15:17, depois das reuniões da manhã;
+    - cron: "17 18 * * *"
+    # 01:47 UTC = 22:47 do dia anterior, depois das reuniões da tarde.
+    - cron: "47 1 * * *"
+  workflow_dispatch:
+
+# Uma checagem por vez, sem cancelar a que já roda. Grupo próprio: a checagem não espera a coleta
+# (que pode levar horas) e lê o índice e o inventário da última coleta boa.
+concurrency:
+  group: pauta
+  cancel-in-progress: false
+
+jobs:
+  checar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      # O setup-uv não publica tag móvel de versão maior (v10 não existe): fixa-se a versão completa.
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - run: uv sync --locked
+      # O índice de autoria que a última coleta boa salvou. A chave exata nunca existe; o prefixo
+      # restaura o mais recente. Sem nenhum, a checagem falha com entrada_invalida.
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: cache/indice-autoria.json
+          key: indice-autoria-
+          restore-keys: indice-autoria-
+      - name: Identidade do bot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Checar e registrar
+        shell: bash
+        run: |
+          # Falha da checagem não pode impedir o registro do status: guarda o código, commita
+          # e só no fim devolve o código (workflow vermelho).
+          set +e
+          .venv/bin/python -m monitor_comissoes.pauta checar
+          codigo=$?
+          set -e
+          # Em falha, a CLI não grava em data/pautas; por defesa, a pasta volta ao que o Git tem
+          # (um caminho que o Git não conhece não pode abortar o passo).
+          if [ "$codigo" -ne 0 ]; then
+            git checkout -- data/pautas 2>/dev/null || true
+            git clean -fdq -- data/pautas || true
+          fi
+          git add data/status-pauta.json
+          if [ "$codigo" -eq 0 ]; then
+            git add data/pautas
+          fi
+          git commit -m "$(.venv/bin/python -m monitor_comissoes.pauta mensagem)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          # Se alguém empurrou entre o pull e o push, uma nova tentativa custa quase nada.
+          git push origin "HEAD:${GITHUB_REF_NAME}" || {
+            git pull --rebase origin "$GITHUB_REF_NAME"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          }
+          exit "$codigo"

@@ -80,3 +80,11 @@ jobs:
             git push origin "HEAD:${GITHUB_REF_NAME}"
           }
           exit "$codigo"
+      # O índice de autoria que a checagem da pauta usa. Só depois de uma coleta boa: em falha,
+      # a pauta continua com o índice da última coleta boa. Uma chave por execução (o cache não
+      # sobrescreve chave existente); a pauta restaura a mais recente pelo prefixo.
+      - if: success()
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: cache/indice-autoria.json
+          key: indice-autoria-${{ github.run_id }}-${{ github.run_attempt }}
