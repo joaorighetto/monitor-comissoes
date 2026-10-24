@@ -215,7 +215,7 @@ O primeiro rótulo que casar vale:
   - os prazos de emendas abertos, os ao substitutivo primeiro, cada um com "desde DD/MM";
   - as mudanças do inventário dos últimos 7 dias, agrupadas por tipo (§5.6).
 
-  Em semana sem reunião e sem prazo: "sem reunião convocada · N prazos abertos · inventário: N itens, sem mudanças".
+  Em semana sem reunião e sem prazo: "sem reunião convocada · N prazos abertos · inventário: N itens, M mudanças", com "sem mudanças" no lugar de "M mudanças" só quando não houve nenhuma mudança no inventário nos últimos 7 dias.
 - **Resultado: na quinta, só em semana com reunião realizada.** Cada PL, PLP, PEC, MSC ou PDL pautado com o rótulo do §5.9 (aprovado, retirado de pauta, vista, não apreciado), os do NOVO primeiro.
 - **Véspera: só quando há o que avisar.** Na manhã anterior a uma reunião convocada, se a pauta foi alterada (§5.8) desde a mensagem de segunda, se a reunião foi convocada depois dela ou se foi cancelada. Diz o que entrou, o que saiu e o que mudou de data ou hora.
 - Cada mensagem tem o link oficial de cada item e cabe em 4.096 caracteres. O excedente é resumido como "e mais N, veja a página".
