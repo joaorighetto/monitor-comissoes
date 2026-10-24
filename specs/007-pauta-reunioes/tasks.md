@@ -138,7 +138,7 @@
 
 **Objetivo**: casos reais da spec ponta a ponta e manifesto das fixtures (SC-001 a SC-004, SC-008).
 
-- [ ] T021 [US7] Em `tests/test_pauta_aceitacao.py` escrever os casos de aceitação com as fixtures reais, pela CLI com `TransportePauta` e um índice que contém todas as proposições das pautas salvas (como em T017), com as autorias do lote de fixtures quando existirem: (a) checagem em 24/10/2026 com a janela da CE salva → a reunião 83091 com 19 PL listados e 1 REQ contado, todos com link (SC-002); (b) checagem em 15/04/2026 com a janela da CE de abril → o PL 5432/2016 traz `leva_apensado_do_novo` com o PL 3701/2020, `autoria NOVO` e `autor hoje no NOVO`, e vem antes dos itens sem ligação (SC-003); o REQ 17/2026 só contado; o item do PL 3464/2025 com `relatoria NOVO` (Luiz Lima); todo item listado com `resultado` e texto (SC-004); (c) a reunião cancelada e a CREDN com MSC e PDL listados; (d) toda reunião, item, apensado e alteração tem `link` começando com `https://www.camara.leg.br/` (SC-001). Teste também que todo arquivo de `tests/fixtures/pauta/` está no `manifesto.json` com endpoint e data. Se algum caso falhar por regra, corrigir o código da fase correspondente, nunca a fixture.
+- [X] T021 [US7] Em `tests/test_pauta_aceitacao.py` escrever os casos de aceitação com as fixtures reais, pela CLI com `TransportePauta` e um índice que contém todas as proposições das pautas salvas (como em T017), com as autorias do lote de fixtures quando existirem: (a) checagem em 24/10/2026 com a janela da CE salva → a reunião 83091 com 19 PL listados e 1 REQ contado, todos com link (SC-002); (b) checagem em 15/04/2026 com a janela da CE de abril → o PL 5432/2016 traz `leva_apensado_do_novo` com o PL 3701/2020, `autoria NOVO` e `autor hoje no NOVO`, e vem antes dos itens sem ligação (SC-003); o REQ 17/2026 só contado; o item do PL 3464/2025 com `relatoria NOVO` (Luiz Lima); todo item listado com `resultado` e texto (SC-004); (c) a reunião cancelada e a CREDN com MSC e PDL listados; (d) toda reunião, item, apensado e alteração tem `link` começando com `https://www.camara.leg.br/` (SC-001). Teste também que todo arquivo de `tests/fixtures/pauta/` está no `manifesto.json` com endpoint e data. Se algum caso falhar por regra, corrigir o código da fase correspondente, nunca a fixture.
 
 **Checkpoint**: casos de aceitação verdes.
 
@@ -148,7 +148,7 @@
 
 ## Fase 10: Fechamento
 
-- [ ] T022 [P] Conferir que `src/monitor_comissoes/pauta/` não importa nada de `pagina/`, `aviso.py`, `resumo.py` nem `envio.py` e que nenhum arquivo de PRZ, SEM ou PGP foi criado (escopo, princípio VII); registrar no fim deste arquivo, em "Notas da implementação", qualquer desvio do plano.
+- [X] T022 [P] Conferir que `src/monitor_comissoes/pauta/` não importa nada de `pagina/`, `aviso.py`, `resumo.py` nem `envio.py` e que nenhum arquivo de PRZ, SEM ou PGP foi criado (escopo, princípio VII); registrar no fim deste arquivo, em "Notas da implementação", qualquer desvio do plano.
 - [ ] T023 Rodar a verificação completa `uv run ruff check . && uv run ruff format --check . && uv run pytest` e guardar a saída para o relatório. O status da PAU no `ROADMAP.md` continua `em andamento` até o OK do mantenedor e o merge.
 
 ---
@@ -200,3 +200,13 @@ US5:     T019 ∥ T020
   conferia a ausência de `${{` do script da coleta até o fim do arquivo. O passo novo de
   `actions/cache/save` precisa de `${{ github.run_id }}` na chave, então o teste passou a olhar
   só até o passo seguinte. A intenção (nenhuma interpolação dentro do script) não mudou.
+- **T021 (b):** no dado real, o PL 5432/2016 não tem etiqueta própria; quem traz `autoria NOVO`
+  e `autor hoje no NOVO` é o apensado PL 3701/2020, dentro de `leva_apensado_do_novo` (as
+  etiquetas vêm do inventário). O teste confere assim. O link de cada item fica em
+  `proposicao.link`, como no contrato `pauta-json.md`.
+- **T021 (manifesto):** a conferência de que toda resposta salva está no `manifesto.json`, com
+  endpoint e data, já existia em `tests/test_pauta_sinteticos.py` (T001) e não foi repetida. O
+  `atual.json` das fixtures não é resposta da API e está descrito no README das fixtures.
+- **T022:** `src/monitor_comissoes/pauta/` só importa `coleta`, `config`, `deputados`, `erros`,
+  `estoque`, `indice`, `retratos`, `saida`, `status` e `transporte`; nenhum arquivo de PRZ, SEM
+  ou PGP foi criado.
