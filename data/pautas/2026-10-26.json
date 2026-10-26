@@ -9,16 +9,16 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-10-26T04:01:10-03:00",
+    "checada_em": "2026-10-26T12:30:01-03:00",
     "janela": {
       "inicio": "2026-10-19",
       "fim": "2026-11-02"
     },
     "lote": {
-      "dados_camara_em": "2026-10-25T04:31:28+00:00"
+      "dados_camara_em": "2026-10-26T04:31:42+00:00"
     },
     "inventario": {
-      "gerado_em": "2026-10-25T08:57:35-03:00"
+      "gerado_em": "2026-10-26T10:29:58-03:00"
     },
     "deputados_novo_em_exercicio": [
       {
