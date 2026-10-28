@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-10-28T04:29:30-03:00",
+    "checada_em": "2026-10-28T12:29:37-03:00",
     "janela": {
       "inicio": "2026-10-21",
       "fim": "2026-11-04"
@@ -46,9 +46,9 @@
       {
         "id": 83091,
         "comissao": "CE",
-        "inicio": "2026-10-28T10:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-10-28T10:06",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83091",
         "vista_desde": "2026-10-25T10:23:16-03:00",
         "itens": [
@@ -74,7 +74,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
           },
           {
             "ordem": 3,
@@ -98,7 +101,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Benes Leocádio (União-RN), pelo Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 4,
@@ -122,7 +128,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Carol Dartora (PT-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 5,
@@ -146,7 +155,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Diego Garcia (União-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 6,
@@ -170,7 +182,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Diego Garcia (União-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 7,
@@ -194,7 +209,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Tabara Amaral (PSB-SP), pelo Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 8,
@@ -218,7 +236,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
           },
           {
             "ordem": 9,
@@ -242,7 +263,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 10,
@@ -266,7 +290,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 11,
@@ -290,7 +317,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
           },
           {
             "ordem": 12,
@@ -314,7 +344,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
           },
           {
             "ordem": 13,
@@ -338,7 +371,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Otoni de Paula (PSD-RJ). Iniciada a Discussão. Discutiu a Matéria o Dep. Rafael Brito (MDB-AL). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 14,
@@ -362,7 +398,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Lídice da Mata (PSB-BA). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 15,
@@ -386,7 +425,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 16,
@@ -410,7 +452,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 17,
@@ -434,7 +479,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Professora Luciene Cavalcante (PSOL-SP). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 18,
@@ -458,7 +506,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro  Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 19,
@@ -482,7 +533,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Professora Luciene Cavancalte (PSOL-SP). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           },
           {
             "ordem": 20,
@@ -506,7 +560,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
           }
         ],
         "requerimentos": {
