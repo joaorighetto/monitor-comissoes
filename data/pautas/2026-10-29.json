@@ -1,0 +1,782 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-10-29",
+    "comissoes": [
+      "CE",
+      "CREDN"
+    ],
+    "linha_de_base": null
+  },
+  "checagem": {
+    "checada_em": "2026-10-29T04:41:24-03:00",
+    "janela": {
+      "inicio": "2026-10-22",
+      "fim": "2026-11-05"
+    },
+    "lote": {
+      "dados_camara_em": "2026-10-26T04:31:42+00:00"
+    },
+    "inventario": {
+      "gerado_em": "2026-10-26T10:29:58-03:00"
+    },
+    "deputados_novo_em_exercicio": [
+      {
+        "id": 156190,
+        "nome": "Marcel van Hattem"
+      },
+      {
+        "id": 204365,
+        "nome": "Gilson Marques"
+      },
+      {
+        "id": 204455,
+        "nome": "Luiz Lima"
+      },
+      {
+        "id": 204528,
+        "nome": "Adriana Ventura"
+      },
+      {
+        "id": 220633,
+        "nome": "Ricardo Salles"
+      }
+    ],
+    "reunioes": [
+      {
+        "id": 83091,
+        "comissao": "CE",
+        "inicio": "2026-10-28T10:06",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
+        "link": "https://www.camara.leg.br/evento-legislativo/83091",
+        "vista_desde": "2026-10-25T10:23:16-03:00",
+        "itens": [
+          {
+            "ordem": 2,
+            "titulo": "PL 479/2015",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 949156,
+              "tipo": "PL",
+              "numero": 479,
+              "ano": 2015,
+              "identificacao": "PL 479/2015",
+              "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996 (Lei de Diretrizes e Bases da Educação - LDB), para dispor sobre educação em tempo integral.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/949156"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220560,
+              "nome": "Thiago de Joaldo",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
+          },
+          {
+            "ordem": 3,
+            "titulo": "PL 2451/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2625561,
+              "tipo": "PL",
+              "numero": 2451,
+              "ano": 2026,
+              "identificacao": "PL 2451/2026",
+              "ementa": "Dispõe sobre medidas de prevenção, combate e responsabilização relacionadas à criação e disseminação de manipulação digital de conteúdo sexual (deepfakes), coibindo também o uso indevido de outros recursos tecnológicos contra a dignidade sexual de crianças e adolescentes.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2625561"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 109429,
+              "nome": "Benes Leocádio",
+              "partido": "UNIÃO"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Benes Leocádio (União-RN), pelo Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 4,
+            "titulo": "PL 2412/2019",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2198723,
+              "tipo": "PL",
+              "numero": 2412,
+              "ano": 2019,
+              "identificacao": "PL 2412/2019",
+              "ementa": "Estabelece desconto de trinta por cento na aquisição de livros, periódicos e materiais didáticos por professores e estudantes de cursos superiores de grau de licenciatura.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2198723"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220704,
+              "nome": "Carol Dartora",
+              "partido": "PT"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Carol Dartora (PT-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 5,
+            "titulo": "PL 969/2021",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2274386,
+              "tipo": "PL",
+              "numero": 969,
+              "ano": 2021,
+              "identificacao": "PL 969/2021",
+              "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, para determinar que instituições de ensino, públicas e privadas, disponibilizem tradução em código braile em suas aplicações de internet.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2274386"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 178929,
+              "nome": "Diego Garcia",
+              "partido": "UNIÃO"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Diego Garcia (União-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 6,
+            "titulo": "PL 2119/2022",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2333333,
+              "tipo": "PL",
+              "numero": 2119,
+              "ano": 2022,
+              "identificacao": "PL 2119/2022",
+              "ementa": "Denomina \"Campus Professor Ubirajara Brito\" o campus do Instituto Federal de Educação, Ciência e Tecnologia da Bahia, localizado no município de Vitória da Conquista, no Estado da Bahia.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2333333"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 178929,
+              "nome": "Diego Garcia",
+              "partido": "UNIÃO"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Diego Garcia (União-PR). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 7,
+            "titulo": "PL 329/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2483184,
+              "tipo": "PL",
+              "numero": 329,
+              "ano": 2025,
+              "identificacao": "PL 329/2025",
+              "ementa": "Institui a Política Nacional de Promoção de Fatores de Proteção da Saúde Mental de Meninas.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2483184"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204534,
+              "nome": "Tabata Amaral",
+              "partido": "PSB"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Tabara Amaral (PSB-SP), pelo Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 8,
+            "titulo": "PL 3508/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2537559,
+              "tipo": "PL",
+              "numero": 3508,
+              "ano": 2025,
+              "identificacao": "PL 3508/2025",
+              "ementa": "\"Institui, no âmbito da União, o Selo “Escola Amiga da Saúde Mental”, destinado a reconhecer instituições de ensino que promovam ações voltadas à promoção da saúde mental de seus estudantes, professores e demais profissionais da comunidade escolar.\"",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537559"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204549,
+              "nome": "AJ Albuquerque",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
+          },
+          {
+            "ordem": 9,
+            "titulo": "PL 3538/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2537685,
+              "tipo": "PL",
+              "numero": 3538,
+              "ano": 2025,
+              "identificacao": "PL 3538/2025",
+              "ementa": "Institui normas para a formação continuada de professores da educação básica em práticas pedagógicas inclusivas e alfabetização de estudantes com deficiência, e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537685"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220533,
+              "nome": "Prof. Reginaldo Veras",
+              "partido": "PV"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 10,
+            "titulo": "PL 4839/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2565636,
+              "tipo": "PL",
+              "numero": 4839,
+              "ano": 2025,
+              "identificacao": "PL 4839/2025",
+              "ementa": "Institui, no âmbito do sistema educacional brasileiro, a disciplina obrigatória de Felicidade e Fraternidade e dá outras providências",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2565636"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220533,
+              "nome": "Prof. Reginaldo Veras",
+              "partido": "PV"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 11,
+            "titulo": "PL 5204/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2572437,
+              "tipo": "PL",
+              "numero": 5204,
+              "ano": 2025,
+              "identificacao": "PL 5204/2025",
+              "ementa": "Inclui, na grade curricular obrigatória dos cursos de Licenciaturas e Pedagogia no Ensino Superior, as disciplinas Neurociências, Física Quântica e Ensino Transdisciplinar por Problemas e/ou Necessidades, com o objetivo de transformar o processo educativo, alinhando o pensamento, visão, sentimento e ação dos estudantes, promovendo o êxito no projeto de vida de cada estudante.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2572437"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204390,
+              "nome": "Professor Alcides",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
+          },
+          {
+            "ordem": 12,
+            "titulo": "PL 5217/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2572618,
+              "tipo": "PL",
+              "numero": 5217,
+              "ano": 2025,
+              "identificacao": "PL 5217/2025",
+              "ementa": "Estabelece diretrizes para a carreira e as atribuições dos profissionais de apoio e suporte que atuam como Auxiliares de Educação Infantil.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2572618"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, de ofício."
+            }
+          },
+          {
+            "ordem": 13,
+            "titulo": "PL 6537/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2598490,
+              "tipo": "PL",
+              "numero": 6537,
+              "ano": 2025,
+              "identificacao": "PL 6537/2025",
+              "ementa": "Institui a Política Nacional de Transição para Alimentação Saudável, estabelece a vedação gradual de aquisição de alimentos ultraprocessados pela Administração Pública Federal, Estadual, Distrital e Municipal, define categorias de alimentos permitidos, condicionados e vedados, altera a Lei nº 11.947, de 16 de junho de 2009, e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2598490"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204441,
+              "nome": "Otoni de Paula",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Otoni de Paula (PSD-RJ). Iniciada a Discussão. Discutiu a Matéria o Dep. Rafael Brito (MDB-AL). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 14,
+            "titulo": "PL 353/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2601198,
+              "tipo": "PL",
+              "numero": 353,
+              "ano": 2026,
+              "identificacao": "PL 353/2026",
+              "ementa": "Altera a Lei nº 8.842, de 4 de janeiro de 1994, que dispõe sobre a Política Nacional do Idoso, e a Lei nº 10.741, de 1º de outubro de 2003, que institui o Estatuto da Pessoa Idosa, para estabelecer a Política Nacional de Inclusão e Letramento Digital da Pessoa Idosa (Conecta 60+) e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2601198"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204570,
+              "nome": "Pastor Gil",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Lídice da Mata (PSB-BA). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 15,
+            "titulo": "PL 934/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2606862,
+              "tipo": "PL",
+              "numero": 934,
+              "ano": 2026,
+              "identificacao": "PL 934/2026",
+              "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, para dispor sobre o controle de frequência e a verificação do rendimento dos educandos incluídos no regime escolar especial.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2606862"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 16,
+            "titulo": "PL 1697/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2614628,
+              "tipo": "PL",
+              "numero": 1697,
+              "ano": 2026,
+              "identificacao": "PL 1697/2026",
+              "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, para assegurar atendimento especializado nos processos seletivos de acesso à educação superior a candidatos com necessidades específicas.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2614628"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 17,
+            "titulo": "PL 1987/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2618550,
+              "tipo": "PL",
+              "numero": 1987,
+              "ano": 2026,
+              "identificacao": "PL 1987/2026",
+              "ementa": "Altera a Lei nº 15.202, de 11 de setembro de 2025, para assegurar aos professores aposentados da educação pública e privada, o direito à expedição da Carteira Nacional de Docente no Brasil (CNDB).",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618550"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204570,
+              "nome": "Pastor Gil",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Professora Luciene Cavalcante (PSOL-SP). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 18,
+            "titulo": "PL 1996/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2618593,
+              "tipo": "PL",
+              "numero": 1996,
+              "ano": 2026,
+              "identificacao": "PL 1996/2026",
+              "ementa": "Acresce dispositivo à Lei nº 14.643, de 02 de agosto de 2023, que autoriza o Poder Executivo a implantar serviço de monitoramento de ocorrências de violência escolar, dispondo sobre funcionalidade dedicada à comunicação de situações de violência sexual nas instituições de ensino.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618593"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro  Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 19,
+            "titulo": "PL 2095/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2620135,
+              "tipo": "PL",
+              "numero": 2095,
+              "ano": 2026,
+              "identificacao": "PL 2095/2026",
+              "ementa": "Acrescenta o § 3º ao art. 3º da Lei nº 12.764, de 27 de dezembro de 2012, para determinar a substituição de sirenes tradicionais por sinais musicais ou sonoros suaves nos estabelecimentos de ensino da educação básica para proteção de alunos com transtorno do espectro autista, e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2620135"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204570,
+              "nome": "Pastor Gil",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pela Deputada Professora Luciene Cavancalte (PSOL-SP). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 20,
+            "titulo": "PL 2359/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2624049,
+              "tipo": "PL",
+              "numero": 2359,
+              "ano": 2026,
+              "identificacao": "PL 2359/2026",
+              "ementa": "Altera a Lei nº 13.431, de 4 de abril de 2017, para dispor sobre medidas destinadas a assegurar a continuidade dos estudos de vítimas de violência no ambiente escolar.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2624049"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer."
+            }
+          }
+        ],
+        "requerimentos": {
+          "total": 1,
+          "listados": []
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": [
+          {
+            "chave": "p:2645503",
+            "ordem": 1,
+            "titulo": "REQ 70/2026 CE",
+            "proposicao": {
+              "id": 2645503,
+              "identificacao": "REQ 70/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2645503"
+            }
+          },
+          {
+            "chave": "p:949156",
+            "ordem": 2,
+            "titulo": "PL 479/2015",
+            "proposicao": {
+              "id": 949156,
+              "identificacao": "PL 479/2015",
+              "link": "https://www.camara.leg.br/propostas-legislativas/949156"
+            }
+          },
+          {
+            "chave": "p:2625561",
+            "ordem": 3,
+            "titulo": "PL 2451/2026",
+            "proposicao": {
+              "id": 2625561,
+              "identificacao": "PL 2451/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2625561"
+            }
+          },
+          {
+            "chave": "p:2198723",
+            "ordem": 4,
+            "titulo": "PL 2412/2019",
+            "proposicao": {
+              "id": 2198723,
+              "identificacao": "PL 2412/2019",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2198723"
+            }
+          },
+          {
+            "chave": "p:2274386",
+            "ordem": 5,
+            "titulo": "PL 969/2021",
+            "proposicao": {
+              "id": 2274386,
+              "identificacao": "PL 969/2021",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2274386"
+            }
+          },
+          {
+            "chave": "p:2333333",
+            "ordem": 6,
+            "titulo": "PL 2119/2022",
+            "proposicao": {
+              "id": 2333333,
+              "identificacao": "PL 2119/2022",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2333333"
+            }
+          },
+          {
+            "chave": "p:2483184",
+            "ordem": 7,
+            "titulo": "PL 329/2025",
+            "proposicao": {
+              "id": 2483184,
+              "identificacao": "PL 329/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2483184"
+            }
+          },
+          {
+            "chave": "p:2537559",
+            "ordem": 8,
+            "titulo": "PL 3508/2025",
+            "proposicao": {
+              "id": 2537559,
+              "identificacao": "PL 3508/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537559"
+            }
+          },
+          {
+            "chave": "p:2537685",
+            "ordem": 9,
+            "titulo": "PL 3538/2025",
+            "proposicao": {
+              "id": 2537685,
+              "identificacao": "PL 3538/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537685"
+            }
+          },
+          {
+            "chave": "p:2565636",
+            "ordem": 10,
+            "titulo": "PL 4839/2025",
+            "proposicao": {
+              "id": 2565636,
+              "identificacao": "PL 4839/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2565636"
+            }
+          },
+          {
+            "chave": "p:2572437",
+            "ordem": 11,
+            "titulo": "PL 5204/2025",
+            "proposicao": {
+              "id": 2572437,
+              "identificacao": "PL 5204/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2572437"
+            }
+          },
+          {
+            "chave": "p:2572618",
+            "ordem": 12,
+            "titulo": "PL 5217/2025",
+            "proposicao": {
+              "id": 2572618,
+              "identificacao": "PL 5217/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2572618"
+            }
+          },
+          {
+            "chave": "p:2598490",
+            "ordem": 13,
+            "titulo": "PL 6537/2025",
+            "proposicao": {
+              "id": 2598490,
+              "identificacao": "PL 6537/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2598490"
+            }
+          },
+          {
+            "chave": "p:2601198",
+            "ordem": 14,
+            "titulo": "PL 353/2026",
+            "proposicao": {
+              "id": 2601198,
+              "identificacao": "PL 353/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2601198"
+            }
+          },
+          {
+            "chave": "p:2606862",
+            "ordem": 15,
+            "titulo": "PL 934/2026",
+            "proposicao": {
+              "id": 2606862,
+              "identificacao": "PL 934/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2606862"
+            }
+          },
+          {
+            "chave": "p:2614628",
+            "ordem": 16,
+            "titulo": "PL 1697/2026",
+            "proposicao": {
+              "id": 2614628,
+              "identificacao": "PL 1697/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2614628"
+            }
+          },
+          {
+            "chave": "p:2618550",
+            "ordem": 17,
+            "titulo": "PL 1987/2026",
+            "proposicao": {
+              "id": 2618550,
+              "identificacao": "PL 1987/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618550"
+            }
+          },
+          {
+            "chave": "p:2618593",
+            "ordem": 18,
+            "titulo": "PL 1996/2026",
+            "proposicao": {
+              "id": 2618593,
+              "identificacao": "PL 1996/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618593"
+            }
+          },
+          {
+            "chave": "p:2620135",
+            "ordem": 19,
+            "titulo": "PL 2095/2026",
+            "proposicao": {
+              "id": 2620135,
+              "identificacao": "PL 2095/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2620135"
+            }
+          },
+          {
+            "chave": "p:2624049",
+            "ordem": 20,
+            "titulo": "PL 2359/2026",
+            "proposicao": {
+              "id": 2624049,
+              "identificacao": "PL 2359/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2624049"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "alteracoes": []
+}
