@@ -1,8 +1,8 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-10-28T10:33:44-03:00",
-  "data_referencia": "2026-10-28",
+  "verificado_em": "2026-10-29T10:44:21-03:00",
+  "data_referencia": "2026-10-29",
   "tentativas": 1,
   "falha": {
     "categoria": "formato_alterado",
