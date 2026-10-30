@@ -1,9 +1,9 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-10-29T10:44:21-03:00",
-  "data_referencia": "2026-10-29",
-  "tentativas": 1,
+  "verificado_em": "2026-10-30T11:36:12-03:00",
+  "data_referencia": "2026-10-30",
+  "tentativas": 3,
   "falha": {
     "categoria": "formato_alterado",
     "motivo": "tramitações da proposição 2394641: a sequência 31 do lote não existe na resposta"
