@@ -1,7 +1,7 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-10-31T04:33:29-03:00",
+  "verificado_em": "2026-10-31T11:50:29-03:00",
   "falha": {
     "categoria": "fonte_indisponivel",
     "motivo": "/eventos/83091/pauta: pauta: HTTP 504"
