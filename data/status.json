@@ -1,12 +1,12 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-10-30T11:36:12-03:00",
-  "data_referencia": "2026-10-30",
-  "tentativas": 3,
+  "verificado_em": "2026-10-31T11:45:31-03:00",
+  "data_referencia": "2026-10-31",
+  "tentativas": 4,
   "falha": {
-    "categoria": "formato_alterado",
-    "motivo": "tramitações da proposição 2394641: a sequência 31 do lote não existe na resposta"
+    "categoria": "api_deputados",
+    "motivo": "não foi possível obter o deputado 74270: 74270: HTTP 504"
   },
   "variacao_aceita": null,
   "ultimo_retrato_bom": {
