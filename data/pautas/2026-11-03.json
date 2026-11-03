@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-03T05:36:46-03:00",
+    "checada_em": "2026-11-03T13:37:43-03:00",
     "janela": {
       "inicio": "2026-10-27",
       "fim": "2026-11-10"
@@ -777,22 +777,436 @@
         ]
       },
       {
-        "id": 83125,
+        "id": 83030,
         "comissao": "CREDN",
         "inicio": "2026-11-04T09:00",
         "situacao": "convocada",
         "situacao_camara": "Convocada",
-        "link": "https://www.camara.leg.br/evento-legislativo/83125",
-        "vista_desde": "2026-11-02T15:51:47-03:00",
-        "itens": [],
+        "link": "https://www.camara.leg.br/evento-legislativo/83030",
+        "vista_desde": "2026-11-03T13:37:43-03:00",
+        "itens": [
+          {
+            "ordem": 12,
+            "titulo": "PL 4894/2023",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2394641,
+              "tipo": "PL",
+              "numero": 4894,
+              "ano": 2023,
+              "identificacao": "PL 4894/2023",
+              "ementa": "Dispõe sobre sanções políticas e econômicas relacionadas ao Hamas e ao Hezbollah, os classifica como grupos terroristas, e criminaliza manifestações de apoio a esses grupos.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2394641"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 213762,
+              "nome": "Carla Dickson",
+              "partido": null
+            },
+            "etiquetas": [
+              "autoria NOVO",
+              "autor hoje no NOVO"
+            ],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 8,
+            "titulo": "MSC 1156/2024",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2459412,
+              "tipo": "MSC",
+              "numero": 1156,
+              "ano": 2024,
+              "identificacao": "MSC 1156/2024",
+              "ementa": "Submete à consideração do Congresso Nacional o texto do Protocolo de Londres de 1996 (LC PROT 1996) e de suas emendas.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2459412"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 73778,
+              "nome": "Luiz Carlos Hauly",
+              "partido": "PODE"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 9,
+            "titulo": "MSC 106/2026",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2602841,
+              "tipo": "MSC",
+              "numero": 106,
+              "ano": 2026,
+              "identificacao": "MSC 106/2026",
+              "ementa": "Submete à consideração do Congresso Nacional o texto do “Tratado sobre Transferência de Pessoas Condenadas entre a República Federativa do Brasil e os Emirados Árabes Unidos”, assinado em Dubai, em 13 de novembro de 2021.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2602841"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 74537,
+              "nome": "Claudio Cajado",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 10,
+            "titulo": "MSC 324/2026",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2619833,
+              "tipo": "MSC",
+              "numero": 324,
+              "ano": 2026,
+              "identificacao": "MSC 324/2026",
+              "ementa": "Submete à consideração do Congresso Nacional o texto do  Acordo de Cooperação Educacional entre o Governo da República Federativa do Brasil e o Governo da República do Azerbaijão, assinado em Brasília, em 1º de setembro de 2025.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2619833"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 74537,
+              "nome": "Claudio Cajado",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 11,
+            "titulo": "PLP 118/2024",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2443533,
+              "tipo": "PLP",
+              "numero": 118,
+              "ano": 2024,
+              "identificacao": "PLP 118/2024",
+              "ementa": "Dispõe sobre a destinação, para o Ministério da Defesa, das receitas obtidas com a alienação de bens móveis e imóveis das Forças Armadas, com a finalidade de investimento e melhor estruturação da Pasta; e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2443533"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 13,
+            "titulo": "PL 1659/2024",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2432136,
+              "tipo": "PL",
+              "numero": 1659,
+              "ano": 2024,
+              "identificacao": "PL 1659/2024",
+              "ementa": "Estabelece o regime de salvaguarda, no âmbito de investimentos estrangeiros, de ativos estratégicos essenciais para garantir a defesa e soberania nacional e a segurança do aprovisionamento do país em serviços fundamentais para o interesse nacional, assim como regulamenta o recebimento de recursos estrangeiros pelas Organizações Não Governamentais.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2432136"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204526,
+              "nome": "Luiz Philippe de Orleans e Bragança",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 14,
+            "titulo": "PL 1588/2019",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2194567,
+              "tipo": "PL",
+              "numero": 1588,
+              "ano": 2019,
+              "identificacao": "PL 1588/2019",
+              "ementa": "Altera a redação do art. 45, da Lei nº 8.080, de 19 de setembro de 1990, para prever o atendimento pelos serviços de saúde das Forças Armadas aos seringueiros que, entre 1943 e 1945, foram alistados pelo Serviço Especial de Mobilização de Trabalhadores para a Amazônia - SEMTA com objetivo de extrair borracha na Amazônia, como parte do esforço de guerra brasileiro, durante a Segunda Guerra Mundial.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2194567"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          },
+          {
+            "ordem": 15,
+            "titulo": "PL 674/2021",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2271903,
+              "tipo": "PL",
+              "numero": 674,
+              "ano": 2021,
+              "identificacao": "PL 674/2021",
+              "ementa": "Altera a Lei nº 13.178, de 22 de outubro de 2015, que dispõe sobre a ratificação dos registros imobiliários decorrentes de alienações e concessões de terras públicas situadas nas faixas de fronteira, para autorizar a ratificação de registros imobiliários referentes a imóveis rurais cujo domínio esteja sendo questionado ou reivindicado na esfera administrativa ou judicial por órgão ou entidade da administração federal direta ou indireta; e para estender os prazos para requerer a ratificação, mediante certificação do georreferenciamento do imóvel e a atualização da inscrição do imóvel no Sistema Nacional de Cadastro Rural para fins de de ratificação dos registros.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 178871,
+              "nome": "Evair Vieira de Melo",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": null
+          }
+        ],
         "requerimentos": {
-          "total": 0,
-          "listados": []
+          "total": 7,
+          "listados": [
+            {
+              "ordem": 1,
+              "titulo": "REQ 120/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2642400,
+                "tipo": "REQ",
+                "numero": 120,
+                "ano": 2026,
+                "identificacao": "REQ 120/2026",
+                "ementa": "Requer, nos termos do art. 50 da Constituição Federal e das disposições regimentais aplicáveis, a convocação do Ministro de Estado da Defesa, Sr. José Múcio Monteiro Filho, para comparecer a esta Comissão de Relações Exteriores e de Defesa Nacional a fim de prestar esclarecimentos acerca das providências adotadas após o episódio envolvendo o General de Brigada Emílio Vanderlei Ribeiro e o Deputado Federal Marcel van Hattem, ocorrido nas dependências da Câmara dos Deputados, bem como acerca da posterior designação do referido oficial-general para o Comando da 2ª Região Militar.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2642400"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [
+                "autoria NOVO",
+                "autor hoje no NOVO"
+              ],
+              "autoria_nao_verificada": false,
+              "leva_apensado_do_novo": [],
+              "resultado": null
+            },
+            {
+              "ordem": 2,
+              "titulo": "REQ 121/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2642404,
+                "tipo": "REQ",
+                "numero": 121,
+                "ano": 2026,
+                "identificacao": "REQ 121/2026",
+                "ementa": "Requer o envio, por esta Comissão, de Indicação ao Poder Executivo, em específico ao Ministério da Defesa, para a adoção das medidas necessárias à responsabilização da conduta o General de Divisão Emílio Vanderlei Ribeiro em episódio envolvendo o Deputado Federal Marcel van Hattem nas dependências da Câmara dos Deputados, inclusive mediante a instauração de processo administrativo disciplinar ou de outro procedimento disciplinar formal cabível no âmbito do Exército Brasileiro.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2642404"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [
+                "autoria NOVO",
+                "autor hoje no NOVO"
+              ],
+              "autoria_nao_verificada": false,
+              "leva_apensado_do_novo": [],
+              "resultado": null
+            },
+            {
+              "ordem": 7,
+              "titulo": "REQ 127/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2649643,
+                "tipo": "REQ",
+                "numero": 127,
+                "ano": 2026,
+                "identificacao": "REQ 127/2026",
+                "ementa": "Solicita o encaminhamento de requerimento de informações ao Ministro de Estado da Defesa, acerca da concessão de beneplácito diplomático ao general venezuelano, Luis Gerardo Reyes Rivero, para exercer a função de adido militar da República Bolivariana da Venezuela no Brasil.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2649643"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [],
+              "autoria_nao_verificada": true,
+              "leva_apensado_do_novo": [],
+              "resultado": null
+            }
+          ]
         },
         "outros": {
           "total": 0
         },
-        "pauta": []
+        "pauta": [
+          {
+            "chave": "p:2642400",
+            "ordem": 1,
+            "titulo": "REQ 120/2026 CREDN",
+            "proposicao": {
+              "id": 2642400,
+              "identificacao": "REQ 120/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2642400"
+            }
+          },
+          {
+            "chave": "p:2642404",
+            "ordem": 2,
+            "titulo": "REQ 121/2026 CREDN",
+            "proposicao": {
+              "id": 2642404,
+              "identificacao": "REQ 121/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2642404"
+            }
+          },
+          {
+            "chave": "p:2645236",
+            "ordem": 3,
+            "titulo": "REQ 124/2026 CREDN",
+            "proposicao": {
+              "id": 2645236,
+              "identificacao": "REQ 124/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2645236"
+            }
+          },
+          {
+            "chave": "p:2645225",
+            "ordem": 4,
+            "titulo": "REQ 123/2026 CREDN",
+            "proposicao": {
+              "id": 2645225,
+              "identificacao": "REQ 123/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2645225"
+            }
+          },
+          {
+            "chave": "p:2647282",
+            "ordem": 5,
+            "titulo": "REQ 125/2026 CREDN",
+            "proposicao": {
+              "id": 2647282,
+              "identificacao": "REQ 125/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2647282"
+            }
+          },
+          {
+            "chave": "p:2647283",
+            "ordem": 6,
+            "titulo": "REQ 126/2026 CREDN",
+            "proposicao": {
+              "id": 2647283,
+              "identificacao": "REQ 126/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2647283"
+            }
+          },
+          {
+            "chave": "p:2649643",
+            "ordem": 7,
+            "titulo": "REQ 127/2026 CREDN",
+            "proposicao": {
+              "id": 2649643,
+              "identificacao": "REQ 127/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2649643"
+            }
+          },
+          {
+            "chave": "p:2459412",
+            "ordem": 8,
+            "titulo": "MSC 1156/2024",
+            "proposicao": {
+              "id": 2459412,
+              "identificacao": "MSC 1156/2024",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2459412"
+            }
+          },
+          {
+            "chave": "p:2602841",
+            "ordem": 9,
+            "titulo": "MSC 106/2026",
+            "proposicao": {
+              "id": 2602841,
+              "identificacao": "MSC 106/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2602841"
+            }
+          },
+          {
+            "chave": "p:2619833",
+            "ordem": 10,
+            "titulo": "MSC 324/2026",
+            "proposicao": {
+              "id": 2619833,
+              "identificacao": "MSC 324/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2619833"
+            }
+          },
+          {
+            "chave": "p:2443533",
+            "ordem": 11,
+            "titulo": "PLP 118/2024",
+            "proposicao": {
+              "id": 2443533,
+              "identificacao": "PLP 118/2024",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2443533"
+            }
+          },
+          {
+            "chave": "p:2394641",
+            "ordem": 12,
+            "titulo": "PL 4894/2023",
+            "proposicao": {
+              "id": 2394641,
+              "identificacao": "PL 4894/2023",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2394641"
+            }
+          },
+          {
+            "chave": "p:2432136",
+            "ordem": 13,
+            "titulo": "PL 1659/2024",
+            "proposicao": {
+              "id": 2432136,
+              "identificacao": "PL 1659/2024",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2432136"
+            }
+          },
+          {
+            "chave": "p:2194567",
+            "ordem": 14,
+            "titulo": "PL 1588/2019",
+            "proposicao": {
+              "id": 2194567,
+              "identificacao": "PL 1588/2019",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2194567"
+            }
+          },
+          {
+            "chave": "p:2271903",
+            "ordem": 15,
+            "titulo": "PL 674/2021",
+            "proposicao": {
+              "id": 2271903,
+              "identificacao": "PL 674/2021",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            }
+          }
+        ]
       },
       {
         "id": 82780,
@@ -804,7 +1218,7 @@
         "vista_desde": "2026-10-29T12:37:04-03:00",
         "itens": [
           {
-            "ordem": 2,
+            "ordem": 3,
             "titulo": "PL 1800/2023",
             "regime": "Urgência (Art. 155, RICD)",
             "proposicao": {
@@ -828,7 +1242,7 @@
             "resultado": null
           },
           {
-            "ordem": 3,
+            "ordem": 4,
             "titulo": "PL 479/2015",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -852,7 +1266,7 @@
             "resultado": null
           },
           {
-            "ordem": 4,
+            "ordem": 5,
             "titulo": "PL 10285/2018",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -876,7 +1290,7 @@
             "resultado": null
           },
           {
-            "ordem": 5,
+            "ordem": 6,
             "titulo": "PL 2931/2015",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -900,7 +1314,7 @@
             "resultado": null
           },
           {
-            "ordem": 6,
+            "ordem": 7,
             "titulo": "PL 2680/2021",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -924,7 +1338,7 @@
             "resultado": null
           },
           {
-            "ordem": 7,
+            "ordem": 8,
             "titulo": "PL 1920/2022",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -948,7 +1362,7 @@
             "resultado": null
           },
           {
-            "ordem": 8,
+            "ordem": 9,
             "titulo": "PL 2268/2023",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -972,7 +1386,7 @@
             "resultado": null
           },
           {
-            "ordem": 9,
+            "ordem": 10,
             "titulo": "PL 3799/2023",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -996,7 +1410,7 @@
             "resultado": null
           },
           {
-            "ordem": 10,
+            "ordem": 11,
             "titulo": "PL 5411/2023",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1020,7 +1434,7 @@
             "resultado": null
           },
           {
-            "ordem": 11,
+            "ordem": 12,
             "titulo": "PL 95/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1044,7 +1458,7 @@
             "resultado": null
           },
           {
-            "ordem": 12,
+            "ordem": 13,
             "titulo": "PL 393/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1068,7 +1482,7 @@
             "resultado": null
           },
           {
-            "ordem": 13,
+            "ordem": 14,
             "titulo": "PL 1465/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1092,7 +1506,7 @@
             "resultado": null
           },
           {
-            "ordem": 14,
+            "ordem": 15,
             "titulo": "PL 2589/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1116,7 +1530,7 @@
             "resultado": null
           },
           {
-            "ordem": 15,
+            "ordem": 16,
             "titulo": "PL 3508/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1140,7 +1554,7 @@
             "resultado": null
           },
           {
-            "ordem": 16,
+            "ordem": 17,
             "titulo": "PL 5204/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1164,7 +1578,7 @@
             "resultado": null
           },
           {
-            "ordem": 17,
+            "ordem": 18,
             "titulo": "PL 6194/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1188,7 +1602,7 @@
             "resultado": null
           },
           {
-            "ordem": 18,
+            "ordem": 19,
             "titulo": "PL 7164/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1212,7 +1626,7 @@
             "resultado": null
           },
           {
-            "ordem": 19,
+            "ordem": 20,
             "titulo": "PL 209/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1236,7 +1650,7 @@
             "resultado": null
           },
           {
-            "ordem": 20,
+            "ordem": 21,
             "titulo": "PL 521/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1260,7 +1674,7 @@
             "resultado": null
           },
           {
-            "ordem": 21,
+            "ordem": 22,
             "titulo": "PL 651/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1285,7 +1699,7 @@
           }
         ],
         "requerimentos": {
-          "total": 1,
+          "total": 2,
           "listados": [
             {
               "ordem": 1,
@@ -1310,6 +1724,26 @@
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
               "resultado": null
+            },
+            {
+              "ordem": 2,
+              "titulo": "REQ 73/2026 CE",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2649689,
+                "tipo": "REQ",
+                "numero": 73,
+                "ano": 2026,
+                "identificacao": "REQ 73/2026",
+                "ementa": "Requer a realização de audiência pública com o objetivo de debater o PLP 265/2025, acerca de alternativas para financiamento das despesas realizadas no âmbito do Programa Nacional de Infraestrutura Escolar, contido no Plano Nacional de Educação – PNE 2026-2036.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2649689"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [],
+              "autoria_nao_verificada": true,
+              "leva_apensado_do_novo": [],
+              "resultado": null
             }
           ]
         },
@@ -1328,8 +1762,18 @@
             }
           },
           {
-            "chave": "p:2355754",
+            "chave": "p:2649689",
             "ordem": 2,
+            "titulo": "REQ 73/2026 CE",
+            "proposicao": {
+              "id": 2649689,
+              "identificacao": "REQ 73/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2649689"
+            }
+          },
+          {
+            "chave": "p:2355754",
+            "ordem": 3,
             "titulo": "PL 1800/2023",
             "proposicao": {
               "id": 2355754,
@@ -1339,7 +1783,7 @@
           },
           {
             "chave": "p:949156",
-            "ordem": 3,
+            "ordem": 4,
             "titulo": "PL 479/2015",
             "proposicao": {
               "id": 949156,
@@ -1349,7 +1793,7 @@
           },
           {
             "chave": "p:2176185",
-            "ordem": 4,
+            "ordem": 5,
             "titulo": "PL 10285/2018",
             "proposicao": {
               "id": 2176185,
@@ -1359,7 +1803,7 @@
           },
           {
             "chave": "p:1713089",
-            "ordem": 5,
+            "ordem": 6,
             "titulo": "PL 2931/2015",
             "proposicao": {
               "id": 1713089,
@@ -1369,7 +1813,7 @@
           },
           {
             "chave": "p:2292195",
-            "ordem": 6,
+            "ordem": 7,
             "titulo": "PL 2680/2021",
             "proposicao": {
               "id": 2292195,
@@ -1379,7 +1823,7 @@
           },
           {
             "chave": "p:2331532",
-            "ordem": 7,
+            "ordem": 8,
             "titulo": "PL 1920/2022",
             "proposicao": {
               "id": 2331532,
@@ -1389,7 +1833,7 @@
           },
           {
             "chave": "p:2359116",
-            "ordem": 8,
+            "ordem": 9,
             "titulo": "PL 2268/2023",
             "proposicao": {
               "id": 2359116,
@@ -1399,7 +1843,7 @@
           },
           {
             "chave": "p:2376412",
-            "ordem": 9,
+            "ordem": 10,
             "titulo": "PL 3799/2023",
             "proposicao": {
               "id": 2376412,
@@ -1409,7 +1853,7 @@
           },
           {
             "chave": "p:2402827",
-            "ordem": 10,
+            "ordem": 11,
             "titulo": "PL 5411/2023",
             "proposicao": {
               "id": 2402827,
@@ -1419,7 +1863,7 @@
           },
           {
             "chave": "p:2417053",
-            "ordem": 11,
+            "ordem": 12,
             "titulo": "PL 95/2024",
             "proposicao": {
               "id": 2417053,
@@ -1429,7 +1873,7 @@
           },
           {
             "chave": "p:2418499",
-            "ordem": 12,
+            "ordem": 13,
             "titulo": "PL 393/2024",
             "proposicao": {
               "id": 2418499,
@@ -1439,7 +1883,7 @@
           },
           {
             "chave": "p:2430325",
-            "ordem": 13,
+            "ordem": 14,
             "titulo": "PL 1465/2024",
             "proposicao": {
               "id": 2430325,
@@ -1449,7 +1893,7 @@
           },
           {
             "chave": "p:2517480",
-            "ordem": 14,
+            "ordem": 15,
             "titulo": "PL 2589/2025",
             "proposicao": {
               "id": 2517480,
@@ -1459,7 +1903,7 @@
           },
           {
             "chave": "p:2537559",
-            "ordem": 15,
+            "ordem": 16,
             "titulo": "PL 3508/2025",
             "proposicao": {
               "id": 2537559,
@@ -1469,7 +1913,7 @@
           },
           {
             "chave": "p:2572437",
-            "ordem": 16,
+            "ordem": 17,
             "titulo": "PL 5204/2025",
             "proposicao": {
               "id": 2572437,
@@ -1479,7 +1923,7 @@
           },
           {
             "chave": "p:2593228",
-            "ordem": 17,
+            "ordem": 18,
             "titulo": "PL 6194/2025",
             "proposicao": {
               "id": 2593228,
@@ -1489,7 +1933,7 @@
           },
           {
             "chave": "p:2599773",
-            "ordem": 18,
+            "ordem": 19,
             "titulo": "PL 7164/2025",
             "proposicao": {
               "id": 2599773,
@@ -1499,7 +1943,7 @@
           },
           {
             "chave": "p:2600608",
-            "ordem": 19,
+            "ordem": 20,
             "titulo": "PL 209/2026",
             "proposicao": {
               "id": 2600608,
@@ -1509,7 +1953,7 @@
           },
           {
             "chave": "p:2602720",
-            "ordem": 20,
+            "ordem": 21,
             "titulo": "PL 521/2026",
             "proposicao": {
               "id": 2602720,
@@ -1519,7 +1963,7 @@
           },
           {
             "chave": "p:2603803",
-            "ordem": 21,
+            "ordem": 22,
             "titulo": "PL 651/2026",
             "proposicao": {
               "id": 2603803,
@@ -1531,5 +1975,42 @@
       }
     ]
   },
-  "alteracoes": []
+  "alteracoes": [
+    {
+      "detectada_em": "2026-11-03T13:37:43-03:00",
+      "tipo": "retirada_da_agenda",
+      "reuniao": {
+        "id": 83125,
+        "comissao": "CREDN",
+        "inicio": "2026-11-04T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83125"
+      },
+      "item": null,
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-03T13:37:43-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 82780,
+        "comissao": "CE",
+        "inicio": "2026-11-04T10:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/82780"
+      },
+      "item": {
+        "chave": "p:2649689",
+        "titulo": "REQ 73/2026 CE",
+        "proposicao": {
+          "id": 2649689,
+          "identificacao": "REQ 73/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2649689"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    }
+  ]
 }
