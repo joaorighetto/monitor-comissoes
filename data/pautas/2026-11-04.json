@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-04T13:37:38-03:00",
+    "checada_em": "2026-11-04T20:40:41-03:00",
     "janela": {
       "inicio": "2026-10-28",
       "fim": "2026-11-11"
@@ -1612,7 +1612,7 @@
         "comissao": "CREDN",
         "inicio": "2026-11-04T10:32",
         "situacao": "realizada",
-        "situacao_camara": "Encerrada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83030",
         "vista_desde": "2026-11-03T13:37:43-03:00",
         "itens": [
