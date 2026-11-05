@@ -1,10 +1,7 @@
 {
   "versao_formato": 1,
-  "resultado": "falha",
-  "verificado_em": "2026-11-05T05:33:13-03:00",
-  "falha": {
-    "categoria": "api_deputados",
-    "motivo": "não foi possível obter os deputados do NOVO: deputados?siglaPartido=NOVO&itens=100: HTTP 504"
-  },
-  "ultima_checagem_boa": "2026-11-04T20:40:41-03:00"
+  "resultado": "ok",
+  "verificado_em": "2026-11-05T13:53:10-03:00",
+  "falha": null,
+  "ultima_checagem_boa": "2026-11-05T13:52:54-03:00"
 }
