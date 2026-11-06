@@ -1,9 +1,9 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-11-05T13:02:06-03:00",
-  "data_referencia": "2026-11-05",
-  "tentativas": 3,
+  "verificado_em": "2026-11-06T11:38:40-03:00",
+  "data_referencia": "2026-11-06",
+  "tentativas": 1,
   "falha": {
     "categoria": "formato_alterado",
     "motivo": "tramitações da proposição 2394641: a sequência 34 do lote não existe na resposta"
