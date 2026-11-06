@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-06T13:20:39-03:00",
+    "checada_em": "2026-11-06T20:08:18-03:00",
     "janela": {
       "inicio": "2026-10-30",
       "fim": "2026-11-13"
@@ -1338,6 +1338,24 @@
             }
           }
         ]
+      },
+      {
+        "id": 83207,
+        "comissao": "CREDN",
+        "inicio": "2026-11-11T09:00",
+        "situacao": "convocada",
+        "situacao_camara": "Convocada",
+        "link": "https://www.camara.leg.br/evento-legislativo/83207",
+        "vista_desde": "2026-11-06T20:08:18-03:00",
+        "itens": [],
+        "requerimentos": {
+          "total": 0,
+          "listados": []
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": []
       },
       {
         "id": 82912,
