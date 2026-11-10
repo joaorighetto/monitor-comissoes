@@ -1,10 +1,10 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-11-10T05:51:38-03:00",
+  "verificado_em": "2026-11-10T13:37:36-03:00",
   "falha": {
     "categoria": "api_deputados",
-    "motivo": "não foi possível obter os deputados do NOVO: deputados?siglaPartido=NOVO&itens=100: HTTP 504"
+    "motivo": "não foi possível obter os deputados do NOVO: deputados?siglaPartido=NOVO&itens=100: HTTP 503"
   },
   "ultima_checagem_boa": "2026-11-08T12:36:47-03:00"
 }
