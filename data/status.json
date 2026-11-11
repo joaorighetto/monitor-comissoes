@@ -1,18 +1,15 @@
 {
   "versao_formato": 1,
-  "resultado": "falha",
-  "verificado_em": "2026-11-10T13:42:53-03:00",
-  "data_referencia": "2026-11-10",
-  "tentativas": 4,
-  "falha": {
-    "categoria": "api_deputados",
-    "motivo": "não foi possível obter os deputados do NOVO: deputados?siglaPartido=NOVO&itens=100: HTTP 503"
-  },
+  "resultado": "ok",
+  "verificado_em": "2026-11-11T11:45:09-03:00",
+  "data_referencia": "2026-11-11",
+  "tentativas": 1,
+  "falha": null,
   "variacao_aceita": null,
   "ultimo_retrato_bom": {
-    "gerado_em": "2026-10-26T10:29:58-03:00",
-    "dados_camara_em": "2026-10-26T04:31:42+00:00",
-    "total_itens": 105,
-    "estoque_bruto": 1532
+    "gerado_em": "2026-11-11T11:41:30-03:00",
+    "dados_camara_em": "2026-11-11T04:31:29+00:00",
+    "total_itens": 106,
+    "estoque_bruto": 1478
   }
 }

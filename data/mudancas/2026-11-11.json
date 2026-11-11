@@ -1,0 +1,258 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-11-11",
+    "retrato": {
+      "dia": "2026-11-11",
+      "dados_camara_em": "2026-11-11T04:31:29+00:00"
+    },
+    "retrato_anterior": {
+      "dia": "2026-10-26",
+      "dados_camara_em": "2026-10-26T04:31:42+00:00"
+    },
+    "linha_de_base": null,
+    "total_eventos": 6,
+    "total_por_tipo": {
+      "entrou": 1,
+      "saiu": 0,
+      "situacao": 3,
+      "relator": 1,
+      "parecer": 1,
+      "etiquetas": 0
+    }
+  },
+  "eventos": [
+    {
+      "tipo": "entrou",
+      "id": 2640435,
+      "identificacao": "PL 3785/2026",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2640435",
+      "motivo": {
+        "codigo": "chegou_a_comissao",
+        "texto": "chegou à comissão"
+      },
+      "etiquetas": [
+        "autoria NOVO",
+        "autor hoje no NOVO"
+      ],
+      "tramitacoes": [
+        {
+          "sequencia": 7,
+          "data_hora": "2026-10-27T18:13",
+          "orgao": "MESA",
+          "codigo": "110",
+          "descricao": "Distribuição"
+        },
+        {
+          "sequencia": 12,
+          "data_hora": "2026-11-03T12:38",
+          "orgao": "CE",
+          "codigo": "500",
+          "descricao": "Recebimento"
+        },
+        {
+          "sequencia": 13,
+          "data_hora": "2026-11-03T00:00",
+          "orgao": "CCP",
+          "codigo": "604",
+          "descricao": "Publicação de Proposição"
+        },
+        {
+          "sequencia": 14,
+          "data_hora": "2026-11-05T15:42",
+          "orgao": "CE",
+          "codigo": "320",
+          "descricao": "Designação de Relator(a)"
+        },
+        {
+          "sequencia": 15,
+          "data_hora": "2026-11-06T00:00",
+          "orgao": "CE",
+          "codigo": "350",
+          "descricao": "Abertura de Prazo"
+        },
+        {
+          "sequencia": 16,
+          "data_hora": "2026-11-09T15:18",
+          "orgao": "CE",
+          "codigo": "507",
+          "descricao": "Recebimento - Relator(a) (Sem Manifestação)"
+        }
+      ]
+    },
+    {
+      "tipo": "situacao",
+      "id": 2257023,
+      "identificacao": "PL 3701/2020",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2257023",
+      "de": "Pronta para Pauta",
+      "para": "Aguardando Deliberação",
+      "comissao_de": "CE",
+      "tramitacoes": []
+    },
+    {
+      "tipo": "situacao",
+      "id": 2461936,
+      "identificacao": "PL 3871/2024",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2461936",
+      "de": "Aguardando Parecer",
+      "para": "Aguardando Designação de Relator(a)",
+      "comissao_de": "CE",
+      "tramitacoes": [
+        {
+          "sequencia": 29,
+          "data_hora": "2026-11-04T14:36",
+          "orgao": "CE",
+          "codigo": "507",
+          "descricao": "Recebimento - Relator(a) (Sem Manifestação)"
+        }
+      ]
+    },
+    {
+      "tipo": "relator",
+      "id": 2461936,
+      "identificacao": "PL 3871/2024",
+      "comissao": "CE",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2461936",
+      "mudanca": "devolveu",
+      "de": {
+        "id": 220560,
+        "nome": "Thiago de Joaldo",
+        "partido_hoje": "REPUBLICANOS"
+      },
+      "para": null,
+      "tramitacoes": [
+        {
+          "sequencia": 29,
+          "data_hora": "2026-11-04T14:36",
+          "orgao": "CE",
+          "codigo": "507",
+          "descricao": "Recebimento - Relator(a) (Sem Manifestação)"
+        }
+      ]
+    },
+    {
+      "tipo": "situacao",
+      "id": 2394641,
+      "identificacao": "PL 4894/2023",
+      "comissao": "CREDN",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2394641",
+      "de": "Aguardando Parecer",
+      "para": "Pronta para Pauta",
+      "comissao_de": "CREDN",
+      "tramitacoes": [
+        {
+          "sequencia": 29,
+          "data_hora": "2026-10-26T16:04",
+          "orgao": "CREDN",
+          "codigo": "501",
+          "descricao": "Recebimento - Relator(a)"
+        },
+        {
+          "sequencia": 30,
+          "data_hora": "2026-10-26T16:04",
+          "orgao": "CREDN",
+          "codigo": "322",
+          "descricao": "Parecer do(a) Relator(a)"
+        },
+        {
+          "sequencia": 31,
+          "data_hora": "2026-11-04T10:11",
+          "orgao": "MESA",
+          "codigo": "194",
+          "descricao": "Apresentação de Requerimento"
+        },
+        {
+          "sequencia": 32,
+          "data_hora": "2026-11-04T09:00",
+          "orgao": "CREDN",
+          "codigo": "330",
+          "descricao": "Leitura e publicação do Parecer"
+        },
+        {
+          "sequencia": 33,
+          "data_hora": "2026-11-04T09:00",
+          "orgao": "CREDN",
+          "codigo": "420",
+          "descricao": "Pedido de Vista"
+        },
+        {
+          "sequencia": 34,
+          "data_hora": "2026-11-10T20:19",
+          "orgao": "CREDN",
+          "codigo": "600",
+          "descricao": "Encerramento de Prazo"
+        },
+        {
+          "sequencia": 35,
+          "data_hora": "2026-11-11T09:00",
+          "orgao": "CREDN",
+          "codigo": "220",
+          "descricao": "Discussão (Inicio e Continuacao)"
+        }
+      ]
+    },
+    {
+      "tipo": "parecer",
+      "id": 2394641,
+      "identificacao": "PL 4894/2023",
+      "comissao": "CREDN",
+      "link": "https://www.camara.leg.br/propostas-legislativas/2394641",
+      "tramitacoes": [
+        {
+          "sequencia": 29,
+          "data_hora": "2026-10-26T16:04",
+          "orgao": "CREDN",
+          "codigo": "501",
+          "descricao": "Recebimento - Relator(a)"
+        },
+        {
+          "sequencia": 30,
+          "data_hora": "2026-10-26T16:04",
+          "orgao": "CREDN",
+          "codigo": "322",
+          "descricao": "Parecer do(a) Relator(a)"
+        },
+        {
+          "sequencia": 31,
+          "data_hora": "2026-11-04T10:11",
+          "orgao": "MESA",
+          "codigo": "194",
+          "descricao": "Apresentação de Requerimento"
+        },
+        {
+          "sequencia": 32,
+          "data_hora": "2026-11-04T09:00",
+          "orgao": "CREDN",
+          "codigo": "330",
+          "descricao": "Leitura e publicação do Parecer"
+        },
+        {
+          "sequencia": 33,
+          "data_hora": "2026-11-04T09:00",
+          "orgao": "CREDN",
+          "codigo": "420",
+          "descricao": "Pedido de Vista"
+        },
+        {
+          "sequencia": 34,
+          "data_hora": "2026-11-10T20:19",
+          "orgao": "CREDN",
+          "codigo": "600",
+          "descricao": "Encerramento de Prazo"
+        },
+        {
+          "sequencia": 35,
+          "data_hora": "2026-11-11T09:00",
+          "orgao": "CREDN",
+          "codigo": "220",
+          "descricao": "Discussão (Inicio e Continuacao)"
+        }
+      ]
+    }
+  ],
+  "ressalvas": []
+}
