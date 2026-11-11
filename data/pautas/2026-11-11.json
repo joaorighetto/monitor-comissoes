@@ -9,16 +9,16 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-11T05:25:19-03:00",
+    "checada_em": "2026-11-11T13:38:38-03:00",
     "janela": {
       "inicio": "2026-11-04",
       "fim": "2026-11-18"
     },
     "lote": {
-      "dados_camara_em": "2026-10-26T04:31:42+00:00"
+      "dados_camara_em": "2026-11-11T04:31:29+00:00"
     },
     "inventario": {
-      "gerado_em": "2026-10-26T10:29:58-03:00"
+      "gerado_em": "2026-11-11T11:41:30-03:00"
     },
     "deputados_novo_em_exercicio": [
       {
@@ -595,58 +595,7 @@
         ],
         "requerimentos": {
           "total": 2,
-          "listados": [
-            {
-              "ordem": 1,
-              "titulo": "REQ 72/2026 CE",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2649208,
-                "tipo": "REQ",
-                "numero": 72,
-                "ano": 2026,
-                "identificacao": "REQ 72/2026",
-                "ementa": "Requer a alteração dos temas das quatro audiências públicas aprovadas no âmbito da Subcomissão Especial destinada a debater o Projeto de Lei nº 657, de 2025, e as proposições correlatas sobre educação inclusiva.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2649208"
-              },
-              "relacionada": {
-                "id": 2628070,
-                "identificacao": "REQ 40/2026",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2628070"
-              },
-              "relator": null,
-              "etiquetas": [],
-              "autoria_nao_verificada": true,
-              "leva_apensado_do_novo": [],
-              "resultado": {
-                "rotulo": "aprovado",
-                "texto": "Aprovado o Requerimento."
-              }
-            },
-            {
-              "ordem": 2,
-              "titulo": "REQ 73/2026 CE",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2649689,
-                "tipo": "REQ",
-                "numero": 73,
-                "ano": 2026,
-                "identificacao": "REQ 73/2026",
-                "ementa": "Requer a realização de audiência pública com o objetivo de debater o PLP 265/2025, acerca de alternativas para financiamento das despesas realizadas no âmbito do Programa Nacional de Infraestrutura Escolar, contido no Plano Nacional de Educação – PNE 2026-2036.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2649689"
-              },
-              "relacionada": null,
-              "relator": null,
-              "etiquetas": [],
-              "autoria_nao_verificada": true,
-              "leva_apensado_do_novo": [],
-              "resultado": {
-                "rotulo": "aprovado",
-                "texto": "Aprovado o Requerimento, com a inclusão, a pedido do Deputado Tacísio Motta, de representantes da UNE e da UBES no rol de convidados.  Subscreveu o Requerimento o Deputado Tarcísio Motta (PSOL-RJ)."
-              }
-            }
-          ]
+          "listados": []
         },
         "outros": {
           "total": 0
@@ -1157,29 +1106,6 @@
                 "rotulo": "aprovado",
                 "texto": "Subscrito pelo deputado Sargento Fahur (PL/PR). Aprovado o Requerimento."
               }
-            },
-            {
-              "ordem": 7,
-              "titulo": "REQ 127/2026 CREDN",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2649643,
-                "tipo": "REQ",
-                "numero": 127,
-                "ano": 2026,
-                "identificacao": "REQ 127/2026",
-                "ementa": "Solicita o encaminhamento de requerimento de informações ao Ministro de Estado da Defesa, acerca da concessão de beneplácito diplomático ao general venezuelano, Luis Gerardo Reyes Rivero, para exercer a função de adido militar da República Bolivariana da Venezuela no Brasil.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2649643"
-              },
-              "relacionada": null,
-              "relator": null,
-              "etiquetas": [],
-              "autoria_nao_verificada": true,
-              "leva_apensado_do_novo": [],
-              "resultado": {
-                "rotulo": "aprovado",
-                "texto": "Subscrito pelo deputado Sargento Fahur (PL/PR). Aprovado o Requerimento."
-              }
             }
           ]
         },
@@ -1342,9 +1268,9 @@
       {
         "id": 83208,
         "comissao": "CREDN",
-        "inicio": "2026-11-11T09:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-11T10:04",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada",
         "link": "https://www.camara.leg.br/evento-legislativo/83208",
         "vista_desde": "2026-11-10T20:21:55-03:00",
         "itens": [
@@ -1373,7 +1299,10 @@
             ],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer, com o voto contrário do deputado Miguel Ângelo (PT/MG)."
+            }
           },
           {
             "ordem": 4,
@@ -1397,7 +1326,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
           },
           {
             "ordem": 6,
@@ -1421,7 +1353,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
           },
           {
             "ordem": 7,
@@ -1445,7 +1380,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
           },
           {
             "ordem": 8,
@@ -1469,7 +1407,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
           },
           {
             "ordem": 9,
@@ -1493,7 +1434,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "vista",
+              "texto": "Lido o Parecer pela Relatora. Vista ao Deputado Miguel Ângelo."
+            }
           }
         ],
         "requerimentos": {
@@ -1520,7 +1464,10 @@
               ],
               "autoria_nao_verificada": false,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento, com alteração de convocação para convite."
+              }
             }
           ]
         },
@@ -1623,9 +1570,9 @@
       {
         "id": 82912,
         "comissao": "CE",
-        "inicio": "2026-11-11T10:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-11T10:28",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/82912",
         "vista_desde": "2026-11-06T13:20:39-03:00",
         "itens": [
@@ -1661,7 +1608,10 @@
                 ]
               }
             ],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 2,
@@ -1685,7 +1635,37 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Votação do Requerimento de Retirada de Pauta, de autoria do Deputado Delegado Paulo Bilynskyj (PL-SP) Rejeitado o Requerimento de Retirada de Pauta. Lido o Parecer da Relatora, Deputada Sâmia Bomfim (PSOL-SP), pela Deputada Fernanda Melchionna (PSOL-RS) Iniciada a Discussão. Discutiram a Matéria: Dep. Idilvan Alencar (PSB-CE), Dep. Maria do Rosário (PT-RS), Dep. Fernanda Melchionna (PSOL-RS), Dep. Tadeu Veneri (PT-PR), Dep. Tarcísio Motta (PSOL-RJ) e Dep. Wilson Santiago (REPUBLIC-PB). Prejudicado o Requerimento de Adiamento de Discussão, de autoria do Deputado Deputado Delegado Paulo Bilynskyj (Vice-Líder da Oposição), em razão da rejeição do Requerimento de Retirada de Pauta. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da relatora, Deputada Sâmia Bomfim (PSOL-SP) Prejudicado o Requerimento de Adiamento de Votação, de autoria do Deputado Delegado Paulo Bilynskyj, Vice-Líder da Oposição, em razão da ausência do Autor."
+            }
+          },
+          {
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2331532,
+              "tipo": "PL",
+              "numero": 1920,
+              "ano": 2022,
+              "identificacao": "PL 1920/2022",
+              "ementa": "Institui o Programa Casa do Professor, destinado a promover a aquisição de habitação para professores da Rede Pública de Ensino.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204535,
+              "nome": "Sâmia Bomfim",
+              "partido": "PSOL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Votação do Requerimento de Retirada de Pauta, de autoria do Deputado Delegado Paulo Bilynskyj (PL-SP) Rejeitado o Requerimento de Retirada de Pauta. Lido o Parecer da Relatora, Deputada Sâmia Bomfim (PSOL-SP), pela Deputada Fernanda Melchionna (PSOL-RS) Iniciada a Discussão. Discutiram a Matéria: Dep. Idilvan Alencar (PSB-CE), Dep. Maria do Rosário (PT-RS), Dep. Fernanda Melchionna (PSOL-RS), Dep. Tadeu Veneri (PT-PR), Dep. Tarcísio Motta (PSOL-RJ) e Dep. Wilson Santiago (REPUBLIC-PB). Prejudicado o Requerimento de Adiamento de Discussão, de autoria do Deputado Deputado Delegado Paulo Bilynskyj (Vice-Líder da Oposição), em razão da rejeição do Requerimento de Retirada de Pauta. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da relatora, Deputada Sâmia Bomfim (PSOL-SP) Prejudicado o Requerimento de Adiamento de Votação, de autoria do Deputado Delegado Paulo Bilynskyj, Vice-Líder da Oposição, em razão da ausência do Autor."
+            }
           },
           {
             "ordem": 3,
@@ -1709,7 +1689,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 4,
@@ -1733,7 +1716,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Reginaldo Veras (PV-DF)"
+            }
           },
           {
             "ordem": 5,
@@ -1757,7 +1743,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 6,
@@ -1781,7 +1770,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 7,
@@ -1805,7 +1797,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Tarcísio Motta (PSOL-RJ). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Tarcísio Motta (PSOL-RJ)"
+            }
           },
           {
             "ordem": 8,
@@ -1829,7 +1824,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 9,
@@ -1853,7 +1851,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 10,
@@ -1877,7 +1878,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 11,
@@ -1901,7 +1905,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 12,
@@ -1925,7 +1932,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Socorro Neri (PP-AC)"
+            }
           },
           {
             "ordem": 13,
@@ -1949,7 +1959,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 14,
@@ -1973,7 +1986,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Ismael (PL-SC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do relator, Deputado Ismael  (PL-SC)"
+            }
           },
           {
             "ordem": 15,
@@ -1997,7 +2013,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Nely Aquino (Podemos - MG), pelo Deputado Wilson Santiago (Republicanos -PB). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Nely Aquino (Podemos - MG)"
+            }
           },
           {
             "ordem": 16,
@@ -2021,7 +2040,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Maria Rosas (Republicanos-SP)  Iniciada a Discussão. Discutiu a Matéria o Dep. Tarcísio Motta (PSOL-RJ). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Maria Rosas (Republicanos-SP)"
+            }
           },
           {
             "ordem": 17,
@@ -2045,7 +2067,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pelo Deputado Professor Alcides (PSDB-GO). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Professor Alcides (PSDB-GO)"
+            }
           }
         ],
         "requerimentos": {
@@ -2064,6 +2089,16 @@
               "id": 2086175,
               "identificacao": "PL 5432/2016",
               "link": "https://www.camara.leg.br/propostas-legislativas/2086175"
+            }
+          },
+          {
+            "chave": "p:2331532",
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "proposicao": {
+              "id": 2331532,
+              "identificacao": "PL 1920/2022",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
             }
           },
           {
