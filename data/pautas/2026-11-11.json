@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-11T13:38:38-03:00",
+    "checada_em": "2026-11-11T21:43:47-03:00",
     "janela": {
       "inicio": "2026-11-04",
       "fim": "2026-11-18"
@@ -1270,7 +1270,7 @@
         "comissao": "CREDN",
         "inicio": "2026-11-11T10:04",
         "situacao": "realizada",
-        "situacao_camara": "Encerrada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83208",
         "vista_desde": "2026-11-10T20:21:55-03:00",
         "itens": [
