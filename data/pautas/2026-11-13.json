@@ -1,0 +1,1065 @@
+{
+  "meta": {
+    "versao_formato": 1,
+    "data": "2026-11-13",
+    "comissoes": [
+      "CE",
+      "CREDN"
+    ],
+    "linha_de_base": null
+  },
+  "checagem": {
+    "checada_em": "2026-11-13T05:47:05-03:00",
+    "janela": {
+      "inicio": "2026-11-06",
+      "fim": "2026-11-20"
+    },
+    "lote": {
+      "dados_camara_em": "2026-11-11T04:31:29+00:00"
+    },
+    "inventario": {
+      "gerado_em": "2026-11-11T11:41:30-03:00"
+    },
+    "deputados_novo_em_exercicio": [
+      {
+        "id": 156190,
+        "nome": "Marcel van Hattem"
+      },
+      {
+        "id": 204365,
+        "nome": "Gilson Marques"
+      },
+      {
+        "id": 204455,
+        "nome": "Luiz Lima"
+      },
+      {
+        "id": 204528,
+        "nome": "Adriana Ventura"
+      },
+      {
+        "id": 220633,
+        "nome": "Ricardo Salles"
+      }
+    ],
+    "reunioes": [
+      {
+        "id": 83208,
+        "comissao": "CREDN",
+        "inicio": "2026-11-11T10:04",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
+        "link": "https://www.camara.leg.br/evento-legislativo/83208",
+        "vista_desde": "2026-11-10T20:21:55-03:00",
+        "itens": [
+          {
+            "ordem": 5,
+            "titulo": "PL 4894/2023",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2394641,
+              "tipo": "PL",
+              "numero": 4894,
+              "ano": 2023,
+              "identificacao": "PL 4894/2023",
+              "ementa": "Dispõe sobre sanções políticas e econômicas relacionadas ao Hamas e ao Hezbollah, os classifica como grupos terroristas, e criminaliza manifestações de apoio a esses grupos.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2394641"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 213762,
+              "nome": "Carla Dickson",
+              "partido": null
+            },
+            "etiquetas": [
+              "autoria NOVO",
+              "autor hoje no NOVO"
+            ],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer, com o voto contrário do deputado Miguel Ângelo (PT/MG)."
+            }
+          },
+          {
+            "ordem": 4,
+            "titulo": "MSC 1800/2025",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2611592,
+              "tipo": "MSC",
+              "numero": 1800,
+              "ano": 2025,
+              "identificacao": "MSC 1800/2025",
+              "ementa": "Submete à consideração do Congresso Nacional, acompanhado de Exposição de Motivos dos Senhores Ministro de Estado das Relações Exteriores e do Ministro de Estado Chefe do Gabinete de Segurança Institucional da Presidência da República, o texto da “Emenda ao Acordo para Proteção de Informação Classificada entre a República Federativa do Brasil e a República Portuguesa”, assinada em Brasília, em 19 de fevereiro de 2025.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2611592"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 6,
+            "titulo": "PDL 466/2024",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2474845,
+              "tipo": "PDL",
+              "numero": 466,
+              "ano": 2024,
+              "identificacao": "PDL 466/2024",
+              "ementa": "Susta parcialmente a PORTARIA CONJUNTA COLOG/C EX e DPA/PF Nº 1, DE 29 DE NOVEMBRO DE 2024 que dispõe sobre a aquisição de armas de fogo de uso restrito, de suas respectivas munições e de acessórios para armas de fogo por integrantes das instituições públicas de que trata o art. 34 do Decreto nº 9.847, de 25 de junho de 2019; e a transferência de armas de fogo entre o Sistema de Gerenciamento Militar de Armas e o Sistema Nacional de Armas.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2474845"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
+          },
+          {
+            "ordem": 7,
+            "titulo": "PL 1348/2019",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2193594,
+              "tipo": "PL",
+              "numero": 1348,
+              "ano": 2019,
+              "identificacao": "PL 1348/2019",
+              "ementa": "Dispõe sobre a escolta durante o transporte de explosivos, bem como o controle dos estoques de explosivos.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2193594"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
+          },
+          {
+            "ordem": 8,
+            "titulo": "PL 674/2021",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2271903,
+              "tipo": "PL",
+              "numero": 674,
+              "ano": 2021,
+              "identificacao": "PL 674/2021",
+              "ementa": "Altera a Lei nº 13.178, de 22 de outubro de 2015, que dispõe sobre a ratificação dos registros imobiliários decorrentes de alienações e concessões de terras públicas situadas nas faixas de fronteira, para autorizar a ratificação de registros imobiliários referentes a imóveis rurais cujo domínio esteja sendo questionado ou reivindicado na esfera administrativa ou judicial por órgão ou entidade da administração federal direta ou indireta; e para estender os prazos para requerer a ratificação, mediante certificação do georreferenciamento do imóvel e a atualização da inscrição do imóvel no Sistema Nacional de Cadastro Rural para fins de de ratificação dos registros.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 178871,
+              "nome": "Evair Vieira de Melo",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta de ofício, por acordo."
+            }
+          },
+          {
+            "ordem": 9,
+            "titulo": "PL 3263/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2532083,
+              "tipo": "PL",
+              "numero": 3263,
+              "ano": 2025,
+              "identificacao": "PL 3263/2025",
+              "ementa": "Dispõe sobre a prestação de assistência jurídica aos cidadãos brasileiros residentes ou em trânsito no exterior, por meio das missões diplomáticas e repartições consulares do Brasil.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2532083"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 213762,
+              "nome": "Carla Dickson",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "vista",
+              "texto": "Lido o Parecer pela Relatora. Vista ao Deputado Miguel Ângelo."
+            }
+          }
+        ],
+        "requerimentos": {
+          "total": 3,
+          "listados": [
+            {
+              "ordem": 1,
+              "titulo": "REQ 120/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2642400,
+                "tipo": "REQ",
+                "numero": 120,
+                "ano": 2026,
+                "identificacao": "REQ 120/2026",
+                "ementa": "Requer, nos termos do art. 50 da Constituição Federal e das disposições regimentais aplicáveis, a convocação do Ministro de Estado da Defesa, Sr. José Múcio Monteiro Filho, para comparecer a esta Comissão de Relações Exteriores e de Defesa Nacional a fim de prestar esclarecimentos acerca das providências adotadas após o episódio envolvendo o General de Brigada Emílio Vanderlei Ribeiro e o Deputado Federal Marcel van Hattem, ocorrido nas dependências da Câmara dos Deputados, bem como acerca da posterior designação do referido oficial-general para o Comando da 2ª Região Militar.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2642400"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [
+                "autoria NOVO",
+                "autor hoje no NOVO"
+              ],
+              "autoria_nao_verificada": false,
+              "leva_apensado_do_novo": [],
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento, com alteração de convocação para convite."
+              }
+            }
+          ]
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": [
+          {
+            "chave": "p:2642400",
+            "ordem": 1,
+            "titulo": "REQ 120/2026 CREDN",
+            "proposicao": {
+              "id": 2642400,
+              "identificacao": "REQ 120/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2642400"
+            }
+          },
+          {
+            "chave": "p:2645236",
+            "ordem": 2,
+            "titulo": "REQ 124/2026 CREDN",
+            "proposicao": {
+              "id": 2645236,
+              "identificacao": "REQ 124/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2645236"
+            }
+          },
+          {
+            "chave": "p:2647282",
+            "ordem": 3,
+            "titulo": "REQ 125/2026 CREDN",
+            "proposicao": {
+              "id": 2647282,
+              "identificacao": "REQ 125/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2647282"
+            }
+          },
+          {
+            "chave": "p:2611592",
+            "ordem": 4,
+            "titulo": "MSC 1800/2025",
+            "proposicao": {
+              "id": 2611592,
+              "identificacao": "MSC 1800/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2611592"
+            }
+          },
+          {
+            "chave": "p:2394641",
+            "ordem": 5,
+            "titulo": "PL 4894/2023",
+            "proposicao": {
+              "id": 2394641,
+              "identificacao": "PL 4894/2023",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2394641"
+            }
+          },
+          {
+            "chave": "p:2474845",
+            "ordem": 6,
+            "titulo": "PDL 466/2024",
+            "proposicao": {
+              "id": 2474845,
+              "identificacao": "PDL 466/2024",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2474845"
+            }
+          },
+          {
+            "chave": "p:2193594",
+            "ordem": 7,
+            "titulo": "PL 1348/2019",
+            "proposicao": {
+              "id": 2193594,
+              "identificacao": "PL 1348/2019",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2193594"
+            }
+          },
+          {
+            "chave": "p:2271903",
+            "ordem": 8,
+            "titulo": "PL 674/2021",
+            "proposicao": {
+              "id": 2271903,
+              "identificacao": "PL 674/2021",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            }
+          },
+          {
+            "chave": "p:2532083",
+            "ordem": 9,
+            "titulo": "PL 3263/2025",
+            "proposicao": {
+              "id": 2532083,
+              "identificacao": "PL 3263/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2532083"
+            }
+          }
+        ]
+      },
+      {
+        "id": 82912,
+        "comissao": "CE",
+        "inicio": "2026-11-11T10:28",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
+        "link": "https://www.camara.leg.br/evento-legislativo/82912",
+        "vista_desde": "2026-11-06T13:20:39-03:00",
+        "itens": [
+          {
+            "ordem": 1,
+            "titulo": "PL 5432/2016",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2086175,
+              "tipo": "PL",
+              "numero": 5432,
+              "ano": 2016,
+              "identificacao": "PL 5432/2016",
+              "ementa": "Altera a Lei nº 13.267, de 6 de abril de 2016, que \"Disciplina a criação e a organização das associações denominadas empresas juniores, com funcionamento perante instituições de ensino superior\", e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2086175"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204557,
+              "nome": "Sidney Leite",
+              "partido": "PSD"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [
+              {
+                "id": 2257023,
+                "identificacao": "PL 3701/2020",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2257023",
+                "etiquetas": [
+                  "autoria NOVO",
+                  "autor hoje no NOVO"
+                ]
+              }
+            ],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2331532,
+              "tipo": "PL",
+              "numero": 1920,
+              "ano": 2022,
+              "identificacao": "PL 1920/2022",
+              "ementa": "Institui o Programa Casa do Professor, destinado a promover a aquisição de habitação para professores da Rede Pública de Ensino.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204535,
+              "nome": "Sâmia Bomfim",
+              "partido": "PSOL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Votação do Requerimento de Retirada de Pauta, de autoria do Deputado Delegado Paulo Bilynskyj (PL-SP) Rejeitado o Requerimento de Retirada de Pauta. Lido o Parecer da Relatora, Deputada Sâmia Bomfim (PSOL-SP), pela Deputada Fernanda Melchionna (PSOL-RS) Iniciada a Discussão. Discutiram a Matéria: Dep. Idilvan Alencar (PSB-CE), Dep. Maria do Rosário (PT-RS), Dep. Fernanda Melchionna (PSOL-RS), Dep. Tadeu Veneri (PT-PR), Dep. Tarcísio Motta (PSOL-RJ) e Dep. Wilson Santiago (REPUBLIC-PB). Prejudicado o Requerimento de Adiamento de Discussão, de autoria do Deputado Deputado Delegado Paulo Bilynskyj (Vice-Líder da Oposição), em razão da rejeição do Requerimento de Retirada de Pauta. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da relatora, Deputada Sâmia Bomfim (PSOL-SP) Prejudicado o Requerimento de Adiamento de Votação, de autoria do Deputado Delegado Paulo Bilynskyj, Vice-Líder da Oposição, em razão da ausência do Autor."
+            }
+          },
+          {
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2331532,
+              "tipo": "PL",
+              "numero": 1920,
+              "ano": 2022,
+              "identificacao": "PL 1920/2022",
+              "ementa": "Institui o Programa Casa do Professor, destinado a promover a aquisição de habitação para professores da Rede Pública de Ensino.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204535,
+              "nome": "Sâmia Bomfim",
+              "partido": "PSOL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Votação do Requerimento de Retirada de Pauta, de autoria do Deputado Delegado Paulo Bilynskyj (PL-SP) Rejeitado o Requerimento de Retirada de Pauta. Lido o Parecer da Relatora, Deputada Sâmia Bomfim (PSOL-SP), pela Deputada Fernanda Melchionna (PSOL-RS) Iniciada a Discussão. Discutiram a Matéria: Dep. Idilvan Alencar (PSB-CE), Dep. Maria do Rosário (PT-RS), Dep. Fernanda Melchionna (PSOL-RS), Dep. Tadeu Veneri (PT-PR), Dep. Tarcísio Motta (PSOL-RJ) e Dep. Wilson Santiago (REPUBLIC-PB). Prejudicado o Requerimento de Adiamento de Discussão, de autoria do Deputado Deputado Delegado Paulo Bilynskyj (Vice-Líder da Oposição), em razão da rejeição do Requerimento de Retirada de Pauta. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da relatora, Deputada Sâmia Bomfim (PSOL-SP) Prejudicado o Requerimento de Adiamento de Votação, de autoria do Deputado Delegado Paulo Bilynskyj, Vice-Líder da Oposição, em razão da ausência do Autor."
+            }
+          },
+          {
+            "ordem": 3,
+            "titulo": "PL 3888/2024",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2462044,
+              "tipo": "PL",
+              "numero": 3888,
+              "ano": 2024,
+              "identificacao": "PL 3888/2024",
+              "ementa": "Assegura ao responsável pela criança matriculada em instituição de ensino da educação infantil ao ensino fundamental da rede pública a isenção no pagamento de tarifa nos serviços públicos de transporte.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2462044"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204464,
+              "nome": "Talíria Petrone",
+              "partido": "PSOL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 4,
+            "titulo": "PL 3496/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2537522,
+              "tipo": "PL",
+              "numero": 3496,
+              "ano": 2025,
+              "identificacao": "PL 3496/2025",
+              "ementa": "Torna obrigatória a inclusão da temática do cuidado familiar de pessoas com deficiência nos currículos dos cursos de educação superior e de educação profissional e tecnológica, nas áreas de saúde, educação, serviço social, psicologia e assistência social, no âmbito das instituições de ensino federais e daquelas por elas reguladas ou supervisionadas, e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537522"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220533,
+              "nome": "Prof. Reginaldo Veras",
+              "partido": "PV"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Professor Reginaldo Veras (PV-DF) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Reginaldo Veras (PV-DF)"
+            }
+          },
+          {
+            "ordem": 5,
+            "titulo": "PL 4677/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2562570,
+              "tipo": "PL",
+              "numero": 4677,
+              "ano": 2025,
+              "identificacao": "PL 4677/2025",
+              "ementa": "Regulamenta o § 1º do art. 62 da Lei nº 9.394, de 20 de dezembro de 1996, de diretrizes e bases da educação nacional, no que se refere à ação da União para a promoção da formação continuada e a capacitação dos profissionais do magistério.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2562570"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 209787,
+              "nome": "Nikolas Ferreira",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 6,
+            "titulo": "PL 5086/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2570585,
+              "tipo": "PL",
+              "numero": 5086,
+              "ano": 2025,
+              "identificacao": "PL 5086/2025",
+              "ementa": "Institui a Política Nacional de Promoção do Desenvolvimento Integral da Infância e Adolescência, voltada à saúde mental, ao brincar e à alimentação saudável de crianças e adolescentes, e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2570585"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220533,
+              "nome": "Prof. Reginaldo Veras",
+              "partido": "PV"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 7,
+            "titulo": "PL 5275/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2573329,
+              "tipo": "PL",
+              "numero": 5275,
+              "ano": 2025,
+              "identificacao": "PL 5275/2025",
+              "ementa": "Acrescenta parágrafo ao art. 26 da Lei nº 9.394, de 1996, de diretrizes e bases da educação nacional, para inserir, como temas transversais nos currículos do ensino fundamental e do ensino médio, conteúdos relativos a noções básicas de direitos humanos, cidadania, democracia, ética e participação popular.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2573329"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220598,
+              "nome": "Tarcísio Motta",
+              "partido": "PSOL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Tarcísio Motta (PSOL-RJ). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Tarcísio Motta (PSOL-RJ)"
+            }
+          },
+          {
+            "ordem": 8,
+            "titulo": "PL 674/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2603971,
+              "tipo": "PL",
+              "numero": 674,
+              "ano": 2026,
+              "identificacao": "PL 674/2026",
+              "ementa": "Dispõe sobre a obrigatoriedade de inclusão da letra do Hino Nacional Brasileiro na capa dos livros didáticos distribuídos às escolas públicas da educação básica, faculta sua adoção às instituições privadas e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2603971"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220533,
+              "nome": "Prof. Reginaldo Veras",
+              "partido": "PV"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 9,
+            "titulo": "PL 709/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2604160,
+              "tipo": "PL",
+              "numero": 709,
+              "ano": 2026,
+              "identificacao": "PL 709/2026",
+              "ementa": "Dispõe sobre condições excepcionais para a renegociação de débitos relativos ao Fundo de Financiamento Estudantil (Fies) e altera a Lei nº 10.260, de 12 de julho de 2001, para autorizar a instituição periódica de janelas de renegociação",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2604160"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204372,
+              "nome": "Julio Cesar Ribeiro",
+              "partido": "REPUBLICANOS"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 10,
+            "titulo": "PL 1416/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2612027,
+              "tipo": "PL",
+              "numero": 1416,
+              "ano": 2026,
+              "identificacao": "PL 1416/2026",
+              "ementa": "Dispõe sobre a definição, qualificação e prerrogativas das Instituições Municipais de Educação Superior - IMES, institui o Programa de Apoio às Instituições Municipais de Educação Superior (PRO-IMES) e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2612027"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220540,
+              "nome": "Duda Ramos",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 11,
+            "titulo": "PL 1466/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2612635,
+              "tipo": "PL",
+              "numero": 1466,
+              "ano": 2026,
+              "identificacao": "PL 1466/2026",
+              "ementa": "Altera o art. 36 da Lei no 9.394, de 20 de dezembro de 1996, Esta Lei altera a lei que estabelece as diretrizes e bases da educação nacional, para incluir a Filosofia e a Sociologia como componentes curriculares obrigatórios nos currículos do ensino médio.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2612635"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 74398,
+              "nome": "Maria do Rosário",
+              "partido": "PT"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 12,
+            "titulo": "PL 1692/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2614597,
+              "tipo": "PL",
+              "numero": 1692,
+              "ano": 2026,
+              "identificacao": "PL 1692/2026",
+              "ementa": "Altera a Lei nº 12.513, de 26 de outubro de 2011, para incluir os adolescentes e jovens em acolhimento familiar ou institucional ou egressos desses serviços entre os destinatários de atendimento prioritário no Programa Nacional de Acesso ao Ensino Técnico e Emprego (Pronatec); e a Lei nº 14.995, de 10 de outubro de 2024, para incluir as mulheres vítimas de violência doméstica e familiar, os adolescentes e jovens em acolhimento familiar ou institucional ou egressos desses serviços e as pessoas em situação de rua entre os destinatários de atendimento prioritário no Programa Acredita no Primeiro Passo.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2614597"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 104552,
+              "nome": "Socorro Neri",
+              "partido": "PP"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Socorro Neri (PP-AC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Socorro Neri (PP-AC)"
+            }
+          },
+          {
+            "ordem": 13,
+            "titulo": "PL 1925/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2617672,
+              "tipo": "PL",
+              "numero": 1925,
+              "ano": 2026,
+              "identificacao": "PL 1925/2026",
+              "ementa": "Altera a Lei nº 9.394, de 1996, tornando obrigatória a inclusão, no currículo escolar, de conteúdos voltados à lembrança do Holocausto, em consonância com os princípios da dignidade da pessoa humana, dos direitos humanos e da não discriminação",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2617672"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204390,
+              "nome": "Professor Alcides",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
+          },
+          {
+            "ordem": 14,
+            "titulo": "PL 1983/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2618495,
+              "tipo": "PL",
+              "numero": 1983,
+              "ano": 2026,
+              "identificacao": "PL 1983/2026",
+              "ementa": "Institui o Programa Nacional Permanente de Literatura para Crianças e Jovens, com a finalidade de promover a leitura e incentivar a produção editorial infantojuvenil no País.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618495"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 98615,
+              "nome": "Ismael",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Ismael (PL-SC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do relator, Deputado Ismael  (PL-SC)"
+            }
+          },
+          {
+            "ordem": 15,
+            "titulo": "PL 2020/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2618847,
+              "tipo": "PL",
+              "numero": 2020,
+              "ano": 2026,
+              "identificacao": "PL 2020/2026",
+              "ementa": "Institui medidas de proteção contra a evasão acadêmica feminina no âmbito das instituições de ensino superior e dá outras providências.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618847"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220622,
+              "nome": "Nely Aquino",
+              "partido": "PODE"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Nely Aquino (Podemos - MG), pelo Deputado Wilson Santiago (Republicanos -PB). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Nely Aquino (Podemos - MG)"
+            }
+          },
+          {
+            "ordem": 16,
+            "titulo": "PL 2281/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2623252,
+              "tipo": "PL",
+              "numero": 2281,
+              "ano": 2026,
+              "identificacao": "PL 2281/2026",
+              "ementa": "Altera a Lei nº 10.436, de 24 de abril de 2002, para atualizar sua redação, aprimorar as disposições relativas ao atendimento às pessoas com deficiência auditiva e ampliar as diretrizes de promoção da Língua Brasileira de Sinais – Libras.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2623252"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204540,
+              "nome": "Maria Rosas",
+              "partido": "REPUBLICANOS"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Maria Rosas (Republicanos-SP)  Iniciada a Discussão. Discutiu a Matéria o Dep. Tarcísio Motta (PSOL-RJ). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Maria Rosas (Republicanos-SP)"
+            }
+          },
+          {
+            "ordem": 17,
+            "titulo": "PL 2357/2026",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2624047,
+              "tipo": "PL",
+              "numero": 2357,
+              "ano": 2026,
+              "identificacao": "PL 2357/2026",
+              "ementa": "Altera a Lei nº 9.394, de 20 de dezembro de 1996, e a Lei nº 12.764, de 27 de dezembro de 2012, para dispor sobre a formação continuada dos profissionais da educação para a efetivação da educação especial inclusiva.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2624047"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204570,
+              "nome": "Pastor Gil",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Pastor Gil (PL-MA), pelo Deputado Professor Alcides (PSDB-GO). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Professor Alcides (PSDB-GO)"
+            }
+          }
+        ],
+        "requerimentos": {
+          "total": 0,
+          "listados": []
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": [
+          {
+            "chave": "p:2086175",
+            "ordem": 1,
+            "titulo": "PL 5432/2016",
+            "proposicao": {
+              "id": 2086175,
+              "identificacao": "PL 5432/2016",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2086175"
+            }
+          },
+          {
+            "chave": "p:2331532",
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "proposicao": {
+              "id": 2331532,
+              "identificacao": "PL 1920/2022",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
+            }
+          },
+          {
+            "chave": "p:2331532",
+            "ordem": 2,
+            "titulo": "PL 1920/2022",
+            "proposicao": {
+              "id": 2331532,
+              "identificacao": "PL 1920/2022",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2331532"
+            }
+          },
+          {
+            "chave": "p:2462044",
+            "ordem": 3,
+            "titulo": "PL 3888/2024",
+            "proposicao": {
+              "id": 2462044,
+              "identificacao": "PL 3888/2024",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2462044"
+            }
+          },
+          {
+            "chave": "p:2537522",
+            "ordem": 4,
+            "titulo": "PL 3496/2025",
+            "proposicao": {
+              "id": 2537522,
+              "identificacao": "PL 3496/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2537522"
+            }
+          },
+          {
+            "chave": "p:2562570",
+            "ordem": 5,
+            "titulo": "PL 4677/2025",
+            "proposicao": {
+              "id": 2562570,
+              "identificacao": "PL 4677/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2562570"
+            }
+          },
+          {
+            "chave": "p:2570585",
+            "ordem": 6,
+            "titulo": "PL 5086/2025",
+            "proposicao": {
+              "id": 2570585,
+              "identificacao": "PL 5086/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2570585"
+            }
+          },
+          {
+            "chave": "p:2573329",
+            "ordem": 7,
+            "titulo": "PL 5275/2025",
+            "proposicao": {
+              "id": 2573329,
+              "identificacao": "PL 5275/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2573329"
+            }
+          },
+          {
+            "chave": "p:2603971",
+            "ordem": 8,
+            "titulo": "PL 674/2026",
+            "proposicao": {
+              "id": 2603971,
+              "identificacao": "PL 674/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2603971"
+            }
+          },
+          {
+            "chave": "p:2604160",
+            "ordem": 9,
+            "titulo": "PL 709/2026",
+            "proposicao": {
+              "id": 2604160,
+              "identificacao": "PL 709/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2604160"
+            }
+          },
+          {
+            "chave": "p:2612027",
+            "ordem": 10,
+            "titulo": "PL 1416/2026",
+            "proposicao": {
+              "id": 2612027,
+              "identificacao": "PL 1416/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2612027"
+            }
+          },
+          {
+            "chave": "p:2612635",
+            "ordem": 11,
+            "titulo": "PL 1466/2026",
+            "proposicao": {
+              "id": 2612635,
+              "identificacao": "PL 1466/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2612635"
+            }
+          },
+          {
+            "chave": "p:2614597",
+            "ordem": 12,
+            "titulo": "PL 1692/2026",
+            "proposicao": {
+              "id": 2614597,
+              "identificacao": "PL 1692/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2614597"
+            }
+          },
+          {
+            "chave": "p:2617672",
+            "ordem": 13,
+            "titulo": "PL 1925/2026",
+            "proposicao": {
+              "id": 2617672,
+              "identificacao": "PL 1925/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2617672"
+            }
+          },
+          {
+            "chave": "p:2618495",
+            "ordem": 14,
+            "titulo": "PL 1983/2026",
+            "proposicao": {
+              "id": 2618495,
+              "identificacao": "PL 1983/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618495"
+            }
+          },
+          {
+            "chave": "p:2618847",
+            "ordem": 15,
+            "titulo": "PL 2020/2026",
+            "proposicao": {
+              "id": 2618847,
+              "identificacao": "PL 2020/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2618847"
+            }
+          },
+          {
+            "chave": "p:2623252",
+            "ordem": 16,
+            "titulo": "PL 2281/2026",
+            "proposicao": {
+              "id": 2623252,
+              "identificacao": "PL 2281/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2623252"
+            }
+          },
+          {
+            "chave": "p:2624047",
+            "ordem": 17,
+            "titulo": "PL 2357/2026",
+            "proposicao": {
+              "id": 2624047,
+              "identificacao": "PL 2357/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2624047"
+            }
+          }
+        ]
+      },
+      {
+        "id": 83216,
+        "comissao": "CE",
+        "inicio": "2026-11-18T10:00",
+        "situacao": "convocada",
+        "situacao_camara": "Convocada",
+        "link": "https://www.camara.leg.br/evento-legislativo/83216",
+        "vista_desde": "2026-11-11T05:25:19-03:00",
+        "itens": [],
+        "requerimentos": {
+          "total": 0,
+          "listados": []
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": []
+      }
+    ]
+  },
+  "alteracoes": []
+}
