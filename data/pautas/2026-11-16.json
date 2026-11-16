@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-16T05:37:28-03:00",
+    "checada_em": "2026-11-16T15:56:57-03:00",
     "janela": {
       "inicio": "2026-11-09",
       "fim": "2026-11-23"
@@ -1091,9 +1091,20 @@
           "listados": []
         },
         "outros": {
-          "total": 0
+          "total": 1
         },
-        "pauta": []
+        "pauta": [
+          {
+            "chave": "p:2654024",
+            "ordem": 1,
+            "titulo": "SOR 1/2026 CE",
+            "proposicao": {
+              "id": 2654024,
+              "identificacao": "SOR 1/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654024"
+            }
+          }
+        ]
       },
       {
         "id": 83252,
@@ -1595,5 +1606,28 @@
       }
     ]
   },
-  "alteracoes": []
+  "alteracoes": [
+    {
+      "detectada_em": "2026-11-16T15:56:57-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83216,
+        "comissao": "CE",
+        "inicio": "2026-11-18T10:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83216"
+      },
+      "item": {
+        "chave": "p:2654024",
+        "titulo": "SOR 1/2026 CE",
+        "proposicao": {
+          "id": 2654024,
+          "identificacao": "SOR 1/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654024"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    }
+  ]
 }
