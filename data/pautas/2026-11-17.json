@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-17T06:44:24-03:00",
+    "checada_em": "2026-11-17T14:55:11-03:00",
     "janela": {
       "inicio": "2026-11-10",
       "fim": "2026-11-24"
@@ -1055,9 +1055,120 @@
           "listados": []
         },
         "outros": {
-          "total": 0
+          "total": 11
         },
-        "pauta": []
+        "pauta": [
+          {
+            "chave": "p:2654281",
+            "ordem": 1,
+            "titulo": "SOR 1/2026 CREDN",
+            "proposicao": {
+              "id": 2654281,
+              "identificacao": "SOR 1/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654281"
+            }
+          },
+          {
+            "chave": "p:2654432",
+            "ordem": 2,
+            "titulo": "SLD 1/2026 CREDN",
+            "proposicao": {
+              "id": 2654432,
+              "identificacao": "SLD 1/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654432"
+            }
+          },
+          {
+            "chave": "p:2654450",
+            "ordem": 3,
+            "titulo": "SLD 2/2026 CREDN",
+            "proposicao": {
+              "id": 2654450,
+              "identificacao": "SLD 2/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654450"
+            }
+          },
+          {
+            "chave": "p:2654452",
+            "ordem": 4,
+            "titulo": "SLD 3/2026 CREDN",
+            "proposicao": {
+              "id": 2654452,
+              "identificacao": "SLD 3/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654452"
+            }
+          },
+          {
+            "chave": "p:2654456",
+            "ordem": 5,
+            "titulo": "SLD 4/2026 CREDN",
+            "proposicao": {
+              "id": 2654456,
+              "identificacao": "SLD 4/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654456"
+            }
+          },
+          {
+            "chave": "p:2654457",
+            "ordem": 6,
+            "titulo": "SLD 5/2026 CREDN",
+            "proposicao": {
+              "id": 2654457,
+              "identificacao": "SLD 5/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654457"
+            }
+          },
+          {
+            "chave": "p:2654458",
+            "ordem": 7,
+            "titulo": "SLD 6/2026 CREDN",
+            "proposicao": {
+              "id": 2654458,
+              "identificacao": "SLD 6/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654458"
+            }
+          },
+          {
+            "chave": "p:2654461",
+            "ordem": 8,
+            "titulo": "SLD 7/2026 CREDN",
+            "proposicao": {
+              "id": 2654461,
+              "identificacao": "SLD 7/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654461"
+            }
+          },
+          {
+            "chave": "p:2654462",
+            "ordem": 9,
+            "titulo": "SLD 8/2026 CREDN",
+            "proposicao": {
+              "id": 2654462,
+              "identificacao": "SLD 8/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654462"
+            }
+          },
+          {
+            "chave": "p:2654464",
+            "ordem": 10,
+            "titulo": "SLD 9/2026 CREDN",
+            "proposicao": {
+              "id": 2654464,
+              "identificacao": "SLD 9/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654464"
+            }
+          },
+          {
+            "chave": "p:2654466",
+            "ordem": 11,
+            "titulo": "SLD 10/2026 CREDN",
+            "proposicao": {
+              "id": 2654466,
+              "identificacao": "SLD 10/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2654466"
+            }
+          }
+        ]
       },
       {
         "id": 83336,
@@ -1938,5 +2049,248 @@
       }
     ]
   },
-  "alteracoes": []
+  "alteracoes": [
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654281",
+        "titulo": "SOR 1/2026 CREDN",
+        "proposicao": {
+          "id": 2654281,
+          "identificacao": "SOR 1/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654281"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654432",
+        "titulo": "SLD 1/2026 CREDN",
+        "proposicao": {
+          "id": 2654432,
+          "identificacao": "SLD 1/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654432"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654450",
+        "titulo": "SLD 2/2026 CREDN",
+        "proposicao": {
+          "id": 2654450,
+          "identificacao": "SLD 2/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654450"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654452",
+        "titulo": "SLD 3/2026 CREDN",
+        "proposicao": {
+          "id": 2654452,
+          "identificacao": "SLD 3/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654452"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654456",
+        "titulo": "SLD 4/2026 CREDN",
+        "proposicao": {
+          "id": 2654456,
+          "identificacao": "SLD 4/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654456"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654457",
+        "titulo": "SLD 5/2026 CREDN",
+        "proposicao": {
+          "id": 2654457,
+          "identificacao": "SLD 5/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654457"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654458",
+        "titulo": "SLD 6/2026 CREDN",
+        "proposicao": {
+          "id": 2654458,
+          "identificacao": "SLD 6/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654458"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654461",
+        "titulo": "SLD 7/2026 CREDN",
+        "proposicao": {
+          "id": 2654461,
+          "identificacao": "SLD 7/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654461"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654462",
+        "titulo": "SLD 8/2026 CREDN",
+        "proposicao": {
+          "id": 2654462,
+          "identificacao": "SLD 8/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654462"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654464",
+        "titulo": "SLD 9/2026 CREDN",
+        "proposicao": {
+          "id": 2654464,
+          "identificacao": "SLD 9/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654464"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-17T14:55:11-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83320,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T09:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83320"
+      },
+      "item": {
+        "chave": "p:2654466",
+        "titulo": "SLD 10/2026 CREDN",
+        "proposicao": {
+          "id": 2654466,
+          "identificacao": "SLD 10/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2654466"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    }
+  ]
 }
