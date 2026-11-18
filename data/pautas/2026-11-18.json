@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-18T06:12:06-03:00",
+    "checada_em": "2026-11-18T14:36:54-03:00",
     "janela": {
       "inicio": "2026-11-11",
       "fim": "2026-11-25"
@@ -1044,9 +1044,9 @@
       {
         "id": 83320,
         "comissao": "CREDN",
-        "inicio": "2026-11-18T09:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-18T10:19",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada",
         "link": "https://www.camara.leg.br/evento-legislativo/83320",
         "vista_desde": "2026-11-13T20:33:43-03:00",
         "itens": [],
@@ -1171,261 +1171,11 @@
         ]
       },
       {
-        "id": 83336,
-        "comissao": "CREDN",
-        "inicio": "2026-11-18T09:30",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
-        "link": "https://www.camara.leg.br/evento-legislativo/83336",
-        "vista_desde": "2026-11-16T22:51:38-03:00",
-        "itens": [
-          {
-            "ordem": 4,
-            "titulo": "MSC 370/2026",
-            "regime": "Prioridade (Art. 151, II, RICD)",
-            "proposicao": {
-              "id": 2622877,
-              "tipo": "MSC",
-              "numero": 370,
-              "ano": 2026,
-              "identificacao": "MSC 370/2026",
-              "ementa": "Submete à consideração do Congresso Nacional o  texto do Acordo entre o Governo da República Federativa do Brasil e o Governo da República da Índia para Cooperação no Combate ao Terrorismo Internacional e ao Crime Organizado Transnacional, assinado em Brasília, em 8 de julho de 2025.",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2622877"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 204526,
-              "nome": "Luiz Philippe de Orleans e Bragança",
-              "partido": "PL"
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          },
-          {
-            "ordem": 5,
-            "titulo": "MSC 514/2026",
-            "regime": "Prioridade (Art. 151, II, RICD)",
-            "proposicao": {
-              "id": 2631192,
-              "tipo": "MSC",
-              "numero": 514,
-              "ano": 2026,
-              "identificacao": "MSC 514/2026",
-              "ementa": "Submete à consideração do Congresso Nacional o Texto do “Acordo entre o Governo da República Federativa do Brasil e o Governo da República Federal da Alemanha sobre a Troca e Proteção Mútua de Informação Classificada”, assinado em 5 de maio de 2025, em Brasília",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2631192"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 204526,
-              "nome": "Luiz Philippe de Orleans e Bragança",
-              "partido": "PL"
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          },
-          {
-            "ordem": 6,
-            "titulo": "PL 674/2021",
-            "regime": "Ordinário (Art. 151, III, RICD)",
-            "proposicao": {
-              "id": 2271903,
-              "tipo": "PL",
-              "numero": 674,
-              "ano": 2021,
-              "identificacao": "PL 674/2021",
-              "ementa": "Altera a Lei nº 13.178, de 22 de outubro de 2015, que dispõe sobre a ratificação dos registros imobiliários decorrentes de alienações e concessões de terras públicas situadas nas faixas de fronteira, para autorizar a ratificação de registros imobiliários referentes a imóveis rurais cujo domínio esteja sendo questionado ou reivindicado na esfera administrativa ou judicial por órgão ou entidade da administração federal direta ou indireta; e para estender os prazos para requerer a ratificação, mediante certificação do georreferenciamento do imóvel e a atualização da inscrição do imóvel no Sistema Nacional de Cadastro Rural para fins de de ratificação dos registros.",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 178871,
-              "nome": "Evair Vieira de Melo",
-              "partido": null
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          },
-          {
-            "ordem": 7,
-            "titulo": "PL 4234/2025",
-            "regime": "Ordinário (Art. 151, III, RICD)",
-            "proposicao": {
-              "id": 2552645,
-              "tipo": "PL",
-              "numero": 4234,
-              "ano": 2025,
-              "identificacao": "PL 4234/2025",
-              "ementa": "Institui o Programa Nacional de Valorização Institucional dos Defensores da Pátria e da Ordem Pública – PRONAVID, inspirado em modelos internacionais, que estimula a concessão voluntária de benefícios e descontos a militares e agentes do Sistema Único de Segurança Pública, com reconhecimento público às entidades aderentes, mediante certificação federal.",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2552645"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 220611,
-              "nome": "General Pazuello",
-              "partido": "PL"
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          }
-        ],
-        "requerimentos": {
-          "total": 3,
-          "listados": [
-            {
-              "ordem": 1,
-              "titulo": "REQ 128/2026 CREDN",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2652233,
-                "tipo": "REQ",
-                "numero": 128,
-                "ano": 2026,
-                "identificacao": "REQ 128/2026",
-                "ementa": "Requer a convocação do Ministro de Estado das Relações Exteriores, Embaixador Mauro Vieira, para prestar esclarecimentos sobre os atrasos no pagamento de salários e no repasse de recursos às representações diplomáticas e consulares brasileiras no exterior, bem como sobre a gestão orçamentária e financeira do Ministério das Relações Exteriores.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2652233"
-              },
-              "relacionada": null,
-              "relator": null,
-              "etiquetas": [
-                "autoria NOVO",
-                "autor hoje no NOVO"
-              ],
-              "autoria_nao_verificada": false,
-              "leva_apensado_do_novo": [],
-              "resultado": null
-            },
-            {
-              "ordem": 2,
-              "titulo": "REQ 129/2026 CREDN",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2653538,
-                "tipo": "REQ",
-                "numero": 129,
-                "ano": 2026,
-                "identificacao": "REQ 129/2026",
-                "ementa": "Requer informações ao Ministro de Estado da Justiça e Segurança Pública acerca das providencias adotadas pela Policia Federal e demais órgãos vinculados à Pasta, em relação aos catorze estrangeiros foragidos e investigados por fraude documental no âmbito da “Operação Livro E”, bem como a situação migratória e o controle de fronteira dos envolvidos abaixo nominados.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2653538"
-              },
-              "relacionada": null,
-              "relator": null,
-              "etiquetas": [],
-              "autoria_nao_verificada": true,
-              "leva_apensado_do_novo": [],
-              "resultado": null
-            },
-            {
-              "ordem": 3,
-              "titulo": "REQ 130/2026 CREDN",
-              "regime": "Matéria Sobre a Mesa",
-              "proposicao": {
-                "id": 2653889,
-                "tipo": "REQ",
-                "numero": 130,
-                "ano": 2026,
-                "identificacao": "REQ 130/2026",
-                "ementa": "Requer a realização de audiência pública para debater emissão fraudulenta de documentos públicos brasileiros para estrangeiros por meio de serventias extrajudiciais, bem como seus impactos na segurança nacional, no controle migratório, na cooperação policial internacional e na credibilidade externa do Brasil.",
-                "link": "https://www.camara.leg.br/propostas-legislativas/2653889"
-              },
-              "relacionada": null,
-              "relator": null,
-              "etiquetas": [],
-              "autoria_nao_verificada": true,
-              "leva_apensado_do_novo": [],
-              "resultado": null
-            }
-          ]
-        },
-        "outros": {
-          "total": 0
-        },
-        "pauta": [
-          {
-            "chave": "p:2652233",
-            "ordem": 1,
-            "titulo": "REQ 128/2026 CREDN",
-            "proposicao": {
-              "id": 2652233,
-              "identificacao": "REQ 128/2026",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2652233"
-            }
-          },
-          {
-            "chave": "p:2653538",
-            "ordem": 2,
-            "titulo": "REQ 129/2026 CREDN",
-            "proposicao": {
-              "id": 2653538,
-              "identificacao": "REQ 129/2026",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2653538"
-            }
-          },
-          {
-            "chave": "p:2653889",
-            "ordem": 3,
-            "titulo": "REQ 130/2026 CREDN",
-            "proposicao": {
-              "id": 2653889,
-              "identificacao": "REQ 130/2026",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2653889"
-            }
-          },
-          {
-            "chave": "p:2622877",
-            "ordem": 4,
-            "titulo": "MSC 370/2026",
-            "proposicao": {
-              "id": 2622877,
-              "identificacao": "MSC 370/2026",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2622877"
-            }
-          },
-          {
-            "chave": "p:2631192",
-            "ordem": 5,
-            "titulo": "MSC 514/2026",
-            "proposicao": {
-              "id": 2631192,
-              "identificacao": "MSC 514/2026",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2631192"
-            }
-          },
-          {
-            "chave": "p:2271903",
-            "ordem": 6,
-            "titulo": "PL 674/2021",
-            "proposicao": {
-              "id": 2271903,
-              "identificacao": "PL 674/2021",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
-            }
-          },
-          {
-            "chave": "p:2552645",
-            "ordem": 7,
-            "titulo": "PL 4234/2025",
-            "proposicao": {
-              "id": 2552645,
-              "identificacao": "PL 4234/2025",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2552645"
-            }
-          }
-        ]
-      },
-      {
         "id": 83216,
         "comissao": "CE",
-        "inicio": "2026-11-18T10:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-18T10:27",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83216",
         "vista_desde": "2026-11-11T05:25:19-03:00",
         "itens": [],
@@ -1550,11 +1300,282 @@
         ]
       },
       {
+        "id": 83336,
+        "comissao": "CREDN",
+        "inicio": "2026-11-18T10:44",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada",
+        "link": "https://www.camara.leg.br/evento-legislativo/83336",
+        "vista_desde": "2026-11-16T22:51:38-03:00",
+        "itens": [
+          {
+            "ordem": 4,
+            "titulo": "MSC 370/2026",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2622877,
+              "tipo": "MSC",
+              "numero": 370,
+              "ano": 2026,
+              "identificacao": "MSC 370/2026",
+              "ementa": "Submete à consideração do Congresso Nacional o  texto do Acordo entre o Governo da República Federativa do Brasil e o Governo da República da Índia para Cooperação no Combate ao Terrorismo Internacional e ao Crime Organizado Transnacional, assinado em Brasília, em 8 de julho de 2025.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2622877"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204526,
+              "nome": "Luiz Philippe de Orleans e Bragança",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 5,
+            "titulo": "MSC 514/2026",
+            "regime": "Prioridade (Art. 151, II, RICD)",
+            "proposicao": {
+              "id": 2631192,
+              "tipo": "MSC",
+              "numero": 514,
+              "ano": 2026,
+              "identificacao": "MSC 514/2026",
+              "ementa": "Submete à consideração do Congresso Nacional o Texto do “Acordo entre o Governo da República Federativa do Brasil e o Governo da República Federal da Alemanha sobre a Troca e Proteção Mútua de Informação Classificada”, assinado em 5 de maio de 2025, em Brasília",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2631192"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 204526,
+              "nome": "Luiz Philippe de Orleans e Bragança",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 6,
+            "titulo": "PL 674/2021",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2271903,
+              "tipo": "PL",
+              "numero": 674,
+              "ano": 2021,
+              "identificacao": "PL 674/2021",
+              "ementa": "Altera a Lei nº 13.178, de 22 de outubro de 2015, que dispõe sobre a ratificação dos registros imobiliários decorrentes de alienações e concessões de terras públicas situadas nas faixas de fronteira, para autorizar a ratificação de registros imobiliários referentes a imóveis rurais cujo domínio esteja sendo questionado ou reivindicado na esfera administrativa ou judicial por órgão ou entidade da administração federal direta ou indireta; e para estender os prazos para requerer a ratificação, mediante certificação do georreferenciamento do imóvel e a atualização da inscrição do imóvel no Sistema Nacional de Cadastro Rural para fins de de ratificação dos registros.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 178871,
+              "nome": "Evair Vieira de Melo",
+              "partido": null
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
+          },
+          {
+            "ordem": 7,
+            "titulo": "PL 4234/2025",
+            "regime": "Ordinário (Art. 151, III, RICD)",
+            "proposicao": {
+              "id": 2552645,
+              "tipo": "PL",
+              "numero": 4234,
+              "ano": 2025,
+              "identificacao": "PL 4234/2025",
+              "ementa": "Institui o Programa Nacional de Valorização Institucional dos Defensores da Pátria e da Ordem Pública – PRONAVID, inspirado em modelos internacionais, que estimula a concessão voluntária de benefícios e descontos a militares e agentes do Sistema Único de Segurança Pública, com reconhecimento público às entidades aderentes, mediante certificação federal.",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2552645"
+            },
+            "relacionada": null,
+            "relator": {
+              "id": 220611,
+              "nome": "General Pazuello",
+              "partido": "PL"
+            },
+            "etiquetas": [],
+            "autoria_nao_verificada": false,
+            "leva_apensado_do_novo": [],
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
+          }
+        ],
+        "requerimentos": {
+          "total": 3,
+          "listados": [
+            {
+              "ordem": 1,
+              "titulo": "REQ 128/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2652233,
+                "tipo": "REQ",
+                "numero": 128,
+                "ano": 2026,
+                "identificacao": "REQ 128/2026",
+                "ementa": "Requer a convocação do Ministro de Estado das Relações Exteriores, Embaixador Mauro Vieira, para prestar esclarecimentos sobre os atrasos no pagamento de salários e no repasse de recursos às representações diplomáticas e consulares brasileiras no exterior, bem como sobre a gestão orçamentária e financeira do Ministério das Relações Exteriores.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2652233"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [
+                "autoria NOVO",
+                "autor hoje no NOVO"
+              ],
+              "autoria_nao_verificada": false,
+              "leva_apensado_do_novo": [],
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Subscrito pelos deputados General Girão (PL/RN) e Sargento Fahur (PL/PR). Aprovado o Requerimento."
+              }
+            },
+            {
+              "ordem": 2,
+              "titulo": "REQ 129/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2653538,
+                "tipo": "REQ",
+                "numero": 129,
+                "ano": 2026,
+                "identificacao": "REQ 129/2026",
+                "ementa": "Requer informações ao Ministro de Estado da Justiça e Segurança Pública acerca das providencias adotadas pela Policia Federal e demais órgãos vinculados à Pasta, em relação aos catorze estrangeiros foragidos e investigados por fraude documental no âmbito da “Operação Livro E”, bem como a situação migratória e o controle de fronteira dos envolvidos abaixo nominados.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2653538"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [],
+              "autoria_nao_verificada": true,
+              "leva_apensado_do_novo": [],
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Subscrito pelos deputados General Girão (PL/RN) e Sargento Fahur (PL/PR). Aprovado o Requerimento."
+              }
+            },
+            {
+              "ordem": 3,
+              "titulo": "REQ 130/2026 CREDN",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2653889,
+                "tipo": "REQ",
+                "numero": 130,
+                "ano": 2026,
+                "identificacao": "REQ 130/2026",
+                "ementa": "Requer a realização de audiência pública para debater emissão fraudulenta de documentos públicos brasileiros para estrangeiros por meio de serventias extrajudiciais, bem como seus impactos na segurança nacional, no controle migratório, na cooperação policial internacional e na credibilidade externa do Brasil.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2653889"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [],
+              "autoria_nao_verificada": true,
+              "leva_apensado_do_novo": [],
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Subscrito pelos deputados General Girão (PL/RN) e Sargento Fahur (PL/PR). Aprovado o Requerimento, com a inclusão do presidente do TJDFT no rol de convidados."
+              }
+            }
+          ]
+        },
+        "outros": {
+          "total": 0
+        },
+        "pauta": [
+          {
+            "chave": "p:2652233",
+            "ordem": 1,
+            "titulo": "REQ 128/2026 CREDN",
+            "proposicao": {
+              "id": 2652233,
+              "identificacao": "REQ 128/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2652233"
+            }
+          },
+          {
+            "chave": "p:2653538",
+            "ordem": 2,
+            "titulo": "REQ 129/2026 CREDN",
+            "proposicao": {
+              "id": 2653538,
+              "identificacao": "REQ 129/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2653538"
+            }
+          },
+          {
+            "chave": "p:2653889",
+            "ordem": 3,
+            "titulo": "REQ 130/2026 CREDN",
+            "proposicao": {
+              "id": 2653889,
+              "identificacao": "REQ 130/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2653889"
+            }
+          },
+          {
+            "chave": "p:2622877",
+            "ordem": 4,
+            "titulo": "MSC 370/2026",
+            "proposicao": {
+              "id": 2622877,
+              "identificacao": "MSC 370/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2622877"
+            }
+          },
+          {
+            "chave": "p:2631192",
+            "ordem": 5,
+            "titulo": "MSC 514/2026",
+            "proposicao": {
+              "id": 2631192,
+              "identificacao": "MSC 514/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2631192"
+            }
+          },
+          {
+            "chave": "p:2271903",
+            "ordem": 6,
+            "titulo": "PL 674/2021",
+            "proposicao": {
+              "id": 2271903,
+              "identificacao": "PL 674/2021",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2271903"
+            }
+          },
+          {
+            "chave": "p:2552645",
+            "ordem": 7,
+            "titulo": "PL 4234/2025",
+            "proposicao": {
+              "id": 2552645,
+              "identificacao": "PL 4234/2025",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2552645"
+            }
+          }
+        ]
+      },
+      {
         "id": 83252,
         "comissao": "CE",
-        "inicio": "2026-11-18T10:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-18T10:47",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83252",
         "vista_desde": "2026-11-13T13:45:33-03:00",
         "itens": [
@@ -1582,7 +1603,10 @@
             ],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela  Relatora, Deputada Adriana Ventura (Novo-SP) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Adriana Ventura (Novo-SP)"
+            }
           },
           {
             "ordem": 1,
@@ -1606,7 +1630,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Antônia Lúcia ( Republicanas - AC). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Antônia Lúcia (Republicanos - AC)"
+            }
           },
           {
             "ordem": 2,
@@ -1630,7 +1657,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 3,
@@ -1654,7 +1684,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator,Deputado Ismael (PL-SC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Ismael (PL-SC)"
+            }
           },
           {
             "ordem": 4,
@@ -1678,7 +1711,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 5,
@@ -1702,7 +1738,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Thiago de Joaldo ( Republicanos-SE), pelo Deputado Paulo Lemos (PT-AC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Thiago do Joaldo (Republicanos-SE)"
+            }
           },
           {
             "ordem": 6,
@@ -1726,7 +1765,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 8,
@@ -1750,7 +1792,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Ismael (PL-SC) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Ismael (PL-SC)"
+            }
           },
           {
             "ordem": 9,
@@ -1774,7 +1819,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 10,
@@ -1798,7 +1846,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 11,
@@ -1822,7 +1873,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Silvia Cristina ( PP -RO) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Silvia Cristina (PP-RO)"
+            }
           },
           {
             "ordem": 12,
@@ -1846,7 +1900,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 13,
@@ -1870,7 +1927,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 14,
@@ -1894,7 +1954,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Franciane Bayer (Republicanos-RS), pelo Deputado Otoni de Paula (PSD-RJ). Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Franciane Bayer (Republicanos -RS)"
+            }
           }
         ],
         "requerimentos": {
