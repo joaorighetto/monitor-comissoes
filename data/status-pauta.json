@@ -1,7 +1,10 @@
 {
   "versao_formato": 1,
-  "resultado": "ok",
-  "verificado_em": "2026-11-19T06:31:52-03:00",
-  "falha": null,
+  "resultado": "falha",
+  "verificado_em": "2026-11-19T14:51:45-03:00",
+  "falha": {
+    "categoria": "api_deputados",
+    "motivo": "não foi possível obter os deputados do NOVO: deputados?siglaPartido=NOVO&itens=100: <urlopen error timed out>"
+  },
   "ultima_checagem_boa": "2026-11-19T06:31:36-03:00"
 }
