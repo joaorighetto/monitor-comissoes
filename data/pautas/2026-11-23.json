@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-23T06:49:56-03:00",
+    "checada_em": "2026-11-23T17:36:40-03:00",
     "janela": {
       "inicio": "2026-11-16",
       "fim": "2026-11-30"
@@ -1285,30 +1285,6 @@
           },
           {
             "ordem": 11,
-            "titulo": "PL 1334/2024",
-            "regime": "Ordinário (Art. 151, III, RICD)",
-            "proposicao": {
-              "id": 2428150,
-              "tipo": "PL",
-              "numero": 1334,
-              "ano": 2024,
-              "identificacao": "PL 1334/2024",
-              "ementa": "Altera o artigo 1º da Lei nº. 12.711, de 29 de agosto de 2012, que dispõe sobre o ingresso nas universidades federais e nas instituições federais de ensino técnico de nível médio e dá outras providências.",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2428150"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 104552,
-              "nome": "Socorro Neri",
-              "partido": "PP"
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          },
-          {
-            "ordem": 12,
             "titulo": "PL 3888/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1332,7 +1308,7 @@
             "resultado": null
           },
           {
-            "ordem": 13,
+            "ordem": 12,
             "titulo": "PL 4176/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1356,7 +1332,7 @@
             "resultado": null
           },
           {
-            "ordem": 14,
+            "ordem": 13,
             "titulo": "PL 4683/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1380,7 +1356,7 @@
             "resultado": null
           },
           {
-            "ordem": 15,
+            "ordem": 14,
             "titulo": "PL 2237/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1404,7 +1380,7 @@
             "resultado": null
           },
           {
-            "ordem": 16,
+            "ordem": 15,
             "titulo": "PL 3674/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1428,7 +1404,7 @@
             "resultado": null
           },
           {
-            "ordem": 17,
+            "ordem": 16,
             "titulo": "PL 3957/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1452,31 +1428,7 @@
             "resultado": null
           },
           {
-            "ordem": 18,
-            "titulo": "PL 5217/2025",
-            "regime": "Ordinário (Art. 151, III, RICD)",
-            "proposicao": {
-              "id": 2572618,
-              "tipo": "PL",
-              "numero": 5217,
-              "ano": 2025,
-              "identificacao": "PL 5217/2025",
-              "ementa": "Estabelece diretrizes para a carreira e as atribuições dos profissionais de apoio e suporte que atuam como Auxiliares de Educação Infantil.",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2572618"
-            },
-            "relacionada": null,
-            "relator": {
-              "id": 104552,
-              "nome": "Socorro Neri",
-              "partido": "PP"
-            },
-            "etiquetas": [],
-            "autoria_nao_verificada": false,
-            "leva_apensado_do_novo": [],
-            "resultado": null
-          },
-          {
-            "ordem": 19,
+            "ordem": 17,
             "titulo": "PL 7074/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1500,7 +1452,7 @@
             "resultado": null
           },
           {
-            "ordem": 20,
+            "ordem": 18,
             "titulo": "PL 7164/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1524,7 +1476,7 @@
             "resultado": null
           },
           {
-            "ordem": 21,
+            "ordem": 19,
             "titulo": "PL 675/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1548,7 +1500,7 @@
             "resultado": null
           },
           {
-            "ordem": 22,
+            "ordem": 20,
             "titulo": "PL 851/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1572,7 +1524,7 @@
             "resultado": null
           },
           {
-            "ordem": 23,
+            "ordem": 21,
             "titulo": "PL 1466/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1596,7 +1548,7 @@
             "resultado": null
           },
           {
-            "ordem": 24,
+            "ordem": 22,
             "titulo": "PL 2721/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1814,18 +1766,8 @@
             }
           },
           {
-            "chave": "p:2428150",
-            "ordem": 11,
-            "titulo": "PL 1334/2024",
-            "proposicao": {
-              "id": 2428150,
-              "identificacao": "PL 1334/2024",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2428150"
-            }
-          },
-          {
             "chave": "p:2462044",
-            "ordem": 12,
+            "ordem": 11,
             "titulo": "PL 3888/2024",
             "proposicao": {
               "id": 2462044,
@@ -1835,7 +1777,7 @@
           },
           {
             "chave": "p:2466086",
-            "ordem": 13,
+            "ordem": 12,
             "titulo": "PL 4176/2024",
             "proposicao": {
               "id": 2466086,
@@ -1845,7 +1787,7 @@
           },
           {
             "chave": "p:2475679",
-            "ordem": 14,
+            "ordem": 13,
             "titulo": "PL 4683/2024",
             "proposicao": {
               "id": 2475679,
@@ -1855,7 +1797,7 @@
           },
           {
             "chave": "p:2507282",
-            "ordem": 15,
+            "ordem": 14,
             "titulo": "PL 2237/2025",
             "proposicao": {
               "id": 2507282,
@@ -1865,7 +1807,7 @@
           },
           {
             "chave": "p:2539230",
-            "ordem": 16,
+            "ordem": 15,
             "titulo": "PL 3674/2025",
             "proposicao": {
               "id": 2539230,
@@ -1875,7 +1817,7 @@
           },
           {
             "chave": "p:2543139",
-            "ordem": 17,
+            "ordem": 16,
             "titulo": "PL 3957/2025",
             "proposicao": {
               "id": 2543139,
@@ -1884,18 +1826,8 @@
             }
           },
           {
-            "chave": "p:2572618",
-            "ordem": 18,
-            "titulo": "PL 5217/2025",
-            "proposicao": {
-              "id": 2572618,
-              "identificacao": "PL 5217/2025",
-              "link": "https://www.camara.leg.br/propostas-legislativas/2572618"
-            }
-          },
-          {
             "chave": "p:2599683",
-            "ordem": 19,
+            "ordem": 17,
             "titulo": "PL 7074/2025",
             "proposicao": {
               "id": 2599683,
@@ -1905,7 +1837,7 @@
           },
           {
             "chave": "p:2599773",
-            "ordem": 20,
+            "ordem": 18,
             "titulo": "PL 7164/2025",
             "proposicao": {
               "id": 2599773,
@@ -1915,7 +1847,7 @@
           },
           {
             "chave": "p:2603983",
-            "ordem": 21,
+            "ordem": 19,
             "titulo": "PL 675/2026",
             "proposicao": {
               "id": 2603983,
@@ -1925,7 +1857,7 @@
           },
           {
             "chave": "p:2605696",
-            "ordem": 22,
+            "ordem": 20,
             "titulo": "PL 851/2026",
             "proposicao": {
               "id": 2605696,
@@ -1935,7 +1867,7 @@
           },
           {
             "chave": "p:2612635",
-            "ordem": 23,
+            "ordem": 21,
             "titulo": "PL 1466/2026",
             "proposicao": {
               "id": 2612635,
@@ -1945,7 +1877,7 @@
           },
           {
             "chave": "p:2629230",
-            "ordem": 24,
+            "ordem": 22,
             "titulo": "PL 2721/2026",
             "proposicao": {
               "id": 2629230,
@@ -1957,5 +1889,50 @@
       }
     ]
   },
-  "alteracoes": []
+  "alteracoes": [
+    {
+      "detectada_em": "2026-11-23T17:36:40-03:00",
+      "tipo": "item_saiu",
+      "reuniao": {
+        "id": 83272,
+        "comissao": "CE",
+        "inicio": "2026-11-25T10:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83272"
+      },
+      "item": {
+        "chave": "p:2428150",
+        "titulo": "PL 1334/2024",
+        "proposicao": {
+          "id": 2428150,
+          "identificacao": "PL 1334/2024",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2428150"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-23T17:36:40-03:00",
+      "tipo": "item_saiu",
+      "reuniao": {
+        "id": 83272,
+        "comissao": "CE",
+        "inicio": "2026-11-25T10:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83272"
+      },
+      "item": {
+        "chave": "p:2572618",
+        "titulo": "PL 5217/2025",
+        "proposicao": {
+          "id": 2572618,
+          "identificacao": "PL 5217/2025",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2572618"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    }
+  ]
 }
