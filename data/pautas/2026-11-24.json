@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-24T00:57:31-03:00",
+    "checada_em": "2026-11-24T08:39:00-03:00",
     "janela": {
       "inicio": "2026-11-17",
       "fim": "2026-12-01"
@@ -1309,7 +1309,7 @@
         "vista_desde": "2026-11-19T21:36:51-03:00",
         "itens": [
           {
-            "ordem": 6,
+            "ordem": 7,
             "titulo": "PLP 15/2025",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -1333,7 +1333,7 @@
             "resultado": null
           },
           {
-            "ordem": 7,
+            "ordem": 8,
             "titulo": "PL 1967/2015",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -1357,7 +1357,7 @@
             "resultado": null
           },
           {
-            "ordem": 8,
+            "ordem": 9,
             "titulo": "PL 10285/2018",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -1381,7 +1381,7 @@
             "resultado": null
           },
           {
-            "ordem": 9,
+            "ordem": 10,
             "titulo": "PL 2005/2023",
             "regime": "Prioridade (Art. 151, II, RICD)",
             "proposicao": {
@@ -1405,7 +1405,7 @@
             "resultado": null
           },
           {
-            "ordem": 10,
+            "ordem": 11,
             "titulo": "PL 4144/2021",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1429,7 +1429,7 @@
             "resultado": null
           },
           {
-            "ordem": 11,
+            "ordem": 12,
             "titulo": "PL 3799/2023",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1453,7 +1453,7 @@
             "resultado": null
           },
           {
-            "ordem": 12,
+            "ordem": 13,
             "titulo": "PL 3888/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1477,7 +1477,7 @@
             "resultado": null
           },
           {
-            "ordem": 13,
+            "ordem": 14,
             "titulo": "PL 4176/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1501,7 +1501,7 @@
             "resultado": null
           },
           {
-            "ordem": 14,
+            "ordem": 15,
             "titulo": "PL 4683/2024",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1525,7 +1525,7 @@
             "resultado": null
           },
           {
-            "ordem": 15,
+            "ordem": 16,
             "titulo": "PL 2237/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1549,7 +1549,7 @@
             "resultado": null
           },
           {
-            "ordem": 16,
+            "ordem": 17,
             "titulo": "PL 3674/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1573,7 +1573,7 @@
             "resultado": null
           },
           {
-            "ordem": 17,
+            "ordem": 18,
             "titulo": "PL 3957/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1597,7 +1597,7 @@
             "resultado": null
           },
           {
-            "ordem": 18,
+            "ordem": 19,
             "titulo": "PL 7074/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1621,7 +1621,7 @@
             "resultado": null
           },
           {
-            "ordem": 19,
+            "ordem": 20,
             "titulo": "PL 7164/2025",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1645,7 +1645,7 @@
             "resultado": null
           },
           {
-            "ordem": 20,
+            "ordem": 21,
             "titulo": "PL 675/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1669,7 +1669,7 @@
             "resultado": null
           },
           {
-            "ordem": 21,
+            "ordem": 22,
             "titulo": "PL 851/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1693,7 +1693,7 @@
             "resultado": null
           },
           {
-            "ordem": 22,
+            "ordem": 23,
             "titulo": "PL 1466/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1717,7 +1717,7 @@
             "resultado": null
           },
           {
-            "ordem": 23,
+            "ordem": 24,
             "titulo": "PL 2721/2026",
             "regime": "Ordinário (Art. 151, III, RICD)",
             "proposicao": {
@@ -1742,7 +1742,7 @@
           }
         ],
         "requerimentos": {
-          "total": 5,
+          "total": 6,
           "listados": [
             {
               "ordem": 1,
@@ -1855,6 +1855,26 @@
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
               "resultado": null
+            },
+            {
+              "ordem": 6,
+              "titulo": "REQ 82/2026 CE",
+              "regime": "Matéria Sobre a Mesa",
+              "proposicao": {
+                "id": 2659068,
+                "tipo": "REQ",
+                "numero": 82,
+                "ano": 2026,
+                "identificacao": "REQ 82/2026",
+                "ementa": "Solicita informações ao Ministro de Estado da Educação sobre os critérios de elaboração, validação e correção da questão nº 56 do Caderno 2 (Amarelo), aplicada no primeiro dia do Exame Nacional do Ensino Médio (Enem) de 2026.",
+                "link": "https://www.camara.leg.br/propostas-legislativas/2659068"
+              },
+              "relacionada": null,
+              "relator": null,
+              "etiquetas": [],
+              "autoria_nao_verificada": true,
+              "leva_apensado_do_novo": [],
+              "resultado": null
             }
           ]
         },
@@ -1913,8 +1933,18 @@
             }
           },
           {
-            "chave": "p:2483155",
+            "chave": "p:2659068",
             "ordem": 6,
+            "titulo": "REQ 82/2026 CE",
+            "proposicao": {
+              "id": 2659068,
+              "identificacao": "REQ 82/2026",
+              "link": "https://www.camara.leg.br/propostas-legislativas/2659068"
+            }
+          },
+          {
+            "chave": "p:2483155",
+            "ordem": 7,
             "titulo": "PLP 15/2025",
             "proposicao": {
               "id": 2483155,
@@ -1924,7 +1954,7 @@
           },
           {
             "chave": "p:1384559",
-            "ordem": 7,
+            "ordem": 8,
             "titulo": "PL 1967/2015",
             "proposicao": {
               "id": 1384559,
@@ -1934,7 +1964,7 @@
           },
           {
             "chave": "p:2176185",
-            "ordem": 8,
+            "ordem": 9,
             "titulo": "PL 10285/2018",
             "proposicao": {
               "id": 2176185,
@@ -1944,7 +1974,7 @@
           },
           {
             "chave": "p:2488007",
-            "ordem": 9,
+            "ordem": 10,
             "titulo": "PL 2005/2023",
             "proposicao": {
               "id": 2488007,
@@ -1954,7 +1984,7 @@
           },
           {
             "chave": "p:2308500",
-            "ordem": 10,
+            "ordem": 11,
             "titulo": "PL 4144/2021",
             "proposicao": {
               "id": 2308500,
@@ -1964,7 +1994,7 @@
           },
           {
             "chave": "p:2376412",
-            "ordem": 11,
+            "ordem": 12,
             "titulo": "PL 3799/2023",
             "proposicao": {
               "id": 2376412,
@@ -1974,7 +2004,7 @@
           },
           {
             "chave": "p:2462044",
-            "ordem": 12,
+            "ordem": 13,
             "titulo": "PL 3888/2024",
             "proposicao": {
               "id": 2462044,
@@ -1984,7 +2014,7 @@
           },
           {
             "chave": "p:2466086",
-            "ordem": 13,
+            "ordem": 14,
             "titulo": "PL 4176/2024",
             "proposicao": {
               "id": 2466086,
@@ -1994,7 +2024,7 @@
           },
           {
             "chave": "p:2475679",
-            "ordem": 14,
+            "ordem": 15,
             "titulo": "PL 4683/2024",
             "proposicao": {
               "id": 2475679,
@@ -2004,7 +2034,7 @@
           },
           {
             "chave": "p:2507282",
-            "ordem": 15,
+            "ordem": 16,
             "titulo": "PL 2237/2025",
             "proposicao": {
               "id": 2507282,
@@ -2014,7 +2044,7 @@
           },
           {
             "chave": "p:2539230",
-            "ordem": 16,
+            "ordem": 17,
             "titulo": "PL 3674/2025",
             "proposicao": {
               "id": 2539230,
@@ -2024,7 +2054,7 @@
           },
           {
             "chave": "p:2543139",
-            "ordem": 17,
+            "ordem": 18,
             "titulo": "PL 3957/2025",
             "proposicao": {
               "id": 2543139,
@@ -2034,7 +2064,7 @@
           },
           {
             "chave": "p:2599683",
-            "ordem": 18,
+            "ordem": 19,
             "titulo": "PL 7074/2025",
             "proposicao": {
               "id": 2599683,
@@ -2044,7 +2074,7 @@
           },
           {
             "chave": "p:2599773",
-            "ordem": 19,
+            "ordem": 20,
             "titulo": "PL 7164/2025",
             "proposicao": {
               "id": 2599773,
@@ -2054,7 +2084,7 @@
           },
           {
             "chave": "p:2603983",
-            "ordem": 20,
+            "ordem": 21,
             "titulo": "PL 675/2026",
             "proposicao": {
               "id": 2603983,
@@ -2064,7 +2094,7 @@
           },
           {
             "chave": "p:2605696",
-            "ordem": 21,
+            "ordem": 22,
             "titulo": "PL 851/2026",
             "proposicao": {
               "id": 2605696,
@@ -2074,7 +2104,7 @@
           },
           {
             "chave": "p:2612635",
-            "ordem": 22,
+            "ordem": 23,
             "titulo": "PL 1466/2026",
             "proposicao": {
               "id": 2612635,
@@ -2084,7 +2114,7 @@
           },
           {
             "chave": "p:2629230",
-            "ordem": 23,
+            "ordem": 24,
             "titulo": "PL 2721/2026",
             "proposicao": {
               "id": 2629230,
@@ -2127,6 +2157,28 @@
           "id": 2658898,
           "identificacao": "REQ 81/2026",
           "link": "https://www.camara.leg.br/propostas-legislativas/2658898"
+        }
+      },
+      "de": null,
+      "para": null,
+      "detalhe": null
+    },
+    {
+      "detectada_em": "2026-11-24T08:39:00-03:00",
+      "tipo": "item_entrou",
+      "reuniao": {
+        "id": 83272,
+        "comissao": "CE",
+        "inicio": "2026-11-25T10:00",
+        "link": "https://www.camara.leg.br/evento-legislativo/83272"
+      },
+      "item": {
+        "chave": "p:2659068",
+        "titulo": "REQ 82/2026 CE",
+        "proposicao": {
+          "id": 2659068,
+          "identificacao": "REQ 82/2026",
+          "link": "https://www.camara.leg.br/propostas-legislativas/2659068"
         }
       },
       "de": null,
