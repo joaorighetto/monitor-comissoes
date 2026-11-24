@@ -1,12 +1,12 @@
 {
   "versao_formato": 1,
   "resultado": "falha",
-  "verificado_em": "2026-11-23T15:47:49-03:00",
-  "data_referencia": "2026-11-23",
+  "verificado_em": "2026-11-24T15:19:41-03:00",
+  "data_referencia": "2026-11-24",
   "tentativas": 1,
   "falha": {
     "categoria": "formato_alterado",
-    "motivo": "tramitações da proposição 2394641: a sequência 43 do lote não existe na resposta"
+    "motivo": "tramitações da proposição 2394641: a sequência 44 do lote não existe na resposta"
   },
   "variacao_aceita": null,
   "ultimo_retrato_bom": {
