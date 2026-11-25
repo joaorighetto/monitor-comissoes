@@ -9,7 +9,7 @@
     "linha_de_base": null
   },
   "checagem": {
-    "checada_em": "2026-11-25T07:31:00-03:00",
+    "checada_em": "2026-11-25T15:51:41-03:00",
     "janela": {
       "inicio": "2026-11-18",
       "fim": "2026-12-02"
@@ -1115,9 +1115,9 @@
       {
         "id": 85462,
         "comissao": "CREDN",
-        "inicio": "2026-11-25T09:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-25T10:01",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/85462",
         "vista_desde": "2026-11-24T00:57:31-03:00",
         "itens": [
@@ -1143,7 +1143,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
           },
           {
             "ordem": 3,
@@ -1167,7 +1170,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Aprovado o Parecer."
+            }
           },
           {
             "ordem": 4,
@@ -1191,7 +1197,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "vista",
+              "texto": "Lido o Parecer pelo Relator. Vista ao Deputado Flávio Nogueira."
+            }
           },
           {
             "ordem": 5,
@@ -1215,7 +1224,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "vista",
+              "texto": "Lido o Parecer pelo Relator. Vista ao Deputado Flávio Nogueira."
+            }
           }
         ],
         "requerimentos": {
@@ -1239,7 +1251,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Subscrito pelo deputado Sargento Fahur (PL/PR). Aprovado o Requerimento."
+              }
             }
           ]
         },
@@ -1302,9 +1317,9 @@
       {
         "id": 83272,
         "comissao": "CE",
-        "inicio": "2026-11-25T10:00",
-        "situacao": "convocada",
-        "situacao_camara": "Convocada",
+        "inicio": "2026-11-25T10:20",
+        "situacao": "realizada",
+        "situacao_camara": "Encerrada (Final)",
         "link": "https://www.camara.leg.br/evento-legislativo/83272",
         "vista_desde": "2026-11-19T21:36:51-03:00",
         "itens": [
@@ -1330,7 +1345,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Paulo Lemos (PT-AP) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Usou da palavra a Deputada Professora Luciene Cavalcante (PSOL-SP). Aprovado o Parecer do Relator, Deputado Paulo Lemos (PT-AP)"
+            }
           },
           {
             "ordem": 8,
@@ -1354,7 +1372,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 9,
@@ -1378,7 +1399,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 10,
@@ -1402,7 +1426,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Maria do Rosário (PT-RS) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Maria do Rosário (PT-RS)"
+            }
           },
           {
             "ordem": 11,
@@ -1426,7 +1453,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Sâmia Bomfim (PSOL-SP) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Sâmia Bomfim (PSOL-SP)"
+            }
           },
           {
             "ordem": 12,
@@ -1450,7 +1480,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Professora Luciene Cavalcante (PSOL-SP) Iniciada a Discussão. Discutiram a Matéria: Dep. Rafael Brito (MDB-AL), Dep. Professor Alcides (PSDB-GO), Dep. Paulo Lemos (PT-AP), Dep. Tarcísio Motta (PSOL-RJ) e Dep. Ismael (PL-SC). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Professora Luciene Cavalcante (PSOL-SP)"
+            }
           },
           {
             "ordem": 13,
@@ -1474,7 +1507,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Prejudicado o Requerimento de Retirada de Pauta, de autoria do Deputado Luiz Lima (Novo-RJ), em razão da ausência do Autor.  Lido o Parecer da Relatora, Deputada Talíria Petrone (PSOL-RJ), pela Deputada Professora Luciene Cavalcante (PSOL-SP). Prejudicado o Requerimento de Adiamento de Discussão, de autoria do(a) Deputado Delegado Paulo Bilynskyij (Vice-Líder da Oposição), em razão da ausência do Autor. Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Talíria Petrone (PSOL-RJ)"
+            }
           },
           {
             "ordem": 14,
@@ -1498,7 +1534,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 15,
@@ -1522,7 +1561,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 16,
@@ -1546,7 +1588,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 17,
@@ -1570,7 +1615,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Duda Ramos (Podemos -RR), pelo(a) Deputado Maria do Rosário (PT-RS) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Duda Ramos (Podemos-RR)"
+            }
           },
           {
             "ordem": 18,
@@ -1594,7 +1642,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer do Relator, Deputado Duda Ramos (Podemos-RR), pela Deputada Maria do Rosário (PT-RS) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Duda Ramos (Podemos- RR)"
+            }
           },
           {
             "ordem": 19,
@@ -1618,7 +1669,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Dispensada a leitura do Parecer.  Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Franciane Bayer ( Republicanos-RS)"
+            }
           },
           {
             "ordem": 20,
@@ -1642,7 +1696,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pelo Relator, Deputado Rafael Brito (MDB-AL) Iniciada a Discussão. Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer do Relator, Deputado Rafael Brito (MDB-AL)"
+            }
           },
           {
             "ordem": 21,
@@ -1666,7 +1723,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "retirado de pauta",
+              "texto": "Retirado de pauta, por acordo."
+            }
           },
           {
             "ordem": 22,
@@ -1690,7 +1750,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer pela Relatora, Deputada Maria do Rosário (PT-RS) Iniciada a Discussão. Discutiram a Matéria: Dep. Idilvan Alencar (PSB-CE), Dep. Dandara (PT-MG), Dep. Tadeu Veneri (PT-PR), Dep. Reimont (PT-RJ), Dep. Patrus Ananias (PT-MG), Dep. Tarcísio Motta (PSOL-RJ), Dep. Professora Luciene Cavalcante (PSOL-SP), Dep. Fernanda Melchionna (PSOL-RS), Dep. Zeca Dirceu (PT-PR), Dep. Paulo Lemos (PT-AP) e Dep. Sâmia Bomfim (PSOL-SP). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Maria do Rosário (PT-RS)"
+            }
           },
           {
             "ordem": 23,
@@ -1714,7 +1777,10 @@
             "etiquetas": [],
             "autoria_nao_verificada": false,
             "leva_apensado_do_novo": [],
-            "resultado": null
+            "resultado": {
+              "rotulo": "aprovado",
+              "texto": "Lido o Parecer da Relatora, Deputada Talíria Petrone (PSOL-RJ), pela Deputada Professora Luciene Cavalcante (PSOL-SP). Iniciada a Discussão. Discutiram a Matéria: Dep. Professora Luciene Cavalcante (PSOL-SP) e Dep. Reimont (PT-RJ). Encerrada a Discussão. Iniciada a Votação da Matéria. Aprovado o Parecer da Relatora, Deputada Talíria Petrone (PSOL-RJ)."
+            }
           }
         ],
         "requerimentos": {
@@ -1738,7 +1804,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Subscreveu o Requerimento a Deputada Soraya Santos (PL-RJ). Usaram da palavra as Deputadas Soraya Santos (PL-RJ) e Adriana Ventura (NOVO-SP)."
+              }
             },
             {
               "ordem": 2,
@@ -1762,7 +1831,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Subscreveu o Requerimento o Deputado Professor Alcides (PSDB-GO). Usou da palavra o Deputado Rafael Brito (MDB-AL)."
+              }
             },
             {
               "ordem": 3,
@@ -1782,7 +1854,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Subscreveu o Requerimento o Deputado Professor Alcides (PSDB-GO). Usou da palavra a Deputada Soraya Santos (PL-RJ)."
+              }
             },
             {
               "ordem": 4,
@@ -1802,7 +1877,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Subscreveu o Requerimento o Deputado Professor Alcides (PSDB-GO)."
+              }
             },
             {
               "ordem": 5,
@@ -1830,7 +1908,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Usaram da palavra os Deputados Maria do Rosário (PT-RS) e Reimont (PT-RJ)."
+              }
             },
             {
               "ordem": 6,
@@ -1850,7 +1931,10 @@
               "etiquetas": [],
               "autoria_nao_verificada": true,
               "leva_apensado_do_novo": [],
-              "resultado": null
+              "resultado": {
+                "rotulo": "aprovado",
+                "texto": "Aprovado o Requerimento. Usaram da palavra os Deputados Tarcísio Motta (PSOL-RJ) e Professora Luciene Cavalcante (PSOL-SP)."
+              }
             }
           ]
         },
